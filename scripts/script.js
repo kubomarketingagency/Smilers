@@ -406,6 +406,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (intentoReproduccion && typeof intentoReproduccion.catch === 'function') {
       intentoReproduccion.catch(retirarIntro);
     }
+
+    /* Navegadores in-app (WhatsApp, Instagram, Facebook, etc.) a veces ni
+       bloquean ni rechazan el autoplay: simplemente lo dejan pausado sin
+       avisar. Si a la primera pantalla el video sigue pausado, no tiene
+       caso hacer esperar al visitante: se revela el banner de una vez. */
+    setTimeout(function () {
+      if (video.paused && !video.ended) retirarIntro();
+    }, 1200);
   });
 
 });
