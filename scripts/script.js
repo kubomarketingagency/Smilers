@@ -381,7 +381,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const video = capa.querySelector('video');
     if (!video) return;
 
+    let retirado = false;
     function retirarIntro() {
+      if (retirado) return;
+      retirado = true;
       capa.classList.add('oculto');
     }
 
@@ -389,6 +392,11 @@ document.addEventListener('DOMContentLoaded', function () {
       retirarIntro();
       return;
     }
+
+    /* Seguro: si "ended" no llega a disparar (autoplay bloqueado en
+       silencio, video que no termina de cargar, etc.) el banner no debe
+       quedar tapado para siempre. Duracion del clip / velocidad + margen. */
+    setTimeout(retirarIntro, 6000);
 
     video.playbackRate = 1.75;
     video.addEventListener('ended', retirarIntro);
