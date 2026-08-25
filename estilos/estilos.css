@@ -1,0 +1,1704 @@
+/* ==========================================================================
+   SMILERS DENTAL CLINIQUE — Hoja de estilos principal
+   Paleta:
+     Naranja vibrante  #f65e09   |  Turquesa oscuro  #01a1a3
+     Turquesa claro    #b8e9e3   |  Durazno / acento #f1c1a2
+   Tipografías: Nunito (títulos) · Poppins (cuerpo)
+   ========================================================================== */
+
+/* ===== 1. VARIABLES GLOBALES ============================================ */
+:root {
+  --naranja:        #f65e09;
+  --naranja-oscuro: #d94e04;
+  --turquesa:       #01a1a3;
+  --turquesa-osc:   #018587;
+  --turquesa-claro: #b8e9e3;
+  --durazno:        #f1c1a2;
+
+  --blanco:  #ffffff;
+  --gris-bg: #f7fbfb;
+  --texto:   #2b3a3a;
+  --texto-suave: #63797a;
+
+  --fuente-titulo: 'Nunito', sans-serif;
+  --fuente-cuerpo: 'Poppins', sans-serif;
+
+  --radio:    18px;
+  --radio-sm: 12px;
+  --radio-btn: 14px;
+  /* Esquina "sello" asimétrica: firma visual de la marca en tarjetas y fotos,
+     para que no todo dependa del mismo radio uniforme en todas las esquinas. */
+  --radio-tag:     28px 8px 28px 8px;
+  --radio-tag-inv: 8px 28px 8px 28px;
+
+  --sombra:       0 10px 30px rgba(1, 161, 163, .12);
+  --sombra-hover: 0 20px 48px rgba(1, 161, 163, .22);
+  --sombra-naranja: 0 14px 32px rgba(246, 94, 9, .18);
+
+  --transicion: all .35s cubic-bezier(.25, .8, .25, 1);
+}
+
+/* ===== 2. BASE =========================================================== */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 90px; } /* compensa navbar fija */
+
+body {
+  font-family: var(--fuente-cuerpo);
+  color: var(--texto);
+  background-color: var(--blanco);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: var(--fuente-titulo);
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
+
+a { text-decoration: none; transition: var(--transicion); }
+
+img { max-width: 100%; height: auto; }
+
+/* Utilidades de color de texto */
+.texto-turquesa { color: var(--turquesa); }
+.texto-naranja  { color: var(--naranja); }
+.texto-durazno  { color: var(--durazno); }
+
+/* Selección de texto */
+::selection { background: var(--naranja); color: #fff; }
+
+/* Barra de scroll personalizada (navegadores webkit) */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--gris-bg); }
+::-webkit-scrollbar-thumb { background: var(--turquesa); border-radius: 10px; }
+
+
+/* ===== 3. BOTONES ======================================================== */
+.btn {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  border-radius: var(--radio-btn);
+  padding: .75rem 1.9rem;
+  border: 2px solid transparent;
+  transition: var(--transicion);
+}
+
+/* Botón naranja (CTA principal) */
+.btn-naranja {
+  background: var(--naranja);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(246, 94, 9, .35);
+}
+.btn-naranja:hover,
+.btn-naranja:focus {
+  background: var(--naranja-oscuro);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(246, 94, 9, .45);
+}
+
+/* Botón turquesa */
+.btn-turquesa {
+  background: var(--turquesa);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(1, 161, 163, .30);
+}
+.btn-turquesa:hover {
+  background: var(--turquesa-osc);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* Botón blanco (sobre fondos de color) */
+.btn-blanco {
+  background: #fff;
+  color: var(--turquesa);
+}
+.btn-blanco:hover {
+  background: var(--turquesa-claro);
+  color: var(--turquesa-osc);
+  transform: translateY(-3px);
+}
+
+/* Botón fantasma (borde blanco, para el hero) */
+.btn-fantasma {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, .7);
+}
+.btn-fantasma:hover {
+  background: #fff;
+  color: var(--turquesa);
+  border-color: #fff;
+}
+
+
+/* ===== 4. NAVBAR ========================================================= */
+.navbar-principal {
+  padding: 1.1rem 0;
+  background: rgba(255, 255, 255, .98);
+  /* Nota: se evita backdrop-filter a propósito — recalcular el desenfoque en
+     cada frame mientras el menú móvil se abre/cierra es lo que provocaba el
+     "tirón" justo al final de la animación en móviles y tablets. */
+  transition: padding .35s ease, box-shadow .35s ease;
+  z-index: 1030;
+}
+
+/* Estado con scroll (clase añadida desde script.js) */
+.navbar-principal.con-scroll {
+  padding: .6rem 0;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .08);
+}
+
+/* Marca (logotipo tipográfico: icono + wordmark) */
+.marca {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+.marca-icono {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: var(--turquesa);
+  color: #fff;
+  border-radius: 14px 4px 14px 4px;
+  font-size: 1.35rem;
+  box-shadow: 0 6px 16px rgba(1, 161, 163, .35);
+  transition: var(--transicion);
+}
+.marca-texto { display: flex; flex-direction: column; line-height: 1; }
+.marca-nombre {
+  font-family: var(--fuente-titulo);
+  font-weight: 900;
+  font-size: 1.55rem;
+  color: var(--naranja);
+  letter-spacing: -.5px;
+}
+.marca-slogan {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .68rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 2px;
+  color: var(--turquesa-osc);
+}
+.navbar-principal.con-scroll .marca-icono { width: 38px; height: 38px; font-size: 1.1rem; }
+.navbar-principal.con-scroll .marca-nombre { font-size: 1.3rem; }
+
+.navbar-principal .nav-link {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  color: var(--texto);
+  padding: .5rem 1rem !important;
+  position: relative;
+}
+
+/* Subrayado animado en hover */
+.navbar-principal .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  bottom: .25rem;
+  width: 0;
+  height: 3px;
+  background: var(--naranja);
+  border-radius: 3px;
+  transition: width .3s ease;
+}
+.navbar-principal .nav-link:hover::after,
+.navbar-principal .nav-link.activo::after { width: calc(100% - 2rem); }
+
+.navbar-principal .nav-link:hover,
+.navbar-principal .nav-link.activo { color: var(--turquesa); }
+
+/* Botón hamburguesa */
+.navbar-toggler {
+  border: 0;
+  padding: .35rem .6rem;
+  color: var(--turquesa);
+  font-size: 1.5rem;
+}
+.navbar-toggler:focus { box-shadow: none; }
+
+/* ===== Menú móvil (implementación propia, sin el Collapse de Bootstrap) ==
+   Bootstrap anima "height" midiendo el alto con JS en cada apertura/cierre;
+   eso obliga al navegador a recalcular layout en cada frame y es lo que
+   causaba el tirón al cerrar en móviles/tablets. En su lugar animamos
+   "grid-template-rows" de 0fr a 1fr: el navegador solo ajusta el tamaño
+   de una pista de grid (mucho más barato) y no requiere medir píxeles.
+   ========================================================================= */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    /* Bootstrap pone align-items:center en .navbar-collapse; con eso el
+       grid-item no se comprime al alto de la fila (0), sino que queda
+       centrado y "flota" fuera de su caja. stretch es lo que necesita
+       la animación de grid-template-rows para funcionar. */
+    align-items: stretch;
+    transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1);
+  }
+  .navbar-collapse.menu-abierto { grid-template-rows: 1fr; }
+
+  .menu-panel {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .menu-panel > .navbar-nav {
+    background: #fff;
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+  }
+}
+
+/* En escritorio el wrapper no debe alterar el layout flex original del menú */
+@media (min-width: 992px) {
+  .menu-panel { display: contents; }
+}
+
+.navbar-principal { position: relative; }
+
+/* ----- Líneas divisorias entre enlaces (solo escritorio) ----- */
+@media (min-width: 992px) {
+  .navbar-nav > .nav-item { position: relative; }
+  .navbar-nav > .nav-item:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 22px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, transparent, rgba(1, 161, 163, .75), transparent);
+  }
+  .navbar-nav > .nav-item.ms-lg-3::before { display: none; }
+}
+
+/* ===== 5. HERO CON VIDEO ================================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* El carrusel/video cubre todo el hero sin deformarse */
+.hero-video,
+.hero-carrusel,
+.hero-carrusel .carousel-inner,
+.hero-carrusel .carousel-item {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-video { object-fit: cover; z-index: -2; }
+.hero-carrusel { z-index: -2; }
+.hero-carrusel .carousel-item { transition-duration: 1.4s; }
+
+.hero-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  animation: kenburns 7s ease-out forwards;
+}
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.09); }
+}
+
+/* Puntos indicadores del carrusel */
+.hero-indicadores {
+  position: absolute;
+  z-index: 2;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: .6rem;
+}
+.hero-indicadores button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .7);
+  background: transparent;
+  padding: 0;
+  transition: var(--transicion);
+}
+.hero-indicadores button.activo {
+  background: var(--naranja);
+  border-color: var(--naranja);
+  width: 28px;
+  border-radius: 50px;
+}
+
+/* Capa oscura semitransparente con tinte turquesa */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+              rgba(0, 30, 32, .78) 0%,
+              rgba(1, 92, 94, .60) 100%);
+  z-index: -1;
+}
+
+.hero-contenido { padding: 140px 0 100px; }
+
+.hero-etiqueta {
+  display: inline-block;
+  background: rgba(184, 233, 227, .18);
+  border: 1px solid rgba(184, 233, 227, .45);
+  color: var(--turquesa-claro);
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .85rem;
+  padding: .45rem 1.2rem;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-titulo {
+  color: #fff;
+  font-size: clamp(2.2rem, 6vw, 4.3rem);
+  font-weight: 900;
+  line-height: 1.12;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+}
+
+.hero-subtitulo {
+  color: rgba(255, 255, 255, .9);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 300;
+  max-width: 680px;
+  margin: 0 auto 2.4rem;
+}
+
+.hero-botones {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Flecha animada al pie del hero */
+.hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, .5);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  z-index: 3;
+  animation: flotar 2s ease-in-out infinite;
+}
+.hero-scroll:hover { background: var(--naranja); border-color: var(--naranja); color: #fff; }
+
+@keyframes flotar {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, 10px); }
+}
+
+
+/* ===== 6. SECCIONES GENÉRICAS =========================================== */
+.seccion { padding: 100px 0; }
+
+.fondo-suave {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--gris-bg);
+  background-image: radial-gradient(rgba(1, 161, 163, .12) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+/* El resplandor superior repite la MISMA curva que .ola-divisor (ver sección
+   16), así el degradado de la sección parece seguir el mismo oleaje con el
+   que termina la sección de arriba, en vez de un óvalo genérico centrado. */
+.fondo-suave::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 130px;
+  background: linear-gradient(0deg, #cdeee8 0%, #eaf7f5 100%);
+  /* La curva es la MISMA que usa .ola-divisor (cerrada hacia abajo, la
+     variante ya probada y libre de auto-intersecciones); se voltea con
+     scaleY para que quede pegada al techo de la sección en vez de crear
+     una "cinta" flotante con hueco, que es lo que pasaba al cerrar la
+     misma curva hacia arriba (los puntos de control se salen del
+     viewBox y el trazo se autointersecta). */
+  transform: scaleY(-1);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z' fill='white'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 767.98px) {
+  .fondo-suave::before { height: 80px; }
+}
+
+.etiqueta-seccion {
+  display: inline-block;
+  font-family: var(--fuente-titulo);
+  font-weight: 800;
+  font-size: .8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--naranja);
+  background: rgba(246, 94, 9, .08);
+  padding: .4rem 1.1rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+}
+
+.titulo-seccion {
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  margin-bottom: 1rem;
+  color: var(--texto);
+}
+
+.subtitulo-seccion {
+  color: var(--texto-suave);
+  max-width: 620px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+.parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }
+
+
+/* ===== 7. NOSOTROS ====================================================== */
+.marco-imagen {
+  position: relative;
+  border-radius: var(--radio-tag);
+  overflow: visible;
+}
+.marco-imagen img {
+  border-radius: var(--radio-tag);
+  box-shadow: var(--sombra);
+  width: 100%;
+  aspect-ratio: 4 / 3.2;
+  object-fit: cover;
+}
+/* Marco de líneas detrás de la imagen (antes era un cuadro sólido; un
+   contorno da profundidad sin sumar otra forma rellena a la sección). */
+.marco-imagen::before {
+  content: '';
+  position: absolute;
+  top: -20px; left: -20px;
+  width: 130px; height: 130px;
+  border: 3px solid var(--turquesa-claro);
+  border-radius: var(--radio-tag-inv);
+  z-index: -1;
+}
+.marco-imagen::after {
+  content: '';
+  position: absolute;
+  bottom: -16px; right: 40px;
+  width: 60px; height: 60px;
+  border: 3px solid var(--durazno);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.tarjeta-flotante {
+  position: absolute;
+  right: -10px;
+  bottom: -25px;
+  background: var(--naranja);
+  color: #fff;
+  padding: 1.1rem 1.5rem;
+  border-radius: 18px 6px 18px 6px;
+  box-shadow: 0 12px 30px rgba(246, 94, 9, .35);
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+.tarjeta-flotante .numero {
+  font-family: var(--fuente-titulo);
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.tarjeta-flotante .texto { font-size: .8rem; line-height: 1.3; }
+
+/* Lista de características */
+.lista-caracteristicas { list-style: none; padding: 0; margin: 2rem 0 0; }
+.lista-caracteristicas li {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.lista-caracteristicas h3 {
+  font-size: 1.05rem;
+  margin-bottom: .2rem;
+  color: var(--texto);
+}
+.lista-caracteristicas p {
+  font-size: .92rem;
+  color: var(--texto-suave);
+  margin: 0;
+}
+
+.icono-cuadro {
+  flex: 0 0 48px;
+  width: 48px; height: 48px;
+  background: var(--turquesa-claro);
+  color: var(--turquesa-osc);
+  border-radius: 14px 4px 14px 4px;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  box-shadow: 0 6px 14px rgba(1, 161, 163, .18);
+}
+
+/* Línea que conecta los íconos de la lista, como una mini-trayectoria */
+.lista-caracteristicas { position: relative; }
+.lista-caracteristicas::before {
+  content: '';
+  position: absolute;
+  left: 23px; top: 12px; bottom: 12px;
+  width: 2px;
+  background: repeating-linear-gradient(var(--turquesa-claro) 0 6px, transparent 6px 11px);
+}
+.lista-caracteristicas li { position: relative; z-index: 1; }
+
+
+/* ===== 8. FRANJA DE ESTADÍSTICAS ======================================== */
+.franja-stats {
+  position: relative;
+  background: linear-gradient(120deg, var(--turquesa-claro) 0%, #cdeee8 100%);
+  padding: 60px 0;
+}
+.franja-stats::before,
+.franja-stats::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--turquesa) 0 14px, transparent 14px 24px);
+  opacity: .3;
+}
+.franja-stats::before { top: 0; }
+.franja-stats::after  { bottom: 0; }
+@media (min-width: 992px) {
+  .franja-stats .col-lg-3 { position: relative; }
+  .franja-stats .col-lg-3::after {
+    content: '';
+    position: absolute;
+    right: -2px; top: 15%;
+    height: 70%;
+    width: 1px;
+    background: rgba(1, 161, 163, .25);
+  }
+  .franja-stats .row > div:last-child::after { display: none; }
+}
+.stat-numero {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--turquesa-osc);
+  line-height: 1;
+}
+.stat-texto {
+  font-size: .9rem;
+  color: var(--texto);
+  margin: .3rem 0 0;
+  font-weight: 500;
+}
+
+
+/* ===== 9. CARDS DE ESPECIALIDADES ======================================= */
+.card-especialidad {
+  position: relative;
+  border: 0;
+  border-radius: var(--radio-tag);
+  background: #fff;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  transition: var(--transicion);
+}
+.card-especialidad .card-body { padding: 2.2rem 1.9rem; }
+
+/* Franja de color superior: siempre visible como línea fina, se ensancha
+   al pasar el cursor en vez de aparecer de la nada */
+.card-especialidad::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, var(--naranja), var(--durazno));
+  transform: scaleX(.22);
+  transform-origin: left;
+  transition: transform .4s ease;
+}
+.card-especialidad:hover::before { transform: scaleX(1); }
+
+.card-especialidad:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--sombra-hover);
+}
+
+.icono-especialidad {
+  display: grid;
+  place-items: center;
+  width: 66px; height: 66px;
+  background: var(--turquesa-claro);
+  color: var(--turquesa-osc);
+  font-size: 1.6rem;
+  border-radius: 18px 6px 18px 6px;
+  margin-bottom: 1.3rem;
+  box-shadow: 0 8px 18px rgba(1, 161, 163, .16);
+  transition: var(--transicion);
+}
+.card-especialidad:hover .icono-especialidad {
+  background: var(--naranja);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.card-especialidad .card-title {
+  font-size: 1.25rem;
+  margin-bottom: .6rem;
+  color: var(--texto);
+}
+.card-especialidad .card-text {
+  color: var(--texto-suave);
+  font-size: .93rem;
+  margin-bottom: 1.2rem;
+}
+
+.enlace-card {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--naranja);
+}
+.enlace-card i { transition: transform .3s ease; }
+.enlace-card:hover { color: var(--naranja-oscuro); }
+.enlace-card:hover i { transform: translateX(6px); }
+
+
+/* ===== 9.1 GALERÍA (grid con espacio reservado 1:1) ===================== */
+.galeria-item {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radio-tag);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+}
+.galeria-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
+  transition: var(--transicion);
+}
+.galeria-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(1, 92, 94, .55);
+  color: #fff;
+  font-size: 1.4rem;
+  opacity: 0;
+  transition: var(--transicion);
+}
+.galeria-item:hover img { transform: scale(1.1); }
+.galeria-item:hover .galeria-overlay { opacity: 1; }
+
+
+/* ===== 10. BANDA CTA ==================================================== */
+.banda-cta {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, var(--turquesa) 0%, var(--turquesa-osc) 100%);
+  color: #fff;
+  padding: 70px 0;
+}
+.banda-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); }
+.banda-cta p  { color: rgba(255, 255, 255, .88); }
+
+
+/* ===== 11. FOOTER ======================================================= */
+.footer {
+  background: #06282a;             /* turquesa muy oscuro para contraste */
+  color: rgba(255, 255, 255, .78);
+  padding: 80px 0 0;
+}
+
+.marca-footer { display: inline-flex; }
+.marca-footer .marca-slogan { color: var(--turquesa-claro); text-transform: none; letter-spacing: .5px; font-weight: 600; }
+
+.footer-titulo {
+  display: inline-block;
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  padding-bottom: .6rem;
+}
+.footer-titulo::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: var(--naranja);
+  border-radius: 3px;
+}
+.footer-titulo::before {
+  content: '';
+  position: absolute;
+  right: -14px; bottom: -3px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--naranja);
+}
+
+.footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .7); }
+
+.footer-contacto { list-style: none; padding: 0; margin: 1.4rem 0; }
+.footer-contacto li {
+  font-size: .9rem;
+  margin-bottom: .7rem;
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+}
+.footer-contacto i { color: var(--naranja); margin-top: 5px; }
+.footer-contacto a { color: rgba(255, 255, 255, .78); }
+.footer-contacto a:hover { color: var(--naranja); }
+
+/* Redes sociales */
+.redes-sociales { display: flex; gap: .7rem; }
+.redes-sociales a {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .1);
+  color: #fff;
+  font-size: 1.05rem;
+}
+.redes-sociales a:hover {
+  background: var(--naranja);
+  transform: translateY(-4px);
+}
+
+/* Mapa */
+.mapa-contenedor {
+  border-radius: var(--radio-sm);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+  line-height: 0;                  /* elimina el hueco bajo el iframe */
+}
+
+/* Formulario del footer */
+.form-footer .form-label {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .85rem;
+  color: #fff;
+  margin-bottom: .3rem;
+}
+.form-footer .form-control {
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .16);
+  color: #fff;
+  border-radius: var(--radio-sm);
+  padding: .7rem 1rem;
+  font-size: .92rem;
+}
+.form-footer .form-control::placeholder { color: rgba(255, 255, 255, .4); }
+.form-footer .form-control:focus {
+  background: rgba(255, 255, 255, .12);
+  border-color: var(--turquesa-claro);
+  box-shadow: 0 0 0 .2rem rgba(184, 233, 227, .18);
+  color: #fff;
+}
+/* Estado de error (lo activa el JS) */
+.form-footer .form-control.error {
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 .2rem rgba(246, 94, 9, .2);
+}
+
+.form-aviso {
+  font-size: .85rem;
+  margin: .8rem 0 0;
+  min-height: 20px;
+}
+.form-aviso.exito { color: var(--turquesa-claro); }
+.form-aviso.error { color: var(--naranja); }
+
+/* Línea inferior */
+.footer-bottom {
+  margin-top: 60px;
+  padding: 22px 0;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
+  font-size: .85rem;
+}
+.footer-bottom a { color: rgba(255, 255, 255, .7); }
+.footer-bottom a:hover { color: var(--durazno); }
+
+
+/* ===== 12. BOTONES FLOTANTES =========================================== */
+.wsp-flotante {
+  position: fixed;
+  bottom: 25px; right: 25px;
+  width: 58px; height: 58px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.7rem;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, .45);
+  z-index: 1040;
+  animation: pulso 2.2s infinite;
+}
+.wsp-flotante:hover { color: #fff; transform: scale(1.08); }
+
+@keyframes pulso {
+  0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
+  70%  { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.btn-subir {
+  position: fixed;
+  bottom: 95px; right: 28px;
+  width: 46px; height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--turquesa);
+  color: #fff;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transicion);
+  z-index: 1040;
+}
+.btn-subir.visible { opacity: 1; visibility: visible; }
+.btn-subir:hover { background: var(--naranja); }
+
+
+/* ===== 13. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ====================== */
+.revelar {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.revelar.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Respeta a usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .revelar { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+  .wsp-flotante, .hero-scroll { animation: none; }
+  .hero-slide-img { animation: none; }
+}
+
+
+/* ===== 14. RESPONSIVE ================================================== */
+@media (max-width: 991.98px) {
+  .seccion { padding: 80px 0; }
+  .tarjeta-flotante { right: 10px; }
+}
+
+@media (max-width: 767.98px) {
+  .hero { min-height: 88vh; }
+  .hero-contenido { padding: 120px 0 90px; }
+  .hero-botones .btn { width: 100%; }      /* botones full-width en móvil */
+  .seccion { padding: 72px 0; }
+  .footer { padding-top: 60px; }
+  .footer-bottom { justify-content: center; text-align: center; }
+  .marco-imagen::before { display: none; }
+  .wsp-flotante { width: 52px; height: 52px; font-size: 1.5rem; }
+}
+
+/* ===== 15. OBJETOS DECORATIVOS DE FONDO ================================= */
+/* Manchas de color desenfocadas para dar profundidad a las secciones.
+   El contenedor que las use necesita position:relative + overflow:hidden. */
+.seccion-decorada { position: relative; overflow: hidden; isolation: isolate; }
+.seccion-decorada > .container { position: relative; z-index: 1; }
+
+.forma {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+.forma-turquesa { background: var(--turquesa); opacity: .16; }
+.forma-naranja  { background: var(--naranja);  opacity: .14; }
+.forma-durazno  { background: var(--durazno);  opacity: .30; }
+
+/* Manchas con degradado de dos tonos: más profundidad que un color plano */
+.forma-degradado-1 { background: linear-gradient(135deg, var(--turquesa), var(--naranja)); opacity: .13; }
+.forma-degradado-2 { background: linear-gradient(135deg, var(--naranja), var(--turquesa-osc)); opacity: .12; }
+
+/* Variante orgánica (blob), alternativa al círculo perfecto */
+.forma-blob { border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
+
+/* Rejilla de puntos sutil, útil como textura de fondo alternativa */
+.textura-puntos {
+  background-image: radial-gradient(rgba(1, 161, 163, .18) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .forma-flotante { animation: flotarForma 9s ease-in-out infinite; }
+}
+@keyframes flotarForma {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0, -25px); }
+}
+
+@media (max-width: 767.98px) {
+  .forma { filter: blur(50px); }
+}
+
+/* ----- Líneas curvas decorativas (SVG) ----------------------------------
+   Trazos sueltos en los colores de marca para romper la monotonía de las
+   manchas circulares. El SVG se posiciona igual que .forma. ----------------- */
+.linea-curva {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+}
+@media (max-width: 767.98px) {
+  .linea-curva { opacity: .35; }
+}
+
+/* ----- Micro-interacción: las formas responden al movimiento del cursor -- */
+.forma-parallax { transition: transform .25s ease-out; will-change: transform; }
+
+
+/* ----- Detalles "divertidos" de constructor visual (estilo Elementor) ----
+   Piezas pequeñas y variadas -insignias con icono, racimos de puntos,
+   marcas "+", anillos punteados- para que los fondos blancos no se sientan
+   vacíos ni repetitivos. Todas son decorativas: pointer-events:none y
+   aria-hidden en el HTML. --------------------------------------------------- */
+.acento-puntos {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(3, 7px);
+  grid-template-rows: repeat(3, 7px);
+  gap: 7px;
+  z-index: 0;
+  pointer-events: none;
+}
+.acento-puntos span { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.acento-puntos.turquesa { color: var(--turquesa); opacity: .4; }
+.acento-puntos.naranja  { color: var(--naranja);  opacity: .4; }
+.acento-puntos.blanco   { color: #fff; opacity: .5; }
+
+.acento-mas {
+  position: absolute;
+  font-family: var(--fuente-titulo);
+  font-weight: 900;
+  line-height: 1;
+  font-size: 2.4rem;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .45;
+}
+.acento-mas.turquesa { color: var(--turquesa-claro); }
+.acento-mas.naranja  { color: var(--durazno); }
+.acento-mas.blanco   { color: rgba(255, 255, 255, .35); }
+.acento-mas.chico    { font-size: 1.4rem; }
+
+.acento-anillo {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .3;
+}
+.acento-anillo.turquesa { border-color: var(--turquesa); }
+.acento-anillo.naranja  { border-color: var(--naranja); }
+.acento-anillo.blanco   { border-color: rgba(255, 255, 255, .45); }
+
+.acento-badge {
+  position: absolute;
+  width: 52px; height: 52px;
+  border-radius: 16px 6px 16px 6px;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  color: #fff;
+  box-shadow: var(--sombra-hover);
+  z-index: 2;
+  pointer-events: none;
+}
+.acento-badge.turquesa { background: linear-gradient(135deg, var(--turquesa), var(--turquesa-osc)); }
+.acento-badge.naranja  { background: linear-gradient(135deg, var(--naranja), var(--naranja-oscuro)); }
+.acento-badge.chico { width: 40px; height: 40px; font-size: .95rem; border-radius: 12px 4px 12px 4px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .acento-badge, .acento-anillo { animation: flotarForma 7s ease-in-out infinite; }
+}
+@media (max-width: 767.98px) {
+  .acento-puntos, .acento-mas, .acento-anillo { display: none; } /* limpio en móvil: se priorizan las formas y curvas */
+  .acento-badge { transform: scale(.8); }
+}
+
+/* Esquinas tipo "visor de cámara": enmarcan una foto desde afuera sin
+   tocar su overflow:hidden (se cuelgan del contenedor position-relative
+   que envuelve a la foto, no de la foto misma). */
+.marco-esquina {
+  position: absolute;
+  width: 30px; height: 30px;
+  border: 3px solid var(--naranja);
+  z-index: 2;
+  pointer-events: none;
+}
+.marco-esquina.turquesa { border-color: var(--turquesa); }
+.marco-esquina.arriba-izq { top: -10px; left: -10px; border-right: 0; border-bottom: 0; border-radius: 6px 0 0 0; }
+.marco-esquina.arriba-der { top: -10px; right: -10px; border-left: 0; border-bottom: 0; border-radius: 0 6px 0 0; }
+.marco-esquina.abajo-izq  { bottom: -10px; left: -10px; border-right: 0; border-top: 0; border-radius: 0 0 0 6px; }
+.marco-esquina.abajo-der  { bottom: -10px; right: -10px; border-left: 0; border-top: 0; border-radius: 0 0 6px 0; }
+@media (max-width: 767.98px) { .marco-esquina { display: none; } }
+
+/* Subrayado tipo garabato bajo una palabra clave dentro de un título */
+.garabato { position: relative; display: inline-block; white-space: nowrap; }
+.garabato svg {
+  position: absolute;
+  left: 2%; bottom: -.18em;
+  width: 96%; height: .28em;
+  overflow: visible;
+}
+
+
+/* ===== 16. OLA DIVISORA ENTRE SECCIONES ================================= */
+.ola-divisor {
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  line-height: 0;
+  z-index: 1;
+}
+.ola-divisor svg { width: 100%; height: 70px; display: block; }
+@media (max-width: 767.98px) {
+  .ola-divisor svg { height: 40px; }
+}
+
+
+/* ===== 17. BANNER DE PÁGINAS INTERIORES ================================= */
+.banner-pagina {
+  position: relative;
+  overflow: hidden;
+  padding: 175px 0 110px;
+  background: linear-gradient(125deg, var(--turquesa-osc) 0%, var(--turquesa) 55%, #018f91 100%);
+  color: #fff;
+  text-align: center;
+}
+.banner-pagina .forma-durazno { opacity: .22; }
+
+.breadcrumb-personalizado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto 1.4rem;
+  gap: .6rem;
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, .8);
+  padding: .5rem 1.2rem;
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 50px;
+}
+.breadcrumb-personalizado a { color: rgba(255, 255, 255, .8); }
+.breadcrumb-personalizado a:hover { color: #fff; }
+.breadcrumb-personalizado i { font-size: .75rem; color: var(--naranja); }
+.breadcrumb-personalizado span { color: var(--naranja); }
+.breadcrumb-personalizado i.fa-house { color: rgba(255, 255, 255, .8); font-size: .85rem; }
+
+.etiqueta-clara {
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .3);
+  color: #fff;
+}
+
+.banner-pagina h1 {
+  color: #fff;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  margin: .6rem 0 1rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, .2);
+}
+.banner-subtitulo {
+  color: rgba(255, 255, 255, .88);
+  max-width: 640px;
+  margin: 0 auto;
+  font-weight: 300;
+  font-size: 1.05rem;
+}
+
+
+/* ===== 18. EQUIPO ======================================================= */
+.tarjeta-equipo { text-align: center; }
+.tarjeta-equipo-foto {
+  position: relative;
+  border-radius: var(--radio-tag);
+  overflow: hidden;
+  aspect-ratio: 3 / 3.6;
+  box-shadow: var(--sombra);
+  margin-bottom: 1.2rem;
+}
+.tarjeta-equipo-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transition: var(--transicion);
+}
+.tarjeta-equipo:hover .tarjeta-equipo-foto img { transform: scale(1.06); }
+
+.tarjeta-equipo-foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(1, 92, 94, .75) 0%, transparent 45%);
+  opacity: 0;
+  transition: var(--transicion);
+}
+.tarjeta-equipo:hover .tarjeta-equipo-foto::after { opacity: 1; }
+
+.tarjeta-equipo-redes {
+  position: absolute;
+  left: 0; right: 0; bottom: -50px;
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  transition: var(--transicion);
+  opacity: 0;
+}
+.tarjeta-equipo:hover .tarjeta-equipo-redes { bottom: 18px; opacity: 1; }
+.tarjeta-equipo-redes a {
+  width: 38px; height: 38px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--turquesa-osc);
+  border-radius: 50%;
+  font-size: .95rem;
+}
+.tarjeta-equipo-redes a:hover { background: var(--naranja); color: #fff; }
+
+.tarjeta-equipo h3 { font-size: 1.15rem; margin-bottom: .2rem; }
+.tarjeta-equipo-rol {
+  display: inline-block;
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .5px;
+  color: var(--naranja);
+  background: rgba(246, 94, 9, .08);
+  padding: .25rem .9rem;
+  border-radius: 50px;
+}
+
+
+/* ===== 19. LÍNEA DE TIEMPO (HISTORIA) =================================== */
+.timeline { position: relative; max-width: 780px; margin: 0 auto; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 6px; bottom: 6px;
+  width: 3px;
+  background: linear-gradient(var(--turquesa-claro), var(--turquesa), var(--turquesa-claro));
+  border-radius: 3px;
+}
+.timeline-item { position: relative; padding-left: 68px; margin-bottom: 2.6rem; }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-punto {
+  position: absolute;
+  left: 8px; top: 2px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--naranja);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: .85rem;
+  font-family: var(--fuente-titulo);
+  font-weight: 800;
+  box-shadow: 0 0 0 6px #fff, 0 6px 16px rgba(246, 94, 9, .35);
+}
+.timeline-item h3 { font-size: 1.1rem; margin-bottom: .3rem; }
+.timeline-item p { color: var(--texto-suave); margin: 0; font-size: .95rem; }
+
+@media (max-width: 575.98px) {
+  .timeline::before { left: 18px; }
+  .timeline-item { padding-left: 54px; }
+  .timeline-punto { left: 2px; width: 30px; height: 30px; font-size: .75rem; }
+}
+
+
+/* ===== 20. MISIÓN / VISIÓN / VALORES ==================================== */
+.tarjeta-valor {
+  height: 100%;
+  padding: 2.4rem 2rem;
+  border-radius: var(--radio-tag);
+  background: #fff;
+  box-shadow: var(--sombra);
+  border-left: 4px solid var(--turquesa-claro);
+  transition: var(--transicion);
+}
+.tarjeta-valor:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--sombra-hover);
+  border-left-color: var(--naranja);
+}
+.tarjeta-valor-icono {
+  width: 64px; height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px 6px 18px 6px;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1.4rem;
+}
+.tarjeta-valor h3 { font-size: 1.25rem; margin-bottom: .7rem; }
+.tarjeta-valor p { color: var(--texto-suave); font-size: .93rem; margin: 0; }
+
+
+/* ===== 21. TRATAMIENTOS EN PROFUNDIDAD ================================== */
+.bloque-tratamiento {
+  padding: 90px 0;
+  border-bottom: 1px solid rgba(1, 161, 163, .08);
+}
+.bloque-tratamiento:nth-child(odd) {
+  background-color: var(--gris-bg);
+  background-image: radial-gradient(rgba(1, 161, 163, .10) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+.bloque-tratamiento:last-of-type { border-bottom: 0; }
+
+.bloque-tratamiento-numero {
+  font-family: var(--fuente-titulo);
+  font-weight: 900;
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--turquesa-claro);
+  margin-bottom: -1.2rem;
+}
+.bloque-tratamiento-foto {
+  position: relative;
+  border-radius: var(--radio-tag);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  aspect-ratio: 4 / 3.3;
+}
+.bloque-tratamiento-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.lista-incluye { list-style: none; padding: 0; margin: 1.5rem 0; }
+.lista-incluye li {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  margin-bottom: .7rem;
+  font-size: .95rem;
+  color: var(--texto);
+}
+.lista-incluye i { color: var(--turquesa); margin-top: 4px; }
+
+.tarjeta-tratamiento-compacta {
+  height: 100%;
+  padding: 2.4rem;
+  border-radius: var(--radio-tag);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .12);
+}
+.tarjeta-tratamiento-compacta::after {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .1);
+}
+.tarjeta-tratamiento-compacta .icono-especialidad { background: rgba(255, 255, 255, .18); color: #fff; }
+.tarjeta-tratamiento-compacta h3 { color: #fff; }
+.tarjeta-tratamiento-compacta p { color: rgba(255, 255, 255, .85); }
+.tarjeta-tratamiento-compacta .enlace-card { color: #fff; }
+.tarjeta-tratamiento-compacta .enlace-card:hover { color: var(--durazno); }
+.tarjeta-tratamiento-compacta.fondo-naranja { background: linear-gradient(135deg, var(--naranja), var(--naranja-oscuro)); }
+.tarjeta-tratamiento-compacta.fondo-turquesa { background: linear-gradient(135deg, var(--turquesa), var(--turquesa-osc)); }
+
+
+/* ===== 22. PROCESO / PASOS =============================================== */
+.proceso { position: relative; }
+.proceso-fila { position: relative; }
+.proceso-item { text-align: center; position: relative; z-index: 1; }
+.proceso-numero {
+  width: 70px; height: 70px;
+  margin: 0 auto 1.3rem;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--turquesa-claro);
+  color: var(--turquesa-osc);
+  display: grid;
+  place-items: center;
+  font-family: var(--fuente-titulo);
+  font-weight: 900;
+  font-size: 1.4rem;
+  position: relative;
+  z-index: 1;
+  transition: var(--transicion);
+}
+.proceso-item:hover .proceso-numero {
+  background: var(--naranja);
+  border-color: var(--naranja);
+  color: #fff;
+  transform: scale(1.08);
+}
+.proceso-item h3 { font-size: 1.05rem; margin-bottom: .5rem; }
+.proceso-item p { color: var(--texto-suave); font-size: .88rem; margin: 0; }
+
+.proceso-linea {
+  /* left+width (no "right"): un hijo directo de .row de Bootstrap ya trae
+     width:100% propio, y sumarle "right" sobre-restringe el cálculo del
+     ancho en un absolute (el navegador ignora "right" y se sale del viewport). */
+  position: absolute;
+  top: 35px;
+  left: 12%;
+  width: 76%;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--turquesa-claro) 0 10px, transparent 10px 18px);
+  z-index: 0;
+}
+@media (max-width: 767.98px) { .proceso-linea { display: none; } }
+
+
+/* ===== 23. GALERÍA CON FILTROS + LIGHTBOX =============================== */
+.filtros-galeria {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .7rem;
+}
+.filtro-btn {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .85rem;
+  padding: .55rem 1.4rem;
+  border-radius: 50px;
+  border: 2px solid var(--turquesa-claro);
+  background: #fff;
+  color: var(--texto);
+  transition: var(--transicion);
+}
+.filtro-btn:hover { border-color: var(--turquesa); color: var(--turquesa-osc); }
+.filtro-btn.activo {
+  background: var(--turquesa);
+  border-color: var(--turquesa);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(1, 161, 163, .3);
+}
+
+.item-galeria-grande {
+  display: none;               /* JS lo pone en flex/block según el filtro activo */
+  opacity: 0;
+  transform: scale(.94);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.item-galeria-grande.mostrar { display: block; }
+.item-galeria-grande.mostrar.aparecer { opacity: 1; transform: scale(1); }
+
+.galeria-item-lb {
+  cursor: zoom-in;
+}
+
+/* Modal-lightbox: reutiliza el modal de Bootstrap con estilo propio */
+#modalLightbox .modal-content {
+  background: transparent;
+  border: 0;
+}
+#modalLightbox .modal-body { padding: 0; position: relative; }
+#modalLightbox img {
+  width: 100%;
+  border-radius: var(--radio-sm);
+  max-height: 82vh;
+  object-fit: contain;
+  background: #000;
+}
+#modalLightbox .btn-close {
+  position: absolute;
+  top: -46px; right: 0;
+  background-color: #fff;
+  border-radius: 50%;
+  opacity: 1;
+  padding: .6rem;
+  z-index: 2;
+}
+#modalLightbox .lightbox-leyenda {
+  color: #fff;
+  text-align: center;
+  margin-top: 1rem;
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+}
+
+
+/* ===== 24. ACORDEÓN FAQ ================================================== */
+.faq-categoria-titulo {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin: 3.2rem 0 1.4rem;
+}
+.faq-categoria-titulo:first-of-type { margin-top: 0; }
+.faq-categoria-titulo i {
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--turquesa-claro);
+  color: var(--turquesa-osc);
+  border-radius: 14px;
+  font-size: 1.1rem;
+}
+.faq-categoria-titulo h2 { font-size: 1.35rem; margin: 0; }
+
+.acordeon-faq .accordion-item {
+  border: 0;
+  border-left: 3px solid transparent;
+  margin-bottom: 1rem;
+  border-radius: var(--radio-sm) !important;
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  transition: border-color .3s ease;
+}
+.acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
+  border-left-color: var(--naranja);
+}
+.acordeon-faq .accordion-button {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  color: var(--texto);
+  padding: 1.2rem 1.5rem;
+  background: #fff;
+}
+.acordeon-faq .accordion-button:not(.collapsed) {
+  color: var(--turquesa-osc);
+  background: var(--turquesa-claro);
+  box-shadow: none;
+}
+.acordeon-faq .accordion-button:focus { box-shadow: none; border-color: transparent; }
+.acordeon-faq .accordion-button::after {
+  filter: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23f65e09'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+}
+.acordeon-faq .accordion-body {
+  padding: 0 1.5rem 1.4rem;
+  color: var(--texto-suave);
+  font-size: .95rem;
+}
+
+.tarjeta-ayuda {
+  position: relative;
+  background: linear-gradient(120deg, var(--turquesa), var(--turquesa-osc));
+  color: #fff;
+  border-radius: var(--radio);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--sombra);
+}
+.tarjeta-ayuda h2 { color: #fff; }
+.tarjeta-ayuda p { color: rgba(255, 255, 255, .88); }
+.tarjeta-ayuda-icono {
+  display: inline-grid;
+  place-items: center;
+  width: 56px; height: 56px;
+  margin-bottom: 1.2rem;
+  border-radius: 16px 6px 16px 6px;
+  background: linear-gradient(135deg, var(--naranja), var(--naranja-oscuro));
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: var(--sombra-hover);
+}
+
+
+/* ===== 25. FALLBACK Y AJUSTES FINALES DE PÁGINAS INTERIORES ============= */
+@media (max-width: 767.98px) {
+  .banner-pagina { padding: 130px 0 80px; }
+  .bloque-tratamiento { padding: 60px 0; }
+  .bloque-tratamiento-numero { font-size: 3.5rem; }
+}
+
+
+/* ===== 26. COMPARADOR ANTES / DESPUÉS ====================================
+   Deslizador interactivo: dos copias de la misma foto, la de "antes" con
+   un filtro CSS que simula un tono opaco/amarillento y recortada con
+   clip-path según la posición del cursor / dedo / input range.
+   ========================================================================== */
+.comparador { max-width: 720px; margin: 0 auto; position: relative; }
+.comparador-marco {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radio-tag);
+  box-shadow: var(--sombra-hover);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  --pos: 50%;
+}
+.comparador-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+.comparador-despues { filter: saturate(1.05) contrast(1.03); }
+.comparador-antes-cont {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+.comparador-antes {
+  filter: saturate(.45) sepia(.4) brightness(.88) contrast(.95);
+}
+
+.comparador-linea {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--pos);
+  width: 3px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
+  pointer-events: none;
+}
+.comparador-manija {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  transform: translate(-50%, -50%);
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--turquesa-osc);
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
+  pointer-events: none;
+  transition: transform .15s ease;
+}
+.comparador-marco:hover .comparador-manija,
+.comparador-marco:active .comparador-manija { transform: translate(-50%, -50%) scale(1.08); }
+
+.comparador-tag {
+  position: absolute;
+  top: 16px;
+  font-family: var(--fuente-titulo);
+  font-weight: 800;
+  font-size: .72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: .35rem .8rem;
+  border-radius: 50px;
+  color: #fff;
+  pointer-events: none;
+  z-index: 1;
+}
+.comparador-tag-antes  { left: 16px; background: rgba(43, 58, 58, .55); backdrop-filter: blur(3px); }
+.comparador-tag-despues{ right: 16px; background: var(--naranja); }
+
+.comparador-rango {
+  width: 100%;
+  margin-top: 1.1rem;
+  accent-color: var(--naranja);
+  cursor: ew-resize;
+}
+/* Bootstrap re-dibuja el thumb con sus propios pseudo-elementos e ignora
+   accent-color; se sobreescribe directamente para que combine con la marca. */
+.comparador-rango::-webkit-slider-thumb { background-color: var(--naranja); }
+.comparador-rango::-webkit-slider-thumb:active { background-color: var(--naranja-oscuro); }
+.comparador-rango::-moz-range-thumb { background-color: var(--naranja); }
+.comparador-rango::-moz-range-thumb:active { background-color: var(--naranja-oscuro); }
+.comparador-rango::-webkit-slider-runnable-track { background-color: var(--turquesa-claro); }
+.comparador-rango::-moz-range-track { background-color: var(--turquesa-claro); }
+.comparador-rango:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(246, 94, 9, .3); }
+.comparador-rango:focus::-moz-range-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(246, 94, 9, .3); }
+.comparador-nota {
+  text-align: center;
+  font-size: .78rem;
+  color: var(--texto-suave);
+  margin-top: .6rem;
+  font-style: italic;
+}
+
+@media (max-width: 575.98px) {
+  .comparador-manija { width: 40px; height: 40px; }
+  .comparador-tag { font-size: .65rem; padding: .3rem .65rem; top: 12px; }
+}
+
+
+/* ===== 27. TELÉFONOS EN HORIZONTAL (GIRO A LANDSCAPE) ===================
+   Va al final del archivo a propósito: así estas reglas ganan por orden de
+   cascada sobre TODAS las anteriores (hero, banner-pagina, navbar, etc.)
+   cuando la altura real de la pantalla es muy baja. ========================= */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hero { min-height: 100vh; }
+  .hero-contenido { padding: 90px 0 50px; }
+  .hero-titulo { font-size: clamp(1.6rem, 5vw, 2.4rem); margin-bottom: .6rem; }
+  .hero-subtitulo { display: none; }
+  .hero-etiqueta { margin-bottom: .8rem; }
+  .hero-indicadores { bottom: 14px; }
+  .hero-scroll { display: none; }
+
+  .banner-pagina { padding: 100px 0 40px; min-height: 0; }
+  .banner-pagina h1 { font-size: clamp(1.3rem, 4vw, 1.9rem); margin: .4rem 0 0; }
+  .banner-pagina .etiqueta-seccion { margin-bottom: .5rem; }
+  .banner-pagina .banner-subtitulo { display: none; }
+  .breadcrumb-personalizado { margin-bottom: .6rem; }
+
+  .navbar-collapse { max-height: calc(100vh - 70px); overflow-y: auto; }
+
+  .seccion { padding: 40px 0; }
+  .franja-stats { padding: 30px 0; }
+  .timeline-item { margin-bottom: 1.6rem; }
+  .proceso-linea { display: none; }
+
+  .comparador-marco { aspect-ratio: 16 / 6; }
+}

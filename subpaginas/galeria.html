@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Galería | Smilers Dental Clinique</title>
+  <meta name="description" content="Recorre nuestras instalaciones, equipo de especialistas y tratamientos en la galería de Smilers Dental Clinique.">
+  <meta name="keywords" content="galería clínica dental, instalaciones, equipo odontológico, fotos consultorio">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2301a1a3'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='bold' fill='%23f65e09' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../estilos/estilos.css">
+</head>
+
+<body>
+
+  <!-- ============================================================ NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-principal fixed-top" id="navbarPrincipal">
+    <div class="container">
+      <a class="navbar-brand marca" href="../index.html">
+        <span class="marca-icono"><i class="fa-solid fa-tooth"></i></span>
+        <span class="marca-texto">
+          <span class="marca-nombre">Smilers</span>
+          <span class="marca-slogan">Dental Clinique</span>
+        </span>
+      </a>
+
+      <button class="navbar-toggler" type="button" aria-controls="menuPrincipal"
+              aria-expanded="false" aria-label="Abrir menú de navegación">
+        <span class="hamburguesa-icono"><i class="fa-solid fa-bars"></i></span>
+      </button>
+
+      <div class="navbar-collapse" id="menuPrincipal">
+        <div class="menu-panel">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link" href="../index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="tratamientos.html">Tratamientos</a></li>
+          <li class="nav-item"><a class="nav-link activo" href="galeria.html">Galería</a></li>
+          <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+          <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+            <a class="btn btn-naranja btn-sm-nav" href="contacto.html">
+              <i class="fa-solid fa-phone me-2"></i>Contáctanos
+            </a>
+          </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================ BANNER -->
+  <header class="banner-pagina">
+    <div class="forma forma-durazno forma-flotante" style="width:300px;height:300px;top:-70px;right:-60px;"></div>
+    <div class="forma forma-naranja forma-blob" style="width:220px;height:220px;bottom:-60px;left:10%;"></div>
+    <div class="acento-anillo blanco d-none d-lg-block" style="width:80px;height:80px;bottom:20%;right:10%;" aria-hidden="true"></div>
+    <div class="acento-puntos blanco d-none d-lg-grid" style="top:22%;left:8%;" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span class="acento-mas blanco d-none d-md-block" style="bottom:16%;left:22%;" aria-hidden="true">+</span>
+    <svg class="linea-curva d-none d-lg-block" viewBox="0 0 200 300" style="width:120px;height:200px;top:8%;right:22%;opacity:.3;" fill="none">
+      <path d="M100 0 C40 60, 160 120, 100 180 C40 240, 160 280, 100 300" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="1 10" stroke-linecap="round"/>
+    </svg>
+
+    <div class="container">
+      <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
+        <i class="fa-solid fa-house"></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"></i> <span>Galería</span>
+      </nav>
+      <span class="etiqueta-seccion etiqueta-clara">Conócenos por dentro</span>
+      <h1>Un vistazo a <span class="texto-naranja">Smilers</span></h1>
+      <p class="banner-subtitulo">
+        Instalaciones, equipo y tratamientos: así es la experiencia Smilers antes de que
+        agendes tu primera cita.
+      </p>
+    </div>
+
+    <div class="ola-divisor">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z" fill="#ffffff"/></svg>
+    </div>
+  </header>
+
+
+  <!-- ============================================================
+       GALERÍA CON FILTROS
+       ============================================================ -->
+  <section class="seccion fondo-suave seccion-decorada">
+    <div class="forma forma-turquesa forma-parallax" data-intensidad="10" style="width:280px;height:280px;top:-90px;left:-100px;"></div>
+    <div class="forma forma-naranja forma-blob" style="width:220px;height:220px;bottom:5%;right:-90px;"></div>
+    <div class="acento-puntos turquesa d-none d-lg-grid" style="top:10%;right:8%;" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span class="acento-mas naranja d-none d-lg-block" style="top:16%;left:6%;" aria-hidden="true">+</span>
+    <div class="acento-anillo turquesa d-none d-lg-block" style="width:70px;height:70px;bottom:8%;right:14%;" aria-hidden="true"></div>
+    <div class="container">
+
+      <div class="filtros-galeria mb-5 revelar">
+        <button type="button" class="filtro-btn activo" data-filtro="todos">Todos</button>
+        <button type="button" class="filtro-btn" data-filtro="instalaciones">Instalaciones</button>
+        <button type="button" class="filtro-btn" data-filtro="equipo">Equipo</button>
+        <button type="button" class="filtro-btn" data-filtro="tratamientos">Tratamientos</button>
+        <button type="button" class="filtro-btn" data-filtro="sonrisas">Sonrisas</button>
+      </div>
+
+      <div class="row g-3 g-md-4">
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="instalaciones">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/hero-1.jpg" data-lightbox-alt="Consultorio equipado con escáner intraoral y radiografía digital">
+            <img src="../imagenes/hero-1.jpg" width="600" height="600" alt="Consultorio equipado con escáner intraoral y radiografía digital" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="instalaciones">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/hero-2.jpg" data-lightbox-alt="Sillón dental moderno en las instalaciones de Smilers">
+            <img src="../imagenes/hero-2.jpg" width="600" height="600" alt="Sillón dental moderno en las instalaciones de Smilers" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="instalaciones">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/hero-3.jpg" data-lightbox-alt="Consultorio de lujo con vista exterior">
+            <img src="../imagenes/hero-3.jpg" width="600" height="600" alt="Consultorio de lujo con vista exterior" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="instalaciones">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/nosotros.jpg" data-lightbox-alt="Odontólogo explicando una radiografía digital a su paciente">
+            <img src="../imagenes/nosotros.jpg" width="600" height="600" alt="Odontólogo explicando una radiografía digital a su paciente" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="equipo">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/equipo-1.jpg" data-lightbox-alt="Dr. Mauricio Landa, director clínico e implantólogo">
+            <img src="../imagenes/equipo-1.jpg" width="600" height="600" alt="Dr. Mauricio Landa, director clínico e implantólogo" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="equipo">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/equipo-2.jpg" data-lightbox-alt="Dra. Camila Reyes, especialista en ortodoncia">
+            <img src="../imagenes/equipo-2.jpg" width="600" height="600" alt="Dra. Camila Reyes, especialista en ortodoncia" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="equipo">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/equipo-3.jpg" data-lightbox-alt="Dra. Fernanda Ortiz, especialista en estética dental">
+            <img src="../imagenes/equipo-3.jpg" width="600" height="600" alt="Dra. Fernanda Ortiz, especialista en estética dental" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="equipo">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/equipo-4.jpg" data-lightbox-alt="Dr. Kevin Tan, especialista en cirugía oral y periodoncia">
+            <img src="../imagenes/equipo-4.jpg" width="600" height="600" alt="Dr. Kevin Tan, especialista en cirugía oral y periodoncia" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="tratamientos">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/aligner.jpg" data-lightbox-alt="Alineador invisible de ortodoncia">
+            <img src="../imagenes/aligner.jpg" width="600" height="600" alt="Alineador invisible de ortodoncia" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="tratamientos">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/implantologia.jpg" data-lightbox-alt="Reconstrucción 3D para planificar un implante dental">
+            <img src="../imagenes/implantologia.jpg" width="600" height="600" alt="Reconstrucción 3D para planificar un implante dental" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="tratamientos">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/cirugia.jpg" data-lightbox-alt="Cirujano oral durante un procedimiento con protocolos de bioseguridad">
+            <img src="../imagenes/cirugia.jpg" width="600" height="600" alt="Cirujano oral durante un procedimiento con protocolos de bioseguridad" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="tratamientos">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/tecnologia.jpg" data-lightbox-alt="Equipo clínico revisando un diagnóstico digital">
+            <img src="../imagenes/tecnologia.jpg" width="600" height="600" alt="Equipo clínico revisando un diagnóstico digital" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3 item-galeria-grande mostrar aparecer revelar" data-categoria="sonrisas">
+          <a href="#" class="galeria-item galeria-item-lb" data-lightbox-src="../imagenes/sonrisa.jpg" data-lightbox-alt="Paciente satisfecho con su nueva sonrisa">
+            <img src="../imagenes/sonrisa.jpg" width="600" height="600" alt="Paciente satisfecho con su nueva sonrisa" loading="lazy">
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-5 revelar">
+        <a href="contacto.html" class="btn btn-turquesa">
+          Agenda tu visita <i class="fa-solid fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================ CTA -->
+  <section class="banda-cta">
+    <div class="forma forma-blob" style="width:260px;height:260px;top:-90px;right:10%;background:#fff;opacity:.08;"></div>
+    <svg class="linea-curva d-none d-md-block" viewBox="0 0 260 100" style="width:220px;height:90px;bottom:10px;left:4%;opacity:.35;" fill="none">
+      <path d="M0 50 C 60 0, 100 100, 160 50 S 240 0, 260 50" stroke="#fff" stroke-width="2" stroke-dasharray="1 10" stroke-linecap="round"/>
+    </svg>
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8 text-center text-lg-start">
+          <h2 class="mb-2">¿Te gustó lo que viste?</h2>
+          <p class="mb-0">Ven a conocer nuestras instalaciones en persona.</p>
+        </div>
+        <div class="col-lg-4 text-center text-lg-end">
+          <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" class="btn btn-blanco btn-lg">
+            <i class="fa-brands fa-whatsapp me-2"></i>Escríbenos ahora
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ola-divisor">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z" fill="#06282a"/></svg>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-4">
+          <a href="../index.html" class="marca marca-footer mb-3">
+            <span class="marca-icono"><i class="fa-solid fa-tooth"></i></span>
+            <span class="marca-texto">
+              <span class="marca-nombre">Smilers</span>
+              <span class="marca-slogan">Dental Clinique</span>
+            </span>
+          </a>
+          <p class="footer-texto">
+            Clínica dental de primer nivel. Tecnología, calidez y resultados que se notan
+            desde la primera visita.
+          </p>
+          <ul class="footer-contacto">
+            <li><i class="fa-solid fa-location-dot"></i> Matriz: General Camilo Destruge y Francisco Salazar, Quito, Ecuador</li>
+            <li><i class="fa-solid fa-location-dot"></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
+            <li><i class="fa-solid fa-phone"></i> <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+5932909990">2909-990</a></li>
+            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hola@smilersdental.com">hola@smilersdental.com</a></li>
+            <li><i class="fa-regular fa-clock"></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
+          </ul>
+          <div class="redes-sociales">
+            <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/smilersdentalclininque" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://youtube.com/channel/UCfPuO7M0ElXIB8-dTLP70vg?sub_confirmation=1" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <h3 class="footer-titulo">Ubícanos</h3>
+          <div class="mapa-contenedor">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7931033096556!2d-78.48951562090548!3d-0.20370809926387135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59beca7c779b7%3A0x70718cf4e28860a!2sSmilers%20Dental%20Clinique!5e0!3m2!1ses!2sec!4v1787633213334!5m2!1ses!2sec"
+              width="100%" height="260" style="border:0;"
+              allowfullscreen="" loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              title="Ubicación de Smilers Dental Clinique">
+            </iframe>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <h3 class="footer-titulo">Escríbenos</h3>
+          <p class="footer-texto small">Déjanos tu mensaje y te responderemos por WhatsApp.</p>
+          <form id="formWhatsapp" class="form-footer" novalidate>
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+            </div>
+            <div class="mb-3">
+              <label for="mensaje" class="form-label">Mensaje</label>
+              <textarea class="form-control" id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-naranja w-100">
+              <i class="fa-brands fa-whatsapp me-2"></i>Enviar por WhatsApp
+            </button>
+            <p class="form-aviso" id="formAviso" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="mb-0">© <span id="anioActual">2026</span> Smilers Dental Clinique. Todos los derechos reservados.</p>
+        <p class="mb-0"><a href="aviso-privacidad.html">Aviso de privacidad</a></p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================ LIGHTBOX -->
+  <div class="modal fade" id="modalLightbox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          <img src="" alt="">
+          <p class="lightbox-leyenda"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" class="wsp-flotante" aria-label="Chatear por WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+  <button class="btn-subir" id="btnSubir" aria-label="Volver arriba">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../scripts/script.js"></script>
+</body>
+</html>
