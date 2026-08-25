@@ -15,6 +15,7 @@
      12. Paralaje de formas decorativas
      13. FAQ: abrir pregunta enlazada por #hash
      14. Carrusel del hero: sincronizar puntos con el slide activo
+     15. Intro de video en banners de páginas interiores
    ========================================================================== */
 
 /* ===== 1. CONFIGURACIÓN GLOBAL ==========================================
@@ -368,5 +369,35 @@ document.addEventListener('DOMContentLoaded', function () {
     aplicarPreferenciaMovimiento();
     menosMovimiento.addEventListener('change', aplicarPreferenciaMovimiento);
   }
+
+
+  /* ===== 15. INTRO DE VIDEO EN BANNERS DE PÁGINAS INTERIORES ============
+     El video de marca (video-hero/Smilers Logo Sting.mp4) se reproduce una
+     sola vez sobre el banner. Al terminar se retira con un fade-out y deja
+     ver el banner de siempre debajo. Si el navegador bloquea el autoplay
+     o el video falla, se retira de inmediato para no tapar el contenido.
+     ======================================================================== */
+  document.querySelectorAll('[data-video-intro]').forEach(function (capa) {
+    const video = capa.querySelector('video');
+    if (!video) return;
+
+    function retirarIntro() {
+      capa.classList.add('oculto');
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      retirarIntro();
+      return;
+    }
+
+    video.playbackRate = 1.75;
+    video.addEventListener('ended', retirarIntro);
+    video.addEventListener('error', retirarIntro);
+
+    const intentoReproduccion = video.play();
+    if (intentoReproduccion && typeof intentoReproduccion.catch === 'function') {
+      intentoReproduccion.catch(retirarIntro);
+    }
+  });
 
 });

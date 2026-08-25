@@ -5,3 +5,8 @@ Thumbs.db
 
 .vercel
 .env*
+
+# Skills de Claude Code: se instalan globales, no van en el repo del cliente
+.agents/
+.claude/skills/
+skills-lock.json
