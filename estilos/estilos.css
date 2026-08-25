@@ -52,7 +52,7 @@
 /* ===== 2. BASE =========================================================== */
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 90px; } /* compensa navbar fija */
+html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: hidden; } /* compensa navbar fija */
 
 body {
   font-family: var(--fuente-cuerpo);
@@ -225,6 +225,16 @@ html { caret-color: var(--naranja); }
 }
 .navbar-principal.con-scroll .marca-icono { width: 38px; height: 38px; font-size: 1.1rem; }
 .navbar-principal.con-scroll .marca-nombre { font-size: 1.3rem; }
+
+/* En móvil el logo comparte fila solo con el botón de menú: hay espacio
+   de sobra, así que se agranda para que tenga más presencia. */
+@media (max-width: 767.98px) {
+  .marca-icono { width: 52px; height: 52px; font-size: 1.5rem; }
+  .marca-nombre { font-size: 1.75rem; }
+  .marca-slogan { font-size: .8rem; }
+  .navbar-principal.con-scroll .marca-icono { width: 42px; height: 42px; font-size: 1.2rem; }
+  .navbar-principal.con-scroll .marca-nombre { font-size: 1.45rem; }
+}
 
 .navbar-principal .nav-link {
   font-family: var(--fuente-titulo);
@@ -1213,6 +1223,12 @@ html { caret-color: var(--naranja); }
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+/* El banner móvil es mucho más angosto que el video (16:9 horizontal): con
+   "cover" se recortaban los costados del wordmark. "contain" deja verlo
+   completo, con el mismo degradado del banner rellenando los bordes. */
+@media (max-width: 767.98px) {
+  .banner-video-intro video { object-fit: contain; }
 }
 .banner-video-intro.oculto {
   opacity: 0;
