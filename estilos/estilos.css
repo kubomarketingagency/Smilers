@@ -1224,12 +1224,9 @@ html { caret-color: var(--naranja); }
   height: 100%;
   object-fit: cover;
 }
-/* El banner móvil es mucho más angosto que el video (16:9 horizontal): con
-   "cover" se recortaban los costados del wordmark. "contain" deja verlo
-   completo, con el mismo degradado del banner rellenando los bordes. */
-@media (max-width: 767.98px) {
-  .banner-video-intro video { object-fit: contain; }
-}
+/* En móvil se sirve un video aparte (smilers-logo-sting-movil.mp4) recortado
+   en vertical (4:5) para que coincida con el banner angosto: con el 16:9 de
+   escritorio y "contain" quedaban franjas del degradado arriba y abajo. */
 .banner-video-intro.oculto {
   opacity: 0;
   visibility: hidden;
