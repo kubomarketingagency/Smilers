@@ -393,6 +393,15 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
+    /* El <source media="..."> se evalua de forma inconsistente en algunos
+       navegadores in-app (WhatsApp, Instagram): a veces cargan el video de
+       escritorio (horizontal) en pantallas angostas, y "cover" lo recorta
+       de forma muy notoria. Se elige el archivo a mano, con el ancho real
+       de la ventana en este momento, para que no dependa de eso. */
+    const esMovil = window.innerWidth <= 767;
+    video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
+    video.load();
+
     /* Seguro: si "ended" no llega a disparar (autoplay bloqueado en
        silencio, video que no termina de cargar, etc.) el banner no debe
        quedar tapado para siempre. Duracion del clip / velocidad + margen. */
