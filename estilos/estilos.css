@@ -9,16 +9,27 @@
 /* ===== 1. VARIABLES GLOBALES ============================================ */
 :root {
   --naranja:        #f65e09;
-  --naranja-oscuro: #d94e04;
+  --naranja-oscuro: #cf4a04;
   --turquesa:       #01a1a3;
-  --turquesa-osc:   #018587;
+  --turquesa-osc:   #018486;
   --turquesa-claro: #b8e9e3;
   --durazno:        #f1c1a2;
 
   --blanco:  #ffffff;
   --gris-bg: #f7fbfb;
   --texto:   #2b3a3a;
-  --texto-suave: #63797a;
+  --texto-suave: #596c6d;   /* 4.66:1 incluso sobre los puntos de .fondo-suave */
+
+  /* Variantes de ACCION: cumplen WCAG AA (>=4.5:1) con texto blanco encima.
+     Usalas siempre que el color lleve texto pequeno encima (botones, badges,
+     chips, enlaces). Los tonos vivos de arriba son para superficie grande,
+     iconos y titulos display, donde basta 3:1. */
+  --naranja-accion:   #c04907;  /* 5.00:1 blanco · 4.55:1 sobre tinte naranja 8% */
+  --turquesa-accion:  #017476;  /* 5.58:1 blanco · 5.10:1 sobre tinte turquesa 8% */
+  --turquesa-profundo:#016e70;  /* 6.06:1 blanco · 4.56:1 sobre turquesa claro */
+
+  /* Anillo de foco de teclado */
+  --foco: 0 0 0 3px #fff, 0 0 0 6px var(--naranja);
 
   --fuente-titulo: 'Nunito', sans-serif;
   --fuente-cuerpo: 'Poppins', sans-serif;
@@ -62,12 +73,35 @@ a { text-decoration: none; transition: var(--transicion); }
 img { max-width: 100%; height: auto; }
 
 /* Utilidades de color de texto */
-.texto-turquesa { color: var(--turquesa); }
+.texto-turquesa { color: var(--turquesa-accion); }
 .texto-naranja  { color: var(--naranja); }
-.texto-durazno  { color: var(--durazno); }
+
+/* ---- Foco de teclado ----------------------------------------------------
+   El sitio no tenia ningun indicador de foco propio: quien navega con teclado
+   dependia del default del navegador, que Bootstrap pisa en varios controles.
+   :focus-visible solo se activa en teclado, no al hacer clic con el raton. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--foco);
+  border-radius: var(--radio-sm);
+}
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+[tabindex]:focus-visible,
+.accordion-button:focus-visible {
+  box-shadow: var(--foco);
+  outline: none;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible { box-shadow: var(--foco); outline: none; }
+
+/* Cursor de texto en la paleta de marca */
+html { caret-color: var(--naranja); }
 
 /* Selección de texto */
-::selection { background: var(--naranja); color: #fff; }
+::selection { background: var(--naranja-accion); color: #fff; }
 
 /* Barra de scroll personalizada (navegadores webkit) */
 ::-webkit-scrollbar { width: 10px; }
@@ -87,7 +121,7 @@ img { max-width: 100%; height: auto; }
 
 /* Botón naranja (CTA principal) */
 .btn-naranja {
-  background: var(--naranja);
+  background: var(--naranja-accion);
   color: #fff;
   box-shadow: 0 8px 20px rgba(246, 94, 9, .35);
 }
@@ -101,7 +135,7 @@ img { max-width: 100%; height: auto; }
 
 /* Botón turquesa */
 .btn-turquesa {
-  background: var(--turquesa);
+  background: var(--turquesa-accion);
   color: #fff;
   box-shadow: 0 8px 20px rgba(1, 161, 163, .30);
 }
@@ -114,11 +148,11 @@ img { max-width: 100%; height: auto; }
 /* Botón blanco (sobre fondos de color) */
 .btn-blanco {
   background: #fff;
-  color: var(--turquesa);
+  color: var(--turquesa-accion);
 }
 .btn-blanco:hover {
   background: var(--turquesa-claro);
-  color: var(--turquesa-osc);
+  color: var(--turquesa-profundo);
   transform: translateY(-3px);
 }
 
@@ -130,7 +164,7 @@ img { max-width: 100%; height: auto; }
 }
 .btn-fantasma:hover {
   background: #fff;
-  color: var(--turquesa);
+  color: var(--turquesa-accion);
   border-color: #fff;
 }
 
@@ -165,7 +199,7 @@ img { max-width: 100%; height: auto; }
   height: 46px;
   display: grid;
   place-items: center;
-  background: var(--turquesa);
+  background: var(--turquesa-accion);
   color: #fff;
   border-radius: 14px 4px 14px 4px;
   font-size: 1.35rem;
@@ -183,7 +217,7 @@ img { max-width: 100%; height: auto; }
 .marca-slogan {
   font-family: var(--fuente-titulo);
   font-weight: 700;
-  font-size: .68rem;
+  font-size: .74rem;   /* 11.8px — antes .68rem = 10.9px, bajo el suelo legible */
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-top: 2px;
@@ -198,6 +232,10 @@ img { max-width: 100%; height: auto; }
   color: var(--texto);
   padding: .5rem 1rem !important;
   position: relative;
+  /* medía 43px de alto: 1px por debajo del objetivo tactil */
+  display: flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 /* Subrayado animado en hover */
@@ -206,26 +244,35 @@ img { max-width: 100%; height: auto; }
   position: absolute;
   left: 1rem;
   bottom: .25rem;
-  width: 0;
+  width: calc(100% - 2rem);
   height: 3px;
   background: var(--naranja);
   border-radius: 3px;
-  transition: width .3s ease;
+  /* scaleX en vez de animar width: el ancho recalcula layout en cada frame */
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .3s ease;
 }
 .navbar-principal .nav-link:hover::after,
-.navbar-principal .nav-link.activo::after { width: calc(100% - 2rem); }
+.navbar-principal .nav-link.activo::after { transform: scaleX(1); }
 
 .navbar-principal .nav-link:hover,
-.navbar-principal .nav-link.activo { color: var(--turquesa); }
+.navbar-principal .nav-link.activo { color: var(--turquesa-accion); }
 
 /* Botón hamburguesa */
 .navbar-toggler {
   border: 0;
-  padding: .35rem .6rem;
-  color: var(--turquesa);
+  /* 44x44: es el unico acceso al menu en movil y medía 40x36 */
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--turquesa-accion);
   font-size: 1.5rem;
 }
 .navbar-toggler:focus { box-shadow: none; }
+.navbar-toggler:focus-visible { box-shadow: var(--foco); }
 
 /* ===== Menú móvil (implementación propia, sin el Collapse de Bootstrap) ==
    Bootstrap anima "height" midiendo el alto con JS en cada apertura/cierre;
@@ -287,6 +334,10 @@ img { max-width: 100%; height: auto; }
 /* ===== 5. HERO CON VIDEO ================================================= */
 .hero {
   position: relative;
+  /* Crea contexto de apilamiento propio. Sin esto, el carrusel (z-index:-2) y
+     el overlay (z-index:-1) se pintan DETRAS del fondo blanco del body y el
+     hero queda como texto blanco sobre blanco. */
+  isolation: isolate;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -327,18 +378,30 @@ img { max-width: 100%; height: auto; }
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: .6rem;
+  gap: 0;
 }
+/* El boton es el area tactil (44x44); el punto visible es el ::before.
+   Antes el boton medía 10x10, imposible de acertar con el pulgar. */
 .hero-indicadores button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.hero-indicadores button::before {
+  content: '';
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, .7);
+  border: 2px solid rgba(255, 255, 255, .75);
   background: transparent;
-  padding: 0;
   transition: var(--transicion);
 }
-.hero-indicadores button.activo {
+.hero-indicadores button.activo::before {
   background: var(--naranja);
   border-color: var(--naranja);
   width: 28px;
@@ -349,9 +412,13 @@ img { max-width: 100%; height: auto; }
 .hero-overlay {
   position: absolute;
   inset: 0;
+  /* Las 3 fotos del hero son salas de clinica: casi blancas. Con el velo
+     anterior el subtitulo caia a 3.9-4.4:1 sobre las zonas mas claras.
+     Medido pixel a pixel sobre los tres slides, este velo deja el peor caso
+     en 4.67:1 conservando la degradacion. */
   background: linear-gradient(120deg,
-              rgba(0, 30, 32, .78) 0%,
-              rgba(1, 92, 94, .60) 100%);
+              rgba(0, 26, 28, .82) 0%,
+              rgba(1, 74, 76, .72) 100%);
   z-index: -1;
 }
 
@@ -457,19 +524,6 @@ img { max-width: 100%; height: auto; }
   .fondo-suave::before { height: 80px; }
 }
 
-.etiqueta-seccion {
-  display: inline-block;
-  font-family: var(--fuente-titulo);
-  font-weight: 800;
-  font-size: .8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--naranja);
-  background: rgba(246, 94, 9, .08);
-  padding: .4rem 1.1rem;
-  border-radius: 50px;
-  margin-bottom: 1rem;
-}
 
 .titulo-seccion {
   font-size: clamp(1.9rem, 4vw, 2.9rem);
@@ -490,6 +544,8 @@ img { max-width: 100%; height: auto; }
 /* ===== 7. NOSOTROS ====================================================== */
 .marco-imagen {
   position: relative;
+  /* Contiene los marcos decorativos ::before/::after (z-index:-1) */
+  isolation: isolate;
   border-radius: var(--radio-tag);
   overflow: visible;
 }
@@ -525,7 +581,7 @@ img { max-width: 100%; height: auto; }
   position: absolute;
   right: -10px;
   bottom: -25px;
-  background: var(--naranja);
+  background: var(--naranja-accion);
   color: #fff;
   padding: 1.1rem 1.5rem;
   border-radius: 18px 6px 18px 6px;
@@ -564,7 +620,7 @@ img { max-width: 100%; height: auto; }
   flex: 0 0 48px;
   width: 48px; height: 48px;
   background: var(--turquesa-claro);
-  color: var(--turquesa-osc);
+  color: var(--turquesa-profundo);
   border-radius: 14px 4px 14px 4px;
   display: grid;
   place-items: center;
@@ -664,7 +720,7 @@ img { max-width: 100%; height: auto; }
   place-items: center;
   width: 66px; height: 66px;
   background: var(--turquesa-claro);
-  color: var(--turquesa-osc);
+  color: var(--turquesa-profundo);
   font-size: 1.6rem;
   border-radius: 18px 6px 18px 6px;
   margin-bottom: 1.3rem;
@@ -693,6 +749,11 @@ img { max-width: 100%; height: auto; }
   font-weight: 700;
   font-size: .9rem;
   color: var(--naranja);
+  /* Area tactil: el texto medía 20px de alto */
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
 }
 .enlace-card i { transition: transform .3s ease; }
 .enlace-card:hover { color: var(--naranja-oscuro); }
@@ -734,7 +795,7 @@ img { max-width: 100%; height: auto; }
 .banda-cta {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(115deg, var(--turquesa) 0%, var(--turquesa-osc) 100%);
+  background: linear-gradient(115deg, var(--turquesa-accion) 0%, var(--turquesa-profundo) 100%);
   color: #fff;
   padding: 70px 0;
 }
@@ -743,6 +804,15 @@ img { max-width: 100%; height: auto; }
 
 
 /* ===== 11. FOOTER ======================================================= */
+/* Sobre el footer oscuro, una sombra de color al 35% no lee como profundidad
+   sino como halo de neon. La profundidad sobre fondo oscuro es una sombra
+   neutra (o ninguna): la luz no tine la sombra del color del objeto. */
+.footer .btn,
+.footer .marca-icono,
+.footer [class*="icono"] {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+}
+
 .footer {
   background: #06282a;             /* turquesa muy oscuro para contraste */
   color: rgba(255, 255, 255, .78);
@@ -794,7 +864,7 @@ img { max-width: 100%; height: auto; }
 /* Redes sociales */
 .redes-sociales { display: flex; gap: .7rem; }
 .redes-sociales a {
-  width: 42px; height: 42px;
+  width: 44px; height: 44px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -896,7 +966,7 @@ img { max-width: 100%; height: auto; }
   width: 46px; height: 46px;
   border: 0;
   border-radius: 50%;
-  background: var(--turquesa);
+  background: var(--turquesa-accion);
   color: #fff;
   opacity: 0;
   visibility: hidden;
@@ -1117,11 +1187,11 @@ img { max-width: 100%; height: auto; }
   position: relative;
   overflow: hidden;
   padding: 175px 0 110px;
-  background: linear-gradient(125deg, var(--turquesa-osc) 0%, var(--turquesa) 55%, #018f91 100%);
+  background: linear-gradient(125deg, var(--turquesa-profundo) 0%, var(--turquesa-accion) 55%, #017c7e 100%);
   color: #fff;
   text-align: center;
 }
-.banner-pagina .forma-durazno { opacity: .22; }
+.banner-pagina .forma-durazno { opacity: .14; }
 
 .breadcrumb-personalizado {
   display: flex;
@@ -1139,17 +1209,18 @@ img { max-width: 100%; height: auto; }
   border: 1px solid rgba(255, 255, 255, .2);
   border-radius: 50px;
 }
-.breadcrumb-personalizado a { color: rgba(255, 255, 255, .8); }
-.breadcrumb-personalizado a:hover { color: #fff; }
-.breadcrumb-personalizado i { font-size: .75rem; color: var(--naranja); }
-.breadcrumb-personalizado span { color: var(--naranja); }
+/* Sobre el gradiente del banner ningun acento calido llega a 4.5:1 con texto
+   pequeno: el breadcrumb se diferencia por peso, no por color. */
+.breadcrumb-personalizado a { color: rgba(255, 255, 255, .92); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: rgba(255, 255, 255, .4); }
+.breadcrumb-personalizado a:hover { color: #fff; text-decoration-color: #fff; }
+.breadcrumb-personalizado i { font-size: .75rem; color: rgba(255, 255, 255, .78); }
+.breadcrumb-personalizado span { color: #fff; font-weight: 700; }
 .breadcrumb-personalizado i.fa-house { color: rgba(255, 255, 255, .8); font-size: .85rem; }
 
-.etiqueta-clara {
-  background: rgba(255, 255, 255, .14);
-  border: 1px solid rgba(255, 255, 255, .3);
-  color: #fff;
-}
+
+/* Sobre el banner oscuro ningun naranja es legible: el tomate se queda en
+   1.6:1. El acento pasa al durazno de la paleta (3.08-3.72:1). */
+.banner-pagina .texto-naranja { color: var(--durazno); }
 
 .banner-pagina h1 {
   color: #fff;
@@ -1248,7 +1319,7 @@ img { max-width: 100%; height: auto; }
   left: 8px; top: 2px;
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: var(--naranja);
+  background: var(--naranja-accion);
   color: #fff;
   display: grid;
   place-items: center;
@@ -1274,13 +1345,11 @@ img { max-width: 100%; height: auto; }
   border-radius: var(--radio-tag);
   background: #fff;
   box-shadow: var(--sombra);
-  border-left: 4px solid var(--turquesa-claro);
   transition: var(--transicion);
 }
 .tarjeta-valor:hover {
   transform: translateY(-8px);
   box-shadow: var(--sombra-hover);
-  border-left-color: var(--naranja);
 }
 .tarjeta-valor-icono {
   width: 64px; height: 64px;
@@ -1356,9 +1425,9 @@ img { max-width: 100%; height: auto; }
 .tarjeta-tratamiento-compacta h3 { color: #fff; }
 .tarjeta-tratamiento-compacta p { color: rgba(255, 255, 255, .85); }
 .tarjeta-tratamiento-compacta .enlace-card { color: #fff; }
-.tarjeta-tratamiento-compacta .enlace-card:hover { color: var(--durazno); }
-.tarjeta-tratamiento-compacta.fondo-naranja { background: linear-gradient(135deg, var(--naranja), var(--naranja-oscuro)); }
-.tarjeta-tratamiento-compacta.fondo-turquesa { background: linear-gradient(135deg, var(--turquesa), var(--turquesa-osc)); }
+.tarjeta-tratamiento-compacta .enlace-card:hover { color: #fff; }
+.tarjeta-tratamiento-compacta.fondo-naranja { background: linear-gradient(135deg, var(--naranja-accion), var(--naranja-oscuro)); }
+.tarjeta-tratamiento-compacta.fondo-turquesa { background: linear-gradient(135deg, var(--turquesa-accion), var(--turquesa-profundo)); }
 
 
 /* ===== 22. PROCESO / PASOS =============================================== */
@@ -1423,10 +1492,10 @@ img { max-width: 100%; height: auto; }
   color: var(--texto);
   transition: var(--transicion);
 }
-.filtro-btn:hover { border-color: var(--turquesa); color: var(--turquesa-osc); }
+.filtro-btn:hover { border-color: var(--turquesa-accion); color: var(--turquesa-accion); }
 .filtro-btn.activo {
-  background: var(--turquesa);
-  border-color: var(--turquesa);
+  background: var(--turquesa-accion);
+  border-color: var(--turquesa-accion);
   color: #fff;
   box-shadow: 0 8px 20px rgba(1, 161, 163, .3);
 }
@@ -1488,7 +1557,7 @@ img { max-width: 100%; height: auto; }
   display: grid;
   place-items: center;
   background: var(--turquesa-claro);
-  color: var(--turquesa-osc);
+  color: var(--turquesa-profundo);
   border-radius: 14px;
   font-size: 1.1rem;
 }
@@ -1514,7 +1583,7 @@ img { max-width: 100%; height: auto; }
   background: #fff;
 }
 .acordeon-faq .accordion-button:not(.collapsed) {
-  color: var(--turquesa-osc);
+  color: var(--turquesa-profundo);
   background: var(--turquesa-claro);
   box-shadow: none;
 }
@@ -1531,7 +1600,7 @@ img { max-width: 100%; height: auto; }
 
 .tarjeta-ayuda {
   position: relative;
-  background: linear-gradient(120deg, var(--turquesa), var(--turquesa-osc));
+  background: linear-gradient(120deg, var(--turquesa-accion), var(--turquesa-profundo));
   color: #fff;
   border-radius: var(--radio);
   padding: 3rem 2rem;
@@ -1546,7 +1615,7 @@ img { max-width: 100%; height: auto; }
   width: 56px; height: 56px;
   margin-bottom: 1.2rem;
   border-radius: 16px 6px 16px 6px;
-  background: linear-gradient(135deg, var(--naranja), var(--naranja-oscuro));
+  background: linear-gradient(135deg, var(--naranja-accion), var(--naranja-oscuro));
   color: #fff;
   font-size: 1.6rem;
   box-shadow: var(--sombra-hover);
@@ -1641,8 +1710,8 @@ img { max-width: 100%; height: auto; }
   pointer-events: none;
   z-index: 1;
 }
-.comparador-tag-antes  { left: 16px; background: rgba(43, 58, 58, .55); backdrop-filter: blur(3px); }
-.comparador-tag-despues{ right: 16px; background: var(--naranja); }
+.comparador-tag-antes  { left: 16px; background: rgba(43, 58, 58, .78); backdrop-filter: blur(3px); }
+.comparador-tag-despues{ right: 16px; background: var(--naranja-accion); }
 
 .comparador-rango {
   width: 100%;
@@ -1670,7 +1739,7 @@ img { max-width: 100%; height: auto; }
 
 @media (max-width: 575.98px) {
   .comparador-manija { width: 40px; height: 40px; }
-  .comparador-tag { font-size: .65rem; padding: .3rem .65rem; top: 12px; }
+  .comparador-tag { font-size: .74rem; padding: .3rem .65rem; top: 12px; }
 }
 
 

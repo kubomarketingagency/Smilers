@@ -348,6 +348,25 @@ document.addEventListener('DOMContentLoaded', function () {
         punto.classList.toggle('activo', indice === evento.to);
       });
     });
+
+    /* WCAG 2.2.2 (Pausar, detener, ocultar): el carrusel se auto-avanza cada
+       5,5 s. Quien ha pedido menos movimiento en su sistema no debe recibir
+       contenido que cambia solo; el carrusel se detiene en el primer slide y
+       los puntos siguen funcionando para navegarlo a mano. */
+    var menosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function aplicarPreferenciaMovimiento() {
+      var instancia = bootstrap.Carousel.getInstance(heroCarrusel)
+                   || new bootstrap.Carousel(heroCarrusel);
+      if (menosMovimiento.matches) {
+        instancia.pause();
+      } else {
+        instancia.cycle();
+      }
+    }
+
+    aplicarPreferenciaMovimiento();
+    menosMovimiento.addEventListener('change', aplicarPreferenciaMovimiento);
   }
 
 });
