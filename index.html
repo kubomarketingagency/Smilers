@@ -12,11 +12,8 @@
   <!-- ===== FAVICON (SVG generado con los colores de marca; sustitúyelo cuando tengas el archivo oficial) ===== -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2301a1a3'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='bold' fill='%23f65e09' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 
-  <!-- ===== BOOTSTRAP 5 (CDN) ===== -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- ===== FONT AWESOME (iconos) ===== -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- ===== BOOTSTRAP 5 (auto-hospedado en vendor/bootstrap/, ver README del proyecto) ===== -->
+  <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
 
   <!-- ===== GOOGLE FONTS: Nunito (títulos) + Poppins (cuerpo) ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,6 +22,9 @@
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
   <link rel="stylesheet" href="estilos/estilos.css">
+
+  <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
+  <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
 </head>
 
 <body>
@@ -39,7 +39,7 @@
 
       <!-- Logo (marca tipográfica con los colores de Smilers; sustituye por tu logotipo oficial en imagenes/logo.png si lo prefieres) -->
       <a class="navbar-brand marca" href="index.html">
-        <span class="marca-icono"><i class="fa-solid fa-tooth"></i></span>
+        <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-tooth"></use></svg></i></span>
         <span class="marca-texto">
           <span class="marca-nombre">Smilers</span>
           <span class="marca-slogan">Dental Clinique</span>
@@ -49,7 +49,7 @@
       <!-- Botón hamburguesa (móvil) -->
       <button class="navbar-toggler" type="button" aria-controls="menuPrincipal"
               aria-expanded="false" aria-label="Abrir menú de navegación">
-        <span class="hamburguesa-icono"><i class="fa-solid fa-bars"></i></span>
+        <span class="hamburguesa-icono"><i class="fa-solid fa-bars"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-bars"></use></svg></i></span>
       </button>
 
       <!-- Enlaces del menú -->
@@ -74,7 +74,7 @@
           <!-- CTA destacado -->
           <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
             <a class="btn btn-naranja btn-sm-nav" href="#contacto">
-              <i class="fa-solid fa-phone me-2"></i>Contáctanos
+              <i class="fa-solid fa-phone me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-phone"></use></svg></i>Contáctanos
             </a>
           </li>
         </ul>
@@ -101,15 +101,18 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <img src="imagenes/hero-1.webp" class="hero-slide-img" width="1920" height="1284"
-               alt="Consultorio de Smilers Dental Clinique equipado con tecnología digital">
+               alt="Consultorio de Smilers Dental Clinique equipado con tecnología digital"
+               fetchpriority="high" decoding="async">
         </div>
         <div class="carousel-item">
           <img src="imagenes/hero-2.webp" class="hero-slide-img" width="1920" height="1280"
-               alt="Sillón dental moderno en las instalaciones de Smilers Dental Clinique">
+               alt="Sillón dental moderno en las instalaciones de Smilers Dental Clinique"
+               fetchpriority="low">
         </div>
         <div class="carousel-item">
           <img src="imagenes/hero-3.webp" class="hero-slide-img" width="1920" height="1280"
-               alt="Consultorio de lujo con vista exterior en Smilers Dental Clinique">
+               alt="Consultorio de lujo con vista exterior en Smilers Dental Clinique"
+               fetchpriority="low">
         </div>
       </div>
     </div>
@@ -138,7 +141,7 @@
         <div class="col-lg-9">
 
           <span class="hero-etiqueta">
-            <i class="fa-solid fa-tooth me-2"></i>Odontología de Primer Nivel
+            <i class="fa-solid fa-tooth me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-tooth"></use></svg></i>Odontología de Primer Nivel
           </span>
 
           <h1 class="hero-titulo">
@@ -152,10 +155,10 @@
 
           <div class="hero-botones">
             <a href="#contacto" class="btn btn-naranja btn-lg">
-              <i class="fa-regular fa-calendar-check me-2"></i>Agenda tu cita
+              <i class="fa-regular fa-calendar-check me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#regular-calendar-check"></use></svg></i>Agenda tu cita
             </a>
             <a href="#especialidades" class="btn btn-fantasma btn-lg">
-              Ver especialidades <i class="fa-solid fa-arrow-right ms-2"></i>
+              Ver especialidades <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right"></use></svg></i>
             </a>
           </div>
 
@@ -165,7 +168,7 @@
 
     <!-- Indicador de scroll animado -->
     <a href="#nosotros" class="hero-scroll" aria-label="Bajar a la siguiente sección">
-      <i class="fa-solid fa-chevron-down"></i>
+      <i class="fa-solid fa-chevron-down"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-chevron-down"></use></svg></i>
     </a>
 
     <div class="ola-divisor">
@@ -214,21 +217,21 @@
           <!-- Lista de características de las instalaciones -->
           <ul class="lista-caracteristicas">
             <li>
-              <span class="icono-cuadro"><i class="fa-solid fa-microchip"></i></span>
+              <span class="icono-cuadro"><i class="fa-solid fa-microchip"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-microchip"></use></svg></i></span>
               <div>
                 <h3>Alta tecnología</h3>
                 <p>Escáner intraoral 3D, radiografía digital y diseño de sonrisa asistido por software.</p>
               </div>
             </li>
             <li>
-              <span class="icono-cuadro"><i class="fa-solid fa-couch"></i></span>
+              <span class="icono-cuadro"><i class="fa-solid fa-couch"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-couch"></use></svg></i></span>
               <div>
                 <h3>Instalaciones de lujo</h3>
                 <p>Consultorios amplios, sala de espera premium y protocolos de bioseguridad certificados.</p>
               </div>
             </li>
             <li>
-              <span class="icono-cuadro"><i class="fa-solid fa-user-doctor"></i></span>
+              <span class="icono-cuadro"><i class="fa-solid fa-user-doctor"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-user-doctor"></use></svg></i></span>
               <div>
                 <h3>Equipo especializado</h3>
                 <p>Odontólogos con posgrado en cada área, trabajando de forma interdisciplinaria.</p>
@@ -237,7 +240,7 @@
           </ul>
 
           <a href="subpaginas/nosotros.html" class="btn btn-turquesa mt-3">
-            Conoce más sobre nosotros <i class="fa-solid fa-arrow-right ms-2"></i>
+            Conoce más sobre nosotros <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right"></use></svg></i>
           </a>
         </div>
 
@@ -299,14 +302,14 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-wand-magic-sparkles"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-wand-magic-sparkles"></use></svg></i></span>
               <h3 class="card-title">Estética Dental</h3>
               <p class="card-text">
                 Carillas, blanqueamiento y diseño digital de sonrisa para resultados
                 naturales y armónicos.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -316,13 +319,13 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-teeth-open"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-teeth-open"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-teeth-open"></use></svg></i></span>
               <h3 class="card-title">Ortodoncia</h3>
               <p class="card-text">
                 Brackets estéticos, autoligado y alineadores invisibles con planificación 3D.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -332,13 +335,13 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-tooth"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-tooth"></use></svg></i></span>
               <h3 class="card-title">Implantología</h3>
               <p class="card-text">
                 Recupera piezas perdidas con implantes de titanio guiados por cirugía digital.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -348,13 +351,13 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-kit-medical"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-kit-medical"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-kit-medical"></use></svg></i></span>
               <h3 class="card-title">Cirugía Oral</h3>
               <p class="card-text">
                 Extracción de terceros molares e injertos óseos con protocolos de mínima invasión.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -364,13 +367,13 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-child-reaching"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-child-reaching"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-child-reaching"></use></svg></i></span>
               <h3 class="card-title">Odontopediatría</h3>
               <p class="card-text">
                 Atención lúdica y sin miedo para los más pequeños, con enfoque preventivo.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -380,13 +383,13 @@
         <div class="col-md-6 col-lg-4 revelar">
           <div class="card card-especialidad h-100">
             <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-shield-heart"></i></span>
+              <span class="icono-especialidad"><i class="fa-solid fa-shield-heart"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-shield-heart"></use></svg></i></span>
               <h3 class="card-title">Periodoncia</h3>
               <p class="card-text">
                 Salud de encías, limpiezas profundas y tratamiento de enfermedad periodontal.
               </p>
               <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"></i>
+                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right-long"></use></svg></i>
               </a>
             </div>
           </div>
@@ -424,8 +427,8 @@
       </div>
 
       <div class="comparador revelar" data-comparador>
-        <span class="acento-badge naranja" style="top:-18px;left:calc(50% - 26px);" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-        <span class="acento-badge turquesa chico" style="bottom:-14px;right:24px;" aria-hidden="true"><i class="fa-solid fa-tooth"></i></span>
+        <span class="acento-badge naranja" style="top:-18px;left:calc(50% - 26px);" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-wand-magic-sparkles"></use></svg></i></span>
+        <span class="acento-badge turquesa chico" style="bottom:-14px;right:24px;" aria-hidden="true"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-tooth"></use></svg></i></span>
         <span class="marco-esquina arriba-izq" aria-hidden="true"></span>
         <span class="marco-esquina turquesa abajo-izq" aria-hidden="true"></span>
         <div class="comparador-marco" id="comparador1">
@@ -436,7 +439,7 @@
                  width="1400" height="1050" alt="Antes: sonrisa con tono opaco">
           </div>
           <div class="comparador-linea"></div>
-          <span class="comparador-manija"><i class="fa-solid fa-left-right"></i></span>
+          <span class="comparador-manija"><i class="fa-solid fa-left-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-left-right"></use></svg></i></span>
           <span class="comparador-tag comparador-tag-antes">Antes</span>
           <span class="comparador-tag comparador-tag-despues">Después</span>
         </div>
@@ -470,35 +473,35 @@
           <a href="subpaginas/galeria.html" class="galeria-item">
             <img src="imagenes/hero-1.webp" width="600" height="600"
                  alt="Consultorio equipado con escáner intraoral y radiografía digital" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-magnifying-glass-plus"></use></svg></i></span>
           </a>
         </div>
         <div class="col-6 col-lg-3 revelar">
           <a href="subpaginas/galeria.html" class="galeria-item">
             <img src="imagenes/aligner.webp" width="600" height="600"
                  alt="Alineador invisible de ortodoncia" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-magnifying-glass-plus"></use></svg></i></span>
           </a>
         </div>
         <div class="col-6 col-lg-3 revelar">
           <a href="subpaginas/galeria.html" class="galeria-item">
             <img src="imagenes/sonrisa.webp" width="800" height="552"
                  alt="Paciente satisfecho con su nueva sonrisa" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-magnifying-glass-plus"></use></svg></i></span>
           </a>
         </div>
         <div class="col-6 col-lg-3 revelar">
           <a href="subpaginas/galeria.html" class="galeria-item">
             <img src="imagenes/hero-3.webp" width="600" height="600"
                  alt="Consultorio de lujo con vista exterior" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-magnifying-glass-plus"></use></svg></i></span>
           </a>
         </div>
       </div>
 
       <div class="text-center mt-5 revelar">
         <a href="subpaginas/galeria.html" class="btn btn-turquesa">
-          Ver galería completa <i class="fa-solid fa-arrow-right ms-2"></i>
+          Ver galería completa <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-arrow-right"></use></svg></i>
         </a>
       </div>
 
@@ -523,7 +526,7 @@
         <div class="col-lg-4 text-center text-lg-end">
           <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
              class="btn btn-blanco btn-lg">
-            <i class="fa-brands fa-whatsapp me-2"></i>Escríbenos ahora
+            <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-whatsapp"></use></svg></i>Escríbenos ahora
           </a>
         </div>
       </div>
@@ -548,7 +551,7 @@
         <!-- ===== Columna 1: Marca, contacto y redes ===== -->
         <div class="col-lg-4">
           <a href="index.html" class="marca marca-footer mb-3">
-            <span class="marca-icono"><i class="fa-solid fa-tooth"></i></span>
+            <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-tooth"></use></svg></i></span>
             <span class="marca-texto">
               <span class="marca-nombre">Smilers</span>
               <span class="marca-slogan">Dental Clinique</span>
@@ -560,26 +563,26 @@
           </p>
 
           <ul class="footer-contacto">
-            <li><i class="fa-solid fa-location-dot"></i> Matriz: General Camilo Destruge y Francisco Salazar, Quito, Ecuador</li>
-            <li><i class="fa-solid fa-location-dot"></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
-            <li><i class="fa-solid fa-phone"></i> <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+5932909990">2909-990</a></li>
-            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hola@smilersdental.com">hola@smilersdental.com</a></li>
-            <li><i class="fa-regular fa-clock"></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
+            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-location-dot"></use></svg></i> Matriz: General Camilo Destruge y Francisco Salazar, Quito, Ecuador</li>
+            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-location-dot"></use></svg></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
+            <li><i class="fa-solid fa-phone"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-phone"></use></svg></i> <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+5932909990">2909-990</a></li>
+            <li><i class="fa-solid fa-envelope"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-envelope"></use></svg></i> <a href="mailto:hola@smilersdental.com">hola@smilersdental.com</a></li>
+            <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#regular-clock"></use></svg></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
           </ul>
 
           <!-- Redes sociales -->
           <div class="redes-sociales">
             <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram">
-              <i class="fa-brands fa-instagram"></i>
+              <i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-instagram"></use></svg></i>
             </a>
             <a href="https://www.facebook.com/smilersdentalclininque" target="_blank" rel="noopener" aria-label="Facebook">
-              <i class="fa-brands fa-facebook-f"></i>
+              <i class="fa-brands fa-facebook-f"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-facebook-f"></use></svg></i>
             </a>
             <a href="https://youtube.com/channel/UCfPuO7M0ElXIB8-dTLP70vg?sub_confirmation=1" target="_blank" rel="noopener" aria-label="YouTube">
-              <i class="fa-brands fa-youtube"></i>
+              <i class="fa-brands fa-youtube"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-youtube"></use></svg></i>
             </a>
             <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" aria-label="WhatsApp">
-              <i class="fa-brands fa-whatsapp"></i>
+              <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-whatsapp"></use></svg></i>
             </a>
           </div>
         </div>
@@ -620,7 +623,7 @@
             </div>
 
             <button type="submit" class="btn btn-naranja w-100">
-              <i class="fa-brands fa-whatsapp me-2"></i>Enviar por WhatsApp
+              <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-whatsapp"></use></svg></i>Enviar por WhatsApp
             </button>
 
             <!-- Zona de mensajes de validación / confirmación (la llena el JS) -->
@@ -647,17 +650,17 @@
   <!-- ===== Botón flotante de WhatsApp ===== -->
   <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
      class="wsp-flotante" aria-label="Chatear por WhatsApp">
-    <i class="fa-brands fa-whatsapp"></i>
+    <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#brands-whatsapp"></use></svg></i>
   </a>
 
   <!-- ===== Botón "volver arriba" (lo controla el JS) ===== -->
   <button class="btn-subir" id="btnSubir" aria-label="Volver arriba">
-    <i class="fa-solid fa-chevron-up"></i>
+    <i class="fa-solid fa-chevron-up"><svg class="icono" aria-hidden="true" focusable="false"><use href="imagenes/iconos.svg#solid-chevron-up"></use></svg></i>
   </button>
 
 
   <!-- ===== SCRIPTS ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
   <script src="scripts/script.js"></script>
 </body>
 </html>

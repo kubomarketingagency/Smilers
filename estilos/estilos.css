@@ -72,6 +72,18 @@ a { text-decoration: none; transition: var(--transicion); }
 
 img { max-width: 100%; height: auto; }
 
+/* Iconos: <i class="fa-solid fa-x"> ahora envuelve un <svg class="icono"> que
+   apunta al sprite propio (imagenes/iconos.svg) en vez de la fuente web de
+   Font Awesome. El <i> conserva sus clases fa-* para que todo el CSS que ya
+   apunta a "i" (color, tamaño, transform) siga funcionando sin cambios. */
+.icono {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
 /* Utilidades de color de texto */
 .texto-turquesa { color: var(--turquesa-accion); }
 .texto-naranja  { color: var(--naranja); }
