@@ -131,9 +131,9 @@ html { caret-color: var(--naranja); }
   transition: var(--transicion);
 }
 
-/* Botón naranja (CTA principal) */
+/* Botón naranja (CTA principal): mismo naranja que el wordmark "Smilers" */
 .btn-naranja {
-  background: var(--naranja-accion);
+  background: var(--naranja);
   color: #fff;
   box-shadow: 0 8px 20px rgba(246, 94, 9, .35);
 }
@@ -1230,61 +1230,6 @@ html { caret-color: var(--naranja); }
 }
 .banner-pagina .forma-durazno { opacity: .14; }
 
-/* Intro de marca 100% CSS (sin video): cubre el banner al cargar la página,
-   el logo aparece con un pequeño rebote y a los 2.5s todo el bloque se
-   desvanece solo (sin JS) dejando ver el banner de siempre debajo. Antes
-   esto era un <video> mp4 por pagina (~80KB + decodificacion); el logo ya
-   vive como SVG en el sprite, asi que no hay ningun archivo nuevo que bajar. */
-.banner-video-intro {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(125deg, var(--turquesa-profundo) 0%, var(--turquesa-accion) 55%, #017c7e 100%);
-  pointer-events: none;
-  animation: introRetiro .5s ease forwards;
-  animation-delay: 2.5s;
-}
-.intro-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .45rem;
-  color: #fff;
-  animation: introAparece .6s cubic-bezier(.22, 1, .36, 1);
-}
-.intro-logo-icono {
-  width: 68px;
-  height: 68px;
-  fill: #fff;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .25));
-}
-.intro-logo-nombre {
-  font-family: var(--fuente-titulo);
-  font-weight: 900;
-  font-size: 2rem;
-  letter-spacing: -.5px;
-}
-.intro-logo-slogan {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: .8rem;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .85);
-}
-@keyframes introAparece {
-  from { opacity: 0; transform: scale(.8); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes introRetiro {
-  to { opacity: 0; visibility: hidden; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .banner-video-intro { display: none; }
-}
 
 .breadcrumb-personalizado {
   display: flex;
