@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- ===== SPLASH DE BIENVENIDA: marca la sesión ANTES de pintar nada, para
+       que si ya se vio en esta pestaña no haya ni un parpadeo del splash
+       al navegar de vuelta a inicio. ===== -->
+  <script>
+    if (sessionStorage.getItem('smilersSplashVisto')) {
+      document.documentElement.classList.add('sin-splash');
+    }
+  </script>
+
   <!-- ===== SEO BÁSICO ===== -->
   <title>Smilers Dental Clinique | Odontología Premium y Alta Tecnología</title>
   <meta name="description" content="Smilers Dental Clinique: clínica dental de primer nivel. Estética dental, ortodoncia, implantes y cirugía en instalaciones de lujo con tecnología de vanguardia.">
@@ -21,13 +30,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=3">
+  <link rel="stylesheet" href="estilos/estilos.css?v=4">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
 </head>
 
 <body>
+
+  <!-- ============================================================
+       SPLASH DE BIENVENIDA (solo primera vez por sesión, ver script.js)
+       Pantalla blanca con el logo centrado; se retira sola al terminar
+       el video (o si el navegador bloquea el autoplay / falla al cargar).
+       ============================================================ -->
+  <div class="splash-inicio" id="splashInicio" aria-hidden="true">
+    <video muted playsinline preload="auto"
+           data-src-escritorio="video-hero/Smilers%20Logo%20Sting.mp4"
+           data-src-movil="video-hero/smilers-logo-sting-movil.mp4"></video>
+  </div>
 
   <!-- ============================================================
        1. NAVBAR STICKY
@@ -661,6 +681,6 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=3"></script>
+  <script src="scripts/script.js?v=4"></script>
 </body>
 </html>

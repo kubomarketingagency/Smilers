@@ -72,6 +72,34 @@ a { text-decoration: none; transition: var(--transicion); }
 
 img { max-width: 100%; height: auto; }
 
+/* ===== SPLASH DE BIENVENIDA (solo index.html, primera vez por sesión) =====
+   Pantalla blanca de tapa a tapa con el logo centrado; script.js la retira
+   con un fade-out en cuanto el video termina (o falla / autoplay bloqueado).
+   html.sin-splash la oculta de una vez, sin parpadeo, en visitas repetidas
+   dentro de la misma sesión (ver el script inline en el <head>). */
+.splash-inicio {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .5s ease;
+}
+.splash-inicio video {
+  width: min(420px, 60vw);
+  height: auto;
+}
+.splash-inicio.oculto {
+  opacity: 0;
+  pointer-events: none;
+}
+html.sin-splash .splash-inicio { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .splash-inicio { display: none; }
+}
+
 /* Iconos: <i class="fa-solid fa-x"> ahora envuelve un <svg class="icono"> que
    apunta al sprite propio (imagenes/iconos.svg) en vez de la fuente web de
    Font Awesome. El <i> conserva sus clases fa-* para que todo el CSS que ya

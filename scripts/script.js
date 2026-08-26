@@ -404,11 +404,55 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 15. INTRO DE MARCA EN BANNERS DE PÁGINAS INTERIORES =============
-     100% CSS (ver .banner-video-intro / .intro-logo en estilos.css): el
-     logo aparece, se queda 2.5s y el bloque se desvanece solo. No hace
-     falta JS — se deja esta nota para quien busque el "15." de la lista
-     de arriba y ya no encuentre código.
+  /* ===== 15. SPLASH DE BIENVENIDA (solo index.html, 1a vez por sesión) ===
+     El <div id="splashInicio"> solo existe en index.html. Si ya se vio en
+     esta pestaña, el script inline del <head> ya le puso "sin-splash" a
+     <html> (display:none por CSS) y aquí no hay nada que hacer.
      ======================================================================== */
+  (function () {
+    var splash = document.getElementById('splashInicio');
+    if (!splash || document.documentElement.classList.contains('sin-splash')) return;
+
+    sessionStorage.setItem('smilersSplashVisto', '1');
+
+    var video = splash.querySelector('video');
+    var retirado = false;
+
+    function retirarSplash() {
+      if (retirado) return;
+      retirado = true;
+      splash.classList.add('oculto');
+      setTimeout(function () { splash.remove(); }, 550);
+    }
+
+    if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      retirarSplash();
+      return;
+    }
+
+    var esMovil = window.innerWidth <= 767;
+    video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
+    video.load();
+
+    /* El clip dura ~7s a velocidad normal — demasiado para un splash que
+       tapa toda la página. Se acelera para que no se sienta como una espera. */
+    video.playbackRate = 1.75;
+
+    setTimeout(retirarSplash, 6000); // seguro si "ended" no llega
+
+    video.addEventListener('ended', retirarSplash);
+    video.addEventListener('error', retirarSplash);
+
+    var intentoReproduccion = video.play();
+    if (intentoReproduccion && typeof intentoReproduccion.catch === 'function') {
+      intentoReproduccion.catch(retirarSplash);
+    }
+
+    /* Navegadores in-app que ni bloquean ni rechazan el autoplay: si sigue
+       pausado al primer instante, no tiene caso hacer esperar al visitante. */
+    setTimeout(function () {
+      if (video.paused && !video.ended) retirarSplash();
+    }, 1200);
+  })();
 
 });
