@@ -88,7 +88,7 @@ img { max-width: 100%; height: auto; }
   transition: opacity .5s ease;
 }
 .splash-inicio video {
-  width: min(420px, 60vw);
+  width: min(460px, 85vw);
   height: auto;
 }
 .splash-inicio.oculto {
@@ -404,6 +404,12 @@ html { caret-color: var(--naranja); }
      hero queda como texto blanco sobre blanco. */
   isolation: isolate;
   min-height: 100vh;
+  /* 100vh en móvil se mide con la barra de direcciones OCULTA; con ella
+     visible el contenido centrado queda más abajo de lo que cabe en
+     pantalla y choca con los indicadores/flecha de abajo. 100svh (altura
+     "pequeña" del viewport, con la barra visible) evita eso. Navegadores
+     que no la soportan simplemente se quedan con el 100vh de arriba. */
+  min-height: 100svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -1068,9 +1074,13 @@ html { caret-color: var(--naranja); }
 }
 
 @media (max-width: 767.98px) {
-  .hero { min-height: 88vh; }
+  .hero { min-height: 88vh; min-height: 88svh; }
   .hero-contenido { padding: 120px 0 90px; }
   .hero-botones .btn { width: 100%; }      /* botones full-width en móvil */
+  /* Margen extra antes de los indicadores del carrusel: con 2 botones
+     full-width apilados, el bloque centrado puede quedar muy cerca (o
+     encima) de los puntos/flecha que están anclados al fondo del hero. */
+  .hero-botones { margin-bottom: 3rem; }
   .seccion { padding: 72px 0; }
   .footer { padding-top: 60px; }
   .footer-bottom { justify-content: center; text-align: center; }
