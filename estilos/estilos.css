@@ -188,8 +188,20 @@ html { caret-color: var(--naranja); }
   /* Nota: se evita backdrop-filter a propósito — recalcular el desenfoque en
      cada frame mientras el menú móvil se abre/cierra es lo que provocaba el
      "tirón" justo al final de la animación en móviles y tablets. */
-  transition: padding .35s ease, box-shadow .35s ease;
+  /* padding fuera de la transicion a proposito: animarlo obliga a recalcular
+     el layout de toda la navbar en cada frame (el logo y los links se mueven
+     con ella). Con la histeresis del scroll (arriba, en JS) el cambio de
+     tamano ya no repite varias veces por segundo, asi que el salto instantaneo
+     no se nota, y solo queda animado lo que es barato (sombra/fondo). */
+  transition: box-shadow .35s ease, background-color .35s ease, transform .35s ease;
   z-index: 1030;
+}
+
+/* Se oculta al bajar y reaparece al subir (clase añadida desde script.js).
+   transform es la única propiedad barata para animar esto: no dispara
+   layout ni repintado del resto de la página, solo mueve la capa. */
+.navbar-principal.navbar-oculto {
+  transform: translateY(-100%);
 }
 
 /* Estado con scroll (clase añadida desde script.js) */
@@ -334,7 +346,10 @@ html { caret-color: var(--naranja); }
   .menu-panel { display: contents; }
 }
 
-.navbar-principal { position: relative; }
+/* .navbar-principal ya es "fixed" por la clase fixed-top del HTML; antes
+   había un "position: relative" aquí que la anulaba en silencio (el navbar
+   nunca quedaba pegado arriba). Ver .navbar-oculto más abajo para el
+   esconder/reaparecer según la dirección del scroll. */
 
 /* ----- Líneas divisorias entre enlaces (solo escritorio) ----- */
 @media (min-width: 992px) {
@@ -1215,10 +1230,11 @@ html { caret-color: var(--naranja); }
 }
 .banner-pagina .forma-durazno { opacity: .14; }
 
-/* Intro de video de marca: cubre el banner al cargar la página y se retira
-   (fade-out) en cuanto el video termina, dejando ver el banner de siempre
-   debajo. El fondo repite el mismo degradado del banner para que el
-   video (con su propio fondo) no "salte" al aparecer ni al desaparecer. */
+/* Intro de marca 100% CSS (sin video): cubre el banner al cargar la página,
+   el logo aparece con un pequeño rebote y a los 2.5s todo el bloque se
+   desvanece solo (sin JS) dejando ver el banner de siempre debajo. Antes
+   esto era un <video> mp4 por pagina (~80KB + decodificacion); el logo ya
+   vive como SVG en el sprite, asi que no hay ningun archivo nuevo que bajar. */
 .banner-video-intro {
   position: absolute;
   inset: 0;
@@ -1227,23 +1243,44 @@ html { caret-color: var(--naranja); }
   align-items: center;
   justify-content: center;
   background: linear-gradient(125deg, var(--turquesa-profundo) 0%, var(--turquesa-accion) 55%, #017c7e 100%);
-  opacity: 1;
-  visibility: visible;
-  transition: opacity .7s ease, visibility 0s linear 0s;
-}
-.banner-video-intro video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-/* En móvil se sirve un video aparte (smilers-logo-sting-movil.mp4) recortado
-   en vertical (4:5) para que coincida con el banner angosto: con el 16:9 de
-   escritorio y "contain" quedaban franjas del degradado arriba y abajo. */
-.banner-video-intro.oculto {
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-  transition: opacity .7s ease, visibility 0s linear .7s;
+  animation: introRetiro .5s ease forwards;
+  animation-delay: 2.5s;
+}
+.intro-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .45rem;
+  color: #fff;
+  animation: introAparece .6s cubic-bezier(.22, 1, .36, 1);
+}
+.intro-logo-icono {
+  width: 68px;
+  height: 68px;
+  fill: #fff;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .25));
+}
+.intro-logo-nombre {
+  font-family: var(--fuente-titulo);
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: -.5px;
+}
+.intro-logo-slogan {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .85);
+}
+@keyframes introAparece {
+  from { opacity: 0; transform: scale(.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes introRetiro {
+  to { opacity: 0; visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
   .banner-video-intro { display: none; }

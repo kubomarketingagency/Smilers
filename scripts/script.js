@@ -15,7 +15,8 @@
      12. Paralaje de formas decorativas
      13. FAQ: abrir pregunta enlazada por #hash
      14. Carrusel del hero: sincronizar puntos con el slide activo
-     15. Intro de video en banners de páginas interiores
+     (la intro de marca en banners de páginas interiores es 100% CSS,
+      ver .banner-video-intro / .intro-logo en estilos.css)
    ========================================================================== */
 
 /* ===== 1. CONFIGURACIÓN GLOBAL ==========================================
@@ -29,18 +30,50 @@ const NUMERO_WHATSAPP = '593997556002';
 /* Ejecutamos todo cuando el DOM esté listo */
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ===== 2. NAVBAR: cambia de estilo al hacer scroll =================== */
+  /* ===== 2. NAVBAR: fija, compacta al bajar y se oculta/reaparece ========
+     segun la direccion del scroll ========================================= *
+     - Umbrales distintos para activar (80px) y desactivar (40px) el modo
+       compacto: si usaramos uno solo, el scroll natural del mouse/dedo hace
+       que la clase entre y salga varias veces por segundo justo en ese punto,
+       y el logo (que cambia de tamaño con .con-scroll) tiembla.
+     - Al bajar se oculta (transform: translateY, solo compositor, no
+       dispara layout); al subir vuelve a aparecer de inmediato. Cerca del
+       tope (< 120px) se ignora la direccion para que no "parpadee" con el
+       primer scroll chiquito.
+     - rAF evita correr la lectura/escritura de estilos mas de una vez por
+       frame; sin esto, cada evento "scroll" (docenas por segundo) fuerza
+       su propio recalculo. */
   const navbar = document.getElementById('navbarPrincipal');
+  let tickeando = false;
+  let ultimoScrollY = window.scrollY;
 
   function controlarNavbar() {
-    if (window.scrollY > 60) {
+    const y = window.scrollY;
+
+    if (y > 80) {
       navbar.classList.add('con-scroll');
-    } else {
+    } else if (y < 40) {
       navbar.classList.remove('con-scroll');
     }
+
+    if (y < 120) {
+      navbar.classList.remove('navbar-oculto');
+    } else if (y > ultimoScrollY) {
+      navbar.classList.add('navbar-oculto');       // bajando -> se oculta
+    } else if (y < ultimoScrollY) {
+      navbar.classList.remove('navbar-oculto');    // subiendo -> reaparece
+    }
+
+    ultimoScrollY = y;
+    tickeando = false;
   }
 
-  window.addEventListener('scroll', controlarNavbar);
+  window.addEventListener('scroll', function () {
+    if (!tickeando) {
+      tickeando = true;
+      requestAnimationFrame(controlarNavbar);
+    }
+  }, { passive: true });
   controlarNavbar(); // se ejecuta una vez por si la página carga ya desplazada
 
 
@@ -371,58 +404,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 15. INTRO DE VIDEO EN BANNERS DE PÁGINAS INTERIORES ============
-     El video de marca (video-hero/Smilers Logo Sting.mp4) se reproduce una
-     sola vez sobre el banner. Al terminar se retira con un fade-out y deja
-     ver el banner de siempre debajo. Si el navegador bloquea el autoplay
-     o el video falla, se retira de inmediato para no tapar el contenido.
+  /* ===== 15. INTRO DE MARCA EN BANNERS DE PÁGINAS INTERIORES =============
+     100% CSS (ver .banner-video-intro / .intro-logo en estilos.css): el
+     logo aparece, se queda 2.5s y el bloque se desvanece solo. No hace
+     falta JS — se deja esta nota para quien busque el "15." de la lista
+     de arriba y ya no encuentre código.
      ======================================================================== */
-  document.querySelectorAll('[data-video-intro]').forEach(function (capa) {
-    const video = capa.querySelector('video');
-    if (!video) return;
-
-    let retirado = false;
-    function retirarIntro() {
-      if (retirado) return;
-      retirado = true;
-      capa.classList.add('oculto');
-    }
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      retirarIntro();
-      return;
-    }
-
-    /* El <source media="..."> se evalua de forma inconsistente en algunos
-       navegadores in-app (WhatsApp, Instagram): a veces cargan el video de
-       escritorio (horizontal) en pantallas angostas, y "cover" lo recorta
-       de forma muy notoria. Se elige el archivo a mano, con el ancho real
-       de la ventana en este momento, para que no dependa de eso. */
-    const esMovil = window.innerWidth <= 767;
-    video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
-    video.load();
-
-    /* Seguro: si "ended" no llega a disparar (autoplay bloqueado en
-       silencio, video que no termina de cargar, etc.) el banner no debe
-       quedar tapado para siempre. Duracion del clip / velocidad + margen. */
-    setTimeout(retirarIntro, 6000);
-
-    video.playbackRate = 1.75;
-    video.addEventListener('ended', retirarIntro);
-    video.addEventListener('error', retirarIntro);
-
-    const intentoReproduccion = video.play();
-    if (intentoReproduccion && typeof intentoReproduccion.catch === 'function') {
-      intentoReproduccion.catch(retirarIntro);
-    }
-
-    /* Navegadores in-app (WhatsApp, Instagram, Facebook, etc.) a veces ni
-       bloquean ni rechazan el autoplay: simplemente lo dejan pausado sin
-       avisar. Si a la primera pantalla el video sigue pausado, no tiene
-       caso hacer esperar al visitante: se revela el banner de una vez. */
-    setTimeout(function () {
-      if (video.paused && !video.ended) retirarIntro();
-    }, 1200);
-  });
 
 });
