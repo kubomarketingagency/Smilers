@@ -1,38 +1,106 @@
 /* ==========================================================================
    SMILERS DENTAL CLINIQUE — Hoja de estilos principal
-   Paleta:
-     Naranja vibrante  #f65e09   |  Turquesa oscuro  #01a1a3
-     Turquesa claro    #b8e9e3   |  Durazno / acento #f1c1a2
-   Tipografías: Nunito (títulos) · Poppins (cuerpo)
+   Sistema de diseño "Ultra-Lujo" (revisión 2026):
+     Deep Obsidian Black #1C1C1C · Gris Pizarra #2F2F2F · Champagne Gold #D4AF37
+     Sterling Silver #C0C0C0 · Warm Beige Taupe #968F83 · Mármol Calacatta #F7F5F1
+     Warm Charcoal Grey #525252 (texto en claro) · Emerald Green #006400 (micro-acento)
+   Tipografías: Bodoni Moda (titulares, alto contraste, sin cursiva) ·
+     Montserrat (menús/subtítulos, mayúsculas trackeadas) · Lato (cuerpo)
+
+   Nota de compatibilidad: se conservan los NOMBRES de variable originales
+   (--naranja, --turquesa*, --durazno...) para no tener que re-tocar cada
+   selector del archivo; solo cambia el VALOR al que apuntan. --naranja* es
+   el acento oro champán; --turquesa* es la familia de neutros oscuros
+   (obsidiana/pizarra); --durazno* y --turquesa-claro* pasan a ser plata,
+   para que el dorado y el plateado alternen como el dúo metálico de marca.
    ========================================================================== */
 
 /* ===== 1. VARIABLES GLOBALES ============================================ */
 :root {
-  --naranja:        #f65e09;
-  --naranja-oscuro: #cf4a04;
-  --turquesa:       #01a1a3;
-  --turquesa-osc:   #018486;
-  --turquesa-claro: #b8e9e3;
-  --durazno:        #f1c1a2;
+  /* Escala de oro (100→900) — Polished Champagne Gold */
+  --gold-100: #F6ECC9;
+  --gold-200: #E9D28F;
+  --gold-300: #DFBB55;
+  --gold-500: #D4AF37;   /* Champagne Gold — acento de marca */
+  --gold-700: #A98A2C;
+  --gold-900: #7A6420;
 
-  --blanco:  #ffffff;
-  --gris-bg: #f7fbfb;
-  --texto:   #2b3a3a;
-  --texto-suave: #596c6d;   /* 4.66:1 incluso sobre los puntos de .fondo-suave */
+  /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
+  --silver-100: #ECECEC;
+  --silver-300: #D6D6D6;
+  --silver-500: #C0C0C0;  /* Sterling Silver — acento de marca */
+  --silver-700: #8C8C8C;
+  --silver-900: #4F4F4F;  /* variante oscura, para texto/fondo con contraste AA */
+
+  /* Escala de neutros (100→900) */
+  --neutral-100: #F7F5F1; /* Mármol Calacatta */
+  --neutral-200: #968F83; /* Warm Beige Taupe */
+  --neutral-300: #B9B4AC;
+  --neutral-500: #6E6A64;
+  --neutral-700: #2F2F2F; /* Gris pizarra oscuro */
+  --neutral-900: #1C1C1C; /* Deep Obsidian Black */
+
+  /* Alias de marca */
+  --onix:          var(--neutral-900);
+  --oro-champan:   var(--gold-500);
+  --arena-perla:   var(--neutral-200); /* rol de fondo cálido secundario: ahora Warm Beige Taupe */
+  --taupe:         var(--neutral-200);
+  --marmol:        var(--neutral-100);
+  --marfil:        #C9C2B5; /* tono intermedio entre taupe y mármol, para fondos suaves */
+  --plata:         var(--silver-500);
+  --esmeralda:     #006400; /* micro-acento: solo en dosis pequeñas (puntos, líneas, estados) */
+
+  /* Alias "de compatibilidad": mismo nombre de siempre, nuevo valor premium.
+     La plata es ahora el acento principal (antes dorado); el dorado queda
+     como el segundo tono del dúo metálico, en dosis menores (icon chips,
+     blobs, la mitad del degradado de las tarjetas). */
+  --naranja:        var(--plata);
+  --naranja-oscuro: var(--silver-700);
+  --turquesa:       var(--neutral-700);
+  --turquesa-osc:   var(--neutral-900);
+  --turquesa-claro: var(--gold-100);
+  --durazno:        var(--oro-champan);
+
+  /* Todo el sitio vive sobre lienzo ónix, alternado con gris pizarra para
+     las secciones oscuras secundarias. --texto/--texto-suave son "gris
+     perla" (perla cálida) para leerse sobre ese fondo oscuro; las secciones
+     claras (.seccion-clara) redefinen su propio --texto en Warm Charcoal
+     Grey más abajo. --marmol y --onix NO cambian de significado — siguen
+     siendo "claro" y "oscuro" literalmente. */
+  --blanco:  var(--onix);
+  --gris-bg: var(--neutral-700);
+  --texto:   #D9D6D0;
+  --texto-suave: #A8A49D;
+
+  /* Tarjetas/superficies elevadas sobre el lienzo oscuro: un carbón un
+     punto más claro que el fondo, con hairline dorado. */
+  --superficie: #3A3A3A;
+  --superficie-borde: rgba(192, 192, 192, .22);
 
   /* Variantes de ACCION: cumplen WCAG AA (>=4.5:1) con texto blanco encima.
      Usalas siempre que el color lleve texto pequeno encima (botones, badges,
      chips, enlaces). Los tonos vivos de arriba son para superficie grande,
      iconos y titulos display, donde basta 3:1. */
-  --naranja-accion:   #c04907;  /* 5.00:1 blanco · 4.55:1 sobre tinte naranja 8% */
-  --turquesa-accion:  #017476;  /* 5.58:1 blanco · 5.10:1 sobre tinte turquesa 8% */
-  --turquesa-profundo:#016e70;  /* 6.06:1 blanco · 4.56:1 sobre turquesa claro */
+  --naranja-accion:   var(--silver-900);  /* 7.9:1 blanco */
+  --turquesa-accion:  var(--neutral-900); /* ónix — contraste maximo sobre blanco */
+  --turquesa-profundo:#0F0F0F;            /* aun mas oscuro, para degradados */
+
+  /* Enlaces/textos pequeños con el acento de marca: --naranja brilla mejor
+     claro sobre fondo oscuro, pero ese mismo tono claro se lee mal como
+     texto sobre una tarjeta clara. .seccion-clara redefine esta variable
+     con la variante oscura para esos casos. */
+  --acento-legible: var(--naranja);
+  --acento-legible-hover: var(--naranja-oscuro);
 
   /* Anillo de foco de teclado */
-  --foco: 0 0 0 3px #fff, 0 0 0 6px var(--naranja);
+  --foco: 0 0 0 3px var(--onix), 0 0 0 6px var(--naranja);
 
-  --fuente-titulo: 'Nunito', sans-serif;
-  --fuente-cuerpo: 'Poppins', sans-serif;
+  /* Titulares: serif de alto contraste, sin cursiva ni manuscrita.
+     Menús/subtítulos: sans geométrica, siempre en mayúsculas trackeadas.
+     Cuerpo: sans limpia, máxima legibilidad. */
+  --fuente-titulo: 'Bodoni Moda', serif;
+  --fuente-menu:   'Montserrat', sans-serif;
+  --fuente-cuerpo: 'Lato', sans-serif;
 
   --radio:    18px;
   --radio-sm: 12px;
@@ -42,9 +110,11 @@
   --radio-tag:     28px 8px 28px 8px;
   --radio-tag-inv: 8px 28px 8px 28px;
 
-  --sombra:       0 10px 30px rgba(1, 161, 163, .12);
-  --sombra-hover: 0 20px 48px rgba(1, 161, 163, .22);
-  --sombra-naranja: 0 14px 32px rgba(246, 94, 9, .18);
+  /* Sombras: sobre lienzo oscuro un halo dorado se nota más que un negro
+     que se pierde contra el propio fondo. */
+  --sombra:       0 10px 32px rgba(192, 192, 192, .14);
+  --sombra-hover: 0 24px 60px rgba(192, 192, 192, .22);
+  --sombra-naranja: 0 14px 32px rgba(192, 192, 192, .35);
 
   --transicion: all .35s cubic-bezier(.25, .8, .25, 1);
 }
@@ -52,25 +122,47 @@
 /* ===== 2. BASE =========================================================== */
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: hidden; } /* compensa navbar fija */
+/* overflow-x, no overflow-x:hidden: "hidden" fuerza a overflow-y a valer
+   "auto" (regla del spec cuando un eje es "hidden" y el otro "visible"),
+   lo que convierte a html/body en su propio contenedor de scroll y rompe
+   el position:sticky del hero cine (sección 5b) — clip evita el
+   desbordamiento horizontal sin ese efecto secundario. */
+html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /* compensa navbar fija */
 
 body {
   font-family: var(--fuente-cuerpo);
   color: var(--texto);
   background-color: var(--blanco);
   line-height: 1.7;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
   font-family: var(--fuente-titulo);
-  font-weight: 800;
-  letter-spacing: -.5px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.18;
+  letter-spacing: .01em;
 }
 
 a { text-decoration: none; transition: var(--transicion); }
 
 img { max-width: 100%; height: auto; }
+
+/* Textura de grano de película muy sutil sobre todo el sitio: refuerza el
+   aire "cine en blanco y negro" del hero incluso fuera de él. Opacidad
+   mínima y pointer-events:none para que nunca interfiera con el contenido. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: .025;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) { body::before { display: none; } }
 
 /* ===== SPLASH DE BIENVENIDA (solo index.html, primera vez por sesión) =====
    Pantalla blanca de tapa a tapa con el logo centrado; script.js la retira
@@ -81,7 +173,7 @@ img { max-width: 100%; height: auto; }
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: #fff;
+  background: var(--onix);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,85 +235,120 @@ html { caret-color: var(--naranja); }
 /* Selección de texto */
 ::selection { background: var(--naranja-accion); color: #fff; }
 
-/* Barra de scroll personalizada (navegadores webkit) */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--gris-bg); }
-::-webkit-scrollbar-thumb { background: var(--turquesa); border-radius: 10px; }
+/* Barra de scroll personalizada (navegadores webkit), delgada a propósito */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--naranja); border-radius: 10px; }
+
+/* Firefox */
+html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 3. BOTONES ======================================================== */
 .btn {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
+  letter-spacing: .3px;
   border-radius: var(--radio-btn);
   padding: .75rem 1.9rem;
   border: 2px solid transparent;
   transition: var(--transicion);
 }
+/* Destello diagonal dorado/plateado al pasar el cursor: solo transform
+   (translateX), nunca se repinta el layout aunque el botón cambie de color
+   por debajo. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 32%, rgba(192, 192, 192, .45) 48%, rgba(192, 192, 192, .5) 56%, transparent 72%);
+  transform: translateX(-130%);
+  transition: transform .6s ease;
+  pointer-events: none;
+}
+.btn:hover::after { transform: translateX(130%); }
 
-/* Botón naranja (CTA principal): mismo naranja que el wordmark "Smilers" */
+/* "Expansión de bordes": marco plateado que crece desde el centro hacia el
+   borde interior, solo transform/opacity — se queda dentro del overflow
+   hidden del botón para no perder el radio de esquina. */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--plata);
+  border-radius: calc(var(--radio-btn) - 4px);
+  opacity: 0;
+  transform: scale(.85);
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1), opacity .4s ease;
+  pointer-events: none;
+}
+.btn:hover::before { opacity: 1; transform: scale(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn::after, .btn::before { display: none; }
+}
+
+/* Botón plateado (CTA principal): degradado Sterling Silver, firma de la marca */
 .btn-naranja {
-  background: var(--naranja);
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(246, 94, 9, .35);
+  background: linear-gradient(135deg, var(--silver-300) 0%, var(--naranja) 55%, var(--naranja-oscuro) 100%);
+  color: var(--onix);
+  box-shadow: 0 8px 20px rgba(192, 192, 192, .38);
 }
 .btn-naranja:hover,
 .btn-naranja:focus {
-  background: var(--naranja-oscuro);
-  color: #fff;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(246, 94, 9, .45);
+  background: linear-gradient(135deg, var(--naranja) 0%, var(--naranja-oscuro) 100%);
+  color: var(--onix);
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(192, 192, 192, .5);
 }
 
-/* Botón turquesa */
+/* Botón ónix */
 .btn-turquesa {
   background: var(--turquesa-accion);
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(1, 161, 163, .30);
+  color: var(--marmol);
+  box-shadow: 0 8px 20px rgba(22, 19, 15, .30);
 }
 .btn-turquesa:hover {
-  background: var(--turquesa-osc);
-  color: #fff;
-  transform: translateY(-3px);
+  background: var(--naranja);
+  color: var(--onix);
+  transform: translateY(-4px) scale(1.04);
 }
 
-/* Botón blanco (sobre fondos de color) */
+/* Botón blanco/mármol (sobre fondos de color) */
 .btn-blanco {
-  background: #fff;
+  background: var(--marmol);
   color: var(--turquesa-accion);
 }
 .btn-blanco:hover {
   background: var(--turquesa-claro);
   color: var(--turquesa-profundo);
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.04);
 }
 
-/* Botón fantasma (borde blanco, para el hero) */
+/* Botón fantasma (borde dorado, para el hero) */
 .btn-fantasma {
   background: transparent;
-  color: #fff;
-  border-color: rgba(255, 255, 255, .7);
+  color: var(--marmol);
+  border-color: rgba(192, 192, 192, .55);
 }
 .btn-fantasma:hover {
-  background: #fff;
-  color: var(--turquesa-accion);
-  border-color: #fff;
+  background: var(--naranja);
+  color: var(--onix);
+  border-color: var(--naranja);
+  transform: translateY(-4px) scale(1.04);
 }
 
 
 /* ===== 4. NAVBAR ========================================================= */
+/* Sin fondo ni desenfoque: solo flota el logo y el botón sobre el lienzo
+   ónix del resto de la página (que ya es oscuro en todas partes, así que
+   nunca compite con contenido claro debajo). Barra delgada a propósito. */
 .navbar-principal {
-  padding: 1.1rem 0;
-  background: rgba(255, 255, 255, .98);
-  /* Nota: se evita backdrop-filter a propósito — recalcular el desenfoque en
-     cada frame mientras el menú móvil se abre/cierra es lo que provocaba el
-     "tirón" justo al final de la animación en móviles y tablets. */
-  /* padding fuera de la transicion a proposito: animarlo obliga a recalcular
-     el layout de toda la navbar en cada frame (el logo y los links se mueven
-     con ella). Con la histeresis del scroll (arriba, en JS) el cambio de
-     tamano ya no repite varias veces por segundo, asi que el salto instantaneo
-     no se nota, y solo queda animado lo que es barato (sombra/fondo). */
-  transition: box-shadow .35s ease, background-color .35s ease, transform .35s ease;
+  padding: .35rem 0;
+  background: transparent;
+  transition: transform .35s ease;
   z-index: 1030;
 }
 
@@ -232,169 +359,202 @@ html { caret-color: var(--naranja); }
   transform: translateY(-100%);
 }
 
-/* Estado con scroll (clase añadida desde script.js) */
+/* Estado con scroll (clase añadida desde script.js): solo encoge el logo,
+   sigue sin fondo. */
 .navbar-principal.con-scroll {
-  padding: .6rem 0;
-  background: #fff;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, .08);
+  padding: .18rem 0;
 }
 
-/* Marca (logotipo tipográfico: icono + wordmark) */
+/* Marca (logotipo tipográfico: icono + wordmark), inspirada en el isotipo
+   real (diente en plata sobre ónix, wordmark en degradado dorado). */
 .marca {
   display: flex;
   align-items: center;
   gap: .7rem;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+/* Con el menú a pantalla completa abierto, solo queda flotando el botón de
+   cerrar (X): la marca se retira para que la barra no compita con el menú. */
+.navbar-principal:has(.navbar-toggler[aria-expanded="true"]) .marca {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .marca-icono {
   flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
-  background: var(--turquesa-accion);
-  color: #fff;
-  border-radius: 14px 4px 14px 4px;
-  font-size: 1.35rem;
-  box-shadow: 0 6px 16px rgba(1, 161, 163, .35);
+  background: var(--onix);
+  color: var(--neutral-300);
+  border: 1px solid rgba(192, 192, 192, .4);
+  border-radius: 12px 4px 12px 4px;
+  font-size: 1rem;
+  box-shadow: 0 6px 16px rgba(22, 19, 15, .4);
   transition: var(--transicion);
 }
 .marca-texto { display: flex; flex-direction: column; line-height: 1; }
 .marca-nombre {
-  font-family: var(--fuente-titulo);
-  font-weight: 900;
-  font-size: 1.55rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -.3px;
+  background: linear-gradient(100deg, var(--silver-100) 0%, var(--naranja) 45%, var(--silver-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: var(--naranja);
-  letter-spacing: -.5px;
 }
 .marca-slogan {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: .74rem;   /* 11.8px — antes .68rem = 10.9px, bajo el suelo legible */
+  font-family: var(--fuente-cuerpo);
+  font-weight: 500;
+  font-size: .62rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-top: 2px;
-  color: var(--turquesa-osc);
+  color: var(--neutral-300);
 }
-.navbar-principal.con-scroll .marca-icono { width: 38px; height: 38px; font-size: 1.1rem; }
-.navbar-principal.con-scroll .marca-nombre { font-size: 1.3rem; }
+.navbar-principal.con-scroll .marca-icono { width: 28px; height: 28px; font-size: .9rem; }
+.navbar-principal.con-scroll .marca-nombre { font-size: 1.05rem; }
+.navbar-principal.con-scroll .marca-slogan { display: none; }
 
-/* En móvil el logo comparte fila solo con el botón de menú: hay espacio
-   de sobra, así que se agranda para que tenga más presencia. */
 @media (max-width: 767.98px) {
-  .marca-icono { width: 52px; height: 52px; font-size: 1.5rem; }
-  .marca-nombre { font-size: 1.75rem; }
-  .marca-slogan { font-size: .8rem; }
-  .navbar-principal.con-scroll .marca-icono { width: 42px; height: 42px; font-size: 1.2rem; }
-  .navbar-principal.con-scroll .marca-nombre { font-size: 1.45rem; }
+  .marca-icono { width: 32px; height: 32px; font-size: .95rem; }
+  .marca-nombre { font-size: 1.15rem; }
+  .marca-slogan { font-size: .58rem; letter-spacing: 1.2px; }
+  .navbar-principal.con-scroll .marca-icono { width: 26px; height: 26px; font-size: .85rem; }
+  .navbar-principal.con-scroll .marca-nombre { font-size: 1rem; }
 }
 
-.navbar-principal .nav-link {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  color: var(--texto);
-  padding: .5rem 1rem !important;
-  position: relative;
-  /* medía 43px de alto: 1px por debajo del objetivo tactil */
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-}
-
-/* Subrayado animado en hover */
-.navbar-principal .nav-link::after {
-  content: '';
-  position: absolute;
-  left: 1rem;
-  bottom: .25rem;
-  width: calc(100% - 2rem);
-  height: 3px;
-  background: var(--naranja);
-  border-radius: 3px;
-  /* scaleX en vez de animar width: el ancho recalcula layout en cada frame */
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform .3s ease;
-}
-.navbar-principal .nav-link:hover::after,
-.navbar-principal .nav-link.activo::after { transform: scaleX(1); }
-
-.navbar-principal .nav-link:hover,
-.navbar-principal .nav-link.activo { color: var(--turquesa-accion); }
-
-/* Botón hamburguesa */
+/* Botón hamburguesa: 3 barras propias (no icono de fuente) para poder
+   animarlas a una "X" con solo CSS, enganchadas al aria-expanded que el
+   JS ya actualiza — sin tocar script.js. */
 .navbar-toggler {
   border: 0;
-  /* 44x44: es el unico acceso al menu en movil y medía 40x36 */
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 48px;
+  min-height: 48px;
   display: grid;
   place-items: center;
   padding: 0;
-  color: var(--turquesa-accion);
-  font-size: 1.5rem;
+  color: var(--naranja);
+  z-index: 1031; /* por encima del overlay del menú, para poder cerrarlo */
 }
 .navbar-toggler:focus { box-shadow: none; }
 .navbar-toggler:focus-visible { box-shadow: var(--foco); }
 
-/* ===== Menú móvil (implementación propia, sin el Collapse de Bootstrap) ==
-   Bootstrap anima "height" midiendo el alto con JS en cada apertura/cierre;
-   eso obliga al navegador a recalcular layout en cada frame y es lo que
-   causaba el tirón al cerrar en móviles/tablets. En su lugar animamos
-   "grid-template-rows" de 0fr a 1fr: el navegador solo ajusta el tamaño
-   de una pista de grid (mucho más barato) y no requiere medir píxeles.
-   ========================================================================= */
-@media (max-width: 991.98px) {
-  .navbar-collapse {
-    display: grid;
-    grid-template-rows: 0fr;
-    /* Bootstrap pone align-items:center en .navbar-collapse; con eso el
-       grid-item no se comprime al alto de la fila (0), sino que queda
-       centrado y "flota" fuera de su caja. stretch es lo que necesita
-       la animación de grid-template-rows para funcionar. */
-    align-items: stretch;
-    transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1);
-  }
-  .navbar-collapse.menu-abierto { grid-template-rows: 1fr; }
+.hamburguesa-icono {
+  position: relative;
+  width: 24px;
+  height: 18px;
+  display: inline-block;
+}
+.hamburguesa-icono span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform .3s ease, opacity .2s ease, top .3s ease;
+}
+.hamburguesa-icono span:nth-child(1) { top: 0; }
+.hamburguesa-icono span:nth-child(2) { top: 8px; }
+.hamburguesa-icono span:nth-child(3) { top: 16px; }
+.navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(1) { top: 8px; transform: rotate(45deg); }
+.navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(2) { opacity: 0; }
+.navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(3) { top: 8px; transform: rotate(-45deg); }
 
-  .menu-panel {
-    overflow: hidden;
-    min-height: 0;
-  }
-  .menu-panel > .navbar-nav {
-    background: #fff;
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: var(--radio);
-    box-shadow: var(--sombra);
-  }
+/* ===== Menú SIEMPRE hamburguesa, a pantalla completa (escritorio y móvil
+   por igual) ================================================================
+   Ya no es un panel pequeño: ocupa todo el viewport con un desenfoque muy
+   fuerte del fondo (glassmorphism a máxima expresión). Se anima por
+   opacidad (position:fixed no admite animar "display"), y script.js
+   bloquea el scroll del body mientras está abierto — así la barra de
+   arriba (que sí puede ocultarse al hacer scroll) nunca se mueve
+   mientras el menú está desplegado. ========================================= */
+.navbar-collapse {
+  position: fixed;
+  inset: 0;
+  z-index: 1029;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Si el contenido no cabe (pantallas bajas, muchos enlaces), se puede
+     desplazar dentro del overlay en vez de recortarse sin forma de
+     alcanzarlo — .menu-abierto controla que solo sea posible con el menú
+     abierto (con display:flex siempre presente, pointer-events lo evita). */
+  overflow-y: auto;
+  padding: 90px 0;
+  background: rgba(10, 8, 6, .5);
+  -webkit-backdrop-filter: blur(40px) saturate(1.1);
+  backdrop-filter: blur(40px) saturate(1.1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .4s ease, visibility 0s linear .4s;
+}
+.navbar-collapse.menu-abierto {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .4s ease, visibility 0s linear 0s;
 }
 
-/* En escritorio el wrapper no debe alterar el layout flex original del menú */
-@media (min-width: 992px) {
-  .menu-panel { display: contents; }
+.menu-panel {
+  width: 100%;
+  max-width: 480px;
+  margin: auto 0; /* si el contenido excede el alto, permite centrarlo y scrollear a sus extremos */
+  padding: 0 1.5rem;
 }
+.menu-panel > .navbar-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
+  text-align: center;
+}
+.navbar-collapse .nav-link {
+  font-family: var(--fuente-menu);
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+  padding: .5rem 1rem !important;
+  min-height: 0;
+  position: relative;
+  display: inline-flex;
+  color: var(--naranja);
+  transition: color .25s ease;
+}
+
+/* Subrayado dorado bajo el enlace activo/hover, texto pasa a blanco */
+.navbar-collapse .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  bottom: -.1rem;
+  width: calc(100% - 2rem);
+  height: 2px;
+  background: var(--naranja);
+  border-radius: 3px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .3s ease;
+}
+.navbar-collapse .nav-link:hover::after,
+.navbar-collapse .nav-link.activo::after { transform: scaleX(1); }
+
+.navbar-collapse .nav-link:hover,
+.navbar-collapse .nav-link.activo { color: var(--marmol); }
+
+.navbar-collapse .nav-item.ms-lg-3 { margin-top: 1.2rem !important; }
 
 /* .navbar-principal ya es "fixed" por la clase fixed-top del HTML; antes
    había un "position: relative" aquí que la anulaba en silencio (el navbar
    nunca quedaba pegado arriba). Ver .navbar-oculto más abajo para el
    esconder/reaparecer según la dirección del scroll. */
-
-/* ----- Líneas divisorias entre enlaces (solo escritorio) ----- */
-@media (min-width: 992px) {
-  .navbar-nav > .nav-item { position: relative; }
-  .navbar-nav > .nav-item:not(:first-child)::before {
-    content: '';
-    position: absolute;
-    left: -2px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 2px;
-    height: 22px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, transparent, rgba(1, 161, 163, .75), transparent);
-  }
-  .navbar-nav > .nav-item.ms-lg-3::before { display: none; }
-}
 
 /* ===== 5. HERO CON VIDEO ================================================= */
 .hero {
@@ -427,132 +587,219 @@ html { caret-color: var(--naranja); }
 }
 .hero-video { object-fit: cover; z-index: -2; }
 .hero-carrusel { z-index: -2; }
-.hero-carrusel .carousel-item { transition-duration: 1.4s; }
+/* Transición más larga que el corto que se muestra: el crossfade en sí es el
+   "destello" — al superponerse dos fotogramas en blanco y negro con la capa
+   dorada de abajo, el instante de mezcla brilla en oro, como el fundido de
+   depaudental.com. Ciclo corto (ver data-bs-interval en el HTML) = dinamismo. */
+.hero-carrusel .carousel-item { transition-duration: 1.9s; }
 
 .hero-slide-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
   transform: scale(1);
-  animation: kenburns 7s ease-out forwards;
+  /* Blanco y negro con leve calidez: no un gris plano, sino un B/N "cálido"
+     que deja que el degradado dorado de encima lea como reflejo real de luz. */
+  filter: grayscale(1) contrast(1.18) brightness(.82) saturate(1);
+  animation: kenburns 6s ease-out forwards;
 }
 @keyframes kenburns {
   from { transform: scale(1); }
   to   { transform: scale(1.09); }
 }
 
-/* Puntos indicadores del carrusel */
-.hero-indicadores {
+/* Capa de "destellos dorados": degradado diagonal en modo de mezcla que tiñe
+   solo las luces del blanco y negro de abajo, como una pátina de oro líquido
+   sobre la fotografía — nunca colorea las sombras. */
+.hero-duotone {
   position: absolute;
-  z-index: 2;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 0;
-}
-/* El boton es el area tactil (44x44); el punto visible es el ::before.
-   Antes el boton medía 10x10, imposible de acertar con el pulgar. */
-.hero-indicadores button {
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-.hero-indicadores button::before {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, .75);
-  background: transparent;
-  transition: var(--transicion);
-}
-.hero-indicadores button.activo::before {
-  background: var(--naranja);
-  border-color: var(--naranja);
-  width: 28px;
-  border-radius: 50px;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(115deg,
+              rgba(192, 192, 192, .55) 0%,
+              rgba(192, 192, 192, .18) 35%,
+              rgba(92, 74, 32, 0) 60%,
+              rgba(192, 192, 192, .38) 100%);
+  mix-blend-mode: color-dodge;
+  opacity: .55;
 }
 
-/* Capa oscura semitransparente con tinte turquesa */
+/* Barrido de luz que recorre el hero cada pocos segundos (además del propio
+   crossfade), disparado por JS al cambiar de fotograma — el "destello"
+   literal al intercambiar cortos. */
+.hero-flash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 40%, rgba(243, 233, 211, .55) 50%, transparent 60%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  opacity: 0;
+}
+.hero-flash.destello {
+  animation: destelloOro 1.1s ease-out;
+}
+@keyframes destelloOro {
+  0%   { background-position: 120% 0; opacity: 0; }
+  15%  { opacity: .9; }
+  60%  { opacity: .35; }
+  100% { background-position: -30% 0; opacity: 0; }
+}
+
+/* Lienzo de partículas doradas (motas de luz), dibujado por script.js.
+   Puramente decorativo: si el navegador no ejecuta el script o el usuario
+   prefiere menos movimiento, el hero se ve igual de completo sin él. */
+.hero-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .8;
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-duotone, .hero-flash, .hero-sparkles { display: none; }
+}
+
+/* Capa oscura semitransparente en tono ónix, sobre el B/N + dorado de abajo */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  /* Las 3 fotos del hero son salas de clinica: casi blancas. Con el velo
-     anterior el subtitulo caia a 3.9-4.4:1 sobre las zonas mas claras.
-     Medido pixel a pixel sobre los tres slides, este velo deja el peor caso
-     en 4.67:1 conservando la degradacion. */
   background: linear-gradient(120deg,
-              rgba(0, 26, 28, .82) 0%,
-              rgba(1, 74, 76, .72) 100%);
+              rgba(10, 8, 6, .86) 0%,
+              rgba(22, 19, 15, .68) 100%);
   z-index: -1;
 }
 
 .hero-contenido { padding: 140px 0 100px; }
 
-.hero-etiqueta {
-  display: inline-block;
-  background: rgba(184, 233, 227, .18);
-  border: 1px solid rgba(184, 233, 227, .45);
-  color: var(--turquesa-claro);
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: .85rem;
-  padding: .45rem 1.2rem;
-  border-radius: 50px;
-  margin-bottom: 1.5rem;
-}
-
+/* Solo la marca sobre el fondo dinámico: nada de etiqueta, subtítulo ni
+   botones — el video/fotos en blanco y negro es el protagonista. Mismo
+   degradado dorado que el wordmark del navbar, a escala de titular. */
 .hero-titulo {
-  color: #fff;
-  font-size: clamp(2.2rem, 6vw, 4.3rem);
-  font-weight: 900;
-  line-height: 1.12;
-  margin-bottom: 1.2rem;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+  font-family: var(--fuente-titulo);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .03em;
+  font-size: clamp(4.5rem, 16vw, 13rem);
+  line-height: 1;
+  margin: 0;
+  background: linear-gradient(100deg, var(--silver-100) 0%, var(--naranja) 45%, var(--silver-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--naranja);
+  filter: drop-shadow(0 8px 40px rgba(0, 0, 0, .5));
 }
 
-.hero-subtitulo {
-  color: rgba(255, 255, 255, .9);
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  font-weight: 300;
-  max-width: 680px;
-  margin: 0 auto 2.4rem;
+
+/* ===== 5b. HERO CINE — scrollytelling estilo depaudental.com ===========
+   Imita el mecanismo del banner de Depau: el hero queda "clavado" en
+   pantalla mientras el usuario baja (position:sticky dentro de un
+   contenedor más alto que el viewport) y dos "etapas" se funden entre sí
+   según el progreso del scroll, controlado por JS (ver script.js,
+   sección 14c):
+     Etapa 1 — video en B/N con un wordmark gigante encima (el recurso
+               central del banner de Depau).
+     Etapa 2 — mosaico de 4 fotos con un titular centrado, como su bloque
+               "Transforma vidas".
+   Con prefers-reduced-motion, el pin se desactiva por completo y ambas
+   etapas quedan una debajo de la otra como secciones normales.
+   ========================================================================== */
+.hero-cine {
+  position: relative;
+  height: 240vh;
+}
+.hero-cine-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.hero-botones {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* Flecha animada al pie del hero */
-.hero-scroll {
+/* La etapa 1 reutiliza .hero tal cual, pero ahora vive apilada dentro del
+   pin en vez de ocupar su propio bloque en el flujo normal. */
+.hero {
   position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 44px;
-  height: 44px;
-  border: 2px solid rgba(255, 255, 255, .5);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  z-index: 3;
-  animation: flotar 2s ease-in-out infinite;
+  inset: 0;
 }
-.hero-scroll:hover { background: var(--naranja); border-color: var(--naranja); color: #fff; }
 
-@keyframes flotar {
-  0%, 100% { transform: translate(-50%, 0); }
-  50%      { transform: translate(-50%, 10px); }
+.hero-etapa2 {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  opacity: 0;
+  background: var(--onix);
+  pointer-events: none;
+}
+.hero-etapa2-col {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.hero-etapa2-col img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  filter: grayscale(1) contrast(1.15) brightness(.62);
+}
+.hero-etapa2-col::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 6, .35);
+}
+.hero-etapa2-tagline {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+  pointer-events: none;
+}
+.hero-etapa2-tagline p {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.9rem, 5.5vw, 3.8rem);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--marmol);
+  margin: 0;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, .5);
+}
+.hero-etapa2-tagline strong {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--naranja);
+}
+@media (max-width: 767.98px) {
+  .hero-cine { height: 200vh; }
+  .hero-etapa2-col:nth-child(3),
+  .hero-etapa2-col:nth-child(4) { display: none; } /* 2 columnas alcanzan en pantallas angostas */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cine { height: auto; }
+  .hero-cine-pin { position: static; height: auto; overflow: visible; }
+  .hero { position: relative; inset: auto; }
+  .hero-etapa2 {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 
@@ -563,38 +810,37 @@ html { caret-color: var(--naranja); }
   position: relative;
   overflow: hidden;
   background-color: var(--gris-bg);
-  background-image: radial-gradient(rgba(1, 161, 163, .12) 1.5px, transparent 1.5px);
-  background-size: 26px 26px;
-}
-/* El resplandor superior repite la MISMA curva que .ola-divisor (ver sección
-   16), así el degradado de la sección parece seguir el mismo oleaje con el
-   que termina la sección de arriba, en vez de un óvalo genérico centrado. */
-.fondo-suave::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 130px;
-  background: linear-gradient(0deg, #cdeee8 0%, #eaf7f5 100%);
-  /* La curva es la MISMA que usa .ola-divisor (cerrada hacia abajo, la
-     variante ya probada y libre de auto-intersecciones); se voltea con
-     scaleY para que quede pegada al techo de la sección en vez de crear
-     una "cinta" flotante con hueco, que es lo que pasaba al cerrar la
-     misma curva hacia arriba (los puntos de control se salen del
-     viewBox y el trazo se autointersecta). */
-  transform: scaleY(-1);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z' fill='white'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C280,110 420,-10 720,40 C1020,90 1180,10 1440,55 L1440,100 L0,100 Z' fill='white'/%3E%3C/svg%3E");
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  pointer-events: none;
-  z-index: 0;
-}
-@media (max-width: 767.98px) {
-  .fondo-suave::before { height: 80px; }
 }
 
+/* Secciones claras: alternan con el lienzo oscuro usando el resto de la
+   paleta (Mármol Calacatta / Beige Taupe / Plata) para dar ritmo entre
+   bloques. Al redefinir las variables semánticas, tarjetas, títulos y
+   párrafos ya escritos con --texto/--superficie se adaptan solos.
+   Texto en Warm Charcoal Grey, tal como pide el sistema de diseño. */
+.seccion-clara {
+  --texto: #525252;
+  --texto-suave: #767676;
+  --superficie: var(--marmol);
+  --superficie-borde: rgba(192, 192, 192, .35);
+  --sombra: 0 10px 28px rgba(28, 28, 28, .12);
+  --sombra-hover: 0 20px 46px rgba(28, 28, 28, .18);
+  --acento-legible: var(--naranja-accion);
+  --acento-legible-hover: var(--onix);
+  color: var(--texto);
+}
+.seccion-clara.fondo-arena  { background: var(--arena-perla); }
+.seccion-clara.fondo-plata  { background: var(--plata); }
+
+/* Mármol Calacatta: base blanca + vetas sutiles (grises y un hilo dorado),
+   reservado solo para este fondo — el resto de secciones claras/oscuras
+   siguen lisas a propósito. */
+.seccion-clara.fondo-marmol {
+  background-color: var(--marmol);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 18% 15%, rgba(120, 118, 112, .06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 45% at 85% 80%, rgba(192, 192, 192, .05) 0%, transparent 60%),
+    repeating-linear-gradient(115deg, rgba(120, 118, 112, .04) 0px, transparent 1.5px, transparent 40px, rgba(120, 118, 112, .04) 41px);
+}
 
 .titulo-seccion {
   font-size: clamp(1.9rem, 4vw, 2.9rem);
@@ -602,11 +848,18 @@ html { caret-color: var(--naranja); }
   color: var(--texto);
 }
 
+/* Subtítulos de sección: sans geométrica en mayúsculas trackeadas, igual
+   que los menús — la única línea "de etiqueta" entre el titular serif y
+   el cuerpo de texto en Lato. */
 .subtitulo-seccion {
   color: var(--texto-suave);
   max-width: 620px;
   margin: 0 auto;
-  font-weight: 300;
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
 }
 
 .parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }
@@ -626,7 +879,9 @@ html { caret-color: var(--naranja); }
   width: 100%;
   aspect-ratio: 4 / 3.2;
   object-fit: cover;
+  transition: transform .6s cubic-bezier(.16, 1, .3, 1);
 }
+.marco-imagen:hover img { transform: scale(1.04); }
 /* Marco de líneas detrás de la imagen (antes era un cuadro sólido; un
    contorno da profundidad sin sumar otra forma rellena a la sección). */
 .marco-imagen::before {
@@ -656,7 +911,7 @@ html { caret-color: var(--naranja); }
   color: #fff;
   padding: 1.1rem 1.5rem;
   border-radius: 18px 6px 18px 6px;
-  box-shadow: 0 12px 30px rgba(246, 94, 9, .35);
+  box-shadow: 0 12px 30px rgba(192, 192, 192, .4);
   display: flex;
   align-items: center;
   gap: .8rem;
@@ -696,7 +951,7 @@ html { caret-color: var(--naranja); }
   display: grid;
   place-items: center;
   font-size: 1.15rem;
-  box-shadow: 0 6px 14px rgba(1, 161, 163, .18);
+  box-shadow: 0 6px 14px rgba(192, 192, 192, .2);
 }
 
 /* Línea que conecta los íconos de la lista, como una mini-trayectoria */
@@ -714,7 +969,8 @@ html { caret-color: var(--naranja); }
 /* ===== 8. FRANJA DE ESTADÍSTICAS ======================================== */
 .franja-stats {
   position: relative;
-  background: linear-gradient(120deg, var(--turquesa-claro) 0%, #cdeee8 100%);
+  overflow: hidden;
+  background: var(--gris-bg);
   padding: 60px 0;
 }
 .franja-stats::before,
@@ -722,9 +978,9 @@ html { caret-color: var(--naranja); }
   content: '';
   position: absolute;
   left: 0; right: 0;
-  height: 3px;
-  background: repeating-linear-gradient(90deg, var(--turquesa) 0 14px, transparent 14px 24px);
-  opacity: .3;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--naranja) 0 14px, transparent 14px 24px);
+  opacity: .5;
 }
 .franja-stats::before { top: 0; }
 .franja-stats::after  { bottom: 0; }
@@ -736,15 +992,15 @@ html { caret-color: var(--naranja); }
     right: -2px; top: 15%;
     height: 70%;
     width: 1px;
-    background: rgba(1, 161, 163, .25);
+    background: rgba(192, 192, 192, .3);
   }
   .franja-stats .row > div:last-child::after { display: none; }
 }
 .stat-numero {
   font-family: var(--fuente-titulo);
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 900;
-  color: var(--turquesa-osc);
+  font-weight: 600;
+  color: var(--naranja);
   line-height: 1;
 }
 .stat-texto {
@@ -758,9 +1014,9 @@ html { caret-color: var(--naranja); }
 /* ===== 9. CARDS DE ESPECIALIDADES ======================================= */
 .card-especialidad {
   position: relative;
-  border: 0;
+  border: 1px solid var(--superficie-borde);
   border-radius: var(--radio-tag);
-  background: #fff;
+  background: var(--superficie);
   box-shadow: var(--sombra);
   overflow: hidden;
   transition: var(--transicion);
@@ -782,7 +1038,7 @@ html { caret-color: var(--naranja); }
 .card-especialidad:hover::before { transform: scaleX(1); }
 
 .card-especialidad:hover {
-  transform: translateY(-10px);
+  transform: translateY(-12px) scale(1.02);
   box-shadow: var(--sombra-hover);
 }
 
@@ -795,12 +1051,12 @@ html { caret-color: var(--naranja); }
   font-size: 1.6rem;
   border-radius: 18px 6px 18px 6px;
   margin-bottom: 1.3rem;
-  box-shadow: 0 8px 18px rgba(1, 161, 163, .16);
+  box-shadow: 0 8px 18px rgba(192, 192, 192, .2);
   transition: var(--transicion);
 }
 .card-especialidad:hover .icono-especialidad {
   background: var(--naranja);
-  color: #fff;
+  color: var(--onix);
   transform: rotate(-8deg) scale(1.06);
 }
 
@@ -816,10 +1072,10 @@ html { caret-color: var(--naranja); }
 }
 
 .enlace-card {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   font-size: .9rem;
-  color: var(--naranja);
+  color: var(--acento-legible);
   /* Area tactil: el texto medía 20px de alto */
   display: inline-flex;
   align-items: center;
@@ -827,7 +1083,7 @@ html { caret-color: var(--naranja); }
   min-height: 44px;
 }
 .enlace-card i { transition: transform .3s ease; }
-.enlace-card:hover { color: var(--naranja-oscuro); }
+.enlace-card:hover { color: var(--acento-legible-hover); }
 .enlace-card:hover i { transform: translateX(6px); }
 
 
@@ -852,13 +1108,13 @@ html { caret-color: var(--naranja); }
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(1, 92, 94, .55);
-  color: #fff;
+  background: rgba(10, 8, 6, .68);
+  color: var(--marmol);
   font-size: 1.4rem;
   opacity: 0;
   transition: var(--transicion);
 }
-.galeria-item:hover img { transform: scale(1.1); }
+.galeria-item:hover img { transform: scale(1.16) rotate(1deg); }
 .galeria-item:hover .galeria-overlay { opacity: 1; }
 
 
@@ -866,12 +1122,14 @@ html { caret-color: var(--naranja); }
 .banda-cta {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(115deg, var(--turquesa-accion) 0%, var(--turquesa-profundo) 100%);
-  color: #fff;
+  background: var(--turquesa-profundo);
+  border-top: 1px solid rgba(192, 192, 192, .28);
+  border-bottom: 1px solid rgba(192, 192, 192, .28);
+  color: var(--marmol);
   padding: 70px 0;
 }
-.banda-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); }
-.banda-cta p  { color: rgba(255, 255, 255, .88); }
+.banda-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); color: var(--silver-100); }
+.banda-cta p  { color: rgba(250, 248, 244, .82); }
 
 
 /* ===== 11. FOOTER ======================================================= */
@@ -885,19 +1143,24 @@ html { caret-color: var(--naranja); }
 }
 
 .footer {
-  background: #06282a;             /* turquesa muy oscuro para contraste */
-  color: rgba(255, 255, 255, .78);
-  padding: 80px 0 0;
+  background: var(--onix);
+  color: rgba(250, 248, 244, .78);
+  padding: 90px 0 0;
+  border-top: 1px solid rgba(192, 192, 192, .18);
 }
 
 .marca-footer { display: inline-flex; }
-.marca-footer .marca-slogan { color: var(--turquesa-claro); text-transform: none; letter-spacing: .5px; font-weight: 600; }
+.marca-footer .marca-slogan { color: var(--turquesa-claro); text-transform: none; letter-spacing: .5px; font-weight: 500; }
 
 .footer-titulo {
   display: inline-block;
-  color: #fff;
-  font-size: 1.2rem;
-  margin-bottom: 1.2rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--marmol);
+  font-size: .95rem;
+  margin-bottom: 1.3rem;
   position: relative;
   padding-bottom: .6rem;
 }
@@ -948,18 +1211,38 @@ html { caret-color: var(--naranja); }
   transform: translateY(-4px);
 }
 
-/* Mapa */
+/* Mapa: selector Matriz/Sucursal, minimalista */
+.mapa-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.mapa-tab {
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: .5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: transparent;
+  color: rgba(255, 255, 255, .6);
+  transition: var(--transicion);
+}
+.mapa-tab:hover { border-color: var(--naranja); color: #fff; }
+.mapa-tab.activo { background: var(--naranja); border-color: var(--naranja); color: var(--onix); }
+
 .mapa-contenedor {
+  position: relative;
   border-radius: var(--radio-sm);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
   line-height: 0;                  /* elimina el hueco bajo el iframe */
 }
+.mapa-iframe { display: none; width: 100%; height: 260px; border: 0; filter: grayscale(.3) contrast(1.05); }
+.mapa-iframe.activo { display: block; }
 
 /* Formulario del footer */
 .form-footer .form-label {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   font-size: .85rem;
   color: #fff;
   margin-bottom: .3rem;
@@ -975,14 +1258,14 @@ html { caret-color: var(--naranja); }
 .form-footer .form-control::placeholder { color: rgba(255, 255, 255, .4); }
 .form-footer .form-control:focus {
   background: rgba(255, 255, 255, .12);
-  border-color: var(--turquesa-claro);
-  box-shadow: 0 0 0 .2rem rgba(184, 233, 227, .18);
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 .2rem rgba(192, 192, 192, .22);
   color: #fff;
 }
 /* Estado de error (lo activa el JS) */
 .form-footer .form-control.error {
-  border-color: var(--naranja);
-  box-shadow: 0 0 0 .2rem rgba(246, 94, 9, .2);
+  border-color: var(--gold-900);
+  box-shadow: 0 0 0 .2rem rgba(92, 74, 32, .3);
 }
 
 .form-aviso {
@@ -1025,6 +1308,18 @@ html { caret-color: var(--naranja); }
 }
 .wsp-flotante:hover { color: #fff; transform: scale(1.08); }
 
+/* Micro-acento esmeralda: punto de "disponible ahora", en dosis mínima,
+   la única aparición del verde de la pared viva del local en toda la UI. */
+.wsp-flotante::after {
+  content: '';
+  position: absolute;
+  top: 1px; right: 1px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--esmeralda);
+  border: 2px solid var(--onix);
+}
+
 @keyframes pulso {
   0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
   70%  { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
@@ -1049,20 +1344,173 @@ html { caret-color: var(--naranja); }
 
 
 /* ===== 13. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ====================== */
+/* Bidireccional (ver script.js): entra con fuerza al bajar (recorrido largo
+   en Y + escala bien marcada) y se retira limpiamente al subir, usando el
+   mismo par de propiedades en las dos direcciones. Solo transform/opacity:
+   son las únicas dos propiedades que el compositor anima sin tocar layout
+   ni pintado, así se sostienen los 60 FPS aunque haya muchos elementos
+   animando a la vez (grillas de tarjetas, listas largas, etc.). */
 .revelar {
   opacity: 0;
-  transform: translateY(35px);
-  transition: opacity .8s ease, transform .8s ease;
+  transform: translateY(70px) scale(.9) rotateX(8deg);
+  transform-origin: center bottom;
+  filter: blur(9px);
+  transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
+              transform .7s cubic-bezier(.16, 1, .3, 1),
+              filter .7s cubic-bezier(.16, 1, .3, 1);
+  will-change: transform, opacity, filter;
 }
 .revelar.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1) rotateX(0);
+  filter: blur(0);
 }
+/* El giro 3D solo se aprecia si el contenedor define perspectiva. */
+.row, .lista-caracteristicas, .container { perspective: 1200px; }
+
+/* En móvil se acorta el recorrido (no se elimina): 80px de traslado o 8° de
+   inclinación en una pantalla pequeña se sienten como salto, no como lujo.
+   El desenfoque también baja, ya que un blur grande sobre una pantalla
+   chica reduce contraste de golpe en vez de sentirse elegante. */
+@media (max-width: 767.98px) {
+  .revelar { transform: translateY(42px) scale(.94) rotateX(4deg); filter: blur(5px); }
+}
+/* Cascada dorada: varias .revelar seguidas dentro de la misma fila/lista
+   entran en secuencia marcada (no todas a la vez), como si la luz
+   recorriera la sección. Escalonado amplio a propósito ("staggering
+   prominente"); se resetea a 0 al llegar a .revelar suelto (nth-child(1)). */
+.row > .revelar:nth-child(1),
+.lista-caracteristicas > li:nth-child(1) { transition-delay: 0s; }
+.row > .revelar:nth-child(2),
+.lista-caracteristicas > li:nth-child(2) { transition-delay: .12s; }
+.row > .revelar:nth-child(3),
+.lista-caracteristicas > li:nth-child(3) { transition-delay: .24s; }
+.row > .revelar:nth-child(4),
+.lista-caracteristicas > li:nth-child(4) { transition-delay: .36s; }
+.row > .revelar:nth-child(5) { transition-delay: .48s; }
+.row > .revelar:nth-child(6) { transition-delay: .6s; }
+.row > .revelar:nth-child(7) { transition-delay: .72s; }
+.row > .revelar:nth-child(8) { transition-delay: .84s; }
+.row > .revelar:nth-child(9) { transition-delay: .96s; }
+
+/* En móvil el escalonado se reduce (no se elimina): con columnas apiladas
+   una fila puede tener muchos elementos y una demora acumulada larga se
+   siente como lentitud del sitio, no como dinamismo. */
+@media (max-width: 767.98px) {
+  .row > .revelar:nth-child(2), .lista-caracteristicas > li:nth-child(2) { transition-delay: .06s; }
+  .row > .revelar:nth-child(3), .lista-caracteristicas > li:nth-child(3) { transition-delay: .12s; }
+  .row > .revelar:nth-child(4), .lista-caracteristicas > li:nth-child(4) { transition-delay: .18s; }
+  .row > .revelar:nth-child(5) { transition-delay: .24s; }
+  .row > .revelar:nth-child(6) { transition-delay: .3s; }
+  .row > .revelar:nth-child(7) { transition-delay: .36s; }
+  .row > .revelar:nth-child(8) { transition-delay: .42s; }
+  .row > .revelar:nth-child(9) { transition-delay: .48s; }
+}
+
+/* Trazo dorado bajo el título de cada sección: dibuja de 0 a su ancho final
+   justo cuando el bloque entra en pantalla — el "paso de sección" que
+   conecta cada bloque con la paleta de marca sin depender de curvas u olas. */
+.titulo-seccion {
+  position: relative;
+  display: inline-block;
+}
+.titulo-seccion::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--naranja), transparent);
+  transition: width 1s cubic-bezier(.25, .8, .25, 1) .25s;
+  transform: translateX(-50%);
+}
+.titulo-seccion.text-start::after { left: 0; transform: none; background: linear-gradient(90deg, var(--naranja), transparent); }
+.revelar.visible .titulo-seccion::after { width: 90px; }
+
+
+/* ===== 13b. TRANSICIONES ENTRE SECCIONES ================================
+   Cada bloque principal de la página de inicio usa un tipo de máscara
+   distinto — a propósito, para que el recorrido se sienta variado en vez
+   de repetir siempre el mismo obturador. El disparador (JS, .abierta) es
+   idéntico para todas: no hace falta tocar el observer al sumar variantes.
+   Requiere que el contenedor tenga position:relative + overflow:hidden
+   (ya lo tienen .seccion-decorada, .franja-stats, .banda-cta y .footer). */
+
+/* Base: obturador horizontal — dos paneles que se abren hacia los lados.
+   Es el efecto de "apertura"; se usa una sola vez (Nosotros, justo después
+   del hero) y no se repite en ningún otro bloque. */
+.cortina {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  pointer-events: none;
+}
+.cortina-panel {
+  flex: 1 1 50%;
+  background: var(--onix);
+  transition: transform 1.05s cubic-bezier(.65, 0, .35, 1);
+}
+.cortina-panel.izq { border-right: 1px solid rgba(192, 192, 192, .5); }
+.cortina-panel.der { border-left: 1px solid rgba(192, 192, 192, .5); }
+.cortina.abierta .cortina-panel.izq { transform: translateX(-100%); }
+.cortina.abierta .cortina-panel.der { transform: translateX(100%); }
+
+/* Diagonal (clip-path): un plano con corte al bisel que se retira hacia
+   la esquina — clip-path es, junto a transform/opacity, la tercera
+   propiedad que el compositor anima sin recalcular layout. */
+.cortina-diagonal .cortina-panel {
+  flex: 1 1 100%;
+  border: none;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path 1.05s cubic-bezier(.65, 0, .35, 1);
+}
+.cortina-diagonal.abierta .cortina-panel {
+  clip-path: polygon(135% -35%, 240% -35%, 240% 135%, 135% 135%);
+}
+
+/* Deslizar desde un lado: un único plano sale por la izquierda o la
+   derecha (no ambos a la vez), como si la sección entrara empujándolo. */
+.cortina-desliza-izq .cortina-panel,
+.cortina-desliza-der .cortina-panel {
+  flex: 1 1 100%;
+  border: none;
+}
+.cortina-desliza-izq.abierta .cortina-panel { transform: translateX(-100%); }
+.cortina-desliza-der.abierta .cortina-panel { transform: translateX(100%); }
+
+/* Vertical: el plano sale hacia arriba, único eje distinto entre las
+   variantes — refuerza que no todas las secciones se sientan iguales. */
+.cortina-vertical .cortina-panel {
+  flex: 1 1 100%;
+  border: none;
+}
+.cortina-vertical.abierta .cortina-panel { transform: translateY(-100%); }
+
+/* Difuminado: sin desplazamiento, el plano se desvanece Y se desenfoca a la
+   vez — la sección anterior "se disuelve en niebla" en vez de ser empujada
+   a un lado; blur + opacity es lo que le da el aire "de más" que se pidió. */
+.cortina-difuminado .cortina-panel {
+  flex: 1 1 100%;
+  border: none;
+  filter: blur(0);
+  transition: opacity 1.1s ease, filter 1.1s ease;
+}
+.cortina-difuminado.abierta .cortina-panel { opacity: 0; filter: blur(22px); }
+
+/* El footer no lleva cortina: cierra el recorrido en quietud, sin más
+   animación que los estados de hover normales — el broche minimalista
+   después de tanto movimiento en el resto de la página. */
+
 /* Respeta a usuarios que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
-  .revelar { opacity: 1; transform: none; transition: none; }
+  .revelar { opacity: 1; transform: none; filter: none; transition: none; }
+  .row > .revelar, .lista-caracteristicas > li { transition-delay: 0s; }
+  .titulo-seccion::after { transition: none; }
+  .cortina { display: none; }
   html { scroll-behavior: auto; }
-  .wsp-flotante, .hero-scroll { animation: none; }
+  .wsp-flotante { animation: none; }
   .hero-slide-img { animation: none; }
 }
 
@@ -1076,11 +1524,6 @@ html { caret-color: var(--naranja); }
 @media (max-width: 767.98px) {
   .hero { min-height: 88vh; min-height: 88svh; }
   .hero-contenido { padding: 120px 0 90px; }
-  .hero-botones .btn { width: 100%; }      /* botones full-width en móvil */
-  /* Margen extra antes de los indicadores del carrusel: con 2 botones
-     full-width apilados, el bloque centrado puede quedar muy cerca (o
-     encima) de los puntos/flecha que están anclados al fondo del hero. */
-  .hero-botones { margin-bottom: 3rem; }
   .seccion { padding: 72px 0; }
   .footer { padding-top: 60px; }
   .footer-bottom { justify-content: center; text-align: center; }
@@ -1114,7 +1557,7 @@ html { caret-color: var(--naranja); }
 
 /* Rejilla de puntos sutil, útil como textura de fondo alternativa */
 .textura-puntos {
-  background-image: radial-gradient(rgba(1, 161, 163, .18) 1.5px, transparent 1.5px);
+  background-image: radial-gradient(rgba(192, 192, 192, .2) 1.5px, transparent 1.5px);
   background-size: 26px 26px;
 }
 
@@ -1128,19 +1571,6 @@ html { caret-color: var(--naranja); }
 
 @media (max-width: 767.98px) {
   .forma { filter: blur(50px); }
-}
-
-/* ----- Líneas curvas decorativas (SVG) ----------------------------------
-   Trazos sueltos en los colores de marca para romper la monotonía de las
-   manchas circulares. El SVG se posiciona igual que .forma. ----------------- */
-.linea-curva {
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-  opacity: .5;
-}
-@media (max-width: 767.98px) {
-  .linea-curva { opacity: .35; }
 }
 
 /* ----- Micro-interacción: las formas responden al movimiento del cursor -- */
@@ -1234,36 +1664,14 @@ html { caret-color: var(--naranja); }
 .marco-esquina.abajo-der  { bottom: -10px; right: -10px; border-left: 0; border-top: 0; border-radius: 0 0 6px 0; }
 @media (max-width: 767.98px) { .marco-esquina { display: none; } }
 
-/* Subrayado tipo garabato bajo una palabra clave dentro de un título */
-.garabato { position: relative; display: inline-block; white-space: nowrap; }
-.garabato svg {
-  position: absolute;
-  left: 2%; bottom: -.18em;
-  width: 96%; height: .28em;
-  overflow: visible;
-}
-
-
-/* ===== 16. OLA DIVISORA ENTRE SECCIONES ================================= */
-.ola-divisor {
-  position: absolute;
-  left: 0; right: 0; bottom: -1px;
-  line-height: 0;
-  z-index: 1;
-}
-.ola-divisor svg { width: 100%; height: 70px; display: block; }
-@media (max-width: 767.98px) {
-  .ola-divisor svg { height: 40px; }
-}
-
-
 /* ===== 17. BANNER DE PÁGINAS INTERIORES ================================= */
 .banner-pagina {
   position: relative;
   overflow: hidden;
   padding: 175px 0 110px;
-  background: linear-gradient(125deg, var(--turquesa-profundo) 0%, var(--turquesa-accion) 55%, #017c7e 100%);
-  color: #fff;
+  background: var(--turquesa-profundo);
+  border-bottom: 1px solid rgba(192, 192, 192, .22);
+  color: var(--marmol);
   text-align: center;
 }
 .banner-pagina .forma-durazno { opacity: .14; }
@@ -1276,9 +1684,10 @@ html { caret-color: var(--naranja); }
   width: fit-content;
   margin: 0 auto 1.4rem;
   gap: .6rem;
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: 1rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 500;
+  letter-spacing: .5px;
+  font-size: .92rem;
   color: rgba(255, 255, 255, .8);
   padding: .5rem 1.2rem;
   background: rgba(255, 255, 255, .1);
@@ -1328,13 +1737,13 @@ html { caret-color: var(--naranja); }
   object-position: center 18%;
   transition: var(--transicion);
 }
-.tarjeta-equipo:hover .tarjeta-equipo-foto img { transform: scale(1.06); }
+.tarjeta-equipo:hover .tarjeta-equipo-foto img { transform: scale(1.1); }
 
 .tarjeta-equipo-foto::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(1, 92, 94, .75) 0%, transparent 45%);
+  background: linear-gradient(0deg, rgba(10, 8, 6, .8) 0%, transparent 45%);
   opacity: 0;
   transition: var(--transicion);
 }
@@ -1342,19 +1751,20 @@ html { caret-color: var(--naranja); }
 
 .tarjeta-equipo-redes {
   position: absolute;
-  left: 0; right: 0; bottom: -50px;
+  left: 0; right: 0; bottom: 18px;
   display: flex;
   justify-content: center;
   gap: .6rem;
-  transition: var(--transicion);
+  transform: translateY(28px);
   opacity: 0;
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1), opacity .4s ease;
 }
-.tarjeta-equipo:hover .tarjeta-equipo-redes { bottom: 18px; opacity: 1; }
+.tarjeta-equipo:hover .tarjeta-equipo-redes { transform: translateY(0); opacity: 1; }
 .tarjeta-equipo-redes a {
   width: 38px; height: 38px;
   display: grid;
   place-items: center;
-  background: #fff;
+  background: var(--marmol);
   color: var(--turquesa-osc);
   border-radius: 50%;
   font-size: .95rem;
@@ -1364,12 +1774,12 @@ html { caret-color: var(--naranja); }
 .tarjeta-equipo h3 { font-size: 1.15rem; margin-bottom: .2rem; }
 .tarjeta-equipo-rol {
   display: inline-block;
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   font-size: .8rem;
   letter-spacing: .5px;
-  color: var(--naranja);
-  background: rgba(246, 94, 9, .08);
+  color: var(--naranja-accion);
+  background: rgba(192, 192, 192, .12);
   padding: .25rem .9rem;
   border-radius: 50px;
 }
@@ -1383,7 +1793,7 @@ html { caret-color: var(--naranja); }
   left: 24px;
   top: 6px; bottom: 6px;
   width: 3px;
-  background: linear-gradient(var(--turquesa-claro), var(--turquesa), var(--turquesa-claro));
+  background: linear-gradient(var(--turquesa-claro), var(--naranja), var(--turquesa-claro));
   border-radius: 3px;
 }
 .timeline-item { position: relative; padding-left: 68px; margin-bottom: 2.6rem; }
@@ -1394,13 +1804,13 @@ html { caret-color: var(--naranja); }
   width: 34px; height: 34px;
   border-radius: 50%;
   background: var(--naranja-accion);
-  color: #fff;
+  color: var(--marmol);
   display: grid;
   place-items: center;
   font-size: .85rem;
-  font-family: var(--fuente-titulo);
-  font-weight: 800;
-  box-shadow: 0 0 0 6px #fff, 0 6px 16px rgba(246, 94, 9, .35);
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  box-shadow: 0 0 0 6px var(--marmol), 0 6px 16px rgba(192, 192, 192, .4);
 }
 .timeline-item h3 { font-size: 1.1rem; margin-bottom: .3rem; }
 .timeline-item p { color: var(--texto-suave); margin: 0; font-size: .95rem; }
@@ -1417,7 +1827,8 @@ html { caret-color: var(--naranja); }
   height: 100%;
   padding: 2.4rem 2rem;
   border-radius: var(--radio-tag);
-  background: #fff;
+  border: 1px solid var(--superficie-borde);
+  background: var(--superficie);
   box-shadow: var(--sombra);
   transition: var(--transicion);
 }
@@ -1441,12 +1852,10 @@ html { caret-color: var(--naranja); }
 /* ===== 21. TRATAMIENTOS EN PROFUNDIDAD ================================== */
 .bloque-tratamiento {
   padding: 90px 0;
-  border-bottom: 1px solid rgba(1, 161, 163, .08);
+  border-bottom: 1px solid rgba(192, 192, 192, .14);
 }
 .bloque-tratamiento:nth-child(odd) {
   background-color: var(--gris-bg);
-  background-image: radial-gradient(rgba(1, 161, 163, .10) 1.5px, transparent 1.5px);
-  background-size: 26px 26px;
 }
 .bloque-tratamiento:last-of-type { border-bottom: 0; }
 
@@ -1512,9 +1921,9 @@ html { caret-color: var(--naranja); }
   width: 70px; height: 70px;
   margin: 0 auto 1.3rem;
   border-radius: 50%;
-  background: #fff;
+  background: var(--superficie);
   border: 3px solid var(--turquesa-claro);
-  color: var(--turquesa-osc);
+  color: var(--naranja);
   display: grid;
   place-items: center;
   font-family: var(--fuente-titulo);
@@ -1542,7 +1951,7 @@ html { caret-color: var(--naranja); }
   left: 12%;
   width: 76%;
   height: 3px;
-  background: repeating-linear-gradient(90deg, var(--turquesa-claro) 0 10px, transparent 10px 18px);
+  background: repeating-linear-gradient(90deg, rgba(192, 192, 192, .45) 0 10px, transparent 10px 18px);
   z-index: 0;
 }
 @media (max-width: 767.98px) { .proceso-linea { display: none; } }
@@ -1556,22 +1965,22 @@ html { caret-color: var(--naranja); }
   gap: .7rem;
 }
 .filtro-btn {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   font-size: .85rem;
   padding: .55rem 1.4rem;
   border-radius: 50px;
   border: 2px solid var(--turquesa-claro);
-  background: #fff;
+  background: var(--superficie);
   color: var(--texto);
   transition: var(--transicion);
 }
-.filtro-btn:hover { border-color: var(--turquesa-accion); color: var(--turquesa-accion); }
+.filtro-btn:hover { border-color: var(--naranja); color: var(--naranja); }
 .filtro-btn.activo {
-  background: var(--turquesa-accion);
-  border-color: var(--turquesa-accion);
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(1, 161, 163, .3);
+  background: var(--naranja);
+  border-color: var(--naranja);
+  color: var(--onix);
+  box-shadow: 0 8px 20px rgba(22, 19, 15, .3);
 }
 
 .item-galeria-grande {
@@ -1603,7 +2012,7 @@ html { caret-color: var(--naranja); }
 #modalLightbox .btn-close {
   position: absolute;
   top: -46px; right: 0;
-  background-color: #fff;
+  background-color: var(--marmol);
   border-radius: 50%;
   opacity: 1;
   padding: .6rem;
@@ -1613,8 +2022,8 @@ html { caret-color: var(--naranja); }
   color: #fff;
   text-align: center;
   margin-top: 1rem;
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
 }
 
 
@@ -1638,11 +2047,12 @@ html { caret-color: var(--naranja); }
 .faq-categoria-titulo h2 { font-size: 1.35rem; margin: 0; }
 
 .acordeon-faq .accordion-item {
-  border: 0;
+  border: 1px solid var(--superficie-borde);
   border-left: 3px solid transparent;
   margin-bottom: 1rem;
   border-radius: var(--radio-sm) !important;
   overflow: hidden;
+  background: var(--superficie);
   box-shadow: var(--sombra);
   transition: border-color .3s ease;
 }
@@ -1650,21 +2060,31 @@ html { caret-color: var(--naranja); }
   border-left-color: var(--naranja);
 }
 .acordeon-faq .accordion-button {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   color: var(--texto);
   padding: 1.2rem 1.5rem;
-  background: #fff;
+  background: var(--superficie);
 }
 .acordeon-faq .accordion-button:not(.collapsed) {
   color: var(--turquesa-profundo);
   background: var(--turquesa-claro);
   box-shadow: none;
 }
+/* Micro-acento esmeralda: punto de "pregunta activa", dosis mínima */
+.acordeon-faq .accordion-button:not(.collapsed)::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--esmeralda);
+  margin-right: .7rem;
+}
 .acordeon-faq .accordion-button:focus { box-shadow: none; border-color: transparent; }
+.acordeon-faq .accordion-body { background: var(--superficie); }
 .acordeon-faq .accordion-button::after {
   filter: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23f65e09'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23B08D4A'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
 }
 .acordeon-faq .accordion-body {
   padding: 0 1.5rem 1.4rem;
@@ -1674,7 +2094,7 @@ html { caret-color: var(--naranja); }
 
 .tarjeta-ayuda {
   position: relative;
-  background: linear-gradient(120deg, var(--turquesa-accion), var(--turquesa-profundo));
+  background: var(--turquesa-accion);
   color: #fff;
   border-radius: var(--radio);
   padding: 3rem 2rem;
@@ -1758,7 +2178,7 @@ html { caret-color: var(--naranja); }
   transform: translate(-50%, -50%);
   width: 46px; height: 46px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--marmol);
   color: var(--turquesa-osc);
   display: grid;
   place-items: center;
@@ -1773,8 +2193,8 @@ html { caret-color: var(--naranja); }
 .comparador-tag {
   position: absolute;
   top: 16px;
-  font-family: var(--fuente-titulo);
-  font-weight: 800;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
   font-size: .72rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -1784,7 +2204,7 @@ html { caret-color: var(--naranja); }
   pointer-events: none;
   z-index: 1;
 }
-.comparador-tag-antes  { left: 16px; background: rgba(43, 58, 58, .78); backdrop-filter: blur(3px); }
+.comparador-tag-antes  { left: 16px; background: rgba(22, 19, 15, .78); backdrop-filter: blur(3px); }
 .comparador-tag-despues{ right: 16px; background: var(--naranja-accion); }
 
 .comparador-rango {
@@ -1801,8 +2221,8 @@ html { caret-color: var(--naranja); }
 .comparador-rango::-moz-range-thumb:active { background-color: var(--naranja-oscuro); }
 .comparador-rango::-webkit-slider-runnable-track { background-color: var(--turquesa-claro); }
 .comparador-rango::-moz-range-track { background-color: var(--turquesa-claro); }
-.comparador-rango:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(246, 94, 9, .3); }
-.comparador-rango:focus::-moz-range-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(246, 94, 9, .3); }
+.comparador-rango:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(192, 192, 192, .35); }
+.comparador-rango:focus::-moz-range-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(192, 192, 192, .35); }
 .comparador-nota {
   text-align: center;
   font-size: .78rem;
@@ -1824,11 +2244,7 @@ html { caret-color: var(--naranja); }
 @media (max-height: 480px) and (orientation: landscape) {
   .hero { min-height: 100vh; }
   .hero-contenido { padding: 90px 0 50px; }
-  .hero-titulo { font-size: clamp(1.6rem, 5vw, 2.4rem); margin-bottom: .6rem; }
-  .hero-subtitulo { display: none; }
-  .hero-etiqueta { margin-bottom: .8rem; }
-  .hero-indicadores { bottom: 14px; }
-  .hero-scroll { display: none; }
+  .hero-titulo { font-size: clamp(2.2rem, 10vw, 4rem); }
 
   .banner-pagina { padding: 100px 0 40px; min-height: 0; }
   .banner-pagina h1 { font-size: clamp(1.3rem, 4vw, 1.9rem); margin: .4rem 0 0; }

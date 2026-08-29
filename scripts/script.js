@@ -6,7 +6,9 @@
      3. Cierre automático del menú en móvil
      4. Botón "volver arriba"
      5. Animaciones de aparición (IntersectionObserver)
+     5b. Transición "cierre" entre secciones (paneles tipo obturador)
      6. Contadores animados de estadísticas
+     6b. Selector de mapa (Matriz / Sucursal) en el footer
      7. Formulario del footer -> API de WhatsApp
      8. Año automático en el footer
      9. Galería: filtros por categoría
@@ -77,11 +79,12 @@ document.addEventListener('DOMContentLoaded', function () {
   controlarNavbar(); // se ejecuta una vez por si la página carga ya desplazada
 
 
-  /* ===== 3. MENÚ HAMBURGUESA (móvil/tablet) =============================
-     Implementación propia con grid-template-rows (ver estilos.css) en vez
-     del Collapse de Bootstrap: éste anima "height" midiendo el alto con
-     JS en cada apertura/cierre, y ese recálculo de layout en cada frame
-     era justo lo que causaba el tirón al cerrar el menú.
+  /* ===== 3. MENÚ HAMBURGUESA (pantalla completa, todos los dispositivos) ==
+     Implementación propia (no el Collapse de Bootstrap): el panel ahora
+     cubre todo el viewport (ver estilos.css), así que bloqueamos el scroll
+     del body mientras está abierto — evita que el fondo se desplace detrás
+     del desenfoque y de paso impide que la barra superior se oculte por
+     scroll (navbar-oculto) mientras el menú está desplegado.
      ======================================================================== */
   const menu = document.getElementById('menuPrincipal');
   const botonMenu = document.querySelector('.navbar-toggler');
@@ -92,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const nuevoEstado = forzarCerrado ? false : !abierto;
     menu.classList.toggle('menu-abierto', nuevoEstado);
     botonMenu.setAttribute('aria-expanded', String(nuevoEstado));
+    document.body.style.overflow = nuevoEstado ? 'hidden' : '';
   }
 
   if (botonMenu) {
@@ -115,26 +119,54 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  /* ===== 5. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ==================== */
+  /* ===== 5. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ====================
+     Bidireccional: aparece con un pequeño escalonado al bajar y se retira
+     de inmediato (sin escalonado, para que se sienta "limpio") al subir.
+     Se guarda el temporizador pendiente por elemento para poder cancelarlo
+     si el usuario invierte el scroll antes de que llegue a dispararse. */
   const elementosRevelar = document.querySelectorAll('.revelar');
+  const temporizadoresRevelar = new WeakMap();
 
   if ('IntersectionObserver' in window) {
-    const observador = new IntersectionObserver(function (entradas, obs) {
+    const observador = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada, indice) {
+        const pendiente = temporizadoresRevelar.get(entrada.target);
+        if (pendiente) clearTimeout(pendiente);
+
         if (entrada.isIntersecting) {
-          // Pequeño retardo escalonado para un efecto más elegante
-          setTimeout(function () {
+          const id = setTimeout(function () {
             entrada.target.classList.add('visible');
           }, indice * 100);
-          obs.unobserve(entrada.target); // se anima una sola vez
+          temporizadoresRevelar.set(entrada.target, id);
+        } else {
+          entrada.target.classList.remove('visible');
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 
     elementosRevelar.forEach(function (el) { observador.observe(el); });
   } else {
     // Fallback para navegadores antiguos: se muestra todo directamente
     elementosRevelar.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+
+  /* ===== 5b. TRANSICIÓN "CIERRE" ENTRE SECCIONES ======================
+     Cada .cortina cubre su sección con dos paneles que se abren hacia los
+     lados (como un obturador). Bidireccional: se cierran de nuevo si la
+     sección sale de pantalla, y se reabren al volver a entrar. */
+  const cortinas = document.querySelectorAll('.cortina');
+
+  if ('IntersectionObserver' in window) {
+    const obsCortinas = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        entrada.target.classList.toggle('abierta', entrada.isIntersecting);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+
+    cortinas.forEach(function (el) { obsCortinas.observe(el); });
+  } else {
+    cortinas.forEach(function (el) { el.classList.add('abierta'); });
   }
 
 
@@ -166,6 +198,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     contadores.forEach(function (c) { obsContadores.observe(c); });
   }
+
+
+  /* ===== 6b. SELECTOR DE MAPA (MATRIZ / SUCURSAL) EN EL FOOTER ========= */
+  const mapaTabs = document.querySelectorAll('.mapa-tab');
+  const mapaIframes = document.querySelectorAll('.mapa-iframe');
+
+  mapaTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      const sede = tab.dataset.mapa;
+
+      mapaTabs.forEach(function (t) {
+        t.classList.toggle('activo', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+      mapaIframes.forEach(function (frame) {
+        frame.classList.toggle('activo', frame.dataset.mapa === sede);
+      });
+    });
+  });
 
 
   /* ===== 7. FORMULARIO DEL FOOTER -> API DE WHATSAPP ==================
@@ -367,20 +418,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 14. CARRUSEL DEL HERO: sincronizar puntos con el slide activo ===
-     Bootstrap mueve el carrusel solo, pero no toca la clase "activo" de
-     nuestros puntos personalizados: sin esto, el punto resaltado se queda
-     en el slide 1 aunque el carrusel avance solo o se haga clic en otro,
-     dando la sensación de que los puntos "no responden".
+  /* ===== 14. CARRUSEL DEL HERO: destello dorado al cambiar de foto =======
+     Sin puntos/flechas visibles (el fondo es puramente el video/fotos en
+     blanco y negro): lo único que sincronizamos aquí es el "destello" que
+     se dispara justo al intercambiar de foto.
      ======================================================================== */
   const heroCarrusel = document.getElementById('heroCarrusel');
-  const puntosHero = document.querySelectorAll('.hero-indicadores button');
+  var heroFlash = document.getElementById('heroFlash');
+  var sinMovimientoFlash = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (heroCarrusel && puntosHero.length) {
-    heroCarrusel.addEventListener('slide.bs.carousel', function (evento) {
-      puntosHero.forEach(function (punto, indice) {
-        punto.classList.toggle('activo', indice === evento.to);
-      });
+  if (heroCarrusel) {
+    heroCarrusel.addEventListener('slide.bs.carousel', function () {
+      // Destello dorado justo al intercambiar de foto (el "flash" que pide
+      // el look tipo depaudental.com): se relanza la animación quitando y
+      // volviendo a poner la clase en el siguiente frame.
+      if (heroFlash && !sinMovimientoFlash) {
+        heroFlash.classList.remove('destello');
+        void heroFlash.offsetWidth; // fuerza reflow para poder reiniciar la animación
+        heroFlash.classList.add('destello');
+      }
     });
 
     /* WCAG 2.2.2 (Pausar, detener, ocultar): el carrusel se auto-avanza cada
@@ -402,6 +458,155 @@ document.addEventListener('DOMContentLoaded', function () {
     aplicarPreferenciaMovimiento();
     menosMovimiento.addEventListener('change', aplicarPreferenciaMovimiento);
   }
+
+
+  /* ===== 14b. HERO: destellos dorados flotando (canvas) =================
+     Pequeñas motas de luz dorada que flotan despacio sobre el blanco y
+     negro del hero, como polvo suspendido bajo un foco de luz — el toque
+     "cine" que pide el brief, sin depender de un archivo de video real.
+     Puramente decorativo (aria-hidden): si prefers-reduced-motion está
+     activo, o el navegador no soporta canvas, el hero se ve completo igual.
+     ======================================================================== */
+  (function () {
+    var canvas = document.getElementById('heroSparkles');
+    var heroEl = document.querySelector('.hero');
+    if (!canvas || !heroEl || !canvas.getContext) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var ctx = canvas.getContext('2d');
+    var particulas = [];
+    var ancho, alto, animando = false, cuadro;
+
+    function redimensionar() {
+      ancho = canvas.width = heroEl.offsetWidth;
+      alto = canvas.height = heroEl.offsetHeight;
+      var cantidad = Math.round((ancho * alto) / 22000); // densidad ~ tamaño del hero
+      particulas = [];
+      for (var i = 0; i < cantidad; i++) {
+        particulas.push(crearParticula());
+      }
+    }
+
+    function crearParticula() {
+      return {
+        x: Math.random() * ancho,
+        y: Math.random() * alto,
+        r: Math.random() * 1.6 + .4,
+        velY: Math.random() * -.25 - .05,
+        velX: (Math.random() - .5) * .12,
+        fase: Math.random() * Math.PI * 2,
+        velFase: Math.random() * .015 + .005
+      };
+    }
+
+    function dibujar() {
+      ctx.clearRect(0, 0, ancho, alto);
+      for (var i = 0; i < particulas.length; i++) {
+        var p = particulas[i];
+        p.fase += p.velFase;
+        p.x += p.velX;
+        p.y += p.velY;
+
+        if (p.y < -10) { p.y = alto + 10; p.x = Math.random() * ancho; }
+        if (p.x < -10) p.x = ancho + 10;
+        if (p.x > ancho + 10) p.x = -10;
+
+        var brillo = (Math.sin(p.fase) + 1) / 2; // 0..1, parpadeo suave
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(224, 175, 61, ' + (brillo * .8) + ')';
+        ctx.fill();
+      }
+      cuadro = requestAnimationFrame(dibujar);
+    }
+
+    function iniciar() {
+      if (animando) return;
+      animando = true;
+      redimensionar();
+      cuadro = requestAnimationFrame(dibujar);
+    }
+    function detener() {
+      animando = false;
+      if (cuadro) cancelAnimationFrame(cuadro);
+    }
+
+    // Solo anima mientras el hero está en pantalla (ahorra batería al bajar)
+    if ('IntersectionObserver' in window) {
+      var obsHero = new IntersectionObserver(function (entradas) {
+        entradas[0].isIntersecting ? iniciar() : detener();
+      }, { threshold: 0 });
+      obsHero.observe(heroEl);
+    } else {
+      iniciar();
+    }
+
+    var redimensionarPendiente;
+    window.addEventListener('resize', function () {
+      clearTimeout(redimensionarPendiente);
+      redimensionarPendiente = setTimeout(redimensionar, 200);
+    });
+  })();
+
+
+  /* ===== 14c. HERO CINE: pin + fundido controlado por scroll ============
+     Imita el mecanismo del banner de depaudental.com: el hero queda fijo
+     en pantalla (position:sticky en CSS) mientras el contenedor
+     ".hero-cine" (más alto que el viewport) se desplaza detrás; aquí solo
+     calculamos qué tan avanzado está ese desplazamiento (0 a 1) y lo
+     traducimos en opacidad para fundir la etapa 1 (fotos en B/N) hacia la
+     etapa 2 (mosaico + titular). Con prefers-reduced-motion el CSS ya deja
+     todo estático y este script ni se ejecuta. ========================= */
+  (function () {
+    var envoltorio = document.getElementById('heroCine');
+    var etapa1 = document.getElementById('heroEtapa1');
+    var etapa2 = document.getElementById('heroEtapa2');
+    if (!envoltorio || !etapa1 || !etapa2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var columnas = etapa2.querySelectorAll('.hero-etapa2-col');
+    var tagline = etapa2.querySelector('.hero-etapa2-tagline');
+    var tickeandoCine = false;
+
+    function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
+
+    function actualizarCine() {
+      var rect = envoltorio.getBoundingClientRect();
+      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
+      var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+
+      // Etapa 1 (fotos en B/N) se desvanece del 30% al 55% del recorrido.
+      var salida1 = acotar((progreso - .30) / .25);
+      etapa1.style.opacity = String(1 - salida1);
+
+      // Etapa 2 entra del 40% al 65%; las columnas y el titular aparecen
+      // con un pequeño escalonado para que no "salten" todas a la vez.
+      var entrada2 = acotar((progreso - .40) / .25);
+      etapa2.style.opacity = String(entrada2);
+
+      columnas.forEach(function (col, indice) {
+        var propio = acotar((entrada2 - indice * .12) / (1 - indice * .12 || 1));
+        col.style.opacity = String(propio);
+        col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px)';
+      });
+
+      if (tagline) {
+        var propioTag = acotar((entrada2 - .3) / .7);
+        tagline.style.opacity = String(propioTag);
+        tagline.style.transform = 'translateY(' + ((1 - propioTag) * 24) + 'px)';
+      }
+
+      tickeandoCine = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
+    }, { passive: true });
+    window.addEventListener('resize', function () {
+      if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
+    });
+    actualizarCine();
+  })();
 
 
   /* ===== 15. SPLASH DE BIENVENIDA (solo index.html, 1a vez por sesión) ===
