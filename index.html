@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=26">
+  <link rel="stylesheet" href="estilos/estilos.css?v=27">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -481,47 +481,58 @@
 
 
   <!-- ============================================================
-       BANDA CTA (llamado a la acción)
+       CIERRE CINE + BANDA CTA (llamado a la acción)
+       - Mismo mecanismo de pin que el hero (ver .hero-cine): la pantalla
+         se queda en negro, y al seguir bajando ese negro se levanta como
+         una cortina para revelar la banda CTA ya armada debajo — el cierre
+         "simétrico" a la apertura del hero, tal como en depaudental.com
+         (allá cierran con "COMIENZA TU EXPERIENCIA" revelándose desde
+         negro antes del formulario de contacto).
        ============================================================ -->
-  <section class="banda-cta">
-    <!-- Cierre a negro: al llegar desde Tratamientos, la pantalla se queda
-         un instante en negro (mismo mecanismo .cortina/data-retraso-ms que
-         la ceremonia de "Tratamientos") antes de revelar el aside, como el
-         corte a negro de pau dental antes de "síguenos en redes sociales". -->
-    <div class="cortina" aria-hidden="true" data-retraso-ms="550"><span class="cortina-panel"></span></div>
+  <div class="cierre-cine" id="cierreCine">
+    <div class="cierre-cine-pin" id="cierreCinePin">
 
-    <!-- Fondo tipo masonry, como carrusel automático continuo hacia la
-         izquierda. script.js (sección "MARQUEE DE LA BANDA CTA") arma las
-         columnas de la "cinta" en JS en vez de fijas aquí: con un set fijo
-         de 4 columnas, en pantallas anchas (monitores grandes) el set no
-         alcanzaba a cubrir el viewport y a mitad del loop se veía un hueco
-         negro antes de que la copia siguiente entrara — las fotos
-         "desaparecían" un instante. El script mide el ancho real de
-         pantalla y repite las columnas las veces que hagan falta para que
-         el set siempre sea más ancho que la pantalla, así el loop (mismo
-         truco translateX 0 -> -50% con una copia idéntica al final) nunca
-         se queda corto, sea cual sea el monitor. -->
-    <div class="banda-cta-masonry" aria-hidden="true">
-      <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"></div>
-    </div>
-    <div class="banda-cta-overlay" aria-hidden="true"></div>
-
-    <div class="container banda-cta-contenido">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-8 text-center text-lg-start">
-          <h2 class="mb-2">¿Listo para transformar tu sonrisa?</h2>
-          <p class="mb-0">Agenda tu valoración y recibe un plan de tratamiento personalizado.</p>
+      <section class="banda-cta" id="bandaCta">
+        <!-- Fondo tipo masonry, como carrusel automático continuo hacia la
+             izquierda. script.js (sección "MARQUEE DE LA BANDA CTA") arma las
+             columnas de la "cinta" en JS en vez de fijas aquí: con un set fijo
+             de 4 columnas, en pantallas anchas (monitores grandes) el set no
+             alcanzaba a cubrir el viewport y a mitad del loop se veía un hueco
+             negro antes de que la copia siguiente entrara — las fotos
+             "desaparecían" un instante. El script mide el ancho real de
+             pantalla y repite las columnas las veces que hagan falta para que
+             el set siempre sea más ancho que la pantalla, así el loop (mismo
+             truco translateX 0 -> -50% con una copia idéntica al final) nunca
+             se queda corto, sea cual sea el monitor. -->
+        <div class="banda-cta-masonry" aria-hidden="true">
+          <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"></div>
         </div>
-        <div class="col-lg-4 text-center text-lg-end">
-          <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
-             class="btn btn-traslucido btn-lg">
-            <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Escríbenos ahora
-          </a>
-        </div>
-      </div>
-    </div>
+        <div class="banda-cta-overlay" aria-hidden="true"></div>
 
-  </section>
+        <div class="container banda-cta-contenido">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-8 text-center text-lg-start">
+              <h2 class="mb-2">¿Listo para transformar tu sonrisa?</h2>
+              <p class="mb-0">Agenda tu valoración y recibe un plan de tratamiento personalizado.</p>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+              <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
+                 class="btn btn-traslucido btn-lg">
+                <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Escríbenos ahora
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cortina negra que se levanta (opacity 1 -> 0) controlada por
+           script.js (sección 14e), por encima de todo lo demás dentro del
+           pin. Empieza opaca (oculta la banda CTA) y se desvanece a medio
+           recorrido del pin, revelándola igual que un cierre de cine. -->
+      <div class="cierre-cine-negro" id="cierreCineNegro" aria-hidden="true"></div>
+
+    </div>
+  </div>
 
 
   <!-- ============================================================
@@ -658,6 +669,6 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=26"></script>
+  <script src="scripts/script.js?v=27"></script>
 </body>
 </html>

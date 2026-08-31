@@ -17,6 +17,7 @@
      12. Paralaje de formas decorativas
      13. FAQ: abrir pregunta enlazada por #hash
      14. Carrusel del hero: sincronizar puntos con el slide activo
+     14e. Cierre cine: cortina negra que se levanta antes de la banda CTA
      (la intro de marca en banners de páginas interiores es 100% CSS,
       ver .banner-video-intro / .intro-logo en estilos.css)
    ========================================================================== */
@@ -941,6 +942,51 @@ document.addEventListener('DOMContentLoaded', function () {
       clearTimeout(idleTimerAsistido);
       idleTimerAsistido = setTimeout(alScrollQuieto, 250);
     }, { passive: true });
+  })();
+
+
+  /* ===== 14e. CIERRE CINE: la cortina negra se levanta con el scroll =====
+     Simétrico a 14c: en vez de fundir una foto hacia el negro, aquí el
+     negro se desvanece para revelar la banda CTA que ya está armada
+     debajo. Misma técnica (progreso 0-1 según cuánto se recorrió el pin),
+     nada más que aplicada a una sola capa en vez de varias etapas. */
+  (function () {
+    var envoltorio = document.getElementById('cierreCine');
+    var negro = document.getElementById('cierreCineNegro');
+    var contenido = document.querySelector('#bandaCta .banda-cta-contenido');
+    if (!envoltorio || !negro) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var tickeandoCierre = false;
+
+    function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
+
+    function actualizarCierre() {
+      var rect = envoltorio.getBoundingClientRect();
+      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
+      var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+
+      // 0%-30%: se queda en negro (el instante de "pausa" antes de revelar).
+      // 30%-60%: la cortina negra se desvanece, descubriendo la banda CTA.
+      // 60%-100%: ya revelada del todo, se sostiene así hasta soltar el pin.
+      var revelado = acotar((progreso - .30) / .30);
+      negro.style.opacity = String(1 - revelado);
+
+      if (contenido) {
+        contenido.style.opacity = String(revelado);
+        contenido.style.transform = 'translateY(' + ((1 - revelado) * 30) + 'px)';
+      }
+
+      tickeandoCierre = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
+    }, { passive: true });
+    window.addEventListener('resize', function () {
+      if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
+    });
+    actualizarCierre();
   })();
 
 

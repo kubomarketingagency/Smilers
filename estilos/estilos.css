@@ -1455,6 +1455,48 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .galeria-item:hover .galeria-overlay { opacity: 1; }
 
 
+/* ===== 9b. CIERRE CINE — mismo pin que el hero, en sentido inverso =======
+   El hero abre fundiendo una foto hacia el negro (ver .hero-cine); este
+   cierre hace lo simétrico justo antes de la banda CTA: arranca en negro
+   y, según avanza el scroll, esa cortina se desvanece para revelar la
+   banda CTA ya armada debajo — igual que depaudental.com resuelve su
+   "COMIENZA TU EXPERIENCIA" revelándose desde negro antes del formulario.
+   Controlado por script.js, sección 14e (misma técnica de progreso 0-1
+   que actualizarCine(), aplicada nada más que a una capa negra). */
+.cierre-cine {
+  position: relative;
+  height: 190vh;
+}
+.cierre-cine-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cierre-cine-pin .banda-cta {
+  height: 100%;
+  min-height: 0;
+}
+.cierre-cine-negro {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--onix);
+  opacity: 1;
+  pointer-events: none;
+}
+@media (max-width: 767.98px) {
+  .cierre-cine { height: 150vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cierre-cine { height: auto; }
+  .cierre-cine-pin { position: static; height: auto; overflow: visible; }
+  .cierre-cine-negro { display: none; }
+}
+
+
 /* ===== 10. BANDA CTA ==================================================== */
 /* Franja más alta con un fondo tipo masonry (fotos reales, en columnas CSS)
    en vez del plano de color liso de antes; el texto flota encima sobre un
