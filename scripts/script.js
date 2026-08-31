@@ -511,6 +511,69 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
 
+  /* ===== 12c. MARQUEE DE LA BANDA CTA ==================================
+     Arma en JS las columnas de la cinta (en vez de fijas en el HTML): con
+     un set fijo de 4 columnas el ancho no alcanzaba a cubrir pantallas
+     anchas, y a mitad del loop (translateX acercándose a -50%) se veía un
+     hueco negro antes de que la copia siguiente entrara por la derecha —
+     las fotos "desaparecían" un instante en vez de desplazarse siempre
+     continuas. Aquí se mide el ancho real de la ventana y se repiten las
+     columnas las veces que hagan falta para que el set (mitad de la
+     cinta) sea SIEMPRE más ancho que la pantalla, con margen de sobra —
+     condición necesaria para que el truco "duplicar + trasladar -50%" del
+     CSS (@keyframes banda-cta-marquee) haga un loop sin costura en
+     cualquier monitor. Corre una sola vez al cargar: un carrusel de fondo
+     no necesita recalcularse en cada resize. */
+  (function () {
+    var cinta = document.getElementById('bandaCtaMasonryCinta');
+    if (!cinta) return;
+
+    var grupos = [
+      ['imagenes/hero-1.webp', 'imagenes/equipo-1.webp', 'imagenes/sonrisa.webp'],
+      ['imagenes/hero-2.webp', 'imagenes/equipo-3.webp', 'imagenes/tecnologia.webp'],
+      ['imagenes/hero-3.webp', 'imagenes/equipo-2.webp', 'imagenes/cirugia.webp'],
+      ['imagenes/equipo-4.webp', 'imagenes/implantologia.webp', 'imagenes/nosotros.webp']
+    ];
+
+    function crearColumna(grupo) {
+      var col = document.createElement('div');
+      col.className = 'banda-cta-masonry__col';
+      grupo.forEach(function (src) {
+        var img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.loading = 'lazy';
+        col.appendChild(img);
+      });
+      return col;
+    }
+
+    // Ancho de columna + gap: coincide con .banda-cta-masonry__col en
+    // estilos.css (190px + 6px de gap; 220px + 6px desde el breakpoint lg).
+    var anchoColumna = window.matchMedia('(min-width: 992px)').matches ? 226 : 196;
+    // 1.6x el ancho de ventana: margen de sobra para que un resize
+    // moderado (o un monitor más ancho de lo esperado) no vuelva a dejar
+    // el set corto, sin necesidad de escuchar "resize" para un fondo
+    // puramente decorativo.
+    var anchoNecesario = window.innerWidth * 1.6;
+
+    var set = [];
+    var anchoSet = 0;
+    var indice = 0;
+    while (anchoSet < anchoNecesario) {
+      set.push(grupos[indice % grupos.length]);
+      anchoSet += anchoColumna;
+      indice++;
+    }
+
+    // Set A + copia idéntica A': el mismo truco de loop sin costura,
+    // ahora con un set garantizado más ancho que la pantalla.
+    set.concat(set).forEach(function (grupo) {
+      cinta.appendChild(crearColumna(grupo));
+    });
+  })();
+
+
   /* ===== 13. FAQ: abre automáticamente la pregunta enlazada por #hash === */
   if (window.location.hash) {
     const objetivo = document.querySelector(window.location.hash);
@@ -698,11 +761,12 @@ document.addEventListener('DOMContentLoaded', function () {
       var salida1 = acotar((progreso - .24) / .12);
       etapa1.style.opacity = String(1 - salida1);
 
-      // Etapa 2 entra del 34% al 48%: las columnas y el titular aparecen
-      // con un pequeño escalonado para que no "salten" todas a la vez.
-      var entrada2 = acotar((progreso - .34) / .14);
+      // Etapa 2 entra del 34% al 58%: se alarga a propósito (antes 34%-48%)
+      // para que las columnas de profesionales se vean aparecer una por una
+      // con calma en vez de sentirse un golpe rápido — más dinámico y legible.
+      var entrada2 = acotar((progreso - .34) / .24);
 
-      // ...se queda completa y quieta del 48% al 80% (zona de estancia,
+      // ...se queda completa y quieta del 58% al 80% (zona de estancia,
       // sin animación) para poder verla y leer la frase con calma...
       // ...y del 80% al 100% se desenfoca hasta desaparecer, justo antes
       // de que el pin se suelte y aparezca la siguiente sección (Nosotros)
@@ -712,7 +776,9 @@ document.addEventListener('DOMContentLoaded', function () {
       etapa2.style.filter = salida2 > 0 ? 'blur(' + (salida2 * 22) + 'px)' : '';
 
       columnas.forEach(function (col, indice) {
-        var propio = acotar((entrada2 - indice * .12) / (1 - indice * .12 || 1));
+        // Escalonado más marcado entre columnas (antes .12) para que se
+        // note claramente cómo van apareciendo una tras otra, no casi juntas.
+        var propio = acotar((entrada2 - indice * .16) / (1 - indice * .16 || 1));
         col.style.opacity = String(propio);
         col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px)';
         // Efecto acordeón: cada columna arranca angosta y se "despliega"

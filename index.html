@@ -319,17 +319,14 @@
         </div>
 
       </div>
-    </div>
-  </section>
 
-
-  <!-- ============================================================
-       BARRA DE ESTADÍSTICAS (fondo turquesa claro)
-       ============================================================ -->
-  <section class="franja-stats">
-    <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="container">
-      <div class="row text-center g-4">
+      <!-- Estadísticas: antes vivían en su propia franja (.franja-stats,
+           angosta y suelta entre dos secciones grandes) — al pasar por
+           scroll-snap se sentía frágil, medio cortada. Fusionada aquí, el
+           contador queda dentro de una sección estable de sobra alta y
+           la prueba social refuerza el mensaje de "Nosotros" en el mismo
+           golpe de vista, en vez de sentirse un bloque aparte. -->
+      <div class="row nosotros-stats text-center g-4">
         <div class="col-6 col-lg-3 revelar">
           <span class="stat-numero" data-contador="8500">0</span><span class="stat-numero">+</span>
           <p class="stat-texto">Pacientes felices</p>
@@ -383,6 +380,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Rehabilitación Oral</span>
             <span class="ag-panel__desc">Reconstrucción integral de la mordida con coronas, puentes y prótesis.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -393,6 +391,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Endodoncia</span>
             <span class="ag-panel__desc">Tratamiento de conducto con tecnología rotatoria, sin dolor de raíz.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -403,6 +402,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Estética Dental</span>
             <span class="ag-panel__desc">Carillas, blanqueamiento y diseño digital de sonrisa.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -413,6 +413,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Cirugía Oral y Maxilofacial</span>
             <span class="ag-panel__desc">Extracción de terceros molares e injertos óseos mínimamente invasivos.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -423,6 +424,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Implantología</span>
             <span class="ag-panel__desc">Implantes de titanio guiados por cirugía digital.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -433,6 +435,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Ortodoncia</span>
             <span class="ag-panel__desc">Brackets estéticos, autoligado y alineadores invisibles.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -443,6 +446,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Periodoncia</span>
             <span class="ag-panel__desc">Salud de encías y tratamiento de enfermedad periodontal.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -453,6 +457,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Armonización Orofacial</span>
             <span class="ag-panel__desc">Procedimientos estéticos no quirúrgicos, resultados naturales.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -463,6 +468,7 @@
             <span class="ag-panel__barra" aria-hidden="true"></span>
             <span class="ag-panel__titulo">Odontopediatría</span>
             <span class="ag-panel__desc">Atención lúdica y sin miedo para los más pequeños.</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
           </span>
         </a>
 
@@ -478,24 +484,25 @@
        BANDA CTA (llamado a la acción)
        ============================================================ -->
   <section class="banda-cta">
-    <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
+    <!-- Cierre a negro: al llegar desde Tratamientos, la pantalla se queda
+         un instante en negro (mismo mecanismo .cortina/data-retraso-ms que
+         la ceremonia de "Tratamientos") antes de revelar el aside, como el
+         corte a negro de pau dental antes de "síguenos en redes sociales". -->
+    <div class="cortina" aria-hidden="true" data-retraso-ms="550"><span class="cortina-panel"></span></div>
 
-    <!-- Fondo tipo masonry: fotos reales de la clínica en columnas CSS
-         (alturas naturales de cada foto = el efecto "roto" del masonry,
-         sin necesitar JS de layout). Puramente decorativo. -->
+    <!-- Fondo tipo masonry, como carrusel automático continuo hacia la
+         izquierda. script.js (sección "MARQUEE DE LA BANDA CTA") arma las
+         columnas de la "cinta" en JS en vez de fijas aquí: con un set fijo
+         de 4 columnas, en pantallas anchas (monitores grandes) el set no
+         alcanzaba a cubrir el viewport y a mitad del loop se veía un hueco
+         negro antes de que la copia siguiente entrara — las fotos
+         "desaparecían" un instante. El script mide el ancho real de
+         pantalla y repite las columnas las veces que hagan falta para que
+         el set siempre sea más ancho que la pantalla, así el loop (mismo
+         truco translateX 0 -> -50% con una copia idéntica al final) nunca
+         se queda corto, sea cual sea el monitor. -->
     <div class="banda-cta-masonry" aria-hidden="true">
-      <img src="imagenes/hero-1.webp" alt="" loading="lazy">
-      <img src="imagenes/equipo-1.webp" alt="" loading="lazy">
-      <img src="imagenes/sonrisa.webp" alt="" loading="lazy">
-      <img src="imagenes/hero-2.webp" alt="" loading="lazy">
-      <img src="imagenes/equipo-3.webp" alt="" loading="lazy">
-      <img src="imagenes/tecnologia.webp" alt="" loading="lazy">
-      <img src="imagenes/hero-3.webp" alt="" loading="lazy">
-      <img src="imagenes/equipo-2.webp" alt="" loading="lazy">
-      <img src="imagenes/cirugia.webp" alt="" loading="lazy">
-      <img src="imagenes/equipo-4.webp" alt="" loading="lazy">
-      <img src="imagenes/implantologia.webp" alt="" loading="lazy">
-      <img src="imagenes/nosotros.webp" alt="" loading="lazy">
+      <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"></div>
     </div>
     <div class="banda-cta-overlay" aria-hidden="true"></div>
 

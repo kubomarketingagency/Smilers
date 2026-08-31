@@ -132,6 +132,15 @@
    lo que convierte a html/body en su propio contenedor de scroll y rompe
    el position:sticky del hero cine (sección 5b) — clip evita el
    desbordamiento horizontal sin ese efecto secundario. */
+/* Sin scroll-snap: se probó "proximity" (ver 13c más abajo, ahora vacío)
+   pero incluso en modo "proximity" -no "mandatory"- el scroll con rueda de
+   mouse o gestos normales podía quedarse completamente atascado justo al
+   llegar al borde de un snap point (verificado: decenas de intentos de
+   scroll sin ningún avance, solo un salto brusco lograba destrabarlo) —
+   además del bug ya conocido de romper el ancla #contacto con "mandatory".
+   Se retira del todo: el scroll queda 100% libre y fluido, y la sensación
+   de "llegada" a cada sección la dan las cortinas/ceremonias de entrada
+   (ver 5b) y el pin+scroll de #heroCine (14c), no el forzado del navegador. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /* compensa navbar fija */
 
 body {
@@ -1043,10 +1052,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .lista-caracteristicas li { position: relative; z-index: 1; }
 
 
-/* ===== 8. FRANJA DE ESTADÍSTICAS ======================================== */
-/* Más oscura y con una sola línea de hilo dorado (en vez de dos guiones
-   plateados): un lienzo más profundo hace que el número en degradado oro
-   se sienta más impactante, a tono con el resto del sistema de marca. */
+/* ===== 8. FRANJA DE ESTADÍSTICAS =========================================
+   .stat-numero/.stat-texto son compartidos por dos contextos distintos:
+   1) .franja-stats — sección propia, oscura, de ancho completo (la sigue
+      usando subpaginas/nosotros.html tal cual).
+   2) .nosotros-stats — fusionada como fila de cierre dentro de #nosotros en
+      index.html (ver comentario ahí): antes vivían en su propia franja
+      suelta entre dos secciones grandes, y bajo scroll-snap esa franja tan
+      angosta se sentía frágil / a medio cortar. Solo cambia el contenedor;
+      los números en sí usan el mismo tratamiento tipográfico base, con un
+      tamaño más compacto (ver ".nosotros-stats .stat-numero/.stat-texto"
+      más abajo) para no pesar tanto en una sección que ya trae foto +
+      texto + lista. */
 .franja-stats {
   position: relative;
   overflow: hidden;
@@ -1061,17 +1078,26 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
   opacity: .6;
 }
+.nosotros-stats {
+  position: relative;
+  margin-top: 3rem;
+  padding-top: 2.2rem;
+  border-top: 1px solid rgba(210, 172, 71, .3);
+}
 @media (min-width: 992px) {
-  .franja-stats .col-lg-3 { position: relative; }
-  .franja-stats .col-lg-3::after {
+  .franja-stats .col-lg-3,
+  .nosotros-stats .col-lg-3 { position: relative; }
+  .franja-stats .col-lg-3::after,
+  .nosotros-stats .col-lg-3::after {
     content: '';
     position: absolute;
     right: -2px; top: 15%;
     height: 70%;
     width: 1px;
-    background: rgba(210, 172, 71, .25);
+    background: rgba(210, 172, 71, .3);
   }
-  .franja-stats .row > div:last-child::after { display: none; }
+  .franja-stats .row > div:last-child::after,
+  .nosotros-stats > div:last-child::after { display: none; }
 }
 .stat-numero {
   font-family: var(--fuente-elegante);
@@ -1092,6 +1118,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin: .6rem 0 0;
   font-weight: 500;
 }
+/* Versión compacta fusionada en #nosotros: no necesita pesar tanto como la
+   franja de ancho completo. */
+.nosotros-stats .stat-numero { font-size: clamp(2rem, 4.2vw, 2.8rem); }
+.nosotros-stats .stat-texto { font-size: .72rem; letter-spacing: .14em; margin-top: .4rem; }
+/* Sobre fondo claro la plata clara del texto pierde contraste. */
+.seccion-clara .stat-texto { color: var(--texto-suave); }
 
 
 /* ===== 9. CARDS DE ESPECIALIDADES ======================================= */
@@ -1316,6 +1348,33 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   max-width: 34ch;
 }
 
+/* Indicador "Ir": deja explícito que la foto es clickeable — evidencia
+   visual pedida además del cursor:pointer, que en táctil no existe. Solo
+   se ve con el panel activo (mismo estado que revela título/descripción,
+   así que en móvil aparece justo cuando ya hace falta: en el segundo tap,
+   que es el que navega). */
+.ag-panel__ir {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .2rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--gold-200);
+}
+.ag-panel__ir .icono {
+  width: .85em;
+  height: .85em;
+  transition: transform .3s ease;
+}
+.ag-panel:hover .ag-panel__ir .icono,
+.ag-panel:focus-visible .ag-panel__ir .icono {
+  transform: translateX(4px);
+}
+
 @media (max-width: 767.98px) {
   /* En móvil 9 paneles no caben expandidos en una sola pantalla: la
      sección crece con el contenido (scroll normal) en vez de recortarse
@@ -1393,29 +1452,60 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .banda-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); color: var(--silver-100); }
 .banda-cta p  { color: rgba(250, 248, 244, .82); }
 
+/* Carrusel automático continuo: la "cinta" (.cinta) es el doble del
+   contenido real (columnas A + copia idéntica A', ver index.html) puesto
+   en fila con width:max-content, animando translateX de 0 a -50% de su
+   propio ancho — como esa mitad es un duplicado exacto de la otra, el
+   loop no se nota. Solo se anima "transform" (barato para el compositor,
+   sin recalcular layout en cada frame). Corre siempre, sin pausarse al
+   salir de pantalla ni nada que la interrumpa — nunca se detiene ni
+   "desaparece", el loop se repite indefinidamente. */
 .banda-cta-masonry {
   position: absolute;
   inset: 0;
   z-index: 0;
-  column-count: 2;
-  column-gap: 6px;
-  padding: 0;
+  overflow: hidden;
 }
-.banda-cta-masonry img {
+.banda-cta-masonry__cinta {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  gap: 6px;
+  will-change: transform;
+  animation: banda-cta-marquee 50s linear infinite;
+}
+
+.banda-cta-masonry__col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 190px;
+  flex: 0 0 auto;
+  height: 100%;
+  justify-content: center;
+}
+.banda-cta-masonry__col img {
   display: block;
   width: 100%;
-  margin-bottom: 6px;
-  break-inside: avoid;
   filter: grayscale(1) contrast(1.05) brightness(.55);
 }
-@media (min-width: 576px)  { .banda-cta-masonry { column-count: 3; } }
-@media (min-width: 992px)  { .banda-cta-masonry { column-count: 5; } }
+@media (min-width: 992px) {
+  .banda-cta-masonry__col { width: 220px; }
+}
+
+@keyframes banda-cta-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banda-cta-masonry__cinta { animation: none; }
+}
 
 .banda-cta-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(10, 8, 6, .62) 0%, rgba(10, 8, 6, .8) 100%);
+  background: linear-gradient(180deg, rgba(10, 8, 6, .66) 0%, rgba(10, 8, 6, .85) 100%);
 }
 .banda-cta-contenido { position: relative; z-index: 2; }
 
@@ -1724,7 +1814,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    transiciones scroll-linked del sitio (hero cine, salida de profesionales).
    El disparador (JS, .abierta) es el mismo IntersectionObserver para todas.
    Requiere que el contenedor tenga position:relative + overflow:hidden
-   (ya lo tienen .seccion-decorada, .franja-stats, .banda-cta y .footer). */
+   (ya lo tienen .seccion-decorada, .acordeon-seccion, .banda-cta y .footer). */
 .cortina {
   position: absolute;
   inset: 0;
@@ -2497,6 +2587,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
   .seccion { padding: 40px 0; }
   .franja-stats { padding: 30px 0; }
+  .nosotros-stats { margin-top: 2rem; padding-top: 1.6rem; }
   .timeline-item { margin-bottom: 1.6rem; }
   .proceso-linea { display: none; }
 
