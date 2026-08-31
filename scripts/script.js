@@ -135,28 +135,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ===== 5. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ====================
      Bidireccional: aparece con un pequeño escalonado al bajar y se retira
-     de inmediato (sin escalonado, para que se sienta "limpio") al subir.
-     Se guarda el temporizador pendiente por elemento para poder cancelarlo
-     si el usuario invierte el scroll antes de que llegue a dispararse. */
+     al subir. Se guarda el temporizador pendiente por elemento para poder
+     cancelarlo si el usuario invierte el scroll antes de que llegue a
+     dispararse.
+     Umbral con "histéresis" (threshold: [0, 0.15]) + un pequeño "debounce"
+     al ocultar: en un scroll lento la relación de intersección de un
+     elemento puede rebotar un par de veces justo alrededor del 0% o el 15%
+     en fracciones de segundo — con solo la histéresis eso todavía alcanzaba
+     a quitar y volver a poner "visible" varias veces seguidas, viéndose
+     como un parpadeo/glitch en el párrafo. Ahora "ocultar" no pasa de
+     inmediato: espera 400ms, y si el elemento vuelve a cruzar el 15% en ese
+     lapso (el rebote), el ocultamiento se cancela y el texto ni se entera. */
   const elementosRevelar = document.querySelectorAll('.revelar');
-  const temporizadoresRevelar = new WeakMap();
+  const temporizadoresRevelar = new WeakMap();      // "mostrar" pendiente (escalonado)
+  const temporizadoresOcultarRevelar = new WeakMap(); // "ocultar" pendiente (debounce)
 
   if ('IntersectionObserver' in window) {
     const observador = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada, indice) {
-        const pendiente = temporizadoresRevelar.get(entrada.target);
-        if (pendiente) clearTimeout(pendiente);
+        if (entrada.intersectionRatio >= 0.15) {
+          const ocultarPendiente = temporizadoresOcultarRevelar.get(entrada.target);
+          if (ocultarPendiente) {
+            clearTimeout(ocultarPendiente);
+            temporizadoresOcultarRevelar.delete(entrada.target);
+          }
 
-        if (entrada.isIntersecting) {
-          const id = setTimeout(function () {
-            entrada.target.classList.add('visible');
-          }, indice * 100);
-          temporizadoresRevelar.set(entrada.target, id);
-        } else {
-          entrada.target.classList.remove('visible');
+          if (!entrada.target.classList.contains('visible')) {
+            const pendiente = temporizadoresRevelar.get(entrada.target);
+            if (pendiente) clearTimeout(pendiente);
+            const id = setTimeout(function () {
+              entrada.target.classList.add('visible');
+            }, indice * 100);
+            temporizadoresRevelar.set(entrada.target, id);
+          }
+        } else if (entrada.intersectionRatio === 0) {
+          const pendiente = temporizadoresRevelar.get(entrada.target);
+          if (pendiente) {
+            clearTimeout(pendiente);
+            temporizadoresRevelar.delete(entrada.target);
+          }
+
+          if (!temporizadoresOcultarRevelar.has(entrada.target)) {
+            const idOcultar = setTimeout(function () {
+              entrada.target.classList.remove('visible');
+              temporizadoresOcultarRevelar.delete(entrada.target);
+            }, 400);
+            temporizadoresOcultarRevelar.set(entrada.target, idOcultar);
+          }
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    }, { threshold: [0, 0.15], rootMargin: '0px 0px -8% 0px' });
 
     elementosRevelar.forEach(function (el) { observador.observe(el); });
   } else {
@@ -170,23 +198,49 @@ document.addEventListener('DOMContentLoaded', function () {
      (ver .cortina-panel en estilos.css). Bidireccional: se cierra de nuevo
      si la sección sale de pantalla, y se reabre al volver a entrar.
      data-retraso-ms (opcional, ej. la intro de Especialidades) hace que se
-     quede quieta ese tiempo antes de abrirse, en vez de abrirse de inmediato. */
+     quede quieta ese tiempo antes de abrirse, en vez de abrirse de inmediato.
+     Misma histéresis + debounce que en .revelar (ver comentario arriba):
+     solo se abre al cruzar el umbral, y "cerrar" espera 400ms por si el
+     rebote de un scroll lento la hace cruzar el umbral de nuevo enseguida
+     — así un scroll lento no la abre y cierra de golpe varias veces. */
   const cortinas = document.querySelectorAll('.cortina');
-  const retrasosCortina = new WeakMap();
+  const retrasosCortina = new WeakMap();  // "abrir" pendiente (data-retraso-ms)
+  const cierresCortina = new WeakMap();   // "cerrar" pendiente (debounce)
 
   if ('IntersectionObserver' in window) {
     const obsCortinas = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
-        const pendiente = retrasosCortina.get(entrada.target);
-        if (pendiente) clearTimeout(pendiente);
+        if (entrada.intersectionRatio === 0) {
+          const pendiente = retrasosCortina.get(entrada.target);
+          if (pendiente) {
+            clearTimeout(pendiente);
+            retrasosCortina.delete(entrada.target);
+          }
 
-        if (!entrada.isIntersecting) {
-          entrada.target.classList.remove('abierta');
+          if (!cierresCortina.has(entrada.target)) {
+            const idCierre = setTimeout(function () {
+              entrada.target.classList.remove('abierta');
+              cierresCortina.delete(entrada.target);
+            }, 400);
+            cierresCortina.set(entrada.target, idCierre);
+          }
           return;
         }
 
+        if (entrada.intersectionRatio < 0.1) return;
+
+        const cierrePendiente = cierresCortina.get(entrada.target);
+        if (cierrePendiente) {
+          clearTimeout(cierrePendiente);
+          cierresCortina.delete(entrada.target);
+        }
+
+        if (entrada.target.classList.contains('abierta')) return;
+
         const retraso = Number(entrada.target.dataset.retrasoMs || 0);
+        const pendiente = retrasosCortina.get(entrada.target);
         if (retraso > 0) {
+          if (pendiente) clearTimeout(pendiente);
           const id = setTimeout(function () {
             entrada.target.classList.add('abierta');
           }, retraso);
@@ -195,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
           entrada.target.classList.add('abierta');
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+    }, { threshold: [0, 0.1], rootMargin: '0px 0px -5% 0px' });
 
     cortinas.forEach(function (el) { obsCortinas.observe(el); });
   } else {
@@ -426,6 +480,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rango.addEventListener('input', function () {
       fijarPosicion(Number(rango.value));
+    });
+  });
+
+
+  /* ===== 11b. ACORDEÓN DE TRATAMIENTOS (solo móvil, tratamientos.html) ===
+     En escritorio/tablet el botón está oculto por CSS y esto no hace nada.
+     En móvil, cada bloque abre/cierra de forma independiente (no exclusiva,
+     se pueden tener varios abiertos a la vez). */
+  document.querySelectorAll('.acordeon-tratamiento-boton').forEach(function (boton) {
+    var panel = document.getElementById(boton.getAttribute('aria-controls'));
+    if (!panel) return;
+
+    boton.addEventListener('click', function () {
+      var abierto = panel.classList.toggle('abierta');
+      boton.setAttribute('aria-expanded', String(abierto));
     });
   });
 
@@ -905,11 +974,11 @@ document.addEventListener('DOMContentLoaded', function () {
     video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
     video.load();
 
-    /* El clip dura ~7s a velocidad normal — demasiado para un splash que
-       tapa toda la página. Se acelera para que no se sienta como una espera. */
-    video.playbackRate = 1.75;
+    /* Clip cinematográfico de ~4s: se acelera apenas para que se sienta ágil
+       sin perder el efecto de fondo (líneas doradas + resplandor). */
+    video.playbackRate = 1.15;
 
-    setTimeout(retirarSplash, 6000); // seguro si "ended" no llega
+    setTimeout(retirarSplash, 4200); // seguro si "ended" no llega
 
     video.addEventListener('ended', retirarSplash);
     video.addEventListener('error', retirarSplash);

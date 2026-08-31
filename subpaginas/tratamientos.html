@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/estilos.css?v=24">
+  <link rel="stylesheet" href="../estilos/estilos.css?v=26">
 </head>
 
 <body>
@@ -155,6 +155,13 @@
        ============================================================ -->
   <section class="bloque-tratamiento" id="estetica-dental">
     <div class="container">
+      <button class="acordeon-tratamiento-boton" type="button" aria-expanded="false" aria-controls="panel-estetica-dental">
+        <span class="acordeon-tratamiento-numero" aria-hidden="true">01</span>
+        <span class="acordeon-tratamiento-nombre">Estética Dental</span>
+        <i class="fa-solid fa-chevron-down acordeon-tratamiento-icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-down"></use></svg></i>
+      </button>
+      <div class="acordeon-tratamiento-panel" id="panel-estetica-dental">
+      <div class="acordeon-tratamiento-panel-inner">
       <div class="row align-items-center g-5">
         <div class="col-lg-6 revelar">
           <div class="comparador" data-comparador>
@@ -196,6 +203,8 @@
           </a>
         </div>
       </div>
+      </div>
+      </div>
     </div>
   </section>
 
@@ -209,6 +218,13 @@
       <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
     <div class="container">
+      <button class="acordeon-tratamiento-boton" type="button" aria-expanded="false" aria-controls="panel-ortodoncia">
+        <span class="acordeon-tratamiento-numero" aria-hidden="true">02</span>
+        <span class="acordeon-tratamiento-nombre">Ortodoncia</span>
+        <i class="fa-solid fa-chevron-down acordeon-tratamiento-icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-down"></use></svg></i>
+      </button>
+      <div class="acordeon-tratamiento-panel" id="panel-ortodoncia">
+      <div class="acordeon-tratamiento-panel-inner">
       <div class="row align-items-center g-5">
         <div class="col-lg-6 order-lg-2 position-relative revelar">
           <span class="acento-badge turquesa" style="top:-14px;right:14px;" aria-hidden="true"><i class="fa-solid fa-teeth-open"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-teeth-open"></use></svg></i></span>
@@ -236,6 +252,8 @@
           </a>
         </div>
       </div>
+      </div>
+      </div>
     </div>
   </section>
 
@@ -247,6 +265,13 @@
     <div class="forma forma-degradado-2 forma-blob forma-parallax" data-intensidad="10" style="width:220px;height:220px;top:-70px;right:-80px;"></div>
     <div class="acento-anillo turquesa d-none d-lg-block" style="width:80px;height:80px;top:20%;left:8%;" aria-hidden="true"></div>
     <div class="container">
+      <button class="acordeon-tratamiento-boton" type="button" aria-expanded="false" aria-controls="panel-implantologia">
+        <span class="acordeon-tratamiento-numero" aria-hidden="true">03</span>
+        <span class="acordeon-tratamiento-nombre">Implantología</span>
+        <i class="fa-solid fa-chevron-down acordeon-tratamiento-icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-down"></use></svg></i>
+      </button>
+      <div class="acordeon-tratamiento-panel" id="panel-implantologia">
+      <div class="acordeon-tratamiento-panel-inner">
       <div class="row align-items-center g-5">
         <div class="col-lg-6 position-relative revelar">
           <span class="acento-badge naranja" style="top:-14px;left:14px;" aria-hidden="true"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
@@ -274,6 +299,8 @@
           </a>
         </div>
       </div>
+      </div>
+      </div>
     </div>
   </section>
 
@@ -285,6 +312,13 @@
     <div class="forma forma-naranja forma-blob forma-parallax" data-intensidad="10" style="width:200px;height:200px;bottom:-60px;right:-70px;"></div>
     <div class="acento-mas naranja d-none d-lg-block" style="top:14%;right:10%;" aria-hidden="true">+</div>
     <div class="container">
+      <button class="acordeon-tratamiento-boton" type="button" aria-expanded="false" aria-controls="panel-cirugia-oral">
+        <span class="acordeon-tratamiento-numero" aria-hidden="true">04</span>
+        <span class="acordeon-tratamiento-nombre">Cirugía Oral</span>
+        <i class="fa-solid fa-chevron-down acordeon-tratamiento-icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-down"></use></svg></i>
+      </button>
+      <div class="acordeon-tratamiento-panel" id="panel-cirugia-oral">
+      <div class="acordeon-tratamiento-panel-inner">
       <div class="row align-items-center g-5">
         <div class="col-lg-6 order-lg-2 position-relative revelar">
           <span class="acento-badge naranja" style="bottom:-14px;left:14px;" aria-hidden="true"><i class="fa-solid fa-kit-medical"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-kit-medical"></use></svg></i></span>
@@ -311,6 +345,8 @@
             Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
           </a>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   </section>
@@ -500,6 +536,6 @@
   </button>
 
   <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="../scripts/script.js?v=24"></script>
+  <script src="../scripts/script.js?v=26"></script>
 </body>
 </html>

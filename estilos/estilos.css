@@ -179,23 +179,36 @@ body::before {
 @media (prefers-reduced-motion: reduce) { body::before { display: none; } }
 
 /* ===== SPLASH DE BIENVENIDA (solo index.html, primera vez por sesión) =====
-   Pantalla blanca de tapa a tapa con el logo centrado; script.js la retira
-   con un fade-out en cuanto el video termina (o falla / autoplay bloqueado).
-   html.sin-splash la oculta de una vez, sin parpadeo, en visitas repetidas
-   dentro de la misma sesión (ver el script inline en el <head>). */
+   El clip trae su propio fondo cinematográfico (líneas doradas + resplandor
+   sobre negro) con el logo al centro — por eso el video va a pantalla
+   completa en vez de quedar como una caja pequeña flotando sobre un color
+   plano. Se usa "contain" (no "cover") a propósito: hay pantallas donde la
+   proporción del video no calza con la del viewport (p. ej. una tablet en
+   vertical con el clip horizontal de escritorio) y recortar con "cover" ahí
+   corta el logo o se come casi todo el fondo — justo lo que se pidió evitar
+   ("que el fondo siempre sea visible"). Con "contain" el cuadro completo
+   (logo + líneas + resplandor) se ve siempre entero, y el color de respaldo
+   (--onix) es casi idéntico al negro del propio clip, así que si quedan
+   franjas alrededor son prácticamente invisibles en vez de un salto de color.
+   script.js la retira con un fade-out en cuanto el video termina (o falla /
+   autoplay bloqueado). html.sin-splash la oculta de una vez, sin parpadeo,
+   en visitas repetidas dentro de la misma sesión (ver script inline en el
+   <head>). */
 .splash-inicio {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: var(--onix);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #090a07; /* negro exacto de las esquinas del clip: sin salto de color si quedan franjas por "contain" */
+  overflow: hidden;
   transition: opacity .5s ease;
 }
 .splash-inicio video {
-  width: min(460px, 85vw);
-  height: auto;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 .splash-inicio.oculto {
   opacity: 0;
@@ -2216,6 +2229,70 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   aspect-ratio: 4 / 3.3;
 }
 .bloque-tratamiento-foto img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Acordeón de tratamientos — SOLO en móvil (ver media query abajo): en
+   escritorio/tablet el botón queda oculto y el contenido se ve completo
+   como siempre, sin tocar nada. En móvil cada bloque se colapsa detrás de
+   su nombre en dorado; tocarlo despliega la foto, el texto y el CTA. */
+.acordeon-tratamiento-boton { display: none; }
+
+@media (max-width: 767.98px) {
+  .acordeon-tratamiento-boton {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(210, 172, 71, .3);
+    padding: 18px 0;
+    margin: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+  .acordeon-tratamiento-numero {
+    font-family: var(--fuente-titulo);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--durazno);
+    opacity: .75;
+    flex-shrink: 0;
+  }
+  .acordeon-tratamiento-nombre {
+    flex: 1;
+    font-family: var(--fuente-menu);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--durazno);
+  }
+  .acordeon-tratamiento-icono {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--durazno);
+    transition: transform .4s cubic-bezier(.65, 0, .35, 1);
+  }
+  .acordeon-tratamiento-boton[aria-expanded="true"] .acordeon-tratamiento-icono {
+    transform: rotate(180deg);
+  }
+
+  /* grid-template-rows 0fr → 1fr: colapsa/expande a la altura real del
+     contenido sin medirla por JS y sin saltos, con una sola propiedad. */
+  .acordeon-tratamiento-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .5s cubic-bezier(.65, 0, .35, 1);
+  }
+  .acordeon-tratamiento-panel-inner { overflow: hidden; min-height: 0; }
+  .acordeon-tratamiento-panel.abierta { grid-template-rows: 1fr; }
+  .acordeon-tratamiento-panel .row { padding-top: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .acordeon-tratamiento-panel { transition: none; }
+  .acordeon-tratamiento-icono { transition: none; }
+}
 
 .lista-incluye { list-style: none; padding: 0; margin: 1.5rem 0; }
 .lista-incluye li {
