@@ -17,13 +17,17 @@
 
 /* ===== 1. VARIABLES GLOBALES ============================================ */
 :root {
-  /* Escala de oro (100→900) — Polished Champagne Gold */
-  --gold-100: #F6ECC9;
-  --gold-200: #E9D28F;
-  --gold-300: #DFBB55;
-  --gold-500: #D4AF37;   /* Champagne Gold — acento de marca */
-  --gold-700: #A98A2C;
-  --gold-900: #7A6420;
+  /* Escala de oro (100→900) — anclada a los 4 tonos exactos del swatch de
+     marca (claro→oscuro): #F7EF8A, #EDC967, #D2AC47, #AE8625. */
+  --gold-100: #F7EF8A;
+  --gold-200: #EDC967;
+  --gold-300: #EDC967;
+  --gold-500: #D2AC47;   /* Champagne Gold — acento de marca */
+  --gold-700: #AE8625;
+  --gold-900: #7A5C19;
+
+  /* Gradiente oro de 4 paradas del swatch de marca, para wordmarks y títulos */
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
 
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
@@ -99,6 +103,7 @@
      Menús/subtítulos: sans geométrica, siempre en mayúsculas trackeadas.
      Cuerpo: sans limpia, máxima legibilidad. */
   --fuente-titulo: 'Bodoni Moda', serif;
+  --fuente-elegante: 'Italiana', serif;
   --fuente-menu:   'Montserrat', sans-serif;
   --fuente-cuerpo: 'Lato', sans-serif;
 
@@ -340,6 +345,43 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transform: translateY(-4px) scale(1.04);
 }
 
+/* Traslúcido: se ve el fondo detrás (foto/masonry), solo el contorno en
+   oro queda marcado — para CTAs sobre una imagen, en vez del bloque
+   sólido de .btn-blanco. */
+.btn-traslucido {
+  background: transparent;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  color: var(--marmol);
+  border-color: var(--gold-500);
+}
+.btn-traslucido:hover,
+.btn-traslucido:focus {
+  background: rgba(210, 172, 71, .14);
+  color: var(--marmol);
+  border-color: var(--gold-200);
+  transform: translateY(-4px) scale(1.04);
+}
+
+/* Botón "Contáctanos" del menú a pantalla completa: cuadrado, solo borde,
+   sin relleno hasta el hover — más discreto que el CTA sólido del resto
+   del sitio, a tono con el menú minimalista. */
+.btn-sm-nav {
+  background: transparent;
+  color: var(--marmol);
+  border-color: var(--naranja);
+  border-radius: var(--radio-sm);
+  box-shadow: none;
+}
+.btn-sm-nav:hover,
+.btn-sm-nav:focus {
+  background: var(--naranja);
+  color: var(--onix);
+  border-color: var(--naranja);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(192, 192, 192, .3);
+}
+
 
 /* ===== 4. NAVBAR ========================================================= */
 /* Sin fondo ni desenfoque: solo flota el logo y el botón sobre el lienzo
@@ -400,11 +442,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-weight: 700;
   font-size: 1.25rem;
   letter-spacing: -.3px;
-  background: linear-gradient(100deg, var(--silver-100) 0%, var(--naranja) 45%, var(--silver-700) 100%);
+  background: var(--gradiente-oro);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--naranja);
+  color: var(--gold-500);
 }
 .marca-slogan {
   font-family: var(--fuente-cuerpo);
@@ -511,7 +553,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .15rem;
+  gap: .45rem;
   text-align: center;
 }
 .navbar-collapse .nav-link {
@@ -519,8 +561,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-style: normal;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .2em;
-  font-size: clamp(1.05rem, 2.6vw, 1.5rem);
+  letter-spacing: .34em;
+  font-size: clamp(.95rem, 2vw, 1.25rem);
   padding: .5rem 1rem !important;
   min-height: 0;
   position: relative;
@@ -599,14 +641,31 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   object-fit: cover;
   object-position: center 30%;
   transform: scale(1);
-  /* Blanco y negro con leve calidez: no un gris plano, sino un B/N "cálido"
-     que deja que el degradado dorado de encima lea como reflejo real de luz. */
-  filter: grayscale(1) contrast(1.18) brightness(.82) saturate(1);
+  /* A color, con un poco de contraste/calidez para que se sienta cinematográfico
+     sin lavar los tonos reales del consultorio. */
+  filter: contrast(1.1) brightness(.92) saturate(1.08);
   animation: kenburns 6s ease-out forwards;
 }
 @keyframes kenburns {
   from { transform: scale(1); }
   to   { transform: scale(1.09); }
+}
+
+/* Móvil: en vez de recortar con object-fit:cover, la foto se recorre
+   completa de izquierda a derecha durante el tiempo que dura cada slide
+   activo (mismo intervalo que data-bs-interval del carrusel) antes del
+   crossfade al siguiente — así se ve entera antes de cambiar. */
+@media (max-width: 767.98px) {
+  .carousel-item.active .hero-slide-img {
+    animation: kenburns 6s ease-out forwards, panorama-movil 4.2s ease-in-out;
+  }
+}
+@keyframes panorama-movil {
+  0%   { object-position: 0% 30%; }
+  100% { object-position: 100% 30%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-item.active .hero-slide-img { animation: none; }
 }
 
 /* Capa de "destellos dorados": degradado diagonal en modo de mezcla que tiñe
@@ -622,8 +681,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
               rgba(192, 192, 192, .18) 35%,
               rgba(92, 74, 32, 0) 60%,
               rgba(192, 192, 192, .38) 100%);
-  mix-blend-mode: color-dodge;
-  opacity: .55;
+  /* overlay en vez de color-dodge: sobre foto a color, color-dodge quemaba
+     las luces hasta perder el color por completo. overlay suma el mismo
+     brillo plateado/dorado sin lavar los tonos reales de abajo. */
+  mix-blend-mode: overlay;
+  opacity: .3;
 }
 
 /* Barrido de luz que recorre el hero cada pocos segundos (además del propio
@@ -668,9 +730,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .hero-overlay {
   position: absolute;
   inset: 0;
+  /* Más ligero que antes: sobre foto a color, un overlay tan oscuro tapaba
+     el color; se deja solo lo necesario para que el wordmark siga legible. */
   background: linear-gradient(120deg,
-              rgba(10, 8, 6, .86) 0%,
-              rgba(22, 19, 15, .68) 100%);
+              rgba(10, 8, 6, .68) 0%,
+              rgba(22, 19, 15, .46) 100%);
   z-index: -1;
 }
 
@@ -687,11 +751,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: clamp(4.5rem, 16vw, 13rem);
   line-height: 1;
   margin: 0;
-  background: linear-gradient(100deg, var(--silver-100) 0%, var(--naranja) 45%, var(--silver-700) 100%);
+  background: var(--gradiente-oro);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--naranja);
+  color: var(--gold-500);
   filter: drop-shadow(0 8px 40px rgba(0, 0, 0, .5));
 }
 
@@ -711,7 +775,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    ========================================================================== */
 .hero-cine {
   position: relative;
-  height: 240vh;
+  /* Más alto que antes: da más recorrido de scroll para que el fundido del
+     hero y la entrada/estancia/salida de profesionales se sientan pausados
+     en vez de sucederse casi de golpe (ver actualizarCine() en script.js). */
+  height: 340vh;
 }
 .hero-cine-pin {
   position: sticky;
@@ -749,7 +816,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   height: 100%;
   object-fit: cover;
   object-position: center 22%;
-  filter: grayscale(1) contrast(1.15) brightness(.62);
+  filter: contrast(1.08) brightness(.78) saturate(1.05);
 }
 .hero-etapa2-col::after {
   content: '';
@@ -784,9 +851,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--naranja);
 }
 @media (max-width: 767.98px) {
-  .hero-cine { height: 200vh; }
-  .hero-etapa2-col:nth-child(3),
-  .hero-etapa2-col:nth-child(4) { display: none; } /* 2 columnas alcanzan en pantallas angostas */
+  .hero-cine { height: 280vh; }
+  /* Las 4 fotos también en móvil (antes se ocultaban 2 por espacio):
+     columnas más angostas para que las 4 quepan sin recortarse de más. */
+  .hero-etapa2-col { min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -805,6 +873,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* ===== 6. SECCIONES GENÉRICAS =========================================== */
 .seccion { padding: 100px 0; }
+/* Modificador para secciones que buscan sentirse breves e "íntimas" en vez
+   del ritmo amplio por defecto (ej. Nosotros, tras el rediseño minimalista). */
+.seccion-intima { padding: 64px 0; }
 
 .fondo-suave {
   position: relative;
@@ -842,17 +913,38 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     repeating-linear-gradient(115deg, rgba(120, 118, 112, .04) 0px, transparent 1.5px, transparent 40px, rgba(120, 118, 112, .04) 41px);
 }
 
+/* Lienzo liso, sin vetado: para secciones que piden minimalismo puro (ej.
+   Nosotros) en vez del mármol con textura — un blanco cálido con un
+   degradado apenas perceptible, sin ningún patrón repetido. */
+.seccion-clara.fondo-lino {
+  background-color: var(--neutral-100);
+  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(210, 172, 71, .05) 0%, transparent 65%);
+}
+
 .titulo-seccion {
-  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-family: var(--fuente-elegante);
+  font-weight: 400;
+  letter-spacing: .04em;
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
   margin-bottom: 1rem;
-  color: var(--texto);
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+/* Palabras destacadas dentro de un titular en degradado (ej. .texto-turquesa):
+   -webkit-text-fill-color se hereda igual que color, así que sin este reset
+   el span quedaría transparente en vez de mostrar su propio acento. */
+.titulo-seccion [class*="texto-"] {
+  -webkit-text-fill-color: currentColor;
 }
 
 /* Subtítulos de sección: sans geométrica en mayúsculas trackeadas, igual
    que los menús — la única línea "de etiqueta" entre el titular serif y
    el cuerpo de texto en Lato. */
 .subtitulo-seccion {
-  color: var(--texto-suave);
+  color: var(--silver-500);
   max-width: 620px;
   margin: 0 auto;
   font-family: var(--fuente-menu);
@@ -861,6 +953,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   text-transform: uppercase;
   letter-spacing: .14em;
 }
+/* Sobre fondo claro la plata clara pierde contraste: variante oscura. */
+.seccion-clara .subtitulo-seccion { color: var(--silver-900); }
 
 .parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }
 
@@ -882,54 +976,44 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transition: transform .6s cubic-bezier(.16, 1, .3, 1);
 }
 .marco-imagen:hover img { transform: scale(1.04); }
-/* Marco de líneas detrás de la imagen (antes era un cuadro sólido; un
-   contorno da profundidad sin sumar otra forma rellena a la sección). */
-.marco-imagen::before {
-  content: '';
-  position: absolute;
-  top: -20px; left: -20px;
-  width: 130px; height: 130px;
-  border: 3px solid var(--turquesa-claro);
-  border-radius: var(--radio-tag-inv);
-  z-index: -1;
-}
-.marco-imagen::after {
-  content: '';
-  position: absolute;
-  bottom: -16px; right: 40px;
-  width: 60px; height: 60px;
-  border: 3px solid var(--durazno);
-  border-radius: 50%;
-  z-index: -1;
-}
 
+/* Insignia flotante, minimalista: vidrio esmerilado con borde de hilo
+   dorado en vez de la caja sólida de antes — se apoya en la foto sin
+   competir con ella. */
 .tarjeta-flotante {
   position: absolute;
-  right: -10px;
-  bottom: -25px;
-  background: var(--naranja-accion);
-  color: #fff;
-  padding: 1.1rem 1.5rem;
-  border-radius: 18px 6px 18px 6px;
-  box-shadow: 0 12px 30px rgba(192, 192, 192, .4);
+  right: -14px;
+  bottom: -18px;
+  background: rgba(28, 28, 28, .78);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--gold-500);
+  color: var(--marmol);
+  padding: .9rem 1.3rem;
+  border-radius: var(--radio-sm);
   display: flex;
   align-items: center;
-  gap: .8rem;
+  gap: .7rem;
 }
 .tarjeta-flotante .numero {
-  font-family: var(--fuente-titulo);
-  font-size: 2.2rem;
-  font-weight: 900;
+  font-family: var(--fuente-elegante);
+  font-size: 2rem;
   line-height: 1;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
 }
-.tarjeta-flotante .texto { font-size: .8rem; line-height: 1.3; }
+.tarjeta-flotante .texto { font-size: .78rem; line-height: 1.3; color: var(--silver-300); }
 
 /* Lista de características */
-.lista-caracteristicas { list-style: none; padding: 0; margin: 2rem 0 0; }
+.lista-caracteristicas { list-style: none; padding: 0; margin: 1.6rem 0 0; }
 .lista-caracteristicas li {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  gap: .9rem;
+  margin-bottom: 1.1rem;
 }
 .lista-caracteristicas h3 {
   font-size: 1.05rem;
@@ -942,48 +1026,41 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin: 0;
 }
 
+/* Minimalista: solo un contorno fino en oro, sin relleno ni sombra — la
+   versión anterior (cuadro sólido amarillo) pesaba demasiado para una
+   sección que busca sentirse sencilla e impecable. */
 .icono-cuadro {
-  flex: 0 0 48px;
-  width: 48px; height: 48px;
-  background: var(--turquesa-claro);
-  color: var(--turquesa-profundo);
-  border-radius: 14px 4px 14px 4px;
+  flex: 0 0 42px;
+  width: 42px; height: 42px;
+  background: transparent;
+  color: var(--gold-700);
+  border: 1px solid var(--gold-500);
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 1.15rem;
-  box-shadow: 0 6px 14px rgba(192, 192, 192, .2);
-}
-
-/* Línea que conecta los íconos de la lista, como una mini-trayectoria */
-.lista-caracteristicas { position: relative; }
-.lista-caracteristicas::before {
-  content: '';
-  position: absolute;
-  left: 23px; top: 12px; bottom: 12px;
-  width: 2px;
-  background: repeating-linear-gradient(var(--turquesa-claro) 0 6px, transparent 6px 11px);
+  font-size: 1rem;
 }
 .lista-caracteristicas li { position: relative; z-index: 1; }
 
 
 /* ===== 8. FRANJA DE ESTADÍSTICAS ======================================== */
+/* Más oscura y con una sola línea de hilo dorado (en vez de dos guiones
+   plateados): un lienzo más profundo hace que el número en degradado oro
+   se sienta más impactante, a tono con el resto del sistema de marca. */
 .franja-stats {
   position: relative;
   overflow: hidden;
-  background: var(--gris-bg);
-  padding: 60px 0;
+  background: var(--onix);
+  padding: 80px 0;
 }
-.franja-stats::before,
-.franja-stats::after {
+.franja-stats::before {
   content: '';
   position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, var(--naranja) 0 14px, transparent 14px 24px);
-  opacity: .5;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+  opacity: .6;
 }
-.franja-stats::before { top: 0; }
-.franja-stats::after  { bottom: 0; }
 @media (min-width: 992px) {
   .franja-stats .col-lg-3 { position: relative; }
   .franja-stats .col-lg-3::after {
@@ -992,21 +1069,27 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     right: -2px; top: 15%;
     height: 70%;
     width: 1px;
-    background: rgba(192, 192, 192, .3);
+    background: rgba(210, 172, 71, .25);
   }
   .franja-stats .row > div:last-child::after { display: none; }
 }
 .stat-numero {
-  font-family: var(--fuente-titulo);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 600;
-  color: var(--naranja);
+  font-family: var(--fuente-elegante);
+  font-size: clamp(2.4rem, 5.6vw, 3.6rem);
   line-height: 1;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
 }
 .stat-texto {
-  font-size: .9rem;
-  color: var(--texto);
-  margin: .3rem 0 0;
+  font-family: var(--fuente-menu);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--silver-300);
+  margin: .6rem 0 0;
   font-weight: 500;
 }
 
@@ -1087,6 +1170,178 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .enlace-card:hover i { transform: translateX(6px); }
 
 
+/* ===== 8.1 GALERÍA EN ACORDEÓN (ESPECIALIDADES) =========================
+   Puerto en CSS/JS puro (sin GSAP ni build) de un componente de acordeón:
+   fila de paneles a grayscale, el panel "activo" (hover/focus/tap) crece
+   con flex-grow, recupera color y revela su título + descripción. El JS
+   correspondiente vive en script.js, sección "ACORDEÓN DE ESPECIALIDADES".
+   La sección ocupa la pantalla completa (sin .container ni encabezado):
+   la ceremonia de entrada ("Tratamientos" a pantalla completa que se
+   desvanece, mismo mecanismo .cortina que el resto del sitio) y la
+   etiqueta fija en la esquina hacen ese papel en su lugar. ================= */
+.acordeon-seccion {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* Etiqueta fija en la esquina: la palabra "Tratamientos" sobre una barra
+   que se desvanece hacia abajo, para no tapar el acordeón que sigue. */
+.acordeon-etiqueta {
+  position: absolute;
+  top: 0; right: 0;
+  z-index: 3;
+  padding: 90px 2.2rem 3.5rem 3.5rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
+}
+.acordeon-etiqueta span {
+  font-family: var(--fuente-elegante);
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
+  letter-spacing: .04em;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+/* Ceremonia de entrada: reusa el mecanismo .cortina/.cortina-panel (blur +
+   fade) del resto del sitio, con el mismo texto de la etiqueta a pantalla
+   completa. data-retraso-ms en el HTML le pide al observer de script.js
+   que espere ~1s con el mensaje quieto antes de abrirla. */
+.acordeon-intro .cortina-panel {
+  display: grid;
+  place-items: center;
+  background: var(--onix);
+}
+.acordeon-intro__texto {
+  font-family: var(--fuente-elegante);
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  letter-spacing: .05em;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+.acordeon-galeria {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  perspective: 1400px;
+}
+
+.ag-panel {
+  position: relative;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: block;
+  background: var(--onix);
+  outline: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: flex-grow .6s cubic-bezier(.16, 1, .3, 1);
+}
+.ag-panel.ag-panel--activo { flex-grow: 4.5; }
+
+.ag-panel__media {
+  position: absolute;
+  inset: 0;
+}
+.ag-panel__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) brightness(.75);
+  transition: filter .6s ease, transform .6s ease;
+}
+.ag-panel.ag-panel--activo .ag-panel__media img {
+  filter: grayscale(0) brightness(.92);
+  transform: scale(1.04);
+}
+
+.ag-panel__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 40%, rgba(10, 8, 6, .85) 100%);
+}
+
+.ag-panel__texto {
+  position: absolute;
+  left: 1.3rem;
+  right: 1.3rem;
+  bottom: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.ag-panel.ag-panel--activo .ag-panel__texto {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: .1s;
+}
+.ag-panel__barra {
+  width: 30px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--gold-500);
+  box-shadow: 0 0 12px rgba(210, 172, 71, .6);
+}
+.ag-panel__titulo {
+  font-family: var(--fuente-elegante);
+  font-size: clamp(1.05rem, 1.6vw, 1.5rem);
+  color: var(--marmol);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ag-panel__desc {
+  font-family: var(--fuente-cuerpo);
+  font-size: .85rem;
+  color: var(--silver-300);
+  max-width: 34ch;
+}
+
+@media (max-width: 767.98px) {
+  /* En móvil 9 paneles no caben expandidos en una sola pantalla: la
+     sección crece con el contenido (scroll normal) en vez de recortarse
+     a 100vh — el acordeón horizontal de escritorio no aplica aquí. */
+  .acordeon-seccion { height: auto; }
+  .acordeon-etiqueta { padding: 80px 1.5rem 2rem 1.5rem; }
+  .acordeon-galeria {
+    flex-direction: column;
+    height: auto;
+    perspective: none;
+  }
+  .ag-panel {
+    flex: none;
+    height: 76px;
+    transition: height .5s cubic-bezier(.16, 1, .3, 1);
+  }
+  .ag-panel.ag-panel--activo { height: 320px; flex-grow: 0; }
+  .ag-panel__texto { transform: translateY(10px); }
+  .ag-panel.ag-panel--activo .ag-panel__texto { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-panel, .ag-panel__media img, .ag-panel__texto { transition: none; }
+}
+
+
 /* ===== 9.1 GALERÍA (grid con espacio reservado 1:1) ===================== */
 .galeria-item {
   position: relative;
@@ -1119,17 +1374,50 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 10. BANDA CTA ==================================================== */
+/* Franja más alta con un fondo tipo masonry (fotos reales, en columnas CSS)
+   en vez del plano de color liso de antes; el texto flota encima sobre un
+   degradado oscuro para seguir siendo legible. */
 .banda-cta {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
+  min-height: 64vh;
+  display: flex;
+  align-items: center;
   background: var(--turquesa-profundo);
   border-top: 1px solid rgba(192, 192, 192, .28);
   border-bottom: 1px solid rgba(192, 192, 192, .28);
   color: var(--marmol);
-  padding: 70px 0;
+  padding: 90px 0;
 }
 .banda-cta h2 { font-size: clamp(1.5rem, 3.5vw, 2.2rem); color: var(--silver-100); }
 .banda-cta p  { color: rgba(250, 248, 244, .82); }
+
+.banda-cta-masonry {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  column-count: 2;
+  column-gap: 6px;
+  padding: 0;
+}
+.banda-cta-masonry img {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  break-inside: avoid;
+  filter: grayscale(1) contrast(1.05) brightness(.55);
+}
+@media (min-width: 576px)  { .banda-cta-masonry { column-count: 3; } }
+@media (min-width: 992px)  { .banda-cta-masonry { column-count: 5; } }
+
+.banda-cta-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(10, 8, 6, .62) 0%, rgba(10, 8, 6, .8) 100%);
+}
+.banda-cta-contenido { position: relative; z-index: 2; }
 
 
 /* ===== 11. FOOTER ======================================================= */
@@ -1430,16 +1718,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 13b. TRANSICIONES ENTRE SECCIONES ================================
-   Cada bloque principal de la página de inicio usa un tipo de máscara
-   distinto — a propósito, para que el recorrido se sienta variado en vez
-   de repetir siempre el mismo obturador. El disparador (JS, .abierta) es
-   idéntico para todas: no hace falta tocar el observer al sumar variantes.
+   Un solo lenguaje de movimiento en todo el sitio: el plano se desvanece
+   Y se desenfoca a la vez, la sección anterior "se disuelve en niebla" en
+   vez de ser empujada a un lado — la misma esencia que el resto de las
+   transiciones scroll-linked del sitio (hero cine, salida de profesionales).
+   El disparador (JS, .abierta) es el mismo IntersectionObserver para todas.
    Requiere que el contenedor tenga position:relative + overflow:hidden
    (ya lo tienen .seccion-decorada, .franja-stats, .banda-cta y .footer). */
-
-/* Base: obturador horizontal — dos paneles que se abren hacia los lados.
-   Es el efecto de "apertura"; se usa una sola vez (Nosotros, justo después
-   del hero) y no se repite en ningún otro bloque. */
 .cortina {
   position: absolute;
   inset: 0;
@@ -1448,56 +1733,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   pointer-events: none;
 }
 .cortina-panel {
-  flex: 1 1 50%;
+  flex: 1 1 100%;
   background: var(--onix);
-  transition: transform 1.05s cubic-bezier(.65, 0, .35, 1);
-}
-.cortina-panel.izq { border-right: 1px solid rgba(192, 192, 192, .5); }
-.cortina-panel.der { border-left: 1px solid rgba(192, 192, 192, .5); }
-.cortina.abierta .cortina-panel.izq { transform: translateX(-100%); }
-.cortina.abierta .cortina-panel.der { transform: translateX(100%); }
-
-/* Diagonal (clip-path): un plano con corte al bisel que se retira hacia
-   la esquina — clip-path es, junto a transform/opacity, la tercera
-   propiedad que el compositor anima sin recalcular layout. */
-.cortina-diagonal .cortina-panel {
-  flex: 1 1 100%;
-  border: none;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  transition: clip-path 1.05s cubic-bezier(.65, 0, .35, 1);
-}
-.cortina-diagonal.abierta .cortina-panel {
-  clip-path: polygon(135% -35%, 240% -35%, 240% 135%, 135% 135%);
-}
-
-/* Deslizar desde un lado: un único plano sale por la izquierda o la
-   derecha (no ambos a la vez), como si la sección entrara empujándolo. */
-.cortina-desliza-izq .cortina-panel,
-.cortina-desliza-der .cortina-panel {
-  flex: 1 1 100%;
-  border: none;
-}
-.cortina-desliza-izq.abierta .cortina-panel { transform: translateX(-100%); }
-.cortina-desliza-der.abierta .cortina-panel { transform: translateX(100%); }
-
-/* Vertical: el plano sale hacia arriba, único eje distinto entre las
-   variantes — refuerza que no todas las secciones se sientan iguales. */
-.cortina-vertical .cortina-panel {
-  flex: 1 1 100%;
-  border: none;
-}
-.cortina-vertical.abierta .cortina-panel { transform: translateY(-100%); }
-
-/* Difuminado: sin desplazamiento, el plano se desvanece Y se desenfoca a la
-   vez — la sección anterior "se disuelve en niebla" en vez de ser empujada
-   a un lado; blur + opacity es lo que le da el aire "de más" que se pidió. */
-.cortina-difuminado .cortina-panel {
-  flex: 1 1 100%;
-  border: none;
   filter: blur(0);
   transition: opacity 1.1s ease, filter 1.1s ease;
 }
-.cortina-difuminado.abierta .cortina-panel { opacity: 0; filter: blur(22px); }
+.cortina.abierta .cortina-panel { opacity: 0; filter: blur(22px); }
 
 /* El footer no lleva cortina: cierra el recorrido en quietud, sin más
    animación que los estados de hover normales — el broche minimalista

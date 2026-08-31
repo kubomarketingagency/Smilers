@@ -27,7 +27,7 @@
   <!-- ===== GOOGLE FONTS: Bodoni Moda (titulares) + Montserrat (menús/subtítulos) + Lato (cuerpo) ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
   <link rel="stylesheet" href="estilos/estilos.css?v=24">
@@ -110,7 +110,10 @@
         </span>
       </a>
 
-      <!-- Botón hamburguesa (móvil) -->
+      <!-- Botón hamburguesa: parte del navbar (se oculta con él al bajar,
+           como el logo) — script.js congela ese auto-hide mientras el menú
+           está desplegado, para que la X nunca se mueva ni desaparezca
+           mientras el panel sigue abierto. -->
       <button class="navbar-toggler" type="button" aria-controls="menuPrincipal"
               aria-expanded="false" aria-label="Abrir menú de navegación">
         <span class="hamburguesa-icono" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -255,14 +258,13 @@
   <!-- ============================================================
        3. SECCIÓN RESUMEN — NOSOTROS
        ============================================================ -->
-  <section class="seccion seccion-decorada seccion-clara fondo-marmol" id="nosotros">
-    <div class="cortina" aria-hidden="true"><span class="cortina-panel izq"></span><span class="cortina-panel der"></span></div>
-    <div class="forma forma-turquesa forma-parallax" data-intensidad="14" style="width:340px;height:340px;top:5%;left:-130px;"></div>
-    <div class="forma forma-turquesa forma-blob forma-parallax" data-intensidad="24" style="width:220px;height:220px;bottom:5%;right:-80px;"></div>
+  <section class="seccion seccion-decorada seccion-clara fondo-lino seccion-intima" id="nosotros">
+    <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
+    <div class="forma forma-turquesa forma-parallax" data-intensidad="12" style="width:260px;height:260px;top:8%;left:-110px;opacity:.5;"></div>
     <div class="container">
       <div class="row align-items-center g-5">
 
-        <!-- Imagen / collage -->
+        <!-- Imagen -->
         <div class="col-lg-6 revelar">
           <div class="marco-imagen">
             <img src="imagenes/nosotros.webp" width="1000" height="750"
@@ -279,12 +281,11 @@
         <!-- Texto -->
         <div class="col-lg-6 revelar">
           <h2 class="titulo-seccion text-start">
-            Una clínica pensada para tu <span class="texto-turquesa">comodidad</span>
+            Pensada para tu <span class="texto-turquesa">comodidad</span>
           </h2>
           <p class="parrafo">
-            En <strong>Smilers Dental Clinique</strong> combinamos odontología de precisión
-            con un ambiente cálido y sofisticado. Cada tratamiento se planifica de forma
-            digital y personalizada, con diagnósticos exactos y resultados predecibles.
+            Odontología de precisión en un ambiente cálido: diagnósticos digitales exactos
+            y tratamientos personalizados, planificados a tu ritmo.
           </p>
 
           <!-- Lista de características de las instalaciones -->
@@ -293,21 +294,21 @@
               <span class="icono-cuadro"><i class="fa-solid fa-microchip"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-microchip"></use></svg></i></span>
               <div>
                 <h3>Alta tecnología</h3>
-                <p>Escáner intraoral 3D, radiografía digital y diseño de sonrisa asistido por software.</p>
+                <p>Escáner intraoral 3D y diseño de sonrisa digital.</p>
               </div>
             </li>
             <li class="revelar">
               <span class="icono-cuadro"><i class="fa-solid fa-couch"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-couch"></use></svg></i></span>
               <div>
                 <h3>Instalaciones de lujo</h3>
-                <p>Consultorios amplios, sala de espera premium y protocolos de bioseguridad certificados.</p>
+                <p>Consultorios amplios y bioseguridad certificada.</p>
               </div>
             </li>
             <li class="revelar">
               <span class="icono-cuadro"><i class="fa-solid fa-user-doctor"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></i></span>
               <div>
                 <h3>Equipo especializado</h3>
-                <p>Odontólogos con posgrado en cada área, trabajando de forma interdisciplinaria.</p>
+                <p>Posgrado en cada área, trabajo interdisciplinario.</p>
               </div>
             </li>
           </ul>
@@ -326,7 +327,7 @@
        BARRA DE ESTADÍSTICAS (fondo turquesa claro)
        ============================================================ -->
   <section class="franja-stats">
-    <div class="cortina cortina-desliza-izq" aria-hidden="true"><span class="cortina-panel"></span></div>
+    <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
     <div class="container">
       <div class="row text-center g-4">
         <div class="col-6 col-lg-3 revelar">
@@ -353,293 +354,152 @@
   <!-- ============================================================
        4. SECCIÓN ESPECIALIDADES (Cards de Bootstrap)
        ============================================================ -->
-  <section class="seccion seccion-decorada seccion-clara fondo-arena" id="especialidades">
-    <div class="cortina cortina-difuminado" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="forma forma-naranja forma-blob forma-parallax" data-intensidad="16" style="width:260px;height:260px;top:190px;right:6%;"></div>
-    <div class="forma forma-turquesa forma-parallax" data-intensidad="10" style="width:260px;height:260px;bottom:-60px;left:-90px;"></div>
-    <div class="container">
+  <section class="acordeon-seccion" id="especialidades" aria-label="Especialidades y tratamientos">
 
-      <!-- Encabezado de la sección -->
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">Especialidades</h2>
-        <p class="subtitulo-seccion">
-          Soluciones integrales para cada necesidad, bajo un mismo techo.
-        </p>
-      </div>
-
-      <!-- Grid responsivo: 1 col (móvil) / 2 col (tablet) / 3 col (escritorio) -->
-      <div class="row g-4">
-
-        <!-- Card 1 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-hand-holding-medical"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></i></span>
-              <h3 class="card-title">Rehabilitación Oral</h3>
-              <p class="card-text">
-                Reconstrucción integral de la mordida con coronas, puentes y prótesis
-                para devolver función y estética a toda la boca.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-bullseye"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-bullseye"></use></svg></i></span>
-              <h3 class="card-title">Endodoncia</h3>
-              <p class="card-text">
-                Tratamiento de conducto con tecnología rotatoria para salvar piezas
-                dañadas y eliminar el dolor de raíz.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-wand-magic-sparkles"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-wand-magic-sparkles"></use></svg></i></span>
-              <h3 class="card-title">Estética Dental</h3>
-              <p class="card-text">
-                Carillas, blanqueamiento y diseño digital de sonrisa para resultados
-                naturales y armónicos.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-kit-medical"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-kit-medical"></use></svg></i></span>
-              <h3 class="card-title">Cirugía Oral y Maxilofacial</h3>
-              <p class="card-text">
-                Extracción de terceros molares e injertos óseos con protocolos de
-                mínima invasión.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
-              <h3 class="card-title">Implantología</h3>
-              <p class="card-text">
-                Recupera piezas perdidas con implantes de titanio guiados por cirugía digital.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-teeth-open"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-teeth-open"></use></svg></i></span>
-              <h3 class="card-title">Ortodoncia</h3>
-              <p class="card-text">
-                Brackets estéticos, autoligado y alineadores invisibles con planificación 3D.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 7 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-shield-heart"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></i></span>
-              <h3 class="card-title">Periodoncia</h3>
-              <p class="card-text">
-                Salud de encías, limpiezas profundas y tratamiento de enfermedad periodontal.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 8 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-eye"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-eye"></use></svg></i></span>
-              <h3 class="card-title">Armonización Orofacial</h3>
-              <p class="card-text">
-                Procedimientos estéticos no quirúrgicos que equilibran la sonrisa y el
-                rostro con resultados sutiles y naturales.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 9 -->
-        <div class="col-md-6 col-lg-4 revelar">
-          <div class="card card-especialidad h-100">
-            <div class="card-body">
-              <span class="icono-especialidad"><i class="fa-solid fa-child-reaching"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-child-reaching"></use></svg></i></span>
-              <h3 class="card-title">Odontopediatría</h3>
-              <p class="card-text">
-                Atención lúdica y sin miedo para los más pequeños, con enfoque preventivo.
-              </p>
-              <a href="subpaginas/tratamientos.html" class="enlace-card">
-                Ver más <i class="fa-solid fa-arrow-right-long"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right-long"></use></svg></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-      </div>
+    <!-- Ceremonia de entrada: mismo mecanismo .cortina/blur que el resto
+         del sitio, con el mensaje "Tratamientos" a pantalla completa;
+         data-retraso-ms le pide al observer (script.js, 5b) que espere 1s
+         quieta antes de desvanecerse y revelar el acordeón. -->
+    <div class="cortina acordeon-intro" aria-hidden="true" data-retraso-ms="1000">
+      <span class="cortina-panel"><span class="acordeon-intro__texto">Tratamientos</span></span>
     </div>
-  </section>
 
+    <!-- Etiqueta fija: queda sobre el acordeón todo el tiempo, con una
+         barra que se desvanece hacia abajo para no taparlo. -->
+    <div class="acordeon-etiqueta" aria-hidden="true"><span>Tratamientos</span></div>
 
-  <!-- ============================================================
-       ANTES Y DESPUÉS — comparador interactivo
-       - Misma fotografía: el lado "antes" lleva un filtro CSS que simula
-         un tono opaco/amarillento; el cursor (o el dedo) revela el
-         "después" desplazando un clip-path. El <input type="range">
-         mantiene el control accesible por teclado.
-       ============================================================ -->
-  <section class="seccion fondo-suave seccion-decorada">
-    <div class="cortina cortina-desliza-der" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="forma forma-turquesa forma-blob forma-parallax" data-intensidad="12" style="width:320px;height:320px;top:170px;left:-110px;"></div>
-    <div class="forma forma-turquesa" style="width:200px;height:200px;bottom:-40px;right:4%;"></div>
-    <div class="acento-puntos turquesa d-none d-lg-grid" style="top:12%;right:12%;" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <span class="acento-mas turquesa d-none d-lg-block" style="bottom:14%;left:8%;" aria-hidden="true">+</span>
-    <div class="container">
+    <!-- Galería en acordeón: cada panel se expande al pasar el cursor
+         (o al enfocarlo/tocarlo) mostrando su descripción; un segundo
+         click/tap sobre el panel ya activo navega a su tratamiento en
+         tratamientos.html. Ver .ag-* en estilos.css y la sección
+         correspondiente en script.js. -->
+    <div class="acordeon-galeria" id="acordeonEspecialidades"
+         role="list" aria-label="Especialidades de Smilers Dental Clinique">
 
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">Antes y Después</h2>
-        <p class="subtitulo-seccion">
-          Desliza el cursor sobre la imagen y descubre el efecto de un tratamiento de
-          estética dental en Smilers.
-        </p>
-      </div>
-
-      <div class="comparador revelar" data-comparador>
-        <span class="acento-badge naranja" style="top:-18px;left:calc(50% - 26px);" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-wand-magic-sparkles"></use></svg></i></span>
-        <span class="acento-badge turquesa chico" style="bottom:-14px;right:24px;" aria-hidden="true"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
-        <span class="marco-esquina arriba-izq" aria-hidden="true"></span>
-        <span class="marco-esquina turquesa abajo-izq" aria-hidden="true"></span>
-        <div class="comparador-marco" id="comparador1">
-          <img src="imagenes/antes-despues.webp" class="comparador-img comparador-despues"
-               width="1400" height="1050" alt="Después: sonrisa blanca y luminosa" loading="lazy">
-          <div class="comparador-antes-cont">
-            <img src="imagenes/antes-despues.webp" class="comparador-img comparador-antes"
-                 width="1400" height="1050" alt="Antes: sonrisa con tono opaco" loading="lazy">
-          </div>
-          <div class="comparador-linea"></div>
-          <span class="comparador-manija"><i class="fa-solid fa-left-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-left-right"></use></svg></i></span>
-          <span class="comparador-tag comparador-tag-antes">Antes</span>
-          <span class="comparador-tag comparador-tag-despues">Después</span>
-        </div>
-        <input type="range" min="0" max="100" value="50" class="comparador-rango form-range"
-               aria-label="Deslizar para comparar antes y después">
-        <p class="comparador-nota">*Simulación ilustrativa del efecto de un blanqueamiento dental.</p>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       GALERÍA — vista previa de instalaciones
-       - Grid con aspect-ratio fijo (1:1) para reservar el espacio
-         exacto de cada imagen y evitar saltos de layout
-       ============================================================ -->
-  <section class="seccion seccion-decorada seccion-clara fondo-plata">
-    <div class="cortina cortina-diagonal" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="forma forma-durazno forma-blob forma-parallax" data-intensidad="14" style="width:280px;height:280px;top:10%;right:-100px;"></div>
-    <div class="container">
-
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">Nuestras instalaciones</h2>
-        <p class="subtitulo-seccion">
-          Espacios diseñados para tu comodidad, equipados con tecnología de punta.
-        </p>
-      </div>
-
-      <div class="row g-3 g-md-4">
-        <div class="col-6 col-lg-3 revelar">
-          <a href="subpaginas/galeria.html" class="galeria-item">
-            <img src="imagenes/hero-1.webp" width="600" height="600"
-                 alt="Consultorio equipado con escáner intraoral y radiografía digital" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-magnifying-glass-plus"></use></svg></i></span>
-          </a>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <a href="subpaginas/galeria.html" class="galeria-item">
-            <img src="imagenes/aligner.webp" width="600" height="600"
-                 alt="Alineador invisible de ortodoncia" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-magnifying-glass-plus"></use></svg></i></span>
-          </a>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <a href="subpaginas/galeria.html" class="galeria-item">
-            <img src="imagenes/sonrisa.webp" width="800" height="552"
-                 alt="Paciente satisfecho con su nueva sonrisa" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-magnifying-glass-plus"></use></svg></i></span>
-          </a>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <a href="subpaginas/galeria.html" class="galeria-item">
-            <img src="imagenes/hero-3.webp" width="600" height="600"
-                 alt="Consultorio de lujo con vista exterior" loading="lazy">
-            <span class="galeria-overlay"><i class="fa-solid fa-magnifying-glass-plus"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-magnifying-glass-plus"></use></svg></i></span>
-          </a>
-        </div>
-      </div>
-
-      <div class="text-center mt-5 revelar">
-        <a href="subpaginas/galeria.html" class="btn btn-turquesa">
-          Ver galería completa <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+        <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Rehabilitación Oral">
+          <span class="ag-panel__media"><img src="imagenes/antes-despues.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Rehabilitación Oral</span>
+            <span class="ag-panel__desc">Reconstrucción integral de la mordida con coronas, puentes y prótesis.</span>
+          </span>
         </a>
-      </div>
+
+        <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Endodoncia">
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Endodoncia</span>
+            <span class="ag-panel__desc">Tratamiento de conducto con tecnología rotatoria, sin dolor de raíz.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html#estetica-dental" class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-label="Estética Dental" aria-current="true">
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Estética Dental</span>
+            <span class="ag-panel__desc">Carillas, blanqueamiento y diseño digital de sonrisa.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html#cirugia-oral" class="ag-panel" role="listitem" tabindex="0" aria-label="Cirugía Oral y Maxilofacial">
+          <span class="ag-panel__media"><img src="imagenes/cirugia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Cirugía Oral y Maxilofacial</span>
+            <span class="ag-panel__desc">Extracción de terceros molares e injertos óseos mínimamente invasivos.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html#implantologia" class="ag-panel" role="listitem" tabindex="0" aria-label="Implantología">
+          <span class="ag-panel__media"><img src="imagenes/implantologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Implantología</span>
+            <span class="ag-panel__desc">Implantes de titanio guiados por cirugía digital.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html#ortodoncia" class="ag-panel" role="listitem" tabindex="0" aria-label="Ortodoncia">
+          <span class="ag-panel__media"><img src="imagenes/aligner.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Ortodoncia</span>
+            <span class="ag-panel__desc">Brackets estéticos, autoligado y alineadores invisibles.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Periodoncia">
+          <span class="ag-panel__media"><img src="imagenes/nosotros.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Periodoncia</span>
+            <span class="ag-panel__desc">Salud de encías y tratamiento de enfermedad periodontal.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Armonización Orofacial">
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Armonización Orofacial</span>
+            <span class="ag-panel__desc">Procedimientos estéticos no quirúrgicos, resultados naturales.</span>
+          </span>
+        </a>
+
+        <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Odontopediatría">
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Odontopediatría</span>
+            <span class="ag-panel__desc">Atención lúdica y sin miedo para los más pequeños.</span>
+          </span>
+        </a>
 
     </div>
   </section>
+
+
+
+
 
 
   <!-- ============================================================
        BANDA CTA (llamado a la acción)
        ============================================================ -->
   <section class="banda-cta">
-    <div class="cortina cortina-vertical" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="forma forma-blob" style="width:260px;height:260px;top:-90px;right:10%;background:#fff;opacity:.08;"></div>
-    <div class="container">
+    <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
+
+    <!-- Fondo tipo masonry: fotos reales de la clínica en columnas CSS
+         (alturas naturales de cada foto = el efecto "roto" del masonry,
+         sin necesitar JS de layout). Puramente decorativo. -->
+    <div class="banda-cta-masonry" aria-hidden="true">
+      <img src="imagenes/hero-1.webp" alt="" loading="lazy">
+      <img src="imagenes/equipo-1.webp" alt="" loading="lazy">
+      <img src="imagenes/sonrisa.webp" alt="" loading="lazy">
+      <img src="imagenes/hero-2.webp" alt="" loading="lazy">
+      <img src="imagenes/equipo-3.webp" alt="" loading="lazy">
+      <img src="imagenes/tecnologia.webp" alt="" loading="lazy">
+      <img src="imagenes/hero-3.webp" alt="" loading="lazy">
+      <img src="imagenes/equipo-2.webp" alt="" loading="lazy">
+      <img src="imagenes/cirugia.webp" alt="" loading="lazy">
+      <img src="imagenes/equipo-4.webp" alt="" loading="lazy">
+      <img src="imagenes/implantologia.webp" alt="" loading="lazy">
+      <img src="imagenes/nosotros.webp" alt="" loading="lazy">
+    </div>
+    <div class="banda-cta-overlay" aria-hidden="true"></div>
+
+    <div class="container banda-cta-contenido">
       <div class="row align-items-center g-4">
         <div class="col-lg-8 text-center text-lg-start">
           <h2 class="mb-2">¿Listo para transformar tu sonrisa?</h2>
@@ -647,7 +507,7 @@
         </div>
         <div class="col-lg-4 text-center text-lg-end">
           <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
-             class="btn btn-blanco btn-lg">
+             class="btn btn-traslucido btn-lg">
             <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Escríbenos ahora
           </a>
         </div>

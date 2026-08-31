@@ -46,10 +46,21 @@ document.addEventListener('DOMContentLoaded', function () {
        frame; sin esto, cada evento "scroll" (docenas por segundo) fuerza
        su propio recalculo. */
   const navbar = document.getElementById('navbarPrincipal');
+  // Declarado aquí (antes de usarse en controlarNavbar) para que el menú
+  // hamburguesa (sección 3, más abajo) y el auto-hide del navbar compartan
+  // una sola referencia: mientras el menú está abierto, el navbar (con la
+  // X dentro) se queda congelado en su sitio, sin importar si algún scroll
+  // residual se cuela pese al overflow:hidden del body.
+  const menu = document.getElementById('menuPrincipal');
   let tickeando = false;
   let ultimoScrollY = window.scrollY;
 
   function controlarNavbar() {
+    if (menu.classList.contains('menu-abierto')) {
+      tickeando = false;
+      return;
+    }
+
     const y = window.scrollY;
 
     if (y > 80) {
@@ -83,10 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
      Implementación propia (no el Collapse de Bootstrap): el panel ahora
      cubre todo el viewport (ver estilos.css), así que bloqueamos el scroll
      del body mientras está abierto — evita que el fondo se desplace detrás
-     del desenfoque y de paso impide que la barra superior se oculte por
-     scroll (navbar-oculto) mientras el menú está desplegado.
-     ======================================================================== */
-  const menu = document.getElementById('menuPrincipal');
+     del desenfoque — y controlarNavbar() (sección 2) se congela mientras
+     "menu-abierto" siga puesto, así que la X nunca se mueve ni desaparece
+     mientras el panel sigue desplegado. ("menu" ya se declaró en la
+     sección 2, para que controlarNavbar() lo pueda leer.) ============= */
   const botonMenu = document.querySelector('.navbar-toggler');
   const enlacesMenu = document.querySelectorAll('#menuPrincipal .nav-link, #menuPrincipal .btn');
 
@@ -96,6 +107,9 @@ document.addEventListener('DOMContentLoaded', function () {
     menu.classList.toggle('menu-abierto', nuevoEstado);
     botonMenu.setAttribute('aria-expanded', String(nuevoEstado));
     document.body.style.overflow = nuevoEstado ? 'hidden' : '';
+    // Al abrir, el navbar vuelve a su sitio de inmediato (por si ya estaba
+    // oculto por scroll) para que la X no aparezca a medio camino.
+    if (nuevoEstado) navbar.classList.remove('navbar-oculto');
   }
 
   if (botonMenu) {
@@ -152,15 +166,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   /* ===== 5b. TRANSICIÓN "CIERRE" ENTRE SECCIONES ======================
-     Cada .cortina cubre su sección con dos paneles que se abren hacia los
-     lados (como un obturador). Bidireccional: se cierran de nuevo si la
-     sección sale de pantalla, y se reabren al volver a entrar. */
+     Cada .cortina cubre su sección con un plano que se desvanece/desenfoca
+     (ver .cortina-panel en estilos.css). Bidireccional: se cierra de nuevo
+     si la sección sale de pantalla, y se reabre al volver a entrar.
+     data-retraso-ms (opcional, ej. la intro de Especialidades) hace que se
+     quede quieta ese tiempo antes de abrirse, en vez de abrirse de inmediato. */
   const cortinas = document.querySelectorAll('.cortina');
+  const retrasosCortina = new WeakMap();
 
   if ('IntersectionObserver' in window) {
     const obsCortinas = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
-        entrada.target.classList.toggle('abierta', entrada.isIntersecting);
+        const pendiente = retrasosCortina.get(entrada.target);
+        if (pendiente) clearTimeout(pendiente);
+
+        if (!entrada.isIntersecting) {
+          entrada.target.classList.remove('abierta');
+          return;
+        }
+
+        const retraso = Number(entrada.target.dataset.retrasoMs || 0);
+        if (retraso > 0) {
+          const id = setTimeout(function () {
+            entrada.target.classList.add('abierta');
+          }, retraso);
+          retrasosCortina.set(entrada.target, id);
+        } else {
+          entrada.target.classList.add('abierta');
+        }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
 
@@ -170,15 +203,26 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 6. CONTADORES ANIMADOS DE ESTADÍSTICAS ======================= */
+  /* ===== 6. CONTADORES ANIMADOS DE ESTADÍSTICAS =======================
+     Se reproduce cada vez que la franja entra en pantalla (no solo la
+     primera): al salir, el número vuelve a 0 para que el próximo ingreso
+     se sienta igual de impactante. "runId" por elemento invalida cualquier
+     rAF de una corrida anterior que siga en el aire (ej. si el usuario
+     entra y sale muy rápido) para que dos animaciones no escriban a la vez
+     sobre el mismo número. ==================================================== */
   const contadores = document.querySelectorAll('[data-contador]');
+  const runIdContador = new WeakMap();
 
   function animarContador(elemento) {
+    const idPropio = (runIdContador.get(elemento) || 0) + 1;
+    runIdContador.set(elemento, idPropio);
+
     const objetivo = parseInt(elemento.dataset.contador, 10);
     const duracion = 1600;              // milisegundos
     const inicio = performance.now();
 
     function paso(ahora) {
+      if (runIdContador.get(elemento) !== idPropio) return; // otra corrida la reemplazó
       const progreso = Math.min((ahora - inicio) / duracion, 1);
       elemento.textContent = Math.floor(progreso * objetivo).toLocaleString('es-MX');
       if (progreso < 1) requestAnimationFrame(paso);
@@ -187,11 +231,13 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if ('IntersectionObserver' in window) {
-    const obsContadores = new IntersectionObserver(function (entradas, obs) {
+    const obsContadores = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
         if (entrada.isIntersecting) {
           animarContador(entrada.target);
-          obs.unobserve(entrada.target);
+        } else {
+          runIdContador.set(entrada.target, (runIdContador.get(entrada.target) || 0) + 1);
+          entrada.target.textContent = '0';
         }
       });
     }, { threshold: 0.5 });
@@ -408,6 +454,63 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
+  /* ===== 12b. ACORDEÓN DE ESPECIALIDADES ==============================
+     Puerto en JS puro de un acordeón de imágenes: el panel activo (hover,
+     foco de teclado, o tap) se expande y muestra título + descripción.
+     En pantallas sin hover confiable (táctiles), el primer tap solo activa
+     el panel (sin navegar); un segundo tap sobre el panel ya activo sí
+     sigue el enlace — así se puede "ojear" cada especialidad antes de
+     entrar a su tratamiento. ======================================== */
+  (function () {
+    var galeria = document.getElementById('acordeonEspecialidades');
+    if (!galeria) return;
+
+    var paneles = Array.prototype.slice.call(galeria.querySelectorAll('.ag-panel'));
+    if (!paneles.length) return;
+
+    var tieneHoverFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    function activar(panel) {
+      paneles.forEach(function (p) {
+        var activo = p === panel;
+        p.classList.toggle('ag-panel--activo', activo);
+        if (activo) p.setAttribute('aria-current', 'true');
+        else p.removeAttribute('aria-current');
+      });
+    }
+
+    paneles.forEach(function (panel, indice) {
+      if (tieneHoverFino) {
+        panel.addEventListener('mouseenter', function () { activar(panel); });
+      }
+      panel.addEventListener('focus', function () { activar(panel); });
+
+      panel.addEventListener('click', function (evento) {
+        // En dispositivos sin hover fino, el primer tap solo revela el
+        // panel; hace falta un segundo tap (ya activo) para navegar.
+        if (!tieneHoverFino && !panel.classList.contains('ag-panel--activo')) {
+          evento.preventDefault();
+          activar(panel);
+        }
+      });
+
+      panel.addEventListener('keydown', function (evento) {
+        var siguiente = null;
+        if (evento.key === 'ArrowRight' || evento.key === 'ArrowDown') {
+          siguiente = paneles[(indice + 1) % paneles.length];
+        } else if (evento.key === 'ArrowLeft' || evento.key === 'ArrowUp') {
+          siguiente = paneles[(indice - 1 + paneles.length) % paneles.length];
+        }
+        if (siguiente) {
+          evento.preventDefault();
+          activar(siguiente);
+          siguiente.focus();
+        }
+      });
+    });
+  })();
+
+
   /* ===== 13. FAQ: abre automáticamente la pregunta enlazada por #hash === */
   if (window.location.hash) {
     const objetivo = document.querySelector(window.location.hash);
@@ -564,6 +667,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!envoltorio || !etapa1 || !etapa2) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    var heroTitulo = etapa1.querySelector('.hero-titulo');
     var columnas = etapa2.querySelectorAll('.hero-etapa2-col');
     var tagline = etapa2.querySelector('.hero-etapa2-tagline');
     var tickeandoCine = false;
@@ -575,25 +679,54 @@ document.addEventListener('DOMContentLoaded', function () {
       var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
       var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
 
-      // Etapa 1 (fotos en B/N) se desvanece del 30% al 55% del recorrido.
-      var salida1 = acotar((progreso - .30) / .25);
+      // Presupuesto del recorrido (0 a 1), con una zona de "estancia" real
+      // en el medio (48%-80%) para que la sección de profesionales se
+      // pueda ver completa en vez de que la entrada y la salida se sientan
+      // consecutivas: cae el wordmark -> se apaga la etapa 1 -> entra el
+      // acordeón de profesionales -> ESTANCIA -> se desenfoca y se suelta.
+      // .hero-cine ahora es más alto (ver estilos.css) para que cada tramo
+      // tenga suficiente distancia real de scroll y no se sienta atropellado.
+
+      // El wordmark "Smilers" cae y se desvanece primero.
+      if (heroTitulo) {
+        var caidaTitulo = acotar((progreso - .08) / .30);
+        heroTitulo.style.opacity = String(1 - caidaTitulo);
+        heroTitulo.style.transform = 'translateY(' + (caidaTitulo * 150) + 'px)';
+      }
+
+      // Etapa 1 (fotos) se desvanece justo después, del 24% al 36%.
+      var salida1 = acotar((progreso - .24) / .12);
       etapa1.style.opacity = String(1 - salida1);
 
-      // Etapa 2 entra del 40% al 65%; las columnas y el titular aparecen
+      // Etapa 2 entra del 34% al 48%: las columnas y el titular aparecen
       // con un pequeño escalonado para que no "salten" todas a la vez.
-      var entrada2 = acotar((progreso - .40) / .25);
-      etapa2.style.opacity = String(entrada2);
+      var entrada2 = acotar((progreso - .34) / .14);
+
+      // ...se queda completa y quieta del 48% al 80% (zona de estancia,
+      // sin animación) para poder verla y leer la frase con calma...
+      // ...y del 80% al 100% se desenfoca hasta desaparecer, justo antes
+      // de que el pin se suelte y aparezca la siguiente sección (Nosotros)
+      // — la transición "borrosa" que pidió el brief, en vez de un corte seco.
+      var salida2 = acotar((progreso - .80) / .20);
+      etapa2.style.opacity = String(entrada2 * (1 - salida2));
+      etapa2.style.filter = salida2 > 0 ? 'blur(' + (salida2 * 22) + 'px)' : '';
 
       columnas.forEach(function (col, indice) {
         var propio = acotar((entrada2 - indice * .12) / (1 - indice * .12 || 1));
         col.style.opacity = String(propio);
         col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px)';
+        // Efecto acordeón: cada columna arranca angosta y se "despliega"
+        // hasta su ancho pleno en vez de solo aparecer en su sitio.
+        col.style.flexGrow = String(.12 + propio * .88);
       });
 
       if (tagline) {
         var propioTag = acotar((entrada2 - .3) / .7);
         tagline.style.opacity = String(propioTag);
         tagline.style.transform = 'translateY(' + ((1 - propioTag) * 24) + 'px)';
+        // Borrosa -> nítida: arranca en un blur fuerte y se enfoca del todo
+        // justo cuando termina de aparecer.
+        tagline.style.filter = 'blur(' + ((1 - propioTag) * 16) + 'px)';
       }
 
       tickeandoCine = false;
