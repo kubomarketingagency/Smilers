@@ -1081,7 +1081,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nosotros-stats {
   position: relative;
   margin-top: 3rem;
-  padding-top: 2.2rem;
+  padding: 2.2rem 1.5rem;
+  background: var(--onix);
+  border-radius: var(--radio);
   border-top: 1px solid rgba(210, 172, 71, .3);
 }
 @media (min-width: 992px) {
@@ -1122,8 +1124,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    franja de ancho completo. */
 .nosotros-stats .stat-numero { font-size: clamp(2rem, 4.2vw, 2.8rem); }
 .nosotros-stats .stat-texto { font-size: .72rem; letter-spacing: .14em; margin-top: .4rem; }
-/* Sobre fondo claro la plata clara del texto pierde contraste. */
+/* Sobre fondo claro la plata clara del texto pierde contraste... */
 .seccion-clara .stat-texto { color: var(--texto-suave); }
+/* ...pero .nosotros-stats ahora es su propia "banda" con fondo oscuro
+   (var(--onix)) dentro de #nosotros para que el contador resalte de
+   verdad sobre el fondo claro de la sección, así que necesita el tono
+   plata claro normal otra vez, no el oscurecido de arriba. */
+.nosotros-stats .stat-texto { color: var(--silver-300); }
 
 
 /* ===== 9. CARDS DE ESPECIALIDADES ======================================= */
@@ -1336,7 +1343,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .ag-panel__titulo {
   font-family: var(--fuente-elegante);
   font-size: clamp(1.05rem, 1.6vw, 1.5rem);
-  color: var(--marmol);
+  color: var(--gold-200);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1380,7 +1387,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      sección crece con el contenido (scroll normal) en vez de recortarse
      a 100vh — el acordeón horizontal de escritorio no aplica aquí. */
   .acordeon-seccion { height: auto; }
-  .acordeon-etiqueta { padding: 80px 1.5rem 2rem 1.5rem; }
+  /* La etiqueta fija de esquina tenía sentido como ancla persistente del
+     acordeón horizontal de escritorio; en la lista vertical de móvil solo
+     estorbaba sobre las fotos, así que se quita del todo aquí. */
+  .acordeon-etiqueta { display: none; }
   .acordeon-galeria {
     flex-direction: column;
     height: auto;

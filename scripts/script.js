@@ -480,10 +480,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     paneles.forEach(function (panel, indice) {
+      // El listener de "focus" solo se ata en dispositivos con hover fino
+      // (mouse/trackpad): en táctil, un tap dispara "focus" ANTES que
+      // "click", así que si activara el panel aquí, el click de abajo ya
+      // lo encontraba "activo" y navegaba de una vez en el primer toque
+      // en vez de solo revelarlo — justo el bug reportado. En touch, el
+      // propio click de abajo es el único que decide.
       if (tieneHoverFino) {
         panel.addEventListener('mouseenter', function () { activar(panel); });
+        panel.addEventListener('focus', function () { activar(panel); });
       }
-      panel.addEventListener('focus', function () { activar(panel); });
 
       panel.addEventListener('click', function (evento) {
         // En dispositivos sin hover fino, el primer tap solo revela el
@@ -805,6 +811,67 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
     });
     actualizarCine();
+
+
+    /* ===== 14d. AUTO-SCROLL ASISTIDO ====================================
+       Dos "asistencias" puntuales, no un scroll-snap de CSS: aquel se quitó
+       por completo (ver el comentario junto a scroll-padding-top en
+       estilos.css) porque se quedaba trabado al pelear con cada evento de
+       scroll. Este mecanismo en cambio espera a que el usuario se detenga
+       de verdad (250ms sin eventos de scroll, aproxima "scrollend") y solo
+       ENTONCES completa el recorrido con un scrollTo suave, una sola vez
+       por acercamiento — nunca interrumpe un scroll en curso ni se repite
+       en bucle, así que no puede volver a trabar la página.
+       1) Smilers -> Profesionales: si el usuario bajó un poco desde el
+          arranque del hero y se detiene, se completa el recorrido hasta
+          que el mosaico de profesionales quede totalmente revelado.
+       2) Llegada a Tratamientos: si el usuario se detiene cerca del borde
+          del acordeón (pantalla completa, solo en desktop/tablet — en
+          móvil la sección crece con el contenido y no aplica), se ajusta
+          para que quede exactamente a pantalla completa en vez de a medias. */
+    var especialidades = document.getElementById('especialidades');
+    var avanzoHero = false;
+    var alineoTratamientos = false;
+    var idleTimerAsistido;
+
+    function progresoHero() {
+      var rect = envoltorio.getBoundingClientRect();
+      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
+      return alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+    }
+
+    function alScrollQuieto() {
+      var progreso = progresoHero();
+      if (progreso < .02) {
+        avanzoHero = false;
+      } else if (progreso < .22 && !avanzoHero) {
+        avanzoHero = true;
+        var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
+        var topEnvoltorio = envoltorio.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: topEnvoltorio + alturaDesplazable * .62, behavior: 'smooth' });
+      }
+
+      if (especialidades && window.matchMedia('(min-width: 768px)').matches) {
+        var rectEsp = especialidades.getBoundingClientRect();
+        var visible = Math.min(rectEsp.bottom, window.innerHeight) - Math.max(rectEsp.top, 0);
+        var proporcionVisible = visible / rectEsp.height;
+        // Umbral alto (35%) a propósito: si fuera bajo, detenerse a leer el
+        // contador de Nosotros (justo antes de Tratamientos) ya bastaba
+        // para "verse arrastrado" de golpe hacia el acordeón sin querer.
+        // Solo se completa el ajuste cuando ya se avanzó de verdad hacia él.
+        if (proporcionVisible < .06) {
+          alineoTratamientos = false;
+        } else if (proporcionVisible > .35 && proporcionVisible < .96 && Math.abs(rectEsp.top) > 4 && !alineoTratamientos) {
+          alineoTratamientos = true;
+          window.scrollTo({ top: rectEsp.top + window.scrollY, behavior: 'smooth' });
+        }
+      }
+    }
+
+    window.addEventListener('scroll', function () {
+      clearTimeout(idleTimerAsistido);
+      idleTimerAsistido = setTimeout(alScrollQuieto, 250);
+    }, { passive: true });
   })();
 
 
