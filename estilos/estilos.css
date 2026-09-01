@@ -1435,6 +1435,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   }
 }
 
+/* Sombras mucho más cortas en táctil. Una sombra con 44 o 62px de
+   desenfoque obliga a pintar y difuminar una banda enorme alrededor de cada
+   caja, y en esta sección hay nueve (seis fotos, dos sellos, la rejilla de
+   pilares y la losa del contador). Con 14-18px se sigue leyendo la
+   elevación y el área a difuminar baja a menos de la sexta parte. */
+@media (hover: none) and (pointer: coarse) {
+  .nm-figura { box-shadow: 0 6px 16px rgba(28, 28, 28, .16); }
+  .nm-sello { box-shadow: 0 8px 18px rgba(28, 28, 28, .38); }
+  .pilares-editorial { box-shadow: 0 6px 16px rgba(28, 28, 28, .07); }
+  .contador-lujo { box-shadow: 0 10px 22px rgba(28, 28, 28, .3); }
+}
+
 /* Halos de fondo de la sección (plata y oro, muy diluidos).
    Sin filter: blur(). El degradado radial YA es un difuminado — sumarle un
    blur de 70px encima obligaba al navegador a rasterizar dos superficies de

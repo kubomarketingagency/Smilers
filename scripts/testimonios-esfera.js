@@ -719,6 +719,7 @@ void main() {
     if (this.lienzo.width !== ancho || this.lienzo.height !== alto) {
       this.lienzo.width = ancho;
       this.lienzo.height = alto;
+      this._yaPinto = false;   // el buffer se limpió: hay que volver a dibujar
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
 
@@ -844,6 +845,21 @@ void main() {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     this.activo = Math.round(this.posicion);
+
+    /* ¿Sigue moviéndose algo? Durante la MESETA de cada testimonio (más de
+       la mitad del scroll de la sección) la esfera está quieta: la
+       orientación ya alcanzó su objetivo, la cámara está en su sitio y el
+       revelado no se está cruzando. Ahí no hay nada nuevo que dibujar, y
+       repintar la esfera igualmente son varios cientos de miles de píxeles
+       de shader por cuadro, en la sección más larga de la página. Con este
+       flag el bucle sigue vivo (para reaccionar al instante) pero se salta
+       el dibujado. */
+    var quieta =
+      Math.abs(this.velocidadRotacion) < 0.00025 &&
+      Math.abs(this.camara.z - (3 * this.escala)) < 0.004 &&
+      Math.abs(this.revelado - this.objetivoRevelado) < 0.002;
+
+    this.necesitaPintar = !quieta;
   };
 
   EsferaTestimonios.prototype._pintar = function () {
@@ -883,13 +899,17 @@ void main() {
     if (this.corriendo) return;
     this.corriendo = true;
     this.tiempo = 0;
+    this._yaPinto = false;   // fuerza un cuadro al volver a entrar en pantalla
     var self = this;
     var paso = function (t) {
       if (!self.corriendo) return;
       var delta = self.tiempo ? Math.min(32, t - self.tiempo) : DURACION_CUADRO;
       self.tiempo = t;
       self._animar(delta);
-      self._pintar();
+      if (self.necesitaPintar || !self._yaPinto) {
+        self._pintar();
+        self._yaPinto = true;
+      }
       self.solicitud = requestAnimationFrame(paso);
     };
     this.solicitud = requestAnimationFrame(paso);
