@@ -2888,3 +2888,421 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
   .comparador-marco { aspect-ratio: 16 / 6; }
 }
+
+/* ==========================================================================
+   TESTIMONIOS EN ESFERA (WebGL) — sección #testimonios de index.html
+   --------------------------------------------------------------------------
+   Dos presentaciones del MISMO contenido:
+
+   a) Base (sin clase extra): <ol class="testimonios-lista"> como rejilla de
+      tarjetas antes/después. Es lo que se ve sin JS, sin WebGL 2 o con
+      "menos movimiento" activado — y lo que siempre leen los lectores de
+      pantalla.
+   b) Realzada (.esfera-activa, la pone scripts/testimonios-esfera.js cuando
+      logra crear el contexto WebGL): la sección crece a varias pantallas de
+      alto, se fija con un pin sticky — misma técnica que .cierre-cine — y
+      dentro gira la esfera de discos mientras el scroll avanza. La lista
+      pasa a estar oculta a la vista pero sigue en el árbol de accesibilidad.
+   ========================================================================== */
+
+.testimonios-cine {
+  position: relative;
+  background: var(--onix);
+  isolation: isolate;
+}
+
+/* Halo tenue detrás de la esfera, para que los discos oscuros no se
+   confundan con el fondo ónix. */
+.testimonios-cine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 55% at 72% 50%, rgba(210, 172, 71, .10) 0%, transparent 70%);
+}
+
+.testimonios-pin {
+  position: relative;
+  z-index: 1;
+  padding: 90px 0 70px;
+}
+
+/* Etiqueta de sección: mismo tratamiento que .acordeon-etiqueta */
+.testimonios-etiqueta {
+  position: relative;
+  z-index: 3;
+  padding: 0 2rem 1.4rem;
+  text-align: center;
+  pointer-events: none;
+}
+.testimonios-etiqueta span {
+  font-family: var(--fuente-elegante);
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
+  letter-spacing: .04em;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+/* La escena WebGL solo existe en la variante realzada */
+.testimonios-escena { display: none; }
+
+
+/* ===== a) VARIANTE BASE: rejilla de tarjetas antes/después ============== */
+
+.testimonios-lista {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.6rem;
+}
+
+.tst-tarjeta {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+/* Las dos fotos ocupan la misma casilla del grid: la de "después" está
+   encima y aparece al pasar el cursor o al enfocar la tarjeta. */
+.tst-tarjeta__fotos {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1;
+  border-radius: var(--radio-tag);
+  overflow: hidden;
+  background: var(--superficie);
+}
+.tst-foto {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity .5s ease, filter .5s ease;
+}
+.tst-foto--antes  { filter: grayscale(1) contrast(1.05) sepia(.12); }
+.tst-foto--despues { opacity: 0; }
+
+.tst-tarjeta:hover .tst-foto--despues,
+.tst-tarjeta:focus-within .tst-foto--despues { opacity: 1; }
+
+.tst-tarjeta__chip {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  padding: .28rem .7rem;
+  border-radius: 999px;
+  font-family: var(--fuente-menu);
+  font-size: .62rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--onix);
+  background: var(--plata);
+}
+
+.tst-tarjeta blockquote {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-size: .98rem;
+  line-height: 1.65;
+  color: var(--texto);
+}
+.tst-tarjeta blockquote::before { content: '\201C'; }
+.tst-tarjeta blockquote::after  { content: '\201D'; }
+
+.tst-tarjeta figcaption {
+  margin-top: auto;
+  font-family: var(--fuente-menu);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--plata);
+}
+.tst-tarjeta figcaption span {
+  display: block;
+  margin-top: .2rem;
+  letter-spacing: .1em;
+  color: var(--texto-suave);
+}
+
+
+/* ===== b) VARIANTE REALZADA: pin + esfera ============================== */
+
+/* 5 testimonios = 4 giros. Con ~105vh por giro el avance se siente
+   deliberado sin volverse eterno; el 8% de reposo en cada punta lo pone el
+   JS (constante REPOSO). */
+.testimonios-cine.esfera-activa {
+  height: 520vh;
+}
+
+.esfera-activa .testimonios-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.esfera-activa .testimonios-etiqueta {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 34px 2rem 20px;
+  background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
+}
+
+/* La lista sigue en el DOM para lectores de pantalla y buscadores, pero
+   sale de la vista (no display:none, que la borraría del árbol de
+   accesibilidad). */
+.esfera-activa .testimonios-lista {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.esfera-activa .testimonios-escena {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 4.5rem);
+  width: 100%;
+  padding: 0 clamp(1.2rem, 4vw, 4rem);
+}
+
+/* --- Panel de texto: lo rellena el JS con el testimonio del frente --- */
+.testimonios-texto {
+  flex: 0 1 34ch;
+  min-width: 0;
+  opacity: 0;                      /* el JS lo sube según el scroll */
+  will-change: opacity, transform;
+}
+.tst-comillas {
+  display: block;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: .5;
+  color: var(--gold-500);
+  opacity: .55;
+}
+.tst-cita {
+  margin: .9rem 0 1.4rem;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.15rem, 1.9vw, 1.75rem);
+  line-height: 1.45;
+  color: var(--marmol);
+}
+.tst-firma {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  flex-wrap: wrap;
+}
+.tst-firma__nombre {
+  font-family: var(--fuente-menu);
+  font-size: .78rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--plata);
+}
+.tst-firma__linea {
+  flex: 0 0 34px;
+  height: 1px;
+  background: var(--gold-500);
+}
+.tst-firma__tratamiento {
+  font-family: var(--fuente-cuerpo);
+  font-size: .85rem;
+  letter-spacing: .04em;
+  color: var(--texto-suave);
+}
+
+/* Cinco marcas que se van encendiendo: dicen en qué testimonio va uno y
+   cuántos faltan, que si no el pin se siente sin fondo. */
+.tst-pasos {
+  list-style: none;
+  margin: 2.2rem 0 0;
+  padding: 0;
+  display: flex;
+  gap: .5rem;
+}
+.tst-pasos li {
+  width: 26px;
+  height: 2px;
+  background: rgba(217, 214, 208, .25);
+  transition: background .4s ease, width .4s ease;
+}
+.tst-pasos li.es-activo {
+  width: 44px;
+  background: var(--gold-500);
+}
+
+/* --- Esfera --- */
+.testimonios-esfera {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(46vw, 74svh);
+  aspect-ratio: 1;
+}
+.testimonios-lienzo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  /* Los discos vecinos quedan a medio salir por los bordes del lienzo y se
+     cortaban con un canto recto, que delataba el rectángulo del canvas. Con
+     esta máscara la esfera se disuelve en el ónix: el disco del frente
+     (radio ~21% del lado) queda intacto y el desvanecido empieza recién
+     después. */
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 30%, rgba(0, 0, 0, .85) 46%, rgba(0, 0, 0, .35) 63%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 30%, rgba(0, 0, 0, .85) 46%, rgba(0, 0, 0, .35) 63%, transparent 78%);
+}
+
+/* Botón circular calcado sobre el disco del frente. Con el encuadre del
+   motor (escala 3.2) ese disco ocupa ~42% del lado del lienzo — medido
+   sobre el render, no a ojo: el borde del disco cae en x = ±0.416 de NDC.
+   El 44% lo cubre entero con un pelo de margen para que sea fácil de
+   apuntar, y como border-radius también recorta el área sensible, el
+   cursor solo reacciona sobre la foto y no sobre el cuadrado. */
+.testimonios-revelar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.testimonios-revelar:focus-visible { box-shadow: var(--foco); }
+
+/* El chip cuelga por DEBAJO del círculo: dentro taparía la cara, que es
+   justo lo que se viene a comparar. */
+.testimonios-revelar__chip {
+  transform: translateY(150%);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .95rem;
+  border-radius: 999px;
+  background: rgba(28, 28, 28, .74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--superficie-borde);
+  transition: background .35s ease, border-color .35s ease;
+}
+.testimonios-revelar__estado {
+  font-family: var(--fuente-menu);
+  font-size: .66rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--marmol);
+}
+.testimonios-revelar__pista {
+  font-family: var(--fuente-cuerpo);
+  font-size: .72rem;
+  color: var(--texto-suave);
+}
+/* Ya revelado, la pista sobra: el chip se queda solo con "Después". */
+.mostrando-despues .testimonios-revelar__chip {
+  background: rgba(210, 172, 71, .92);
+  border-color: transparent;
+}
+.mostrando-despues .testimonios-revelar__estado { color: var(--onix); }
+.mostrando-despues .testimonios-revelar__pista { display: none; }
+
+
+/* ===== Pantallas medianas y móviles ==================================== */
+
+@media (max-width: 991.98px) {
+  .testimonios-cine.esfera-activa { height: 440vh; }
+
+  /* En columna todo tiene que caber en una sola pantalla (el pin recorta lo
+     que sobre). Con la esfera en 46svh, el texto (~200px) y este relleno, el
+     conjunto entra hasta en pantallas de 640px de alto. */
+  .esfera-activa .testimonios-escena {
+    flex-direction: column;
+    gap: clamp(.6rem, 2vh, 1.4rem);
+    padding: 64px clamp(1.2rem, 6vw, 2.5rem) 28px;
+  }
+  /* En columna la esfera va arriba y el texto debajo: la foto es el gancho
+     y el testimonio se lee después, no al revés. */
+  /* En columna la esfera va arriba y el texto debajo: la foto es el gancho
+     y el testimonio se lee después, no al revés. Se le permite pasarse del
+     ancho de pantalla (el pin recorta) porque los discos vecinos viven en
+     las esquinas: dejarlos salir del cuadro hace que el disco del frente
+     -que es el que importa- se vea bastante más grande. */
+  .testimonios-esfera {
+    order: -1;
+    width: min(128vw, 46svh);
+  }
+  .testimonios-texto {
+    flex: 0 0 auto;
+    max-width: 40ch;
+    text-align: center;
+  }
+  .tst-comillas { font-size: clamp(2.4rem, 9vw, 3.4rem); }
+  .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
+  .tst-firma { justify-content: center; }
+  .tst-pasos { margin-top: 1.4rem; justify-content: center; }
+  .testimonios-revelar { width: 48%; }  /* la escala 2.2 de movil agranda el disco */
+  .testimonios-revelar__pista { display: none; }
+}
+
+/* Pantallas bajas (móvil apaisado, ventanas chicas): con 46svh el conjunto
+   se pasaba unos pixeles del pin y el texto quedaba mordido abajo. */
+@media (max-width: 991.98px) and (max-height: 660px) {
+  .testimonios-esfera { width: min(128vw, 40svh); }
+  .esfera-activa .testimonios-escena { padding: 52px 1.2rem 20px; }
+  .tst-cita { font-size: 1rem; }
+  .tst-pasos { margin-top: .9rem; }
+}
+
+@media (max-width: 767.98px) {
+  .testimonios-pin { padding: 60px 0 50px; }
+  .testimonios-lista { gap: 1.2rem; padding: 0 1.2rem; }
+}
+
+/* Con "menos movimiento" el JS ni arma la esfera (ver el final de
+   scripts/testimonios-esfera.js), así que aquí solo queda asegurar que la
+   sección no se quede con el alto del pin si la clase llegara a colarse. */
+@media (prefers-reduced-motion: reduce) {
+  .testimonios-cine.esfera-activa { height: auto; }
+  .esfera-activa .testimonios-pin { position: static; height: auto; }
+  .esfera-activa .testimonios-escena { display: none; }
+  .esfera-activa .testimonios-lista {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  .tst-foto { transition: none; }
+}

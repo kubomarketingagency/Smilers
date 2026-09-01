@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=34">
+  <link rel="stylesheet" href="estilos/estilos.css?v=35">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -484,6 +484,183 @@
 
 
   <!-- ============================================================
+       4. TESTIMONIOS — ESFERA WEBGL MOVIDA POR SCROLL
+       - Los testimonios viven como discos sobre una esfera (el efecto
+         "InfiniteMenu"). En vez de arrastrarla con el mouse, la GIRA EL
+         SCROLL: cada tramo del pin trae un testimonio al frente, se
+         detiene (ahí aparece su texto) y sigue rodando al siguiente.
+       - La foto del frente se ve en blanco y negro: ese es el ANTES. Al
+         pasar el cursor (o tocar, en móvil) funde al DESPUÉS a color.
+       - Motor: scripts/testimonios-esfera.js (port vanilla del componente
+         React original, sin npm ni gl-matrix — ver el encabezado de ese
+         archivo).
+
+       DÓNDE SE EDITA EL CONTENIDO
+       ---------------------------
+       Aquí abajo, en <ol class="testimonios-lista">. Esa lista es el
+       contenido de verdad: es lo que leen Google y los lectores de
+       pantalla, lo que se ve si el navegador no tiene WebGL y lo que se
+       muestra si el visitante pidió "menos movimiento". El script la lee y
+       arma la esfera con esos mismos datos, así que NO hay que tocar el JS
+       para cambiar un testimonio, una foto o agregar/quitar uno.
+
+       OJO — DOS COSAS PENDIENTES DE REEMPLAZAR:
+       1) Los textos son de EJEMPLO. Cámbialos por testimonios reales de
+          pacientes (con su autorización); publicar reseñas inventadas como
+          si fueran auténticas es engañoso y en varios países es sancionable.
+       2) Las fotos de imagenes/testimonios/ son PROVISIONALES (copias de
+          otras fotos del sitio, puestas ahí para que la sección no se vea
+          rota). Sustituye los 10 archivos por los antes/después reales,
+          respetando los nombres: 1-antes.webp / 1-despues.webp, etc.
+          Ideal: cuadradas, ~800x800 px, mismo encuadre en antes y después.
+       ============================================================ -->
+  <section class="testimonios-cine" id="testimonios"
+           data-esfera-testimonios aria-labelledby="testimoniosTitulo">
+    <div class="testimonios-pin">
+
+      <!-- Etiqueta fija, mismo criterio que la de Tratamientos -->
+      <div class="testimonios-etiqueta">
+        <span id="testimoniosTitulo">Testimonios</span>
+      </div>
+
+      <!-- Escena WebGL. Nace oculta y solo se muestra cuando el script
+           consiguió armar la esfera (le pone .esfera-activa a la sección).
+           Va aria-hidden porque es un duplicado visual de la lista de
+           abajo: quien usa lector de pantalla lee la lista, no el canvas. -->
+      <div class="testimonios-escena" aria-hidden="true">
+
+        <div class="testimonios-texto" data-panel-testimonio>
+          <span class="tst-comillas" aria-hidden="true">&ldquo;</span>
+          <p class="tst-cita" data-cita></p>
+          <p class="tst-firma">
+            <span class="tst-firma__nombre" data-nombre></span>
+            <span class="tst-firma__linea"></span>
+            <span class="tst-firma__tratamiento" data-tratamiento></span>
+          </p>
+          <ol class="tst-pasos">
+            <li data-paso class="es-activo"></li>
+            <li data-paso></li>
+            <li data-paso></li>
+            <li data-paso></li>
+            <li data-paso></li>
+          </ol>
+        </div>
+
+        <div class="testimonios-esfera">
+          <canvas class="testimonios-lienzo" data-lienzo-testimonios></canvas>
+          <!-- Botón circular calcado sobre el disco del frente: al pasar
+               el cursor (o tocarlo) cambia el antes por el después. -->
+          <button type="button" class="testimonios-revelar" data-revelar
+                  tabindex="-1" aria-pressed="false">
+            <span class="testimonios-revelar__chip">
+              <span class="testimonios-revelar__estado" data-estado-foto>Antes</span>
+              <span class="testimonios-revelar__pista">ver el después</span>
+            </span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ===== CONTENIDO REAL: edita los testimonios AQUÍ ===== -->
+      <ol class="testimonios-lista">
+
+        <li>
+          <figure class="tst-tarjeta" data-testimonio
+                  data-antes="imagenes/testimonios/1-antes.webp"
+                  data-despues="imagenes/testimonios/1-despues.webp"
+                  data-nombre="Valeria Cedeño"
+                  data-tratamiento="Carillas de porcelana">
+            <div class="tst-tarjeta__fotos">
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/1-antes.webp"
+                   alt="Valeria Cedeño antes de sus carillas de porcelana" loading="lazy" decoding="async">
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/1-despues.webp"
+                   alt="Valeria Cedeño después de sus carillas de porcelana" loading="lazy" decoding="async">
+              <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
+            </div>
+            <blockquote>Llegué tapándome la boca en cada foto. Hoy la sonrisa es lo primero que muestro, y se ve tan mía que nadie adivina que es un tratamiento.</blockquote>
+            <figcaption>Valeria Cedeño <span>Carillas de porcelana</span></figcaption>
+          </figure>
+        </li>
+
+        <li>
+          <figure class="tst-tarjeta" data-testimonio
+                  data-antes="imagenes/testimonios/2-antes.webp"
+                  data-despues="imagenes/testimonios/2-despues.webp"
+                  data-nombre="Andrés Villacís"
+                  data-tratamiento="Ortodoncia invisible">
+            <div class="tst-tarjeta__fotos">
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/2-antes.webp"
+                   alt="Andrés Villacís antes de su ortodoncia invisible" loading="lazy" decoding="async">
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/2-despues.webp"
+                   alt="Andrés Villacís después de su ortodoncia invisible" loading="lazy" decoding="async">
+              <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
+            </div>
+            <blockquote>Trabajo dando la cara todo el día y no quería brackets. Usé los alineadores catorce meses y en la oficina nadie se dio cuenta hasta que terminé.</blockquote>
+            <figcaption>Andrés Villacís <span>Ortodoncia invisible</span></figcaption>
+          </figure>
+        </li>
+
+        <li>
+          <figure class="tst-tarjeta" data-testimonio
+                  data-antes="imagenes/testimonios/3-antes.webp"
+                  data-despues="imagenes/testimonios/3-despues.webp"
+                  data-nombre="Mariana Zambrano"
+                  data-tratamiento="Diseño de sonrisa">
+            <div class="tst-tarjeta__fotos">
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/3-antes.webp"
+                   alt="Mariana Zambrano antes de su diseño de sonrisa" loading="lazy" decoding="async">
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/3-despues.webp"
+                   alt="Mariana Zambrano después de su diseño de sonrisa" loading="lazy" decoding="async">
+              <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
+            </div>
+            <blockquote>Me mostraron la simulación antes de empezar y el resultado salió idéntico. Saber a dónde íbamos fue lo que me quitó el miedo.</blockquote>
+            <figcaption>Mariana Zambrano <span>Diseño de sonrisa</span></figcaption>
+          </figure>
+        </li>
+
+        <li>
+          <figure class="tst-tarjeta" data-testimonio
+                  data-antes="imagenes/testimonios/4-antes.webp"
+                  data-despues="imagenes/testimonios/4-despues.webp"
+                  data-nombre="Joaquín Herrera"
+                  data-tratamiento="Implantes dentales">
+            <div class="tst-tarjeta__fotos">
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/4-antes.webp"
+                   alt="Joaquín Herrera antes de sus implantes dentales" loading="lazy" decoding="async">
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/4-despues.webp"
+                   alt="Joaquín Herrera después de sus implantes dentales" loading="lazy" decoding="async">
+              <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
+            </div>
+            <blockquote>Pasé cuatro años masticando de un solo lado. Con los implantes volví a comer normal, y eso vale más que cualquier foto.</blockquote>
+            <figcaption>Joaquín Herrera <span>Implantes dentales</span></figcaption>
+          </figure>
+        </li>
+
+        <li>
+          <figure class="tst-tarjeta" data-testimonio
+                  data-antes="imagenes/testimonios/5-antes.webp"
+                  data-despues="imagenes/testimonios/5-despues.webp"
+                  data-nombre="Camila Ordóñez"
+                  data-tratamiento="Rehabilitación oral">
+            <div class="tst-tarjeta__fotos">
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/5-antes.webp"
+                   alt="Camila Ordóñez antes de su rehabilitación oral" loading="lazy" decoding="async">
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/5-despues.webp"
+                   alt="Camila Ordóñez después de su rehabilitación oral" loading="lazy" decoding="async">
+              <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
+            </div>
+            <blockquote>Fueron varias sesiones y en todas me explicaron qué seguía y por qué. Nunca sentí que me estaban vendiendo algo de más.</blockquote>
+            <figcaption>Camila Ordóñez <span>Rehabilitación oral</span></figcaption>
+          </figure>
+        </li>
+
+      </ol>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
        CIERRE CINE + BANDA CTA (llamado a la acción)
        - Mismo mecanismo de pin que el hero (ver .hero-cine): la pantalla
          se queda en negro, y al seguir bajando ese negro se levanta como
@@ -673,5 +850,8 @@
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
   <script src="scripts/script.js?v=34"></script>
+  <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
+       hay WebGL 2 o si el visitante pidió menos movimiento). -->
+  <script src="scripts/testimonios-esfera.js?v=1"></script>
 </body>
 </html>
