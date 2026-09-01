@@ -1,0 +1,6 @@
+# Herramientas de mantenimiento y documentación: se usan en local, antes de
+# commitear, y no las pide ninguna página. Fuera del despliegue para que no
+# queden publicadas en el dominio del cliente.
+CACHE.md
+scripts/sellar-version.js
+scripts/convert-to-webp.js

@@ -30,10 +30,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=7d81468c8c">
+  <link rel="stylesheet" href="estilos/estilos.css?v=9c010dcec9">
 
-  <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
-  <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
+  <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
+       paralelo con el CSS. Dos entradas con "media" porque el hero usa
+       <picture>: si se precargara siempre la de 1920 px, en el teléfono se
+       descargarían las dos (la precargada y la que el <picture> elige). ===== -->
+  <link rel="preload" as="image" href="imagenes/hero-1-720.webp?v=44baaaa35a" media="(max-width: 767.98px)" fetchpriority="high">
+  <link rel="preload" as="image" href="imagenes/hero-1.webp?v=9bd092de88" media="(min-width: 768px)" fetchpriority="high">
 </head>
 
 <body>
@@ -95,8 +99,8 @@
          3.8s: se veía una pantalla en blanco larga y luego el sitio, SIN la
          intro. Ahora carga de inmediato. -->
     <video muted playsinline preload="auto"
-           data-src-escritorio="video-hero/SmilersCompu-720.mp4"
-           data-src-movil="video-hero/SmilersCelular-720.mp4"></video>
+           data-src-escritorio="video-hero/SmilersCompu-720.mp4?v=442156d929"
+           data-src-movil="video-hero/SmilersCelular-720.mp4?v=df614e064a"></video>
   </div>
 
   <!-- ============================================================
@@ -190,21 +194,40 @@
          destellos, overlay) sigue funcionando igual encima. -->
     <div id="heroCarrusel" class="carousel slide carousel-fade hero-carrusel"
          data-bs-ride="carousel" data-bs-interval="4200">
+      <!-- <picture> con "media", NO srcset con descriptores "w": el hero
+           ocupa el 100% del ancho, así que un sizes honesto ("100vw") en un
+           teléfono de 390 px y densidad 3 pide 1170 px y el navegador
+           elegiría igualmente la de 1920. Y esas tres fotos de 1920x1284,
+           decodificadas, son ~10 MB de mapa de bits CADA UNA: 30 MB de
+           memoria de imagen viva en el arranque de la portada, en el mismo
+           momento en que el hero cine ya está animando. Con la variante de
+           720 px son 1.4 MB por foto. Al ir en blanco y negro, bajo un velo
+           oscuro y con filtro de contraste, la diferencia no se ve en una
+           pantalla de teléfono; la de memoria sí se siente. -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="imagenes/hero-1.webp" class="hero-slide-img" width="1920" height="1284"
-               alt="Consultorio de Smilers Dental Clinique equipado con tecnología digital"
-               fetchpriority="high" decoding="async">
+          <picture>
+            <source media="(max-width: 767.98px)" srcset="imagenes/hero-1-720.webp?v=44baaaa35a" width="720" height="482">
+            <img src="imagenes/hero-1.webp?v=9bd092de88" class="hero-slide-img" width="1920" height="1284"
+                 alt="Consultorio de Smilers Dental Clinique equipado con tecnología digital"
+                 fetchpriority="high" decoding="async">
+          </picture>
         </div>
         <div class="carousel-item">
-          <img src="imagenes/hero-2.webp" class="hero-slide-img" width="1920" height="1280"
-               alt="Sillón dental moderno en las instalaciones de Smilers Dental Clinique"
-               fetchpriority="low">
+          <picture>
+            <source media="(max-width: 767.98px)" srcset="imagenes/hero-2-720.webp?v=4385b8c0f3" width="720" height="480">
+            <img src="imagenes/hero-2.webp?v=41a603a5d5" class="hero-slide-img" width="1920" height="1280"
+                 alt="Sillón dental moderno en las instalaciones de Smilers Dental Clinique"
+                 fetchpriority="low" decoding="async">
+          </picture>
         </div>
         <div class="carousel-item">
-          <img src="imagenes/hero-3.webp" class="hero-slide-img" width="1920" height="1280"
-               alt="Consultorio de lujo con vista exterior en Smilers Dental Clinique"
-               fetchpriority="low">
+          <picture>
+            <source media="(max-width: 767.98px)" srcset="imagenes/hero-3-720.webp?v=b88f3de464" width="720" height="480">
+            <img src="imagenes/hero-3.webp?v=79aeb82853" class="hero-slide-img" width="1920" height="1280"
+                 alt="Consultorio de lujo con vista exterior en Smilers Dental Clinique"
+                 fetchpriority="low" decoding="async">
+          </picture>
         </div>
       </div>
     </div>
@@ -247,10 +270,14 @@
        y roles, ya está presentado con su propio texto más abajo y en
        subpaginas/nosotros.html — por eso todo el bloque va aria-hidden. -->
   <div class="hero-etapa2" id="heroEtapa2" aria-hidden="true">
-    <div class="hero-etapa2-col"><img src="imagenes/equipo-1.webp" width="900" height="600" alt="" loading="lazy"></div>
-    <div class="hero-etapa2-col"><img src="imagenes/equipo-2.webp" width="900" height="1350" alt="" loading="lazy"></div>
-    <div class="hero-etapa2-col"><img src="imagenes/equipo-3.webp" width="900" height="600" alt="" loading="lazy"></div>
-    <div class="hero-etapa2-col"><img src="imagenes/equipo-4.webp" width="900" height="1350" alt="" loading="lazy"></div>
+    <!-- Aquí el sizes SÍ puede ser honesto: son 4 columnas (25vw en
+         escritorio, 50vw en la rejilla 2x2 de móvil), así que el navegador
+         elige solo la variante correcta. Antes se pedía siempre la de
+         900 px para pintarla en una columna de 195 px. -->
+    <div class="hero-etapa2-col"><img src="imagenes/equipo-1.webp?v=7dadb1fd33" srcset="imagenes/equipo-1-480.webp?v=0109bd657d 480w, imagenes/equipo-1-720.webp?v=1a077e1d09 720w, imagenes/equipo-1.webp?v=7dadb1fd33 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" loading="lazy" decoding="async"></div>
+    <div class="hero-etapa2-col"><img src="imagenes/equipo-2.webp?v=cd4a853990" srcset="imagenes/equipo-2-480.webp?v=a75db47d20 480w, imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, imagenes/equipo-2.webp?v=cd4a853990 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="1350" alt="" loading="lazy" decoding="async"></div>
+    <div class="hero-etapa2-col"><img src="imagenes/equipo-3.webp?v=af31db4954" srcset="imagenes/equipo-3-480.webp?v=2caa776cc3 480w, imagenes/equipo-3-720.webp?v=b62996f01b 720w, imagenes/equipo-3.webp?v=af31db4954 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" loading="lazy" decoding="async"></div>
+    <div class="hero-etapa2-col"><img src="imagenes/equipo-4.webp?v=53353e6f81" srcset="imagenes/equipo-4-480.webp?v=6dea302323 480w, imagenes/equipo-4-720.webp?v=707e69bcb0 720w, imagenes/equipo-4.webp?v=53353e6f81 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="1350" alt="" loading="lazy" decoding="async"></div>
     <div class="hero-etapa2-tagline">
       <p>Sonrisas que <strong>transforman vidas</strong></p>
     </div>
@@ -291,21 +318,21 @@
 
       <div class="nosotros-media">
         <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-26">
-          <img src="imagenes/nosotros.webp"
-               srcset="imagenes/nosotros-720.webp 720w, imagenes/nosotros.webp 1000w"
+          <img src="imagenes/nosotros.webp?v=50efd7060f"
+               srcset="imagenes/nosotros-720.webp?v=726b9e3483 720w, imagenes/nosotros.webp?v=50efd7060f 1000w"
                sizes="(min-width: 992px) 30vw, 52vw" width="1000" height="750"
                alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
                loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="18">
-          <img src="imagenes/tecnologia.webp"
-               srcset="imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w"
+          <img src="imagenes/tecnologia.webp?v=641c0d4bb5"
+               srcset="imagenes/tecnologia-720.webp?v=c5c8153e42 720w, imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="34">
-          <img src="imagenes/equipo-2.webp"
-               srcset="imagenes/equipo-2-720.webp 720w, imagenes/equipo-2.webp 900w"
+          <img src="imagenes/equipo-2.webp?v=cd4a853990"
+               srcset="imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, imagenes/equipo-2.webp?v=cd4a853990 900w"
                sizes="(min-width: 992px) 20vw, 34vw" width="900" height="1350"
                alt="Especialista del equipo de Smilers Dental Clinique en consulta" loading="lazy" decoding="async">
         </figure>
@@ -407,21 +434,21 @@
 
       <div class="nosotros-media">
         <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-22">
-          <img src="imagenes/hero-2.webp"
-               srcset="imagenes/hero-2-720.webp 720w, imagenes/hero-2.webp 1920w"
+          <img src="imagenes/hero-2.webp?v=41a603a5d5"
+               srcset="imagenes/hero-2-720.webp?v=4385b8c0f3 720w, imagenes/hero-2.webp?v=41a603a5d5 1920w"
                sizes="(min-width: 992px) 30vw, 52vw" width="1920" height="1280"
                alt="Consultorio de Smilers Dental Clinique con sillón odontológico y equipo digital"
                loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="16">
-          <img src="imagenes/cirugia.webp"
-               srcset="imagenes/cirugia-720.webp 720w, imagenes/cirugia.webp 1200w"
+          <img src="imagenes/cirugia.webp?v=e3d3520635"
+               srcset="imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, imagenes/cirugia.webp?v=e3d3520635 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="1800"
                alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="30">
-          <img src="imagenes/implantologia.webp"
-               srcset="imagenes/implantologia-720.webp 720w, imagenes/implantologia.webp 1200w"
+          <img src="imagenes/implantologia.webp?v=ab7b059165"
+               srcset="imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, imagenes/implantologia.webp?v=ab7b059165 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy" decoding="async">
         </figure>
@@ -540,7 +567,7 @@
          role="list" aria-label="Especialidades de Smilers Dental Clinique">
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Rehabilitación Oral">
-          <span class="ag-panel__media"><img src="imagenes/antes-despues.webp" srcset="imagenes/antes-despues-480.webp 480w, imagenes/antes-despues-720.webp 720w, imagenes/antes-despues.webp 1400w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/antes-despues.webp?v=648419eb81" srcset="imagenes/antes-despues-480.webp?v=324657b905 480w, imagenes/antes-despues-720.webp?v=d0a75c3314 720w, imagenes/antes-despues.webp?v=648419eb81 1400w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -551,7 +578,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Endodoncia">
-          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" srcset="imagenes/tecnologia-480.webp 480w, imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp?v=641c0d4bb5" srcset="imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, imagenes/tecnologia-720.webp?v=c5c8153e42 720w, imagenes/tecnologia.webp?v=641c0d4bb5 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -562,7 +589,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#estetica-dental" class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-label="Estética Dental" aria-current="true">
-          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" srcset="imagenes/sonrisa-480.webp 480w, imagenes/sonrisa-720.webp 720w, imagenes/sonrisa.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp?v=24597df771" srcset="imagenes/sonrisa-480.webp?v=33c4c4c590 480w, imagenes/sonrisa-720.webp?v=15ba844325 720w, imagenes/sonrisa.webp?v=24597df771 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -573,7 +600,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#cirugia-oral" class="ag-panel" role="listitem" tabindex="0" aria-label="Cirugía Oral y Maxilofacial">
-          <span class="ag-panel__media"><img src="imagenes/cirugia.webp" srcset="imagenes/cirugia-480.webp 480w, imagenes/cirugia-720.webp 720w, imagenes/cirugia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/cirugia.webp?v=e3d3520635" srcset="imagenes/cirugia-480.webp?v=3c31b35eb6 480w, imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, imagenes/cirugia.webp?v=e3d3520635 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -584,7 +611,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#implantologia" class="ag-panel" role="listitem" tabindex="0" aria-label="Implantología">
-          <span class="ag-panel__media"><img src="imagenes/implantologia.webp" srcset="imagenes/implantologia-480.webp 480w, imagenes/implantologia-720.webp 720w, imagenes/implantologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/implantologia.webp?v=ab7b059165" srcset="imagenes/implantologia-480.webp?v=4a2132544d 480w, imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, imagenes/implantologia.webp?v=ab7b059165 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -595,7 +622,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#ortodoncia" class="ag-panel" role="listitem" tabindex="0" aria-label="Ortodoncia">
-          <span class="ag-panel__media"><img src="imagenes/aligner.webp" srcset="imagenes/aligner-480.webp 480w, imagenes/aligner-720.webp 720w, imagenes/aligner.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/aligner.webp?v=1494f07af8" srcset="imagenes/aligner-480.webp?v=e92d34e4c4 480w, imagenes/aligner-720.webp?v=f7f0c1946e 720w, imagenes/aligner.webp?v=1494f07af8 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -606,7 +633,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Periodoncia">
-          <span class="ag-panel__media"><img src="imagenes/nosotros.webp" srcset="imagenes/nosotros-480.webp 480w, imagenes/nosotros-720.webp 720w, imagenes/nosotros.webp 1000w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/nosotros.webp?v=50efd7060f" srcset="imagenes/nosotros-480.webp?v=2e9bc31f97 480w, imagenes/nosotros-720.webp?v=726b9e3483 720w, imagenes/nosotros.webp?v=50efd7060f 1000w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -617,7 +644,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Armonización Orofacial">
-          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" srcset="imagenes/sonrisa-480.webp 480w, imagenes/sonrisa-720.webp 720w, imagenes/sonrisa.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp?v=24597df771" srcset="imagenes/sonrisa-480.webp?v=33c4c4c590 480w, imagenes/sonrisa-720.webp?v=15ba844325 720w, imagenes/sonrisa.webp?v=24597df771 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -628,7 +655,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Odontopediatría">
-          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" srcset="imagenes/tecnologia-480.webp 480w, imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp?v=641c0d4bb5" srcset="imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, imagenes/tecnologia-720.webp?v=c5c8153e42 720w, imagenes/tecnologia.webp?v=641c0d4bb5 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -741,9 +768,9 @@
                   data-nombre="Valeria Cedeño"
                   data-tratamiento="Carillas de porcelana">
             <div class="tst-tarjeta__fotos">
-              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/1-antes.webp"
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/1-antes.webp?v=7dadb1fd33"
                    alt="Valeria Cedeño antes de sus carillas de porcelana" loading="lazy" decoding="async">
-              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/1-despues.webp"
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/1-despues.webp?v=24597df771"
                    alt="Valeria Cedeño después de sus carillas de porcelana" loading="lazy" decoding="async">
               <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
             </div>
@@ -759,9 +786,9 @@
                   data-nombre="Andrés Villacís"
                   data-tratamiento="Ortodoncia invisible">
             <div class="tst-tarjeta__fotos">
-              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/2-antes.webp"
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/2-antes.webp?v=cd4a853990"
                    alt="Andrés Villacís antes de su ortodoncia invisible" loading="lazy" decoding="async">
-              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/2-despues.webp"
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/2-despues.webp?v=648419eb81"
                    alt="Andrés Villacís después de su ortodoncia invisible" loading="lazy" decoding="async">
               <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
             </div>
@@ -777,9 +804,9 @@
                   data-nombre="Mariana Zambrano"
                   data-tratamiento="Diseño de sonrisa">
             <div class="tst-tarjeta__fotos">
-              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/3-antes.webp"
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/3-antes.webp?v=af31db4954"
                    alt="Mariana Zambrano antes de su diseño de sonrisa" loading="lazy" decoding="async">
-              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/3-despues.webp"
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/3-despues.webp?v=9bd092de88"
                    alt="Mariana Zambrano después de su diseño de sonrisa" loading="lazy" decoding="async">
               <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
             </div>
@@ -795,9 +822,9 @@
                   data-nombre="Joaquín Herrera"
                   data-tratamiento="Implantes dentales">
             <div class="tst-tarjeta__fotos">
-              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/4-antes.webp"
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/4-antes.webp?v=53353e6f81"
                    alt="Joaquín Herrera antes de sus implantes dentales" loading="lazy" decoding="async">
-              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/4-despues.webp"
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/4-despues.webp?v=41a603a5d5"
                    alt="Joaquín Herrera después de sus implantes dentales" loading="lazy" decoding="async">
               <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
             </div>
@@ -813,9 +840,9 @@
                   data-nombre="Camila Ordóñez"
                   data-tratamiento="Rehabilitación oral">
             <div class="tst-tarjeta__fotos">
-              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/5-antes.webp"
+              <img class="tst-foto tst-foto--antes" src="imagenes/testimonios/5-antes.webp?v=50efd7060f"
                    alt="Camila Ordóñez antes de su rehabilitación oral" loading="lazy" decoding="async">
-              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/5-despues.webp"
+              <img class="tst-foto tst-foto--despues" src="imagenes/testimonios/5-despues.webp?v=79aeb82853"
                    alt="Camila Ordóñez después de su rehabilitación oral" loading="lazy" decoding="async">
               <span class="tst-tarjeta__chip" aria-hidden="true">Antes / Después</span>
             </div>
@@ -855,7 +882,14 @@
              truco translateX 0 -> -50% con una copia idéntica al final) nunca
              se queda corto, sea cual sea el monitor. -->
         <div class="banda-cta-masonry" aria-hidden="true">
-          <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"></div>
+          <!-- La lista de fotos vive AQUÍ, no dentro de script.js, por la caché:
+               el sellado de versión (scripts/sellar-version.js) recorre los
+               HTML, así que una URL escrita en el JS se quedaba sin "?v=" y,
+               con /imagenes marcado "immutable" a un año, reemplazar una de
+               estas fotos no habría llegado nunca a quien ya visitó el sitio.
+               En el HTML se sella sola. Van en grupos de 3 = una columna. -->
+          <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"
+               data-fotos="imagenes/hero-1-480.webp?v=aeab827b33, imagenes/equipo-1-480.webp?v=0109bd657d, imagenes/sonrisa-480.webp?v=33c4c4c590, imagenes/hero-2-480.webp?v=f64e90b09f, imagenes/equipo-3-480.webp?v=2caa776cc3, imagenes/tecnologia-480.webp?v=bbded9d1d1, imagenes/hero-3-480.webp?v=23df82beb8, imagenes/equipo-2-480.webp?v=a75db47d20, imagenes/cirugia-480.webp?v=3c31b35eb6, imagenes/equipo-4-480.webp?v=6dea302323, imagenes/implantologia-480.webp?v=4a2132544d, imagenes/nosotros-480.webp?v=2e9bc31f97"></div>
         </div>
         <div class="banda-cta-overlay" aria-hidden="true"></div>
 
@@ -1019,9 +1053,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=5c7f10fc73"></script>
+  <script src="scripts/script.js?v=88fbba2990"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=05baef407e"></script>
+  <script src="scripts/testimonios-esfera.js?v=cb84fe7847"></script>
 </body>
 </html>

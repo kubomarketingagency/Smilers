@@ -993,7 +993,7 @@ void main() {
 
     var revelando = false;
     var ultimoIndice = -1;
-    var tickeando = false;
+    var progresoSeccion = 0;   // lo mide la fase de lectura del planificador
 
     function fijarRevelado(encendido) {
       if (revelando === encendido) return;
@@ -1030,10 +1030,18 @@ void main() {
       return i + v * v * (3 - 2 * v);
     }
 
-    function actualizar() {
+    /* FASE DE LECTURA: única función de este archivo que consulta el layout
+       durante el scroll. Va separada de la escritura para no forzar un
+       recálculo de layout entre las escrituras de los demás efectos del
+       sitio — ver "1b. PLANIFICADOR ÚNICO DE SCROLL" en scripts/script.js. */
+    function leerSeccion(ctx) {
       var rect = seccion.getBoundingClientRect();
-      var recorrido = seccion.offsetHeight - window.innerHeight;
-      var progreso = recorrido > 0 ? acotar(-rect.top / recorrido) : 0;
+      var recorrido = seccion.offsetHeight - ctx.alto;
+      progresoSeccion = recorrido > 0 ? acotar(-rect.top / recorrido) : 0;
+    }
+
+    function actualizar() {
+      var progreso = progresoSeccion;
 
       var t = conParadas(acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * (items.length - 1));
       esfera.irA(t);
@@ -1080,8 +1088,6 @@ void main() {
         boton.style.pointerEvents = quietud > 0.75 ? 'auto' : 'none';
         boton.style.opacity = String(suavizada);
       }
-
-      tickeando = false;
     }
 
     /* ---- antes / después ------------------------------------------------
@@ -1098,17 +1104,34 @@ void main() {
       boton.addEventListener('blur', function () { fijarRevelado(false); });
     }
 
-    function pedirActualizacion() {
-      if (!tickeando) { tickeando = true; requestAnimationFrame(actualizar); }
+    /* Se engancha al planificador común del sitio si está (index.html carga
+       script.js antes que este archivo); si por lo que sea no estuviera,
+       cae a un listener propio con el mismo contrato lectura -> escritura. */
+    if (window.SmilersScroll) {
+      window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
+        esfera.escala = escalaSegunPantalla();
+        esfera.encuadre = encuadreSegunPantalla();
+        esfera.redimensionar();
+      });
+    } else {
+      var tickeando = false;
+      var pedirActualizacion = function () {
+        if (tickeando) return;
+        tickeando = true;
+        requestAnimationFrame(function () {
+          tickeando = false;
+          leerSeccion({ alto: window.innerHeight || 1 });
+          actualizar();
+        });
+      };
+      window.addEventListener('scroll', pedirActualizacion, { passive: true });
+      window.addEventListener('resize', function () {
+        esfera.escala = escalaSegunPantalla();
+        esfera.encuadre = encuadreSegunPantalla();
+        esfera.redimensionar();
+        pedirActualizacion();
+      });
     }
-
-    window.addEventListener('scroll', pedirActualizacion, { passive: true });
-    window.addEventListener('resize', function () {
-      esfera.escala = escalaSegunPantalla();
-      esfera.encuadre = encuadreSegunPantalla();
-      esfera.redimensionar();
-      pedirActualizacion();
-    });
 
     /* La esfera solo dibuja mientras la sección está en pantalla: si no,
        serían 60 cuadros por segundo de WebGL compitiendo con el resto de
@@ -1124,6 +1147,7 @@ void main() {
       esfera.arrancar();
     }
 
+    leerSeccion({ alto: window.innerHeight || 1 });
     actualizar();
   }
 

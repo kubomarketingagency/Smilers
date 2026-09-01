@@ -31,14 +31,25 @@
 
   /* Variante "oro profundo" para fondos BLANCOS/PLATEADOS: el degradado de
      arriba está calibrado contra el ónix, y sobre blanco su parada clara
-     (#F7EF8A) prácticamente desaparece. Este usa las mismas cuatro paradas
-     desplazadas hacia el ámbar oscuro, de modo que hasta la parada MÁS
-     clara (#9C7622) pase 4.5:1 sobre blanco — el umbral AA de texto normal,
-     no solo el de texto grande — y la más oscura llegue a 8:1. Las secciones claras que lo necesiten
-     redefinen --gradiente-oro con esta variante (ver .fondo-perla) y así
-     todos los titulares/números ya escritos con var(--gradiente-oro) se
-     oscurecen solos, sin duplicar selectores. */
-  --gradiente-oro-profundo: linear-gradient(100deg, #6E5216 0%, #9C7622 32%, #74571A 64%, #8B6A20 100%);
+     (#F7EF8A) prácticamente desaparece.
+
+     Sus cuatro paradas salen ahora del SWATCH DE MARCA, no de tonos
+     inventados. La versión anterior (#6E5216 / #9C7622 / #74571A / #8B6A20)
+     eran ámbares fabricados a mano para llegar a 4.5:1, y por eso la
+     sección de Nosotros se veía marrón oliva en vez de dorada: no era el
+     oro de la marca, era otro color. Aquí se usan --gold-900 (#7A5C19) y
+     --gold-700 (#AE8625) -las dos paradas oscuras del swatch- más dos
+     mezclas intermedias de esa misma recta, así que el tono es
+     literalmente el dorado de la marca, solo que en su extremo profundo.
+
+     Por qué no se puede usar el champán #D2AC47 aquí: sobre blanco da
+     2.16:1, por debajo incluso del 3:1 que WCAG pide para texto grande —
+     el titular quedaría ilegible. #AE8625, la parada más clara de este
+     degradado, da 3.37:1 y la más oscura 6.2:1. El champán brillante sigue
+     apareciendo en esta sección donde SÍ funciona: sobre las piezas
+     oscuras (.nm-sello y .contador-lujo), que restauran la familia
+     brillante en su propio selector. */
+  --gradiente-oro-profundo: linear-gradient(100deg, #7A5C19 0%, #AE8625 32%, #8A681D 64%, #A57F23 100%);
 
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
@@ -177,18 +188,37 @@ img { max-width: 100%; height: auto; }
 
 /* Textura de grano de película muy sutil sobre todo el sitio: refuerza el
    aire "cine en blanco y negro" del hero incluso fuera de él. Opacidad
-   mínima y pointer-events:none para que nunca interfiera con el contenido. */
+   mínima y pointer-events:none para que nunca interfiera con el contenido.
+
+   SIN mix-blend-mode, y esa era LA causa principal de que el sitio se
+   sintiera pesado -sobre todo en teléfono-. Un elemento fijo, a pantalla
+   completa y con blend mode obliga al navegador a LEER todo lo que queda
+   pintado debajo y volver a mezclarlo en cada cuadro: mientras esta capa
+   existió, ningún scroll de la página pudo resolverse solo en el
+   compositor, por muy bien optimizado que estuviera todo lo demás. Era una
+   capa de mezcla del tamaño del viewport por encima de las 9 secciones,
+   el navbar y los botones flotantes, a la vez.
+
+   A 2.5% de opacidad la mezcla "overlay" y la composición normal se ven
+   iguales -el grano es ruido gris neutro-, así que se pasa a composición
+   normal (y se sube un pelo la opacidad para compensar los medios tonos
+   que overlay realzaba). Se conserva el efecto; se va el coste. */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: .025;
-  mix-blend-mode: overlay;
+  opacity: .035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 @media (prefers-reduced-motion: reduce) { body::before { display: none; } }
+/* En táctil se retira del todo. Aun sin blend mode sigue siendo una capa
+   fija a pantalla completa que el compositor tiene que sostener y volver a
+   pegar en cada cuadro de scroll, y en un móvil ese presupuesto se gasta
+   mejor en las fotos. El grano a 3.5% no se distingue en una pantalla de
+   teléfono a la distancia a la que se sostiene. */
+@media (hover: none) and (pointer: coarse) { body::before { display: none; } }
 
 /* ===== SPLASH DE BIENVENIDA (solo index.html, primera vez por sesión) =====
    El clip trae su propio fondo cinematográfico (líneas doradas + resplandor
@@ -699,6 +729,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .hero-video { object-fit: cover; z-index: -2; }
 .hero-carrusel { z-index: -2; }
+/* Las fotos del carrusel van envueltas en <picture> (variante de 720 px en
+   móvil, ver index.html). <picture> es inline por defecto y su caja de línea
+   metía unos píxeles de hueco bajo la foto y dejaba el height:100% de la
+   <img> resolviendo contra un contenedor sin altura definida. Como bloque
+   que llena el slide, la <img> se comporta igual que antes de envolverla. */
+.hero-carrusel .carousel-item > picture {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
 /* Transición más larga que el corto que se muestra: el crossfade en sí es el
    "destello" — al superponerse dos fotogramas en blanco y negro con la capa
    dorada de abajo, el instante de mezcla brilla en oro, como el fundido de
@@ -802,6 +842,31 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-duotone, .hero-flash, .hero-sparkles { display: none; }
+}
+
+/* ----- El hero en táctil: se quitan las capas de MEZCLA -------------------
+   Encima del carrusel había tres capas a pantalla completa apiladas:
+   .hero-duotone (mix-blend-mode: overlay), .hero-sparkles (un <canvas> que
+   se redibuja 60 veces por segundo, con mix-blend-mode: screen) y el
+   .hero-overlay normal. Cada mix-blend-mode obliga al navegador a releer y
+   remezclar todo lo pintado debajo; con el carrusel haciendo crossfade y el
+   ken-burns escalando la foto, ese "debajo" cambia en CADA cuadro. Sumado
+   al grano global de arriba, el arranque de la portada en un teléfono no
+   tenía ninguna posibilidad de ir a 60 fps.
+
+   En táctil: el canvas de partículas desaparece (y script.js ni lo arranca,
+   ver 14b) y la pátina dorada pasa a composición normal, con la opacidad
+   subida para que el tono se siga notando. El look se mantiene; lo que se
+   va es la remezcla por cuadro. */
+@media (hover: none) and (pointer: coarse) {
+  .hero-sparkles { display: none; }
+  .hero-duotone { mix-blend-mode: normal; opacity: .18; }
+  /* Un drop-shadow de 40px sobre un titular de 16vw recortado con
+     background-clip:text obliga a re-dibujar y desenfocar esa máscara
+     enorme cada vez que el scroll le cambia opacidad o posición (que es lo
+     que hace el hero cine en cada cuadro). El .hero-overlay que ya está
+     debajo da contraste de sobra. */
+  .hero-titulo { filter: none; }
 }
 
 /* Capa oscura semitransparente en tono ónix, sobre el B/N + dorado de abajo */
@@ -1022,9 +1087,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    restaura los valores brillantes en su propio selector. */
 .seccion-clara.fondo-perla {
   --gradiente-oro: var(--gradiente-oro-profundo);
-  --gold-500: #9A7524;   /* 4.8:1 sobre blanco */
-  --gold-700: #7A5C19;   /* 6.6:1 sobre blanco — texto pequeño */
-  --hairline-oro: rgba(122, 92, 25, .26);
+  /* Los dos tonos planos también salen del swatch tal cual, en vez del
+     #9A7524 inventado que tenía antes: --gold-700 del sistema (3.4:1, para
+     acentos e iconos grandes) y --gold-900 (6.2:1, apto para texto
+     pequeño, que es donde se usa: etiquetas, numeración de pilares y
+     claves de la ficha de sedes). */
+  --gold-500: #AE8625;   /* = --gold-700 del sistema · 3.4:1 sobre blanco */
+  --gold-700: #7A5C19;   /* = --gold-900 del sistema · 6.2:1 sobre blanco */
+  --hairline-oro: rgba(174, 134, 37, .34);
   background-color: #FFFFFF;
   background-image:
     radial-gradient(ellipse 55% 40% at 84% 4%, rgba(210, 172, 71, .12) 0%, transparent 62%),
@@ -1087,10 +1157,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .78rem;
-  letter-spacing: .22em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--gold-700);
-  margin-bottom: 1rem;
+  margin-bottom: .7rem;
 }
 .etiqueta-editorial::before {
   content: '';
@@ -1107,14 +1177,20 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    texto vive en la otra mitad, con su propio padding en lugar del contenedor
    de Bootstrap. Por debajo de 992px la rejilla se apila y recupera un padding
    lateral propio, porque ya no hay .container que se lo dé. */
-.seccion-nosotros { padding: clamp(72px, 9vw, 116px) 0 clamp(64px, 8vw, 104px); }
+/* Ritmo general de la sección. Se bajó un escalón completo respecto a la
+   versión anterior (72-116px arriba / 64-104px abajo): con cuatro
+   subsecciones apiladas -split, pilares, split invertido y contador- ese
+   aire por fuera se sumaba al de cada bloque y la sección se sentía
+   estirada, sobre todo en el teléfono, donde había que hacer tres o cuatro
+   gestos de scroll para pasar de un bloque al siguiente. */
+.seccion-nosotros { padding: clamp(52px, 6vw, 88px) 0 clamp(44px, 5.2vw, 76px); }
 
 .nosotros-split {
   position: relative;
   z-index: 1;
   display: grid;
   align-items: center;
-  gap: clamp(2.2rem, 5vw, 3.5rem);
+  gap: clamp(1.6rem, 3.4vw, 2.6rem);
   padding-inline: clamp(1.1rem, 5vw, 2rem);
   perspective: 1200px;
 }
@@ -1135,18 +1211,38 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: clamp(10px, 1.1vw, 16px);
-  min-height: clamp(400px, 58vh, 560px);
+  gap: clamp(8px, .9vw, 13px);
+  /* ALTURA, no min-height, y esta es la corrección de fondo del tamaño del
+     mosaico. Con "min-height" + "grid-template-rows: 1fr 1fr", las filas se
+     dimensionan por su contenido: 1fr es minmax(auto, 1fr), y ese "auto" es
+     el alto INTRÍNSECO de la foto. Como equipo-2.webp y cirugia.webp son
+     verticales (900x1350 y 1200x1800), cada fila crecía hasta el alto real
+     de la foto y el min-height no llegaba a mandar nunca: medido en el
+     navegador, el mosaico ocupaba 845 px en una ventana de 900 -es decir,
+     casi la pantalla entera- en vez de los ~520 que decía la hoja. Eso es
+     lo que hacía que las fotos de esta sección se vieran desproporcionadas
+     frente al texto.
+
+     Con una altura definida, las dos filas quedan definidas, el height:100%
+     de las <img> resuelve contra ellas y object-fit:cover recorta como
+     estaba previsto. Los min-height:0 de .nm-figura son la otra mitad: sin
+     ellos el mínimo automático del ítem de rejilla vuelve a empujar. */
+  height: clamp(300px, 44vh, 400px);
   perspective: 1200px;
 }
 @media (min-width: 992px) {
-  .nosotros-media { min-height: clamp(520px, 76vh, 800px); }
+  .nosotros-media { height: clamp(430px, 58vh, 580px); }
 }
 
 .nm-figura {
   position: relative;
   margin: 0;
   overflow: hidden;
+  /* Anula el mínimo automático del ítem de rejilla (min-height/min-width:
+     auto = tamaño min-content), que si no obliga a la fila a crecer hasta
+     el alto intrínseco de la foto. Ver la nota de .nosotros-media. */
+  min-height: 0;
+  min-width: 0;
   border-radius: 22px;
   background: var(--neutral-100);
   box-shadow: 0 18px 44px rgba(28, 28, 28, .16);
@@ -1193,9 +1289,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   bottom: clamp(1rem, 2.4vw, 2.2rem);
   display: flex;
   align-items: center;
-  gap: .85rem;
-  padding: .95rem 1.35rem;
-  border-radius: 16px;
+  gap: .7rem;
+  padding: .72rem 1.05rem;
+  border-radius: 14px;
   /* Antes esto era vidrio esmerilado (backdrop-filter: blur(16px)). Con un
      fondo al 82% de opacidad el desenfoque casi no se veía, y en cambio
      costaba muchísimo: un backdrop-filter obliga a recomponer lo que queda
@@ -1208,7 +1304,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .nm-sello__num {
   font-family: var(--fuente-elegante);
-  font-size: clamp(2rem, 3.2vw, 2.6rem);
+  font-size: clamp(1.6rem, 2.2vw, 2.05rem);
   line-height: 1;
   background: var(--gradiente-oro);
   -webkit-background-clip: text;
@@ -1231,7 +1327,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .nm-sello__txt {
   font-family: var(--fuente-menu);
-  font-size: .68rem;
+  font-size: .62rem;
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: .13em;
@@ -1244,7 +1340,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    mismo bloque. El mosaico se invierte de verdad — la foto grande pasa a la
    columna derecha y sangra hacia ESE borde — en vez de limitarse a mover el
    bloque entero, que dejaría la foto grande otra vez del lado interior. */
-.nosotros-split--invertido { margin-top: clamp(3rem, 6vw, 5rem); }
+.nosotros-split--invertido { margin-top: clamp(2.2rem, 4vw, 3.4rem); }
 
 @media (min-width: 992px) {
   .nosotros-split--invertido .nosotros-media {
@@ -1288,27 +1384,54 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     padding-right: clamp(1.5rem, 4vw, 4rem);
   }
 }
-.nosotros-cuerpo .parrafo { max-width: 58ch; }
-/* Primer párrafo: un punto más grande y con más aire, hace de entradilla. */
+/* 62ch en vez de 58ch: con la columna a media pantalla, 58ch obligaba a
+   cortar antes y alargaba el bloque hacia abajo sin necesidad.
+   El cuerpo se declara aquí explícitamente porque .parrafo hereda los 16px
+   del body: al bajar la entradilla y dejar el cuerpo en 16px, el segundo
+   párrafo acababa siendo MÁS grande que el primero — medido en móvil,
+   15.7px la entradilla contra 16px el cuerpo, la jerarquía justo del revés. */
+.nosotros-cuerpo .parrafo { max-width: 62ch; margin-bottom: 1.15rem; }
+/* El :not() no es cosmético: sin él este selector (dos clases) le gana por
+   especificidad a .parrafo-lead (una clase) y dejaba la entradilla del mismo
+   tamaño que el cuerpo, anulando la jerarquía que se acaba de arreglar. */
+.nosotros-cuerpo .parrafo:not(.parrafo-lead) {
+  font-size: clamp(.95rem, .1vw + .92rem, 1rem);
+}
+
+/* Titular de las dos bandas. El .titulo-seccion genérico (hasta 3.2rem) está
+   pensado para titulares CENTRADOS a ancho completo; aquí vive alineado a la
+   izquierda dentro de media pantalla, y a ese tamaño se comía tres o cuatro
+   líneas y empujaba el resto de la banda fuera de cuadro. Un escalón menos
+   deja el titular en dos líneas y el conjunto (etiqueta + titular +
+   entradilla) cabe de una sola mirada. */
+#nosotros .titulo-seccion {
+  font-size: clamp(1.7rem, 1.6vw + 1.1rem, 2.55rem);
+  line-height: 1.14;
+  margin-bottom: .75rem;
+}
+
+/* Primer párrafo: un punto más grande y con más aire, hace de entradilla.
+   Siempre por encima del cuerpo de arriba en los dos extremos del rango
+   (móvil 16.5 vs 15.2 px · escritorio 17.6 vs 16 px). */
 .parrafo-lead {
-  font-size: clamp(1.02rem, .55vw + .9rem, 1.15rem);
-  line-height: 1.78;
+  font-size: clamp(1.03rem, .25vw + .96rem, 1.1rem);
+  line-height: 1.72;
   color: var(--texto);
 }
 
 .nosotros-checks {
   list-style: none;
   padding: 0;
-  margin: 1.9rem 0 2.1rem;
+  margin: 1.35rem 0 1.55rem;
   display: grid;
-  gap: .85rem;
+  gap: .6rem;
 }
 .nosotros-checks li {
   display: flex;
   align-items: flex-start;
-  gap: .8rem;
-  font-size: .95rem;
-  line-height: 1.6;
+  gap: .7rem;
+  font-size: .9rem;
+  line-height: 1.55;
   color: var(--texto-suave);
 }
 .nosotros-checks strong { color: var(--texto); font-weight: 700; }
@@ -1329,14 +1452,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nosotros-sedes {
   list-style: none;
   padding: 0;
-  margin: 1.9rem 0 2.1rem;
+  margin: 1.35rem 0 1.55rem;
   border-top: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
 }
 .nosotros-sedes li {
   display: flex;
   flex-wrap: wrap;
-  gap: .25rem 1.2rem;
-  padding: .8rem 0;
+  gap: .2rem 1.2rem;
+  padding: .62rem 0;
   border-bottom: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
 }
 .ns-clave {
@@ -1351,8 +1474,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .ns-valor {
   flex: 1 1 14rem;
-  font-size: .93rem;
-  line-height: 1.55;
+  font-size: .88rem;
+  line-height: 1.5;
   color: var(--texto-suave);
 }
 
@@ -1360,7 +1483,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    El truco de "gap: 1px + fondo del contenedor" da los divisores en todos
    los breakpoints sin tener que apagar bordes por posición en la fila. */
 .pilares-editorial {
-  margin-top: clamp(3rem, 6vw, 5rem);
+  margin-top: clamp(2.2rem, 4vw, 3.4rem);
   display: grid;
   grid-template-columns: 1fr;
   gap: 1px;
@@ -1376,7 +1499,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 .pilar {
   position: relative;
-  padding: clamp(1.6rem, 2.4vw, 2.2rem) clamp(1.3rem, 2vw, 1.8rem);
+  padding: clamp(1.25rem, 1.8vw, 1.7rem) clamp(1.1rem, 1.6vw, 1.5rem);
   background: rgba(255, 255, 255, .92);
   transition: background .5s ease;
 }
@@ -1401,13 +1524,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .pilar__icono {
   display: block;
-  margin: 1rem 0 .9rem;
-  font-size: 1.5rem;
+  margin: .7rem 0 .6rem;
+  font-size: 1.3rem;
   line-height: 1;
   color: var(--gold-700);
 }
-.pilar h3 { font-size: 1.02rem; margin-bottom: .45rem; color: var(--texto); }
-.pilar p { font-size: .9rem; line-height: 1.62; color: var(--texto-suave); margin: 0; }
+.pilar h3 { font-size: .98rem; margin-bottom: .35rem; color: var(--texto); }
+.pilar p { font-size: .88rem; line-height: 1.58; color: var(--texto-suave); margin: 0; }
 
 /* ---- 7d. Salida ligada al scroll ---------------------------------------
    La ENTRADA ya la hacen .revelar / .revelar--velo pieza por pieza. Lo que
@@ -1445,6 +1568,41 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .nm-sello { box-shadow: 0 8px 18px rgba(28, 28, 28, .38); }
   .pilares-editorial { box-shadow: 0 6px 16px rgba(28, 28, 28, .07); }
   .contador-lujo { box-shadow: 0 10px 22px rgba(28, 28, 28, .3); }
+}
+
+/* ---- 7f. La sección en pantallas chicas --------------------------------
+   Los clamp() de arriba ya bajan tipografías y aire de forma continua, pero
+   el mosaico y el sello necesitaban su propio ajuste: en un teléfono el
+   mosaico compite con el texto por la única columna que hay, y el sello de
+   vidrio (pensado para apoyarse en una foto de media pantalla) se comía una
+   esquina entera de la foto pequeña. Con esto, cada una de las cuatro
+   subsecciones -las dos bandas, los pilares y el contador- entra en pantalla
+   como una unidad legible en vez de repartirse en tres gestos de scroll. */
+@media (max-width: 767.98px) {
+  .seccion-nosotros { padding: 42px 0 36px; }
+  .nosotros-media { min-height: min(46vh, 340px); gap: 7px; }
+  .nm-figura { border-radius: 16px; }
+
+  .nm-sello {
+    left: .7rem;
+    bottom: .7rem;
+    gap: .55rem;
+    padding: .5rem .8rem;
+    border-radius: 12px;
+  }
+  .nm-sello--der { left: auto; right: .7rem; }
+  .nm-sello__num { font-size: 1.45rem; }
+  .nm-sello__txt { font-size: .56rem; letter-spacing: .1em; line-height: 1.35; }
+
+  /* Botones a ancho completo: apilados quedan como dos barras claras de
+     destino grande, en vez de dos píldoras cortas pegadas al margen. */
+  .nosotros-acciones { gap: .6rem; }
+  .nosotros-acciones .btn { width: 100%; text-align: center; }
+
+  /* La ficha de sedes en una sola columna: con "flex: 0 0 6.5rem" la clave
+     se quedaba con un tercio del ancho y el valor caía a tres líneas
+     estrechas al lado. */
+  .ns-clave { flex: 1 1 100%; }
 }
 
 /* ---- 7e. Entrada más discreta dentro de Nosotros -----------------------
@@ -1641,9 +1799,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
   position: relative;
   overflow: hidden;
-  margin-top: clamp(2.4rem, 4vw, 3.6rem);
-  padding: clamp(1.8rem, 3vw, 2.8rem) clamp(1rem, 2.5vw, 2rem);
-  border-radius: 26px;
+  margin-top: clamp(2rem, 3.2vw, 2.9rem);
+  padding: clamp(1.4rem, 2.3vw, 2.1rem) clamp(1rem, 2.5vw, 2rem);
+  border-radius: 22px;
   border: 1px solid rgba(210, 172, 71, .26);
   background:
     radial-gradient(ellipse 75% 130% at 14% 0%, rgba(210, 172, 71, .16) 0%, transparent 62%),
@@ -1651,7 +1809,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   box-shadow: 0 26px 62px rgba(28, 28, 28, .3);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(1.6rem, 3vw, 2.2rem) 0;
+  gap: clamp(1.1rem, 2.2vw, 1.7rem) 0;
 }
 @media (min-width: 992px) {
   .contador-lujo { grid-template-columns: repeat(4, 1fr); }
@@ -1669,7 +1827,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .cl-item {
   position: relative;
   text-align: center;
-  padding: .2rem clamp(.6rem, 1.5vw, 1.2rem) 1.1rem;
+  padding: .2rem clamp(.6rem, 1.5vw, 1.2rem) .85rem;
   opacity: 0;
   transform: translateY(18px);
   transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
@@ -1688,7 +1846,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   align-items: baseline;
   justify-content: center;
   font-family: var(--fuente-elegante);
-  font-size: clamp(2.3rem, 4.2vw, 3.3rem);
+  font-size: clamp(1.95rem, 3.1vw, 2.7rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
@@ -2466,20 +2624,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
               transform .7s cubic-bezier(.16, 1, .3, 1),
               filter .7s cubic-bezier(.16, 1, .3, 1);
-  /* OJO con will-change aquí: hay decenas de .revelar en la portada y cada
-     uno se lleva su propia capa de composición mientras la propiedad esté
-     puesta. Se pide solo lo que el compositor sabe resolver solo (transform
-     y opacity), nunca filter, que obliga a volver a dibujar de todas formas.
-     La capa se suelta desde el JS al terminar la transición (script.js,
-     sección 5) y NO desde un ".visible { will-change: auto }": esa clase se
-     pone justo cuando la animación ARRANCA, con lo que se quitaría la capa
-     en el peor momento posible. */
+  /* El will-change NO se declara aquí a propósito. Estando en la hoja, las
+     29 .revelar de la portada nacían con capa de composición propia desde el
+     primer pintado y la conservaban hasta terminar su transición — decenas
+     de capas vivas justo durante la carga, que es el peor momento posible.
+     Ahora lo pone script.js (sección 5) en el instante anterior a revelar
+     cada pieza y lo suelta en su "transitionend": la capa existe solo
+     mientras hay algo que animar. */
   /* Escalonado "a mano": las cascadas por nth-child de más abajo solo
      funcionan cuando los elementos son hijos directos de un .row de
      Bootstrap. En los bloques que usan rejillas propias (ej. #nosotros)
      cada elemento declara su turno con style="--retraso:.12s". */
   transition-delay: var(--retraso, 0s);
-  will-change: transform, opacity;
 }
 .revelar.visible {
   opacity: 1;
@@ -2710,8 +2866,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .forma { filter: blur(50px); }
 }
 
-/* ----- Micro-interacción: las formas responden al movimiento del cursor -- */
-.forma-parallax { transition: transform .25s ease-out; will-change: transform; }
+/* ----- Micro-interacción: las formas responden al movimiento del cursor --
+   El efecto lo mueve un listener de "mousemove" que script.js (sección 12)
+   solo registra con (pointer: fine). En táctil, por tanto, el will-change
+   no servía para nada y sí costaba: promovía a capa propia los dos halos de
+   Nosotros (620x620 y 520x520 px) de forma permanente, ocupando memoria de
+   vídeo que el scroll necesitaba. Se piden capa y transición únicamente
+   donde el efecto existe de verdad. */
+@media (hover: hover) and (pointer: fine) {
+  .forma-parallax { transition: transform .25s ease-out; will-change: transform; }
+}
 
 
 /* ----- Detalles "divertidos" de constructor visual (estilo Elementor) ----

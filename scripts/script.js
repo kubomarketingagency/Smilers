@@ -2,6 +2,8 @@
    SMILERS DENTAL CLINIQUE — JavaScript principal
    Contiene:
      1. Configuración global (número de WhatsApp)
+     1b. Planificador único de scroll (un listener + un rAF para todo el
+         sitio, con fase de lectura y fase de escritura separadas)
      2. Navbar con efecto scroll
      3. Cierre automático del menú en móvil
      4. Botón "volver arriba"
@@ -32,6 +34,83 @@
 const NUMERO_WHATSAPP = '593997556002';
 
 
+/* ===== 1b. PLANIFICADOR ÚNICO DE SCROLL =================================
+   El problema que resuelve (era EL cuello de botella del sitio):
+   la portada tenía OCHO listeners de "scroll" independientes -navbar,
+   botón subir, paralaje, hero cine, auto-scroll asistido, oscurecimiento,
+   cierre cine y la esfera de testimonios- y cada uno pedía su PROPIO
+   requestAnimationFrame. Dentro de un mismo cuadro el navegador acababa
+   ejecutando esa secuencia:
+
+     leer caja (A) -> escribir estilo (A) -> leer caja (B) -> ...
+
+   y cada lectura que viene DESPUÉS de una escritura obliga al navegador a
+   rehacer el layout ahí mismo, de forma síncrona, para poder responder.
+   Eran ~6 recálculos forzados de layout por cuadro, con la página entera
+   como ámbito. En un teléfono eso solo no cabe en los 16.6 ms de un cuadro:
+   de ahí la sensación de que el scroll "se traba" y de que la página está
+   sobrecargada.
+
+   Aquí hay UN listener, UN rAF y dos fases estrictas: primero corren TODAS
+   las lecturas (getBoundingClientRect y compañía) y solo después TODAS las
+   escrituras. Con ese orden el layout se calcula una vez por cuadro y ya.
+
+   Uso:
+     SmilersScroll.registrar(funcionLeer, funcionEscribir);
+     SmilersScroll.pedir();   // forzar un cuadro (p. ej. tras un cambio propio)
+
+   Contrato -importante para quien añada efectos nuevos-:
+     · en "leer" SOLO se mide y se guarda en variables propias. Nada de
+       tocar estilos, clases ni scrollTo.
+     · en "escribir" SOLO se escribe. Nada de volver a medir.
+   Romper eso devuelve el thrashing de layout que este bloque elimina. ==== */
+var SmilersScroll = (function () {
+  var lectores = [];
+  var escritores = [];
+  var reinicios = [];
+  var pedido = false;
+  /* Medidas comunes, tomadas una sola vez por cuadro: window.innerHeight y
+     window.scrollY también son lecturas de layout, y antes cada bloque las
+     pedía por su cuenta varias veces. */
+  var ctx = { y: 0, alto: 0, ancho: 0 };
+
+  function correr() {
+    pedido = false;
+    ctx.y = window.scrollY;
+    ctx.alto = window.innerHeight || 1;
+    ctx.ancho = window.innerWidth || 1;
+
+    var i;
+    for (i = 0; i < lectores.length; i++) lectores[i](ctx);
+    for (i = 0; i < escritores.length; i++) escritores[i](ctx);
+  }
+
+  function pedir() {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(correr);
+  }
+
+  window.addEventListener('scroll', pedir, { passive: true });
+  window.addEventListener('resize', function () {
+    for (var i = 0; i < reinicios.length; i++) reinicios[i]();
+    pedir();
+  });
+
+  return {
+    /* leer/escribir pueden ser null si un efecto solo hace una de las dos
+       cosas (el botón "volver arriba", por ejemplo, no mide nada). */
+    registrar: function (leer, escribir, alRedimensionar) {
+      if (leer) lectores.push(leer);
+      if (escribir) escritores.push(escribir);
+      if (alRedimensionar) reinicios.push(alRedimensionar);
+    },
+    pedir: pedir
+  };
+})();
+window.SmilersScroll = SmilersScroll;
+
+
 /* Ejecutamos todo cuando el DOM esté listo */
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -55,16 +134,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // X dentro) se queda congelado en su sitio, sin importar si algún scroll
   // residual se cuela pese al overflow:hidden del body.
   const menu = document.getElementById('menuPrincipal');
-  let tickeando = false;
   let ultimoScrollY = window.scrollY;
 
-  function controlarNavbar() {
-    if (menu.classList.contains('menu-abierto')) {
-      tickeando = false;
-      return;
-    }
+  /* Solo ESCRIBE (clases). La posición de scroll se la pasa el planificador
+     ya medida, así que este bloque no consulta el layout ni una vez. */
+  function controlarNavbar(ctx) {
+    if (menu.classList.contains('menu-abierto')) return;
 
-    const y = window.scrollY;
+    const y = ctx.y;
 
     if (y > 80) {
       navbar.classList.add('con-scroll');
@@ -81,16 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     ultimoScrollY = y;
-    tickeando = false;
   }
 
-  window.addEventListener('scroll', function () {
-    if (!tickeando) {
-      tickeando = true;
-      requestAnimationFrame(controlarNavbar);
-    }
-  }, { passive: true });
-  controlarNavbar(); // se ejecuta una vez por si la página carga ya desplazada
+  SmilersScroll.registrar(null, controlarNavbar);
+  SmilersScroll.pedir(); // por si la página carga ya desplazada
 
 
   /* ===== 3. MENÚ HAMBURGUESA (pantalla completa, todos los dispositivos) ==
@@ -128,16 +199,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const btnSubir = document.getElementById('btnSubir');
   let btnSubirVisible = null;
 
-  /* passive: sin esto el navegador no puede empezar a desplazar hasta saber
-     si el listener va a llamar a preventDefault, y en táctil eso se siente
-     como un tirón al arrancar el scroll. Y la clase solo se toca cuando el
-     estado cambia de verdad, no en cada uno de los cientos de eventos. */
-  window.addEventListener('scroll', function () {
-    const debeVerse = window.scrollY > 400;
+  /* Va en la fase de ESCRITURA del planificador: no mide nada (la posición
+     se la dan hecha) y la clase solo se toca cuando el estado cambia de
+     verdad, no en cada uno de los cientos de eventos de scroll. */
+  SmilersScroll.registrar(null, function (ctx) {
+    const debeVerse = ctx.y > 400;
     if (debeVerse === btnSubirVisible) return;
     btnSubirVisible = debeVerse;
     btnSubir.classList.toggle('visible', debeVerse);
-  }, { passive: true });
+  });
 
   btnSubir.addEventListener('click', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -161,15 +231,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const temporizadoresOcultarRevelar = new WeakMap(); // "ocultar" pendiente (debounce)
 
   /* will-change promueve el elemento a su propia capa de composición, y en
-     la portada hay decenas de .revelar: sostener todas esas capas a la vez
-     es memoria de vídeo que se le quita al scroll. La hoja de estilos lo
-     pide para que la entrada vaya suave, y aquí se suelta en cuanto la
-     transición termina — que es el único momento correcto: hacerlo desde
-     ".visible" lo quitaría justo cuando la animación arranca. Al ocultarse
-     se devuelve el valor de la hoja para que la salida también lo tenga. */
+     la portada hay 29 .revelar: sostener todas esas capas a la vez es
+     memoria de vídeo que se le quita al scroll. Por eso la hoja de estilos
+     YA NO lo declara (lo hacía, y las capas nacían con la página); se pide
+     aquí justo antes de revelar u ocultar cada pieza y se suelta en cuanto
+     su transición termina — que es el único momento correcto: hacerlo desde
+     ".visible" lo quitaría justo cuando la animación arranca. */
+  const CAPA_REVELAR = 'transform, opacity';
+
   function soltarCapa(evento) {
     if (evento.target !== this) return;      // no por las transiciones de los hijos
-    if (this.classList.contains('visible')) this.style.willChange = 'auto';
+    this.style.willChange = 'auto';
   }
 
   elementosRevelar.forEach(function (el) {
@@ -207,13 +279,13 @@ document.addEventListener('DOMContentLoaded', function () {
                escalonado ahora es solo el del CSS (--retraso en línea y las
                reglas .row > .revelar:nth-child), que es fijo y está escrito
                a propósito. */
-            entrada.target.style.willChange = '';   // vuelve al valor de la hoja
+            entrada.target.style.willChange = CAPA_REVELAR;
             entrada.target.classList.add('visible');
           }
         } else if (razon === 0) {
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
-              entrada.target.style.willChange = '';   // la salida también la necesita
+              entrada.target.style.willChange = CAPA_REVELAR;  // la salida también la necesita
               entrada.target.classList.remove('visible');
               temporizadoresOcultarRevelar.delete(entrada.target);
             }, 400);
@@ -333,14 +405,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if ((piezasParallax.length || escenasSalida.length)
       && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    let frameScroll = false;
+    /* Las medidas de la fase de lectura se dejan aquí y la fase de escritura
+       las consume. Antes las dos fases vivían dentro de la misma función y
+       eso ya evitaba el thrashing DENTRO de este bloque; ahora, al pasar por
+       el planificador, tampoco lo provoca con los demás efectos del sitio. */
+    const escrituras = [];
 
-    function actualizarEfectosScroll() {
-      const alto = window.innerHeight || 1;
+    function leerEfectosScroll(ctx) {
+      const alto = ctx.alto;
       const tramoSalida = alto * 0.5;   // el retiro ocupa la mitad baja de la pantalla
-      const escrituras = [];
+      escrituras.length = 0;
 
-      // --- 1) LEER: todas las cajas de una sola pasada
       piezasParallax.forEach(function (pieza) {
         const caja = pieza.getBoundingClientRect();
         if (caja.bottom < -220 || caja.top > alto + 220) return;
@@ -355,8 +430,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (caja.top > alto || caja.bottom < -100) return;
         escrituras.push([escena, 'salida', Math.min(1, Math.max(0, caja.bottom / tramoSalida))]);
       });
+    }
 
-      // --- 2) ESCRIBIR: ya sin volver a consultar el layout
+    function escribirEfectosScroll() {
       escrituras.forEach(function (orden) {
         const el = orden[0];
         if (orden[1] === 'parallax') {
@@ -371,19 +447,10 @@ document.addEventListener('DOMContentLoaded', function () {
           el.style.setProperty('--escena-y', (-(1 - f) * 55).toFixed(1) + 'px');
         }
       });
-
-      frameScroll = false;
     }
 
-    function pedirEfectosScroll() {
-      if (frameScroll) return;
-      frameScroll = true;
-      requestAnimationFrame(actualizarEfectosScroll);
-    }
-
-    window.addEventListener('scroll', pedirEfectosScroll, { passive: true });
-    window.addEventListener('resize', pedirEfectosScroll);
-    actualizarEfectosScroll();
+    SmilersScroll.registrar(leerEfectosScroll, escribirEfectosScroll);
+    SmilersScroll.pedir();
   }
 
 
@@ -753,29 +820,30 @@ document.addEventListener('DOMContentLoaded', function () {
     var cinta = document.getElementById('bandaCtaMasonryCinta');
     if (!cinta) return;
 
-    var grupos = [
-      ['imagenes/hero-1.webp', 'imagenes/equipo-1.webp', 'imagenes/sonrisa.webp'],
-      ['imagenes/hero-2.webp', 'imagenes/equipo-3.webp', 'imagenes/tecnologia.webp'],
-      ['imagenes/hero-3.webp', 'imagenes/equipo-2.webp', 'imagenes/cirugia.webp'],
-      ['imagenes/equipo-4.webp', 'imagenes/implantologia.webp', 'imagenes/nosotros.webp']
-    ];
+    /* Las URLs vienen del atributo data-fotos del HTML, no de una lista aquí.
+       Dos razones: (1) el sellado de versión recorre los HTML, así que ahí
+       las URLs llevan su "?v=hash" y una foto reemplazada llega de verdad
+       al visitante pese al "immutable" del CDN; (2) las columnas miden
+       190-220px, así que se listan directamente las variantes de 480px
+       (imagenes/*-480.webp) — pedir el original de 1920 era decodificar
+       ~10 MB de mapa de bits por foto para pintarla del tamaño de un pulgar,
+       y aquí hay doce columnas duplicadas, detrás de un velo oscuro.
+       Se agrupan de tres en tres: cada grupo es una columna de la cinta. */
+    var fotos = (cinta.dataset.fotos || '')
+      .split(',')
+      .map(function (u) { return u.trim(); })
+      .filter(Boolean);
+    if (!fotos.length) return;
 
-    /* Las columnas miden 190-220px de ancho, así que pedir el original de
-       1920px era decodificar ~10 MB de bitmap por foto para pintarla del
-       tamaño de un pulgar — con doce columnas duplicadas eso son cientos de
-       megas de imagen decodificada por un fondo que además va detrás de un
-       velo oscuro. Se usa la variante de 480px (ver imagenes/*-480.webp),
-       de sobra para el doble de densidad. */
-    function versionChica(src) {
-      return src.replace(/\.webp$/, '-480.webp');
-    }
+    var grupos = [];
+    for (var g = 0; g < fotos.length; g += 3) grupos.push(fotos.slice(g, g + 3));
 
     function crearColumna(grupo) {
       var col = document.createElement('div');
       col.className = 'banda-cta-masonry__col';
       grupo.forEach(function (src) {
         var img = document.createElement('img');
-        img.src = versionChica(src);
+        img.src = src;
         img.alt = '';
         img.loading = 'lazy';
         img.decoding = 'async';
@@ -889,6 +957,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var heroEl = document.querySelector('.hero');
     if (!canvas || !heroEl || !canvas.getContext) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    /* En táctil no se arranca. El lienzo ocupa el hero entero, se redibuja
+       60 veces por segundo y encima se compone con mix-blend-mode: screen,
+       o sea que cada cuadro obliga a remezclar toda esa superficie contra el
+       carrusel que hay debajo. La hoja de estilos ya lo oculta en táctil
+       (ver .hero-sparkles); esto evita además gastar la CPU en dibujar algo
+       que nadie va a ver. */
+    if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
 
     var ctx = canvas.getContext('2d');
     var particulas = [];
@@ -984,8 +1059,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var heroTitulo = etapa1.querySelector('.hero-titulo');
     var columnas = etapa2.querySelectorAll('.hero-etapa2-col');
     var tagline = etapa2.querySelector('.hero-etapa2-tagline');
-    var tickeandoCine = false;
     var ultimoProgresoCine = -1;
+    /* Lo que mide la fase de lectura y consume la de escritura. Se comparte
+       con el auto-scroll asistido (14d), que necesitaba exactamente la misma
+       medida y antes la volvía a tomar por su cuenta. */
+    var progresoCine = 0;
+    var alturaDesplazableCine = 0;
+    var topeCine = 0;   // borde superior del contenedor en coordenadas de documento
 
     /* Desenfoque más contenido en táctil: el de 20px se aplica sobre columnas
        de foto a pantalla completa y hay que re-dibujarlas en cada cuadro. */
@@ -1009,14 +1089,24 @@ document.addEventListener('DOMContentLoaded', function () {
       el.style[prop] = valor;
     }
 
-    function actualizarCine() {
+    /* FASE DE LECTURA: solo mide. Es la única función de este bloque a la
+       que se le permite tocar el layout. */
+    function leerCine(ctx) {
       var rect = envoltorio.getBoundingClientRect();
-      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
-      var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+      alturaDesplazableCine = envoltorio.offsetHeight - ctx.alto;
+      topeCine = rect.top + ctx.y;
+      progresoCine = alturaDesplazableCine > 0
+        ? acotar(-rect.top / alturaDesplazableCine)
+        : 0;
+    }
+
+    /* FASE DE ESCRITURA: solo escribe estilos, con la medida ya tomada. */
+    function actualizarCine() {
+      var progreso = progresoCine;
 
       /* Si el progreso no se movió (pin quieto, o la sección ya quedó atrás y
          sigue clavada en 1) no hay nada que escribir. */
-      if (progreso === ultimoProgresoCine) { tickeandoCine = false; return; }
+      if (progreso === ultimoProgresoCine) return;
       ultimoProgresoCine = progreso;
 
       // Presupuesto del recorrido (0 a 1), con una zona de "estancia" real
@@ -1084,18 +1174,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var blurTag = Math.max((1 - propioTag) * 16, salida2 * 16);
         fijar(tagline, 'filter', blurTag > .1 ? 'blur(' + blurTag.toFixed(1) + 'px)' : '');
       }
-
-      tickeandoCine = false;
     }
 
-    window.addEventListener('scroll', function () {
-      if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
-    }, { passive: true });
-    window.addEventListener('resize', function () {
+    SmilersScroll.registrar(leerCine, actualizarCine, function () {
       ultimoProgresoCine = -1;   // el layout cambió: hay que reescribir aunque el progreso sea el mismo
-      if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
     });
-    actualizarCine();
+    SmilersScroll.pedir();
 
 
     /* ===== 14d. AUTO-SCROLL ASISTIDO (bidireccional) ====================
@@ -1133,31 +1217,26 @@ document.addEventListener('DOMContentLoaded', function () {
     var ultimoScrollYAsistido = window.scrollY;
     var direccionAsistida = 'down';
 
-    function progresoHero() {
-      var rect = envoltorio.getBoundingClientRect();
-      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
-      return alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
-    }
-
+    /* Corre 250 ms DESPUÉS de que el scroll se detiene, nunca durante un
+       cuadro de scroll, así que aquí sí puede medir sin coste: no hay
+       escrituras de otros efectos con las que alternar. Aun así reutiliza
+       las medidas que 14c ya tomó en el último cuadro (progresoCine,
+       alturaDesplazableCine, topeCine) en vez de repetirlas. */
     function alScrollQuieto() {
-      var progreso = progresoHero();
+      var progreso = progresoCine;
 
       if (progreso < .02) {
         avanzoHero = false;
       } else if (progreso < .22 && !avanzoHero && direccionAsistida === 'down') {
         avanzoHero = true;
-        var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
-        var topEnvoltorio = envoltorio.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: topEnvoltorio + alturaDesplazable * .62, behavior: 'smooth' });
+        window.scrollTo({ top: topeCine + alturaDesplazableCine * .62, behavior: 'smooth' });
       }
 
       if (progreso > .98) {
         retrocedioHero = false;
       } else if (progreso > .78 && !retrocedioHero && direccionAsistida === 'up') {
         retrocedioHero = true;
-        var alturaDesplazable2 = envoltorio.offsetHeight - window.innerHeight;
-        var topEnvoltorio2 = envoltorio.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: topEnvoltorio2 + alturaDesplazable2 * .76, behavior: 'smooth' });
+        window.scrollTo({ top: topeCine + alturaDesplazableCine * .76, behavior: 'smooth' });
       }
 
       if (especialidades && window.matchMedia('(min-width: 768px)').matches) {
@@ -1185,15 +1264,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
+    SmilersScroll.registrar(null, function (ctx) {
+      var y = ctx.y;
       if (y > ultimoScrollYAsistido + 1) direccionAsistida = 'down';
       else if (y < ultimoScrollYAsistido - 1) direccionAsistida = 'up';
       ultimoScrollYAsistido = y;
 
       clearTimeout(idleTimerAsistido);
       idleTimerAsistido = setTimeout(alScrollQuieto, 250);
-    }, { passive: true });
+    });
   })();
 
 
@@ -1211,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!especialidadesOsc || !capaNegra) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var tickeandoOsc = false;
+    var tOsc = 99;   // lo mide la fase de lectura
 
     function acotarOsc(valor) { return Math.min(1, Math.max(0, valor)); }
 
@@ -1233,8 +1312,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
     var ultimoProgresoOsc = -1;
 
+    function leerAcercamiento(ctx) {
+      tOsc = especialidadesOsc.getBoundingClientRect().top / ctx.alto;
+    }
+
     function actualizarAcercamiento() {
-      var t = especialidadesOsc.getBoundingClientRect().top / window.innerHeight;
+      var t = tOsc;
       var progresoOsc;
 
       if (t >= LEJOS || t <= DENTRO) {
@@ -1248,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', function () {
       /* Fuera de la zona de acercamiento el progreso se queda clavado en 0
          y no hay nada que escribir; sin esta salida temprana el bloque
          tocaba la capa en cada cuadro de scroll de toda la página. */
-      if (progresoOsc === ultimoProgresoOsc) { tickeandoOsc = false; return; }
+      if (progresoOsc === ultimoProgresoOsc) return;
       ultimoProgresoOsc = progresoOsc;
 
       capaNegra.style.opacity = String(progresoOsc * .5);
@@ -1270,18 +1353,13 @@ document.addEventListener('DOMContentLoaded', function () {
           capaNegra.style.backdropFilter = 'none';
         }
       }
-      tickeandoOsc = false;
     }
 
-    window.addEventListener('scroll', function () {
-      if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
-    }, { passive: true });
-    window.addEventListener('resize', function () {
+    SmilersScroll.registrar(leerAcercamiento, actualizarAcercamiento, function () {
       usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
       ultimoProgresoOsc = -1;
-      if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
     });
-    actualizarAcercamiento();
+    SmilersScroll.pedir();
   })();
 
 
@@ -1297,19 +1375,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!envoltorio || !negro) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var tickeandoCierre = false;
     var ultimoProgresoCierre = -1;
+    var progresoCierre = 0;   // lo mide la fase de lectura
 
     function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
 
-    function actualizarCierre() {
+    function leerCierre(ctx) {
       var rect = envoltorio.getBoundingClientRect();
-      var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
-      var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+      var alturaDesplazable = envoltorio.offsetHeight - ctx.alto;
+      progresoCierre = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+    }
+
+    function actualizarCierre() {
+      var progreso = progresoCierre;
 
       /* Mientras el pin no se mueve -o ya quedó atrás, con el progreso
          clavado en 1- no hay nada que escribir. */
-      if (progreso === ultimoProgresoCierre) { tickeandoCierre = false; return; }
+      if (progreso === ultimoProgresoCierre) return;
       ultimoProgresoCierre = progreso;
 
       // 0%-30%: se queda en negro (el instante de "pausa" antes de revelar).
@@ -1322,18 +1404,12 @@ document.addEventListener('DOMContentLoaded', function () {
         contenido.style.opacity = String(revelado);
         contenido.style.transform = 'translateY(' + ((1 - revelado) * 30).toFixed(1) + 'px)';
       }
-
-      tickeandoCierre = false;
     }
 
-    window.addEventListener('scroll', function () {
-      if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
-    }, { passive: true });
-    window.addEventListener('resize', function () {
+    SmilersScroll.registrar(leerCierre, actualizarCierre, function () {
       ultimoProgresoCierre = -1;
-      if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
     });
-    actualizarCierre();
+    SmilersScroll.pedir();
   })();
 
 
