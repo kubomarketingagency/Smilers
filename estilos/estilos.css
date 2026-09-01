@@ -199,21 +199,39 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: #090a07; /* negro exacto de las esquinas del clip: sin salto de color si quedan franjas por "contain" */
+  background: #000; /* pantalla negra completa: el logo animado queda centrado sobre negro puro en cualquier dispositivo */
   overflow: hidden;
-  transition: opacity .5s ease;
+  display: grid;
+  place-items: center;   /* centrado exacto en los dos ejes, en cualquier pantalla */
+  transition: opacity .6s cubic-bezier(.4, 0, .2, 1);
 }
+/* El clip NO se estira a pantalla completa: se limita a una caja modesta y
+   centrada, para que el logo no quede gigante ("grotesco"). Como el fondo
+   del video ya es negro puro igual que el de la capa, el recorte no se nota:
+   solo se ve el logo, más pequeño y con aire alrededor. */
 .splash-inicio video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(52vw, 660px);
+  max-height: 58vh;
   object-fit: contain;
   object-position: center;
+  transition: transform .6s cubic-bezier(.4, 0, .2, 1), filter .6s ease, opacity .6s ease;
 }
+@media (max-width: 767.98px) {
+  .splash-inicio video { max-width: 76vw; max-height: 56vh; }
+}
+/* Salida delicada: la capa se desvanece mientras el logo se aleja apenas y
+   se desenfoca, en vez de un corte seco hacia el sitio. */
 .splash-inicio.oculto {
   opacity: 0;
   pointer-events: none;
+}
+.splash-inicio.oculto video {
+  transform: scale(1.05);
+  filter: blur(5px);
+  opacity: .35;
 }
 html.sin-splash .splash-inicio { display: none; }
 @media (prefers-reduced-motion: reduce) {
@@ -411,9 +429,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    ónix del resto de la página (que ya es oscuro en todas partes, así que
    nunca compite con contenido claro debajo). Barra delgada a propósito. */
 .navbar-principal {
-  padding: .22rem 0;
+  padding: .85rem 0;
   background: transparent;
-  transition: transform .35s ease;
+  transition: transform .35s ease, padding .35s ease;
   z-index: 1030;
 }
 
@@ -427,7 +445,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* Estado con scroll (clase añadida desde script.js): solo encoge el logo,
    sigue sin fondo. */
 .navbar-principal.con-scroll {
-  padding: .12rem 0;
+  padding: .4rem 0;
 }
 
 /* Marca (logotipo tipográfico: icono + wordmark), inspirada en el isotipo
@@ -480,16 +498,17 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin-top: 2px;
   color: var(--neutral-300);
 }
-.navbar-principal.con-scroll .marca-icono { width: 28px; height: 28px; font-size: .9rem; }
-.navbar-principal.con-scroll .marca-nombre { font-size: 1.05rem; }
-.navbar-principal.con-scroll .marca-slogan { display: none; }
+.navbar-principal.con-scroll .marca-icono { width: 29px; height: 29px; font-size: .95rem; }
+.navbar-principal.con-scroll .marca-nombre { font-size: 1.15rem; }
+.navbar-principal.con-scroll .marca-slogan { font-size: .54rem; letter-spacing: 1.2px; }
 
 @media (max-width: 767.98px) {
   .marca-icono { width: 32px; height: 32px; font-size: .95rem; }
   .marca-nombre { font-size: 1.15rem; }
   .marca-slogan { font-size: .58rem; letter-spacing: 1.2px; }
-  .navbar-principal.con-scroll .marca-icono { width: 26px; height: 26px; font-size: .85rem; }
-  .navbar-principal.con-scroll .marca-nombre { font-size: 1rem; }
+  .navbar-principal.con-scroll .marca-icono { width: 29px; height: 29px; font-size: .9rem; }
+  .navbar-principal.con-scroll .marca-nombre { font-size: 1.08rem; }
+  .navbar-principal.con-scroll .marca-slogan { font-size: .5rem; }
 }
 
 /* Botón hamburguesa: 3 barras propias (no icono de fuente) para poder
@@ -1323,9 +1342,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 /* Ceremonia de entrada: reusa el mecanismo .cortina/.cortina-panel (blur +
-   fade) del resto del sitio, con el mismo texto de la etiqueta a pantalla
-   completa. data-retraso-ms en el HTML le pide al observer de script.js
-   que espere ~1s con el mensaje quieto antes de abrirla. */
+   fade) del resto del sitio — pantalla negra con la palabra "Tratamientos"
+   que después se desvanece y descubre el acordeón. A propósito SIN
+   backdrop-filter: un desenfoque de fondo aquí se quedaba "encendido" sobre
+   las fotos aunque el panel ya fuera transparente. Con un color plano que se
+   desvanece, la salida es limpia y no queda ningún velo encima.
+   data-retraso-ms en el HTML le pide al observer de script.js que espere ~1s
+   con el mensaje quieto antes de abrirla. */
 .acordeon-intro .cortina-panel {
   display: grid;
   place-items: center;
@@ -1586,18 +1609,21 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 
-/* ===== 9c. OSCURECIMIENTO DE ACERCAMIENTO A TRATAMIENTOS ================
-   Capa fija de un solo color: su opacidad la controla script.js según qué
-   tan cerca está el acordeón de Tratamientos del borde superior de la
-   pantalla — sube a medida que se acerca (en cualquier sentido de scroll)
-   y vuelve a bajar apenas se entra, sin quedar un velo oscuro encima del
-   acordeón. Solo opacity, así que es barata para el compositor aunque se
-   actualice en cada frame de scroll. */
+/* ===== 9c. DESENFOQUE DE ACERCAMIENTO A TRATAMIENTOS ====================
+   Capa fija translúcida: script.js (14f) controla su opacidad y su
+   backdrop-filter según qué tan cerca está el acordeón de Tratamientos.
+   En vez de un velo gris sólido es un desenfoque suave, y se apaga por
+   completo cuando la sección ya está en cuadro — de ahí que el valor por
+   defecto sea "none" y no "blur(0px)": con la propiedad puesta, el navegador
+   mantiene la capa de composición viva y el desenfoque se queda encendido
+   encima de las fotos. */
 .acercamiento-negro {
   position: fixed;
   inset: 0;
   z-index: 900;
-  background: var(--onix);
+  background: rgba(14, 12, 10, .5);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   opacity: 0;
   pointer-events: none;
 }
@@ -1703,74 +1729,79 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 .footer {
+  position: relative;
   background: var(--onix);
   color: rgba(250, 248, 244, .78);
-  padding: 90px 0 0;
-  border-top: 1px solid rgba(192, 192, 192, .18);
+  padding: 100px 0 0;
+}
+/* Hairline superior en degradado metálico (plata -> oro -> plata) en vez de
+   un borde plano de un solo color: la misma firma "dúo metálico" que el
+   resto del sitio, como remate elegante antes del footer. */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(192, 192, 192, .5) 20%, var(--gold-500) 50%, rgba(192, 192, 192, .5) 80%, transparent);
 }
 
 .marca-footer { display: inline-flex; }
 .marca-footer .marca-slogan { color: var(--plata); text-transform: none; letter-spacing: .5px; font-weight: 500; }
 
 .footer-titulo {
-  display: inline-block;
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .16em;
+  display: block;
+  font-family: var(--fuente-elegante);
+  font-weight: 400;
+  letter-spacing: .04em;
   color: var(--marmol);
-  font-size: .95rem;
-  margin-bottom: 1.3rem;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
   position: relative;
-  padding-bottom: .6rem;
+  padding-bottom: .8rem;
 }
-/* Detalle dorado a propósito, distinto del plateado que domina el resto
-   del footer: el acento bajo cada título y el punto de las direcciones,
-   como toque cálido puntual sobre tanto gris/plata. */
+/* Detalle dorado, corto y a la izquierda (no una barra completa): lee más
+   como firma editorial que como subrayado de formulario. */
 .footer-titulo::after {
   content: '';
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 3px;
-  background: var(--durazno);
+  left: 0; bottom: 0;
+  width: 34px;
+  height: 2px;
+  background: var(--gradiente-oro);
   border-radius: 3px;
 }
-.footer-titulo::before {
-  content: '';
-  position: absolute;
-  right: -14px; bottom: -3px;
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--durazno);
-}
 
-.footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .7); }
+.footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
 
-.footer-contacto { list-style: none; padding: 0; margin: 1.4rem 0; }
+.footer-contacto { list-style: none; padding: 0; margin: 1.5rem 0; }
 .footer-contacto li {
   font-size: .9rem;
-  margin-bottom: .7rem;
+  margin-bottom: .9rem;
   display: flex;
-  gap: .7rem;
+  gap: .8rem;
   align-items: flex-start;
 }
-.footer-contacto i { color: var(--durazno); margin-top: 5px; }
+.footer-contacto i { color: var(--gold-500); margin-top: 5px; flex: 0 0 auto; }
 .footer-contacto a { color: rgba(255, 255, 255, .78); }
-.footer-contacto a:hover { color: var(--durazno); }
+.footer-contacto a:hover { color: var(--gold-200); }
 
-/* Redes sociales */
+/* Redes sociales: aro fino en vez de disco relleno, más ligero y acorde al
+   resto de botones "outline -> relleno" del sitio. */
 .redes-sociales { display: flex; gap: .7rem; }
 .redes-sociales a {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, .1);
-  color: #fff;
-  font-size: 1.05rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, .22);
+  color: rgba(255, 255, 255, .85);
+  font-size: 1rem;
+  transition: var(--transicion);
 }
 .redes-sociales a:hover {
-  background: var(--durazno);
+  background: var(--gradiente-oro);
+  border-color: transparent;
   color: var(--onix);
   transform: translateY(-4px);
 }
@@ -1790,14 +1821,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: rgba(255, 255, 255, .6);
   transition: var(--transicion);
 }
-.mapa-tab:hover { border-color: var(--durazno); color: #fff; }
-.mapa-tab.activo { background: var(--durazno); border-color: var(--durazno); color: var(--onix); }
+.mapa-tab:hover { border-color: var(--gold-500); color: #fff; }
+.mapa-tab.activo { background: var(--gradiente-oro); border-color: transparent; color: var(--onix); }
 
 .mapa-contenedor {
   position: relative;
   border-radius: var(--radio-sm);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+  border: 1px solid rgba(192, 192, 192, .18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
   line-height: 0;                  /* elimina el hueco bajo el iframe */
 }
 .mapa-iframe { display: none; width: 100%; height: 260px; border: 0; filter: grayscale(.3) contrast(1.05); }
@@ -1812,18 +1844,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin-bottom: .3rem;
 }
 .form-footer .form-control {
-  background: rgba(255, 255, 255, .07);
+  background: rgba(255, 255, 255, .05);
   border: 1px solid rgba(255, 255, 255, .16);
   color: #fff;
   border-radius: var(--radio-sm);
-  padding: .7rem 1rem;
+  padding: .75rem 1rem;
   font-size: .92rem;
+  transition: var(--transicion);
 }
 .form-footer .form-control::placeholder { color: rgba(255, 255, 255, .4); }
 .form-footer .form-control:focus {
-  background: rgba(255, 255, 255, .12);
-  border-color: var(--durazno);
-  box-shadow: 0 0 0 .2rem rgba(210, 172, 71, .22);
+  background: rgba(255, 255, 255, .08);
+  border-color: var(--gold-500);
+  box-shadow: 0 0 0 .2rem rgba(210, 172, 71, .18);
   color: #fff;
 }
 /* Estado de error (lo activa el JS) */
@@ -1841,18 +1874,24 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .form-aviso.error { color: var(--naranja); }
 
 /* Línea inferior */
+/* padding-right: deja libre la esquina donde viven los botones flotantes
+   (WhatsApp + volver arriba), para que "Aviso de privacidad" no quede
+   debajo de ellos al llegar al final de la página. */
 .footer-bottom {
-  margin-top: 60px;
-  padding: 22px 0;
-  border-top: 1px solid rgba(255, 255, 255, .12);
+  margin-top: 70px;
+  padding: 24px 0 28px;
+  padding-right: 80px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: .5rem;
-  font-size: .85rem;
+  font-size: .8rem;
+  letter-spacing: .03em;
+  color: rgba(255, 255, 255, .55);
 }
-.footer-bottom a { color: rgba(255, 255, 255, .7); }
-.footer-bottom a:hover { color: var(--durazno); }
+.footer-bottom a { color: rgba(255, 255, 255, .55); }
+.footer-bottom a:hover { color: var(--gold-200); }
 
 
 /* ===== 12. BOTONES FLOTANTES =========================================== */
@@ -1880,7 +1919,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 .btn-subir {
   position: fixed;
-  bottom: 95px; right: 28px;
+  bottom: 103px; right: 35px;
   width: 46px; height: 46px;
   border: 0;
   border-radius: 50%;
@@ -1892,7 +1931,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   z-index: 1040;
 }
 .btn-subir.visible { opacity: 1; visibility: visible; }
-.btn-subir:hover { background: var(--naranja); }
+.btn-subir:hover { background: var(--naranja); transform: translateY(-3px); }
+.btn-subir:active {
+  background: var(--gold-500);
+  color: var(--onix);
+  transform: translateY(0) scale(.94);
+}
 
 
 /* ===== 13. ANIMACIÓN DE APARICIÓN AL HACER SCROLL ====================== */
@@ -2031,9 +2075,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .hero-contenido { padding: 120px 0 90px; }
   .seccion { padding: 72px 0; }
   .footer { padding-top: 60px; }
-  .footer-bottom { justify-content: center; text-align: center; }
+  /* padding-bottom generoso: en móvil los botones flotantes (WhatsApp +
+     volver arriba) ocupan hasta ~150px desde el borde inferior, así que la
+     línea de créditos se sube por encima de los dos para que se lea entera. */
+  .footer-bottom { justify-content: center; text-align: center; padding-right: 0; padding-bottom: 152px; }
   .marco-imagen::before { display: none; }
   .wsp-flotante { width: 58px; height: 58px; font-size: 1.85rem; }
+  .btn-subir { right: 31px; bottom: 97px; }
 }
 
 /* ===== 15. OBJETOS DECORATIVOS DE FONDO ================================= */

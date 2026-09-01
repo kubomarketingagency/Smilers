@@ -991,12 +991,14 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
 
-  /* ===== 14f. OSCURECIMIENTO AL ACERCARSE A TRATAMIENTOS ================
-     Capa fija (.acercamiento-negro) que se oscurece a medida que el borde
-     superior del acordeón de Tratamientos se acerca al tope de pantalla, y
-     se vuelve a aclarar tanto si se termina de cruzar hacia adentro como si
-     uno se aleja de nuevo — es una función continua de la posición, así
-     que funciona igual de suave subiendo que bajando sin lógica aparte. */
+  /* ===== 14f. DESENFOQUE AL ACERCARSE A TRATAMIENTOS ====================
+     Capa fija (.acercamiento-negro) que se desenfoca mientras el acordeón de
+     Tratamientos SE ACERCA, y que está apagada del todo cuando la sección ya
+     llena la pantalla — antes el máximo caía justo en top≈0, es decir
+     exactamente cuando uno está viendo el acordeón: el velo se quedaba
+     encima y opacaba todas las fotos. Ahora el pico ocurre a media pantalla
+     de distancia y baja a 0 antes de entrar. Como es función continua de la
+     posición, se comporta igual subiendo que bajando. */
   (function () {
     var especialidadesOsc = document.getElementById('especialidades');
     var capaNegra = document.getElementById('acercamientoNegro');
@@ -1007,19 +1009,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function acotarOsc(valor) { return Math.min(1, Math.max(0, valor)); }
 
+    /* Distancia normalizada del borde superior de la sección: 1 = una
+       pantalla completa por debajo, 0 = pegado al tope (sección en cuadro). */
+    var LEJOS  = 1;    // más allá de esto no hay velo
+    var PICO   = .45;  // punto de máximo desenfoque (acercándose)
+    var DENTRO = .15;  // a partir de aquí ya estamos "dentro": velo apagado
+
     function actualizarAcercamiento() {
-      var top = especialidadesOsc.getBoundingClientRect().top;
+      var t = especialidadesOsc.getBoundingClientRect().top / window.innerHeight;
       var progresoOsc;
-      if (top >= 0) {
-        // Se acerca desde abajo (bajando) o se aleja hacia abajo (subiendo):
-        // más oscuro cuanto más cerca del tope de pantalla.
-        progresoOsc = acotarOsc(1 - top / window.innerHeight);
+
+      if (t >= LEJOS || t <= DENTRO) {
+        progresoOsc = 0;                              // lejos, o ya adentro
+      } else if (t > PICO) {
+        progresoOsc = acotarOsc((LEJOS - t) / (LEJOS - PICO));   // 0 -> 1
       } else {
-        // Ya se cruzó su borde superior: se aclara de nuevo a medida que la
-        // sección sigue subiendo en pantalla (ya estamos "dentro").
-        progresoOsc = acotarOsc(1 + top / window.innerHeight);
+        progresoOsc = acotarOsc((t - DENTRO) / (PICO - DENTRO)); // 1 -> 0
       }
-      capaNegra.style.opacity = String(progresoOsc * .55);
+
+      capaNegra.style.opacity = String(progresoOsc * .5);
+      /* En 0 se quita el backdrop-filter por completo (no "blur(0px)"): dejar
+         la propiedad puesta mantiene viva la capa de composición y el
+         desenfoque se queda "encendido" sobre las fotos en algunos
+         navegadores. */
+      if (progresoOsc <= .01) {
+        capaNegra.style.webkitBackdropFilter = 'none';
+        capaNegra.style.backdropFilter = 'none';
+      } else {
+        var desenfoque = 'blur(' + (progresoOsc * 8).toFixed(1) + 'px)';
+        capaNegra.style.webkitBackdropFilter = desenfoque;
+        capaNegra.style.backdropFilter = desenfoque;
+      }
       tickeandoOsc = false;
     }
 
@@ -1096,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (retirado) return;
       retirado = true;
       splash.classList.add('oculto');
-      setTimeout(function () { splash.remove(); }, 550);
+      setTimeout(function () { splash.remove(); }, 700); // = duración del fundido en CSS
     }
 
     if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -1108,11 +1128,12 @@ document.addEventListener('DOMContentLoaded', function () {
     video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
     video.load();
 
-    /* Clip cinematográfico de ~4s: se acelera apenas para que se sienta ágil
-       sin perder el efecto de fondo (líneas doradas + resplandor). */
-    video.playbackRate = 1.15;
+    /* Clip del logo animado: se acelera apenas para que termine solo (~3.7s)
+       antes del seguro de abajo, y el conjunto (video + fundido .6s) cierre
+       en ~4.3s, sin pasar de los 4.5s. */
+    video.playbackRate = 1.3;
 
-    setTimeout(retirarSplash, 4200); // seguro si "ended" no llega
+    setTimeout(retirarSplash, 3800); // seguro si "ended" no llega
 
     video.addEventListener('ended', retirarSplash);
     video.addEventListener('error', retirarSplash);
