@@ -721,18 +721,26 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   to   { transform: scale(1.09); }
 }
 
-/* Móvil: en vez de recortar con object-fit:cover, la foto se recorre
-   completa de izquierda a derecha durante el tiempo que dura cada slide
-   activo (mismo intervalo que data-bs-interval del carrusel) antes del
-   crossfade al siguiente — así se ve entera antes de cambiar. */
+/* Móvil: la foto se recorre de lado a lado durante el tiempo que dura cada
+   slide (mismo intervalo que data-bs-interval del carrusel) antes del
+   crossfade al siguiente, para que no se vea siempre el mismo recorte.
+   El recorrido se hace con transform, NO animando object-position como
+   antes: object-position no es una propiedad que el compositor sepa
+   resolver, así que cada cuadro obligaba a repintar una foto a pantalla
+   completa durante 4.2 segundos en cada slide, sin parar, mientras el hero
+   estuviera visible — de lejos la razón más clara de que el arranque se
+   sintiera trabado en un teléfono. Con la escala en 1.28 la foto sobra un
+   14% por cada lado, así que el ±6% de translateX (un 7.7% real, ya
+   multiplicado por la escala) se mueve siempre dentro de la imagen y nunca
+   descubre un borde. */
 @media (max-width: 767.98px) {
   .carousel-item.active .hero-slide-img {
-    animation: kenburns 6s ease-out forwards, panorama-movil 4.2s ease-in-out;
+    animation: panorama-movil 4.2s ease-in-out forwards;
   }
 }
 @keyframes panorama-movil {
-  0%   { object-position: 0% 30%; }
-  100% { object-position: 100% 30%; }
+  from { transform: scale(1.28) translateX(6%); }
+  to   { transform: scale(1.34) translateX(-6%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .carousel-item.active .hero-slide-img { animation: none; }
@@ -2416,12 +2424,20 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
               transform .7s cubic-bezier(.16, 1, .3, 1),
               filter .7s cubic-bezier(.16, 1, .3, 1);
+  /* OJO con will-change aquí: hay decenas de .revelar en la portada y cada
+     uno se lleva su propia capa de composición mientras la propiedad esté
+     puesta. Se pide solo lo que el compositor sabe resolver solo (transform
+     y opacity), nunca filter, que obliga a volver a dibujar de todas formas.
+     La capa se suelta desde el JS al terminar la transición (script.js,
+     sección 5) y NO desde un ".visible { will-change: auto }": esa clase se
+     pone justo cuando la animación ARRANCA, con lo que se quitaría la capa
+     en el peor momento posible. */
   /* Escalonado "a mano": las cascadas por nth-child de más abajo solo
      funcionan cuando los elementos son hijos directos de un .row de
      Bootstrap. En los bloques que usan rejillas propias (ej. #nosotros)
      cada elemento declara su turno con style="--retraso:.12s". */
   transition-delay: var(--retraso, 0s);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 .revelar.visible {
   opacity: 1;
@@ -2450,8 +2466,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    inclinación en una pantalla pequeña se sienten como salto, no como lujo.
    El desenfoque también baja, ya que un blur grande sobre una pantalla
    chica reduce contraste de golpe en vez de sentirse elegante. */
+/* En pantallas tactiles se cae el desenfoque y el giro 3D del reveal.
+   No es una cuestión de gusto sino de coste: un filter:blur obliga al
+   navegador a re-dibujar el elemento en cada cuadro de la animación (no lo
+   resuelve el compositor como transform u opacity), y con decenas de
+   .revelar entrando a la vez mientras se hace scroll es justo lo que hace
+   que el scroll se sienta trabado en un teléfono. El recorrido y la escala
+   se conservan, así que el gesto sigue estando; lo que desaparece es la
+   parte que no se nota y sí se paga. */
 @media (max-width: 767.98px) {
-  .revelar:not(.revelar--velo) { transform: translateY(42px) scale(.94) rotateX(4deg); filter: blur(5px); }
+  .revelar:not(.revelar--velo) { transform: translateY(42px) scale(.94); filter: none; }
+  .revelar.visible { filter: none; }
+  .row, .lista-caracteristicas, .container { perspective: none; }
+}
+@media (hover: none) and (pointer: coarse) {
+  .revelar:not(.revelar--velo) { filter: none; }
+  .revelar.visible { filter: none; }
 }
 /* Cascada dorada: varias .revelar seguidas dentro de la misma fila/lista
    entran en secuencia marcada (no todas a la vez), como si la luz
@@ -2533,6 +2563,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transition: opacity 1.1s ease, filter 1.1s ease;
 }
 .cortina.abierta .cortina-panel { opacity: 0; filter: blur(22px); }
+/* En táctil se deja solo la opacidad: el desenfoque de 22px se aplica sobre
+   un panel del tamaño de la sección entera y hay que re-dibujarlo en cada
+   cuadro del segundo que dura la transición. La disolución se sigue viendo;
+   lo que se va es el coste. */
+@media (hover: none) and (pointer: coarse) {
+  .cortina-panel { transition: opacity 1.1s ease; }
+  .cortina.abierta .cortina-panel { filter: none; }
+}
 
 /* El footer no lleva cortina: cierra el recorrido en quietud, sin más
    animación que los estados de hover normales — el broche minimalista

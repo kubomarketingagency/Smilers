@@ -707,7 +707,12 @@ void main() {
 
   EsferaTestimonios.prototype.redimensionar = function () {
     var gl = this.gl;
-    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    /* En móvil se topa el ratio en 1.5 en vez de 2. La esfera ocupa casi
+       toda la pantalla, así que a 2x en un teléfono de 3x son más del doble
+       de píxeles que rellenar por cuadro; a 1.5x la foto se sigue viendo
+       nítida y el shader hace la mitad del trabajo. */
+    var topeDpr = window.innerWidth < 992 ? 1.5 : 2;
+    var dpr = Math.min(topeDpr, window.devicePixelRatio || 1);
     var ancho = Math.max(1, Math.round(this.lienzo.clientWidth * dpr));
     var alto = Math.max(1, Math.round(this.lienzo.clientHeight * dpr));
 

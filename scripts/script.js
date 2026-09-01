@@ -126,10 +126,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ===== 4. BOTÓN "VOLVER ARRIBA" ===================================== */
   const btnSubir = document.getElementById('btnSubir');
+  let btnSubirVisible = null;
 
+  /* passive: sin esto el navegador no puede empezar a desplazar hasta saber
+     si el listener va a llamar a preventDefault, y en táctil eso se siente
+     como un tirón al arrancar el scroll. Y la clase solo se toca cuando el
+     estado cambia de verdad, no en cada uno de los cientos de eventos. */
   window.addEventListener('scroll', function () {
-    btnSubir.classList.toggle('visible', window.scrollY > 400);
-  });
+    const debeVerse = window.scrollY > 400;
+    if (debeVerse === btnSubirVisible) return;
+    btnSubirVisible = debeVerse;
+    btnSubir.classList.toggle('visible', debeVerse);
+  }, { passive: true });
 
   btnSubir.addEventListener('click', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -153,6 +161,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const temporizadoresRevelar = new WeakMap();      // "mostrar" pendiente (escalonado)
   const temporizadoresOcultarRevelar = new WeakMap(); // "ocultar" pendiente (debounce)
 
+  /* will-change promueve el elemento a su propia capa de composición, y en
+     la portada hay decenas de .revelar: sostener todas esas capas a la vez
+     es memoria de vídeo que se le quita al scroll. La hoja de estilos lo
+     pide para que la entrada vaya suave, y aquí se suelta en cuanto la
+     transición termina — que es el único momento correcto: hacerlo desde
+     ".visible" lo quitaría justo cuando la animación arranca. Al ocultarse
+     se devuelve el valor de la hoja para que la salida también lo tenga. */
+  function soltarCapa(evento) {
+    if (evento.target !== this) return;      // no por las transiciones de los hijos
+    if (this.classList.contains('visible')) this.style.willChange = 'auto';
+  }
+
+  elementosRevelar.forEach(function (el) {
+    el.addEventListener('transitionend', soltarCapa);
+  });
+
   if ('IntersectionObserver' in window) {
     const observador = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada, indice) {
@@ -167,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const pendiente = temporizadoresRevelar.get(entrada.target);
             if (pendiente) clearTimeout(pendiente);
             const id = setTimeout(function () {
+              entrada.target.style.willChange = '';   // vuelve al valor de la hoja
               entrada.target.classList.add('visible');
             }, indice * 100);
             temporizadoresRevelar.set(entrada.target, id);
@@ -180,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
+              entrada.target.style.willChange = '';   // la salida también la necesita
               entrada.target.classList.remove('visible');
               temporizadoresOcultarRevelar.delete(entrada.target);
             }, 400);
@@ -325,8 +351,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (orden[1] === 'parallax') {
           el.style.transform = 'translate3d(0,' + orden[2].toFixed(2) + 'px,0)';
         } else {
-          const f = orden[2];
-          el.style.setProperty('--escena-op', f.toFixed(3));
+          // Redondeado a dos decimales: mientras la sección esté entera en
+          // pantalla el factor se queda en 1 y deja de escribirse.
+          const f = Number(orden[2].toFixed(2));
+          if (el.__escenaF === f) return;
+          el.__escenaF = f;
+          el.style.setProperty('--escena-op', String(f));
           el.style.setProperty('--escena-y', (-(1 - f) * 55).toFixed(1) + 'px');
         }
       });
@@ -675,6 +705,26 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
 
+  /* ===== 12b-bis. EL CARRUSEL DEL HERO SE PARA FUERA DE PANTALLA =======
+     Bootstrap lo deja ciclando para siempre: cada 4.2s dispara un crossfade
+     de 1.9s entre dos fotos a pantalla completa con filtro, y lo sigue
+     haciendo aunque uno esté leyendo el pie de página. Con el observador se
+     detiene al salir de vista y retoma al volver. ==================== */
+  (function () {
+    var heroCarrusel = document.getElementById('heroCarrusel');
+    if (!heroCarrusel || !window.bootstrap || !('IntersectionObserver' in window)) return;
+
+    var instancia = bootstrap.Carousel.getOrCreateInstance(heroCarrusel);
+
+    new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (entrada.isIntersecting) instancia.cycle();
+        else instancia.pause();
+      });
+    }, { rootMargin: '100px 0px' }).observe(heroCarrusel);
+  })();
+
+
   /* ===== 12c. MARQUEE DE LA BANDA CTA ==================================
      Arma en JS las columnas de la cinta (en vez de fijas en el HTML): con
      un set fijo de 4 columnas el ancho no alcanzaba a cubrir pantallas
@@ -735,6 +785,21 @@ document.addEventListener('DOMContentLoaded', function () {
     set.concat(set).forEach(function (grupo) {
       cinta.appendChild(crearColumna(grupo));
     });
+
+    /* La cinta se para cuando la banda no está en pantalla. Es una capa de
+       composición de varias pantallas de ancho, llena de fotos, animándose
+       sin parar: mantenerla viva mientras uno está leyendo la portada le
+       roba trabajo al scroll sin que nadie la vea. animation-play-state
+       congela el fotograma actual, así que al volver retoma donde iba en
+       lugar de saltar al principio. */
+    if ('IntersectionObserver' in window) {
+      cinta.style.animationPlayState = 'paused';
+      new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (entrada) {
+          cinta.style.animationPlayState = entrada.isIntersecting ? 'running' : 'paused';
+        });
+      }, { rootMargin: '200px 0px' }).observe(cinta.parentNode || cinta);
+    }
   })();
 
 
@@ -898,13 +963,39 @@ document.addEventListener('DOMContentLoaded', function () {
     var columnas = etapa2.querySelectorAll('.hero-etapa2-col');
     var tagline = etapa2.querySelector('.hero-etapa2-tagline');
     var tickeandoCine = false;
+    var ultimoProgresoCine = -1;
+
+    /* Desenfoque más contenido en táctil: el de 20px se aplica sobre columnas
+       de foto a pantalla completa y hay que re-dibujarlas en cada cuadro. */
+    var BLUR_SALIDA = window.matchMedia('(hover: none) and (pointer: coarse)').matches ? 8 : 20;
 
     function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
+
+    /* Escribe una propiedad solo si de verdad cambió. Antes este bloque
+       reescribía una decena de estilos por columna en CADA cuadro de scroll
+       de TODA la página, incluida la "zona de estancia" del pin en la que
+       por definición no se mueve nada; y flexGrow, además, obliga a rehacer
+       el layout en cada escritura. Con la caché, mientras el valor no cambia
+       no se toca el DOM. */
+    var ultimoEstilo = new WeakMap();
+
+    function fijar(el, prop, valor) {
+      var previos = ultimoEstilo.get(el);
+      if (!previos) { previos = {}; ultimoEstilo.set(el, previos); }
+      if (previos[prop] === valor) return;
+      previos[prop] = valor;
+      el.style[prop] = valor;
+    }
 
     function actualizarCine() {
       var rect = envoltorio.getBoundingClientRect();
       var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
       var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+
+      /* Si el progreso no se movió (pin quieto, o la sección ya quedó atrás y
+         sigue clavada en 1) no hay nada que escribir. */
+      if (progreso === ultimoProgresoCine) { tickeandoCine = false; return; }
+      ultimoProgresoCine = progreso;
 
       // Presupuesto del recorrido (0 a 1), con una zona de "estancia" real
       // en el medio (48%-80%) para que la sección de profesionales se
@@ -917,13 +1008,13 @@ document.addEventListener('DOMContentLoaded', function () {
       // El wordmark "Smilers" cae y se desvanece primero.
       if (heroTitulo) {
         var caidaTitulo = acotar((progreso - .08) / .30);
-        heroTitulo.style.opacity = String(1 - caidaTitulo);
-        heroTitulo.style.transform = 'translateY(' + (caidaTitulo * 150) + 'px)';
+        fijar(heroTitulo, 'opacity', String(1 - caidaTitulo));
+        fijar(heroTitulo, 'transform', 'translateY(' + (caidaTitulo * 150).toFixed(1) + 'px)');
       }
 
       // Etapa 1 (fotos) se desvanece justo después, del 24% al 36%.
       var salida1 = acotar((progreso - .24) / .12);
-      etapa1.style.opacity = String(1 - salida1);
+      fijar(etapa1, 'opacity', String(1 - salida1));
 
       // Etapa 2 entra del 34% al 58%: se alarga a propósito (antes 34%-48%)
       // para que las columnas de profesionales se vean aparecer una por una
@@ -938,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // (Nosotros, usada como "cuerpo" con más contenido) va apareciendo
       // detrás mientras esto se disuelve.
       var salida2 = acotar((progreso - .80) / .20);
-      etapa2.style.opacity = String(entrada2);
+      fijar(etapa2, 'opacity', String(entrada2));
 
       columnas.forEach(function (col, indice) {
         // Escalonado más marcado entre columnas (antes .12) para que se
@@ -950,21 +1041,26 @@ document.addEventListener('DOMContentLoaded', function () {
         var indiceSalida = columnas.length - 1 - indice;
         var salidaPropia = acotar((salida2 - indiceSalida * .15) / (1 - indiceSalida * .15 || 1));
 
-        col.style.opacity = String(propio * (1 - salidaPropia));
-        col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px) translateX(' + (salidaPropia * -70) + 'px)';
-        col.style.filter = salidaPropia > 0 ? 'blur(' + (salidaPropia * 20) + 'px)' : '';
+        fijar(col, 'opacity', String(propio * (1 - salidaPropia)));
+        fijar(col, 'transform', 'translateY(' + ((1 - propio) * 40).toFixed(1) + 'px) translateX(' + (salidaPropia * -70).toFixed(1) + 'px)');
+        // Cadena vacía cuando no hay salida, NO "blur(0px)": dejar la
+        // propiedad puesta mantiene viva la capa de filtro.
+        fijar(col, 'filter', salidaPropia > 0 ? 'blur(' + (salidaPropia * BLUR_SALIDA).toFixed(1) + 'px)' : '');
         // Efecto acordeón: cada columna arranca angosta y se "despliega"
-        // hasta su ancho pleno en vez de solo aparecer en su sitio.
-        col.style.flexGrow = String(.12 + propio * .88);
+        // hasta su ancho pleno en vez de solo aparecer en su sitio. Es la
+        // única escritura de este bloque que dispara layout, de ahí que se
+        // redondee a dos decimales: así deja de escribirse en cuanto la
+        // columna llega a su ancho, en vez de en cada cuadro.
+        fijar(col, 'flexGrow', (.12 + propio * .88).toFixed(2));
       });
 
       if (tagline) {
         var propioTag = acotar((entrada2 - .3) / .7);
-        tagline.style.opacity = String(propioTag * (1 - salida2));
-        tagline.style.transform = 'translateY(' + ((1 - propioTag) * 24 + salida2 * -30) + 'px)';
+        fijar(tagline, 'opacity', String(propioTag * (1 - salida2)));
+        fijar(tagline, 'transform', 'translateY(' + ((1 - propioTag) * 24 + salida2 * -30).toFixed(1) + 'px)');
         // Borrosa -> nítida al entrar, y vuelve a desenfocarse al salir.
         var blurTag = Math.max((1 - propioTag) * 16, salida2 * 16);
-        tagline.style.filter = 'blur(' + blurTag + 'px)';
+        fijar(tagline, 'filter', blurTag > .1 ? 'blur(' + blurTag.toFixed(1) + 'px)' : '');
       }
 
       tickeandoCine = false;
@@ -974,6 +1070,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
     }, { passive: true });
     window.addEventListener('resize', function () {
+      ultimoProgresoCine = -1;   // el layout cambió: hay que reescribir aunque el progreso sea el mismo
       if (!tickeandoCine) { tickeandoCine = true; requestAnimationFrame(actualizarCine); }
     });
     actualizarCine();
@@ -1112,6 +1209,7 @@ document.addEventListener('DOMContentLoaded', function () {
        oscurece, sin desenfocar; y cuando el progreso llega a 0 la capa se
        oculta con visibility, que sí desmonta la capa de composición. */
     var usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
+    var ultimoProgresoOsc = -1;
 
     function actualizarAcercamiento() {
       var t = especialidadesOsc.getBoundingClientRect().top / window.innerHeight;
@@ -1124,6 +1222,12 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         progresoOsc = acotarOsc((t - DENTRO) / (PICO - DENTRO)); // 1 -> 0
       }
+
+      /* Fuera de la zona de acercamiento el progreso se queda clavado en 0
+         y no hay nada que escribir; sin esta salida temprana el bloque
+         tocaba la capa en cada cuadro de scroll de toda la página. */
+      if (progresoOsc === ultimoProgresoOsc) { tickeandoOsc = false; return; }
+      ultimoProgresoOsc = progresoOsc;
 
       capaNegra.style.opacity = String(progresoOsc * .5);
 
@@ -1152,6 +1256,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { passive: true });
     window.addEventListener('resize', function () {
       usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
+      ultimoProgresoOsc = -1;
       if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
     });
     actualizarAcercamiento();
@@ -1171,6 +1276,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var tickeandoCierre = false;
+    var ultimoProgresoCierre = -1;
 
     function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
 
@@ -1178,6 +1284,11 @@ document.addEventListener('DOMContentLoaded', function () {
       var rect = envoltorio.getBoundingClientRect();
       var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
       var progreso = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+
+      /* Mientras el pin no se mueve -o ya quedó atrás, con el progreso
+         clavado en 1- no hay nada que escribir. */
+      if (progreso === ultimoProgresoCierre) { tickeandoCierre = false; return; }
+      ultimoProgresoCierre = progreso;
 
       // 0%-30%: se queda en negro (el instante de "pausa" antes de revelar).
       // 30%-60%: la cortina negra se desvanece, descubriendo la banda CTA.
@@ -1187,7 +1298,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (contenido) {
         contenido.style.opacity = String(revelado);
-        contenido.style.transform = 'translateY(' + ((1 - revelado) * 30) + 'px)';
+        contenido.style.transform = 'translateY(' + ((1 - revelado) * 30).toFixed(1) + 'px)';
       }
 
       tickeandoCierre = false;
@@ -1197,6 +1308,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
     }, { passive: true });
     window.addEventListener('resize', function () {
+      ultimoProgresoCierre = -1;
       if (!tickeandoCierre) { tickeandoCierre = true; requestAnimationFrame(actualizarCierre); }
     });
     actualizarCierre();
