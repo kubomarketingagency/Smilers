@@ -895,9 +895,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 @media (max-width: 767.98px) {
   .hero-cine { height: 380vh; }
-  /* Las 4 fotos también en móvil (antes se ocultaban 2 por espacio):
-     columnas más angostas para que las 4 quepan sin recortarse de más. */
-  .hero-etapa2-col { min-width: 0; }
+  /* En pantallas chicas las 4 fotos en una sola fila quedaban como tiras de
+     ~95px: irreconocibles. Se pasa a rejilla 2x2 para que cada retrato tenga
+     un área usable. El flex-grow que script.js escribe en línea (el efecto
+     "acordeón" de despliegue) simplemente no aplica en grid, así que el
+     escalonado de entrada/salida sigue funcionando por opacidad y transform
+     sin necesidad de tocar el JS. */
+  .hero-etapa2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .hero-etapa2-col { min-width: 0; min-height: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
