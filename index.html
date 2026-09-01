@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=36">
+  <link rel="stylesheet" href="estilos/estilos.css?v=37">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -264,7 +264,8 @@
   <!-- ============================================================
        3. SECCIÓN RESUMEN — NOSOTROS
        ============================================================ -->
-  <section class="seccion seccion-decorada seccion-clara fondo-perla seccion-nosotros" id="nosotros">
+  <section class="seccion seccion-decorada seccion-clara fondo-perla seccion-nosotros escena-salida"
+           id="nosotros" data-escena-salida>
     <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
 
     <!-- Halos metálicos (plata + un hilo de oro) muy diluidos: dan profundidad
@@ -309,28 +310,28 @@
         <span class="etiqueta-editorial revelar">Smilers Dental Clinique</span>
 
         <h2 class="titulo-seccion text-start revelar" style="--retraso:.06s">
-          Odontología de precisión con el trato
-          de una <span class="texto-turquesa">casa privada</span>
+          Sonrisas que se planean
+          <span class="texto-turquesa">contigo</span>
         </h2>
 
         <p class="parrafo parrafo-lead revelar" style="--retraso:.12s">
-          Somos una clínica dental integral en Quito: diagnóstico digital, estética,
-          rehabilitación y especialidades bajo un mismo techo y un mismo criterio
-          clínico. Nada de plantillas — cada plan se diseña sobre tu anatomía real,
-          se te explica en pantalla y se aprueba contigo antes de empezar.
+          En Smilers Dental Clinique cuidamos tu sonrisa como cuidaríamos la nuestra.
+          Somos una clínica dental integral en Quito —diagnóstico digital, estética,
+          rehabilitación y todas las especialidades bajo un mismo techo— y antes de
+          empezar te mostramos en pantalla qué vamos a hacer, por qué y cuánto cuesta.
         </p>
 
         <p class="parrafo revelar" style="--retraso:.18s">
-          En nuestras dos sedes trabajamos con escáner intraoral 3D, diseño digital de
-          sonrisa y protocolos de bioseguridad certificados, en consultorios pensados
-          para que la visita al dentista se sienta como lo que debería ser: tranquila,
-          puntual y sin sorpresas en el presupuesto.
+          Trabajamos en dos sedes con escáner intraoral 3D y diseño digital de sonrisa,
+          en consultorios pensados para que estés cómodo. Y si te dan nervios las
+          visitas al dentista, dilo con confianza: buena parte de nuestro trabajo es
+          que salgas de aquí más tranquilo de lo que entraste.
         </p>
 
         <ul class="nosotros-checks revelar" style="--retraso:.24s">
           <li>
             <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
-            <span><strong>Plan y presupuesto por escrito</strong> antes de iniciar cualquier tratamiento.</span>
+            <span><strong>Plan y presupuesto claros</strong>, por escrito y antes de empezar.</span>
           </li>
           <li>
             <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
@@ -338,7 +339,7 @@
           </li>
           <li>
             <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
-            <span><strong>Citas puntuales</strong> y seguimiento personal después de cada sesión.</span>
+            <span><strong>Citas puntuales</strong> y alguien pendiente de ti después de cada sesión.</span>
           </li>
         </ul>
 
@@ -582,6 +583,13 @@
   <section class="testimonios-cine" id="testimonios"
            data-esfera-testimonios aria-labelledby="testimoniosTitulo">
     <div class="testimonios-pin">
+
+      <!-- Velo de apertura y cierre: lo controla el scroll (ver
+           testimonios-esfera.js). Arranca negro y se abre al entrar; en el
+           último tramo se vuelve a cerrar, de modo que la sección se apaga
+           sola y entrega la pantalla ya en negro al cierre de cine que
+           viene justo después, sin corte seco entre las dos. -->
+      <div class="testimonios-velo" data-velo-testimonios aria-hidden="true"></div>
 
       <!-- Etiqueta fija, mismo criterio que la de Tratamientos -->
       <div class="testimonios-etiqueta">
@@ -914,9 +922,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=35"></script>
+  <script src="scripts/script.js?v=36"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=1"></script>
+  <script src="scripts/testimonios-esfera.js?v=2"></script>
 </body>
 </html>

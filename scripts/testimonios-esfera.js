@@ -479,6 +479,14 @@ void main() {
     this.lienzo = lienzo;
     this.items = items;
     this.escala = opciones.escala || 3.2;
+    /* Encuadre: mitad del alto visible en el plano del centro, en unidades
+       de mundo. Es lo que decide de verdad qué tan grande sale el disco del
+       frente — NO la escala. El fov se deriva de altura/distancia y la
+       distancia es 3*escala, así que las dos se cancelan y mover la escala
+       deja el encuadre en reposo igual que estaba (solo cambia la fuerza de
+       la perspectiva y cuánto pesa el retroceso de cámara al girar). Cuanto
+       MENOR el encuadre, más cerrado el plano y más grande el disco. */
+    this.encuadre = opciones.encuadre || 0.35;
 
     this.gl = lienzo.getContext('webgl2', { antialias: true, alpha: true });
     if (!this.gl) throw new Error('Sin WebGL 2');
@@ -716,7 +724,7 @@ void main() {
        la cámara se aleja mientras la esfera rueda, usar la distancia viva
        cambiaría el encuadre en cada resize según el momento del giro. */
     var aspecto = this.lienzo.clientWidth / Math.max(1, this.lienzo.clientHeight);
-    var altura = RADIO_ESFERA * 0.35;
+    var altura = RADIO_ESFERA * this.encuadre;
     var zReposo = 3 * this.escala;
     this.camara.fov = aspecto > 1
       ? 2 * Math.atan(altura / zReposo)
@@ -903,6 +911,7 @@ void main() {
     var salidaCita = seccion.querySelector('[data-cita]');
     var salidaNombre = seccion.querySelector('[data-nombre]');
     var salidaTratamiento = seccion.querySelector('[data-tratamiento]');
+    var velo = seccion.querySelector('[data-velo-testimonios]');
     var pasos = Array.prototype.slice.call(seccion.querySelectorAll('[data-paso]'));
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
 
@@ -928,18 +937,28 @@ void main() {
        vuelve a su lista de tarjetas como si nada. */
     seccion.classList.add('esfera-activa');
 
-    /* La escala es la distancia de cámara: cuanto MENOR, más grande sale el
-       disco del frente dentro del lienzo (3.2 deja el disco en ~42% del
-       lado, el encuadre del componente original). En móvil el lienzo es
-       chico, así que se acerca la cámara para que la foto no quede
-       diminuta. */
+    /* La escala es la distancia de cámara: se queda como estaba porque no
+       cambia el tamaño del disco en reposo (ver el comentario de
+       this.encuadre), solo la perspectiva y el retroceso al girar. */
     function escalaSegunPantalla() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
 
+    /* Lo que SÍ agranda el disco. Con el 0.35 original ocupaba ~43% del lado
+       del lienzo y la foto se veía chica, sobre todo en móvil; con estos
+       valores pasa a ~53% en escritorio y ~65% en móvil. Si se vuelven a
+       tocar, hay que mover con ellos el ancho de .testimonios-revelar en el
+       CSS, que es el botón calcado sobre ese disco. */
+    function encuadreSegunPantalla() {
+      return window.innerWidth < 992 ? 0.232 : 0.285;
+    }
+
     var esfera;
     try {
-      esfera = new EsferaTestimonios(lienzo, items, { escala: escalaSegunPantalla() });
+      esfera = new EsferaTestimonios(lienzo, items, {
+        escala: escalaSegunPantalla(),
+        encuadre: encuadreSegunPantalla()
+      });
     } catch (e) {
       /* Sin WebGL 2 se queda la lista de tarjetas del HTML, que ya funciona
          sola (antes/después por CSS). No hay que tocar nada más. */
@@ -966,13 +985,45 @@ void main() {
        aparecer justo en el borde del pin. */
     var REPOSO = 0.08;
 
+    /* ---- meseta por testimonio ------------------------------------------
+       Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
+       no paraba nunca del todo: el disco entraba y ya estaba saliendo, y no
+       daba tiempo de detenerse a comparar el antes/después. MESETA es la
+       fracción de cada tramo en la que la posición NO avanza (repartida
+       mitad al principio y mitad al final del tramo); el giro se hace en el
+       resto, con suavizado en las dos puntas para que no arranque de golpe.
+       Con 0.55, más de la mitad del scroll de cada testimonio es pausa. */
+    var MESETA = 0.55;
+
+    function conParadas(t) {
+      var ultimo = items.length - 1;
+      if (t >= ultimo) return ultimo;
+      var i = Math.floor(t);
+      var u = t - i;
+      var margen = MESETA / 2;
+      var v = acotar((u - margen) / (1 - MESETA));
+      return i + v * v * (3 - 2 * v);
+    }
+
     function actualizar() {
       var rect = seccion.getBoundingClientRect();
       var recorrido = seccion.offsetHeight - window.innerHeight;
       var progreso = recorrido > 0 ? acotar(-rect.top / recorrido) : 0;
 
-      var t = acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * (items.length - 1);
+      var t = conParadas(acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * (items.length - 1));
       esfera.irA(t);
+
+      /* Velo: se abre en el primer tramo y se vuelve a cerrar en el último,
+         de modo que la sección entrega la pantalla ya en negro al cierre de
+         cine que viene después (que también arranca negro) en vez de cortar
+         en seco. Como el velo es del mismo ónix que el fondo de la sección,
+         mientras esta entra o sale de pantalla no se ve como un bloque
+         negro de más: solo apaga la esfera y el texto. */
+      if (velo) {
+        var abriendo = acotar((0.06 - progreso) / 0.06);
+        var cerrando = acotar((progreso - 0.90) / 0.10);
+        velo.style.opacity = String(Math.max(abriendo, cerrando));
+      }
 
       /* Qué tan "asentado" está el testimonio del frente: 1 justo encima,
          0 en pleno viaje. Manda la opacidad del texto y apaga el botón. */
@@ -1029,6 +1080,7 @@ void main() {
     window.addEventListener('scroll', pedirActualizacion, { passive: true });
     window.addEventListener('resize', function () {
       esfera.escala = escalaSegunPantalla();
+      esfera.encuadre = encuadreSegunPantalla();
       esfera.redimensionar();
       pedirActualizacion();
     });

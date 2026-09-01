@@ -1326,6 +1326,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pilar h3 { font-size: 1.02rem; margin-bottom: .45rem; color: var(--texto); }
 .pilar p { font-size: .9rem; line-height: 1.62; color: var(--texto-suave); margin: 0; }
 
+/* ---- 7d. Salida ligada al scroll ---------------------------------------
+   La ENTRADA ya la hacen .revelar / .revelar--velo pieza por pieza. Lo que
+   faltaba era la salida: hasta ahora la sección simplemente se iba hacia
+   arriba con el scroll. Ahora se retira — se desvanece, se encoge un punto
+   y sube un poco — a medida que su borde inferior cruza la mitad baja de la
+   pantalla. Los valores los escribe el JS en --escena-op / --escena-y /
+   --escena-k (ver script.js, "5d. SALIDA DE ESCENA"), así que el efecto va
+   pegado al scroll en vez de dispararse de golpe con un umbral. */
+.escena-salida .nosotros-split,
+.escena-salida > .container {
+  opacity: var(--escena-op, 1);
+  transform: translate3d(0, var(--escena-y, 0px), 0) scale(var(--escena-k, 1));
+  transform-origin: center top;
+  will-change: opacity, transform;
+}
+
 /* Halos de fondo de la sección (plata y oro, muy diluidos). */
 .nosotros-halo {
   position: absolute;
@@ -2448,6 +2464,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .revelar--velo { clip-path: none; }
   .nm-figura img { transform: none; transition: none; }
   .cl-item { opacity: 1; transform: none; transition: none; }
+  .escena-salida .nosotros-split,
+  .escena-salida > .container { opacity: 1; transform: none; }
   .cl-linea { width: 68px; transition: none; }
   .row > .revelar, .lista-caracteristicas > li { transition-delay: 0s; }
   .titulo-seccion::after { transition: none; }
@@ -3335,6 +3353,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* La escena WebGL solo existe en la variante realzada */
 .testimonios-escena { display: none; }
 
+/* Velo de apertura y cierre del pin. Va por encima de la escena pero por
+   debajo de nada más: la opacidad la escribe el scroll (ver
+   testimonios-esfera.js). Es del mismo ónix que el fondo de la sección, así
+   que mientras la sección entra o sale de pantalla el velo no se nota como
+   un bloque negro extra — solo apaga la esfera y el texto. */
+.testimonios-velo {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--onix);
+  opacity: 0;
+  pointer-events: none;
+}
+.esfera-activa .testimonios-velo { display: block; }
+
 
 /* ===== a) VARIANTE BASE: rejilla de tarjetas antes/después ============== */
 
@@ -3421,11 +3455,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* ===== b) VARIANTE REALZADA: pin + esfera ============================== */
 
-/* 5 testimonios = 4 giros. Con ~105vh por giro el avance se siente
-   deliberado sin volverse eterno; el 8% de reposo en cada punta lo pone el
-   JS (constante REPOSO). */
+/* 5 testimonios = 4 giros. El reparto ya no es lineal: el JS le da a cada
+   testimonio una MESETA (más de la mitad de su tramo) en la que la esfera se
+   queda quieta, y hace el giro en el tramo del medio — antes el disco pasaba
+   de largo justo cuando uno quería detenerse a comparar el antes/después.
+   Esa meseta se come recorrido, así que la sección crece de 520vh a 640vh
+   para que el giro en sí no quede acelerado. El 8% de reposo en cada punta
+   lo sigue poniendo el JS (constante REPOSO). */
 .testimonios-cine.esfera-activa {
-  height: 520vh;
+  height: 640vh;
 }
 
 .esfera-activa .testimonios-pin {
@@ -3543,7 +3581,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .testimonios-esfera {
   position: relative;
   flex: 0 0 auto;
-  width: min(46vw, 74svh);
+  width: min(50vw, 78svh);
   aspect-ratio: 1;
 }
 .testimonios-lienzo {
@@ -3556,22 +3594,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      esta máscara la esfera se disuelve en el ónix: el disco del frente
      (radio ~21% del lado) queda intacto y el desvanecido empieza recién
      después. */
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 30%, rgba(0, 0, 0, .85) 46%, rgba(0, 0, 0, .35) 63%, transparent 78%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 0 30%, rgba(0, 0, 0, .85) 46%, rgba(0, 0, 0, .35) 63%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 38%, rgba(0, 0, 0, .85) 52%, rgba(0, 0, 0, .35) 68%, transparent 82%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 38%, rgba(0, 0, 0, .85) 52%, rgba(0, 0, 0, .35) 68%, transparent 82%);
 }
 
 /* Botón circular calcado sobre el disco del frente. Con el encuadre del
-   motor (escala 3.2) ese disco ocupa ~42% del lado del lienzo — medido
-   sobre el render, no a ojo: el borde del disco cae en x = ±0.416 de NDC.
-   El 44% lo cubre entero con un pelo de margen para que sea fácil de
-   apuntar, y como border-radius también recorta el área sensible, el
-   cursor solo reacciona sobre la foto y no sobre el cuadrado. */
+   motor ese disco ocupaba ~43% del lado del lienzo (medido sobre el render);
+   al cerrar el encuadre en el JS -this.encuadre, de 0.35 a 0.285- pasa a
+   ~53%. El 55% lo cubre entero con un pelo de margen para que sea fácil de
+   apuntar, y como border-radius también recorta el área sensible, el cursor
+   solo reacciona sobre la foto y no sobre el cuadrado. Si se vuelve a mover
+   el encuadre, hay que mover este ancho con él. */
 .testimonios-revelar {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 44%;
+  width: 55%;
   aspect-ratio: 1;
   padding: 0;
   border: 0;
@@ -3624,15 +3663,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ===== Pantallas medianas y móviles ==================================== */
 
 @media (max-width: 991.98px) {
-  .testimonios-cine.esfera-activa { height: 440vh; }
+  .testimonios-cine.esfera-activa { height: 560vh; }
+
+  /* La etiqueta caía a 34px del borde, o sea DEBAJO de la navbar fija: en el
+     móvil el logo se le montaba encima y la palabra quedaba pegada al techo.
+     Ahora arranca por debajo de la barra y se le da su propio aire; de paso
+     crece, que a 1.3rem se leía como un pie de foto y no como el título de
+     la sección. */
+  .esfera-activa .testimonios-etiqueta { padding: 84px 1.2rem 14px; }
+  .testimonios-etiqueta span { font-size: clamp(1.6rem, 7vw, 2.3rem); }
 
   /* En columna todo tiene que caber en una sola pantalla (el pin recorta lo
-     que sobre). Con la esfera en 46svh, el texto (~200px) y este relleno, el
-     conjunto entra hasta en pantallas de 640px de alto. */
+     que sobre): esfera + texto (~200px) + este relleno. */
   .esfera-activa .testimonios-escena {
     flex-direction: column;
     gap: clamp(.6rem, 2vh, 1.4rem);
-    padding: 64px clamp(1.2rem, 6vw, 2.5rem) 28px;
+    padding: 104px clamp(1.2rem, 6vw, 2.5rem) 26px;
   }
   /* En columna la esfera va arriba y el texto debajo: la foto es el gancho
      y el testimonio se lee después, no al revés. */
@@ -3643,7 +3689,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      -que es el que importa- se vea bastante más grande. */
   .testimonios-esfera {
     order: -1;
-    width: min(128vw, 46svh);
+    width: min(132vw, 48svh);
   }
   .testimonios-texto {
     flex: 0 0 auto;
@@ -3654,15 +3700,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
   .tst-firma { justify-content: center; }
   .tst-pasos { margin-top: 1.4rem; justify-content: center; }
-  .testimonios-revelar { width: 48%; }  /* la escala 2.2 de movil agranda el disco */
+  .testimonios-revelar { width: 66%; }  /* el encuadre 0.232 de movil agranda el disco */
   .testimonios-revelar__pista { display: none; }
 }
 
 /* Pantallas bajas (móvil apaisado, ventanas chicas): con 46svh el conjunto
    se pasaba unos pixeles del pin y el texto quedaba mordido abajo. */
-@media (max-width: 991.98px) and (max-height: 660px) {
-  .testimonios-esfera { width: min(128vw, 40svh); }
-  .esfera-activa .testimonios-escena { padding: 52px 1.2rem 20px; }
+@media (max-width: 991.98px) and (max-height: 700px) {
+  .testimonios-esfera { width: min(132vw, 42svh); }
+  .esfera-activa .testimonios-etiqueta { padding: 74px 1.2rem 10px; }
+  .esfera-activa .testimonios-escena { padding: 88px 1.2rem 18px; }
   .tst-cita { font-size: 1rem; }
   .tst-pasos { margin-top: .9rem; }
 }

@@ -309,6 +309,55 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
+  /* ===== 5d. SALIDA DE ESCENA (secciones con data-escena-salida) =======
+     La ENTRADA de una sección ya la resuelve .revelar, pieza por pieza. La
+     SALIDA, en cambio, no existía: la sección simplemente se iba hacia
+     arriba con el scroll. Aquí se calcula, a partir de dónde está su borde
+     inferior, cuánto le queda de pantalla, y se escriben tres variables CSS
+     (--escena-op / --escena-y / --escena-k) que el estilo usa para
+     desvanecerla, subirla y encogerla un punto mientras se retira.
+     Va ligado al scroll a propósito, no a un umbral: el efecto avanza al
+     ritmo del dedo en vez de dispararse de golpe. Comparte la misma
+     disciplina que el paralaje de arriba (rAF por frame, listener passive)
+     y se apaga con "menos movimiento". =============================== */
+  const escenasSalida = document.querySelectorAll('[data-escena-salida]');
+
+  if (escenasSalida.length && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let frameSalida = false;
+
+    function actualizarSalidaEscena() {
+      const alto = window.innerHeight || 1;
+      // El retiro ocupa la mitad baja de la pantalla: empieza cuando el pie
+      // de la sección cruza el 50% y termina cuando sale por arriba.
+      const tramo = alto * 0.5;
+
+      escenasSalida.forEach(function (escena) {
+        const caja = escena.getBoundingClientRect();
+        if (caja.top > alto || caja.bottom < -100) return;
+
+        let f = caja.bottom / tramo;
+        f = Math.min(1, Math.max(0, f));
+
+        escena.style.setProperty('--escena-op', f.toFixed(3));
+        escena.style.setProperty('--escena-y', (-(1 - f) * 60).toFixed(1) + 'px');
+        escena.style.setProperty('--escena-k', (0.94 + f * 0.06).toFixed(4));
+      });
+
+      frameSalida = false;
+    }
+
+    function pedirSalidaEscena() {
+      if (frameSalida) return;
+      frameSalida = true;
+      requestAnimationFrame(actualizarSalidaEscena);
+    }
+
+    window.addEventListener('scroll', pedirSalidaEscena, { passive: true });
+    window.addEventListener('resize', pedirSalidaEscena);
+    actualizarSalidaEscena();
+  }
+
+
   /* ===== 6. CONTADORES ANIMADOS DE ESTADÍSTICAS =======================
      Se reproduce cada vez que la franja entra en pantalla (no solo la
      primera): al salir, el número vuelve a 0 para que el próximo ingreso
