@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
      inmediato: espera 400ms, y si el elemento vuelve a cruzar el 15% en ese
      lapso (el rebote), el ocultamiento se cancela y el texto ni se entera. */
   const elementosRevelar = document.querySelectorAll('.revelar');
-  const temporizadoresRevelar = new WeakMap();      // "mostrar" pendiente (escalonado)
   const temporizadoresOcultarRevelar = new WeakMap(); // "ocultar" pendiente (debounce)
 
   /* will-change promueve el elemento a su propia capa de composición, y en
@@ -179,8 +178,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if ('IntersectionObserver' in window) {
     const observador = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (entrada, indice) {
-        if (entrada.intersectionRatio >= 0.15) {
+      entradas.forEach(function (entrada) {
+        /* AVISO para quien añada variantes de .revelar: no escondas el
+           elemento observado con clip-path. Un clip-path sobre el propio
+           elemento deja su intersectionRatio en 0 aunque esté a la vista, y
+           esta comparación deja de cumplirse para siempre. Le pasó a
+           .revelar--velo: las fotos del mosaico de Nosotros no aparecían
+           nunca. La solución está en el CSS — el recorte se aplica al hijo,
+           no al elemento observado. */
+        const razon = entrada.intersectionRatio;
+
+        if (razon >= 0.15) {
           const ocultarPendiente = temporizadoresOcultarRevelar.get(entrada.target);
           if (ocultarPendiente) {
             clearTimeout(ocultarPendiente);
@@ -188,21 +196,21 @@ document.addEventListener('DOMContentLoaded', function () {
           }
 
           if (!entrada.target.classList.contains('visible')) {
-            const pendiente = temporizadoresRevelar.get(entrada.target);
-            if (pendiente) clearTimeout(pendiente);
-            const id = setTimeout(function () {
-              entrada.target.style.willChange = '';   // vuelve al valor de la hoja
-              entrada.target.classList.add('visible');
-            }, indice * 100);
-            temporizadoresRevelar.set(entrada.target, id);
+            /* Sin escalonado propio. Antes esto esperaba "indice * 100 ms",
+               donde indice era la posición del elemento DENTRO DEL LOTE que
+               el observador entregara en ese momento: un número que cambia
+               según cuántos elementos crucen el umbral a la vez y en qué
+               orden los reporte el navegador. Con hasta 25 .revelar en la
+               portada eso son esperas de hasta 2.5s, distintas en cada
+               pasada, que se sumaban encima de los retrasos que el CSS ya
+               define — de ahí que la cascada se viera a destiempo. El
+               escalonado ahora es solo el del CSS (--retraso en línea y las
+               reglas .row > .revelar:nth-child), que es fijo y está escrito
+               a propósito. */
+            entrada.target.style.willChange = '';   // vuelve al valor de la hoja
+            entrada.target.classList.add('visible');
           }
-        } else if (entrada.intersectionRatio === 0) {
-          const pendiente = temporizadoresRevelar.get(entrada.target);
-          if (pendiente) {
-            clearTimeout(pendiente);
-            temporizadoresRevelar.delete(entrada.target);
-          }
-
+        } else if (razon === 0) {
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
               entrada.target.style.willChange = '';   // la salida también la necesita
@@ -1364,6 +1372,16 @@ document.addEventListener('DOMContentLoaded', function () {
        en ~4.3s, sin pasar de los 4.5s. */
     video.playbackRate = 1.3;
 
+    /* Dos seguros, no uno:
+       - Si a los 1200ms el vídeo todavía no puede reproducirse (conexión
+         lenta), el splash se aparta y se deja ver el sitio. Antes solo
+         estaba el tope de 3.8s, así que en un móvil con datos el visitante
+         se quedaba mirando una pantalla en blanco casi cuatro segundos y
+         encima acababa sin ver la intro. Mejor entrar sin intro que esperar.
+       - El tope de 3.8s sigue, por si "ended" no llega nunca. */
+    var puedeReproducir = false;
+    video.addEventListener('canplay', function () { puedeReproducir = true; });
+    setTimeout(function () { if (!puedeReproducir) retirarSplash(); }, 1200);
     setTimeout(retirarSplash, 3800); // seguro si "ended" no llega
 
     video.addEventListener('ended', retirarSplash);

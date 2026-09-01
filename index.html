@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=149283aeba">
+  <link rel="stylesheet" href="estilos/estilos.css?v=7d81468c8c">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -88,9 +88,15 @@
        el video (o si el navegador bloquea el autoplay / falla al cargar).
        ============================================================ -->
   <div class="splash-inicio" id="splashInicio" aria-hidden="true">
+    <!-- Los -720 son los mismos clips re-comprimidos: 26 y 36 KB frente a los
+         450 KB de los originales (que siguen en el repo por si alguna vez
+         hace falta volver a partir de ellos). Con el archivo pesado, en un
+         móvil con datos el vídeo no llegaba a estar listo antes del seguro de
+         3.8s: se veía una pantalla en blanco larga y luego el sitio, SIN la
+         intro. Ahora carga de inmediato. -->
     <video muted playsinline preload="auto"
-           data-src-escritorio="video-hero/SmilersCompu.mp4"
-           data-src-movil="video-hero/SmilersCelular.mp4"></video>
+           data-src-escritorio="video-hero/SmilersCompu-720.mp4"
+           data-src-movil="video-hero/SmilersCelular-720.mp4"></video>
   </div>
 
   <!-- ============================================================
@@ -291,13 +297,13 @@
                alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="18">
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="18">
           <img src="imagenes/tecnologia.webp"
                srcset="imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="34">
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="34">
           <img src="imagenes/equipo-2.webp"
                srcset="imagenes/equipo-2-720.webp 720w, imagenes/equipo-2.webp 900w"
                sizes="(min-width: 992px) 20vw, 34vw" width="900" height="1350"
@@ -306,7 +312,7 @@
 
         <!-- Sello de trayectoria: mismo dato que la tarjeta flotante anterior,
              ahora como pieza de vidrio ónix apoyada sobre el mosaico. -->
-        <div class="nm-sello revelar" style="--retraso:.38s">
+        <div class="nm-sello revelar" style="--retraso:.24s">
           <span class="nm-sello__num">15</span>
           <span class="nm-sello__txt">años de<br>práctica clínica</span>
         </div>
@@ -315,26 +321,26 @@
       <div class="nosotros-cuerpo">
         <span class="etiqueta-editorial revelar">Smilers Dental Clinique</span>
 
-        <h2 class="titulo-seccion text-start revelar" style="--retraso:.06s">
+        <h2 class="titulo-seccion text-start revelar" style="--retraso:.04s">
           Sonrisas que se planean
           <span class="texto-turquesa">contigo</span>
         </h2>
 
-        <p class="parrafo parrafo-lead revelar" style="--retraso:.12s">
+        <p class="parrafo parrafo-lead revelar" style="--retraso:.08s">
           En Smilers Dental Clinique cuidamos tu sonrisa como cuidaríamos la nuestra.
           Somos una clínica dental integral en Quito —diagnóstico digital, estética,
           rehabilitación y todas las especialidades bajo un mismo techo— y antes de
           empezar te mostramos en pantalla qué vamos a hacer, por qué y cuánto cuesta.
         </p>
 
-        <p class="parrafo revelar" style="--retraso:.18s">
+        <p class="parrafo revelar" style="--retraso:.12s">
           Trabajamos en dos sedes con escáner intraoral 3D y diseño digital de sonrisa,
           en consultorios pensados para que estés cómodo. Y si te dan nervios las
           visitas al dentista, dilo con confianza: buena parte de nuestro trabajo es
           que salgas de aquí más tranquilo de lo que entraste.
         </p>
 
-        <ul class="nosotros-checks revelar" style="--retraso:.24s">
+        <ul class="nosotros-checks revelar" style="--retraso:.16s">
           <li>
             <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
             <span><strong>Plan y presupuesto claros</strong>, por escrito y antes de empezar.</span>
@@ -349,7 +355,7 @@
           </li>
         </ul>
 
-        <div class="nosotros-acciones revelar" style="--retraso:.3s">
+        <div class="nosotros-acciones revelar" style="--retraso:.2s">
           <a href="subpaginas/nosotros.html" class="btn btn-turquesa">
             Conoce la clínica <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
           </a>
@@ -370,7 +376,7 @@
           <h3>Diagnóstico digital</h3>
           <p>Escáner intraoral 3D y radiología digital: vemos tu boca en pantalla, sin pastas ni suposiciones.</p>
         </article>
-        <article class="pilar revelar" style="--retraso:.1s">
+        <article class="pilar revelar" style="--retraso:.07s">
           <span class="pilar__num">02</span>
           <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-wand-magic-sparkles"></use></svg></span>
           <h3>Diseño de sonrisa</h3>
@@ -382,7 +388,7 @@
           <h3>Equipo con posgrado</h3>
           <p>Ortodoncia, implantología, endodoncia, periodoncia y odontopediatría, en trabajo interdisciplinario.</p>
         </article>
-        <article class="pilar revelar" style="--retraso:.3s">
+        <article class="pilar revelar" style="--retraso:.2s">
           <span class="pilar__num">04</span>
           <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
           <h3>Confort y bioseguridad</h3>
@@ -407,20 +413,20 @@
                alt="Consultorio de Smilers Dental Clinique con sillón odontológico y equipo digital"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="16">
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="16">
           <img src="imagenes/cirugia.webp"
                srcset="imagenes/cirugia-720.webp 720w, imagenes/cirugia.webp 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="1800"
                alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="30">
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="30">
           <img src="imagenes/implantologia.webp"
                srcset="imagenes/implantologia-720.webp 720w, imagenes/implantologia.webp 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy" decoding="async">
         </figure>
 
-        <div class="nm-sello nm-sello--der revelar" style="--retraso:.38s">
+        <div class="nm-sello nm-sello--der revelar" style="--retraso:.24s">
           <span class="nm-sello__num nm-sello__num--liso">2</span>
           <span class="nm-sello__txt">sedes<br>en Quito</span>
         </div>
@@ -429,19 +435,19 @@
       <div class="nosotros-cuerpo">
         <span class="etiqueta-editorial revelar">Instalaciones</span>
 
-        <h2 class="titulo-seccion text-start revelar" style="--retraso:.06s">
+        <h2 class="titulo-seccion text-start revelar" style="--retraso:.04s">
           Un consultorio donde
           <span class="texto-turquesa">se respira calma</span>
         </h2>
 
-        <p class="parrafo parrafo-lead revelar" style="--retraso:.12s">
+        <p class="parrafo parrafo-lead revelar" style="--retraso:.08s">
           Nuestras dos sedes están equipadas igual, así que puedes ir a la que
           te quede mejor sin cambiar de experiencia: consultorios amplios con
           luz natural, sillón ergonómico y una pantalla al frente para que veas
           tus radiografías mientras te las explicamos.
         </p>
 
-        <p class="parrafo revelar" style="--retraso:.18s">
+        <p class="parrafo revelar" style="--retraso:.12s">
           La esterilización se hace en un área independiente, con autoclave y
           control de ciclo por cada instrumental. Y después están los detalles
           que no salen en ningún folleto: música si te ayuda a relajarte, una
@@ -449,7 +455,7 @@
           Aquí nadie te apura.
         </p>
 
-        <ul class="nosotros-sedes revelar" style="--retraso:.24s">
+        <ul class="nosotros-sedes revelar" style="--retraso:.16s">
           <li>
             <span class="ns-clave">Matriz</span>
             <span class="ns-valor">General Camilo Destruge y Francisco Salazar</span>
@@ -464,7 +470,7 @@
           </li>
         </ul>
 
-        <div class="nosotros-acciones revelar" style="--retraso:.3s">
+        <div class="nosotros-acciones revelar" style="--retraso:.2s">
           <a href="subpaginas/galeria.html" class="btn btn-contorno">
             Ver la galería <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
           </a>
@@ -1013,7 +1019,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=a4f1041933"></script>
+  <script src="scripts/script.js?v=5c7f10fc73"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
   <script src="scripts/testimonios-esfera.js?v=05baef407e"></script>
