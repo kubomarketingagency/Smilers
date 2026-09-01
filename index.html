@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=35">
+  <link rel="stylesheet" href="estilos/estilos.css?v=36">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -264,87 +264,152 @@
   <!-- ============================================================
        3. SECCIÓN RESUMEN — NOSOTROS
        ============================================================ -->
-  <section class="seccion seccion-decorada seccion-clara fondo-lino seccion-intima" id="nosotros">
+  <section class="seccion seccion-decorada seccion-clara fondo-perla seccion-nosotros" id="nosotros">
     <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
-    <div class="forma forma-turquesa forma-parallax" data-intensidad="12" style="width:260px;height:260px;top:8%;left:-110px;opacity:.5;"></div>
-    <div class="container">
-      <div class="row align-items-center g-5">
 
-        <!-- Imagen (más grande y asimétrica: 7/5 en vez de 6/6) -->
-        <div class="col-lg-7 revelar">
-          <div class="marco-imagen">
-            <img src="imagenes/nosotros.webp" width="1000" height="750"
-                 alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
-                 class="img-fluid" loading="lazy">
-            <!-- Tarjeta flotante de experiencia -->
-            <div class="tarjeta-flotante">
-              <span class="numero">+15</span>
-              <span class="texto">Años transformando<br>sonrisas</span>
-            </div>
-          </div>
+    <!-- Halos metálicos (plata + un hilo de oro) muy diluidos: dan profundidad
+         al lienzo blanco sin ensuciarlo, en lugar de las "formas" de color
+         saturado que usaba la versión anterior sobre el fondo crema. -->
+    <div class="nosotros-halo nosotros-halo--plata forma-parallax" data-intensidad="14" aria-hidden="true"></div>
+    <div class="nosotros-halo nosotros-halo--oro forma-parallax" data-intensidad="22" aria-hidden="true"></div>
+
+    <!-- ===== 3a. SPLIT EDITORIAL: mosaico a media pantalla | texto =====
+         En escritorio el mosaico ocupa literalmente la mitad del viewport
+         (grid 1fr/1fr rompiendo el .container), tal como se pidió. Cada
+         pieza lleva data-parallax con velocidad propia: al hacer scroll el
+         mosaico se "desarma" unos píxeles y vuelve a alinearse, que es lo
+         que da la sensación de profundidad sin animar nada costoso
+         (solo translate3d — ver script.js, "5c. PARALAJE DE SCROLL"). -->
+    <div class="nosotros-split">
+
+      <div class="nosotros-media">
+        <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-26">
+          <img src="imagenes/nosotros.webp" width="1000" height="750"
+               alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
+               loading="lazy">
+        </figure>
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="18">
+          <img src="imagenes/tecnologia.webp" width="800" height="600"
+               alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy">
+        </figure>
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="34">
+          <img src="imagenes/equipo-2.webp" width="800" height="600"
+               alt="Especialista del equipo de Smilers Dental Clinique en consulta" loading="lazy">
+        </figure>
+
+        <!-- Sello de trayectoria: mismo dato que la tarjeta flotante anterior,
+             ahora como pieza de vidrio ónix apoyada sobre el mosaico. -->
+        <div class="nm-sello revelar" style="--retraso:.38s">
+          <span class="nm-sello__num">15</span>
+          <span class="nm-sello__txt">años de<br>práctica clínica</span>
         </div>
+      </div>
 
-        <!-- Texto -->
-        <div class="col-lg-5 revelar">
-          <span class="etiqueta-editorial">Nuestra clínica</span>
-          <h2 class="titulo-seccion text-start">
-            Pensada para tu <span class="texto-turquesa">comodidad</span>
-          </h2>
-          <p class="parrafo">
-            Odontología de precisión en un ambiente cálido: diagnósticos digitales exactos
-            y tratamientos personalizados, planificados a tu ritmo.
-          </p>
+      <div class="nosotros-cuerpo">
+        <span class="etiqueta-editorial revelar">Smilers Dental Clinique</span>
 
-          <a href="subpaginas/nosotros.html" class="btn btn-turquesa mt-3">
-            Conoce más sobre nosotros <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+        <h2 class="titulo-seccion text-start revelar" style="--retraso:.06s">
+          Odontología de precisión con el trato
+          de una <span class="texto-turquesa">casa privada</span>
+        </h2>
+
+        <p class="parrafo parrafo-lead revelar" style="--retraso:.12s">
+          Somos una clínica dental integral en Quito: diagnóstico digital, estética,
+          rehabilitación y especialidades bajo un mismo techo y un mismo criterio
+          clínico. Nada de plantillas — cada plan se diseña sobre tu anatomía real,
+          se te explica en pantalla y se aprueba contigo antes de empezar.
+        </p>
+
+        <p class="parrafo revelar" style="--retraso:.18s">
+          En nuestras dos sedes trabajamos con escáner intraoral 3D, diseño digital de
+          sonrisa y protocolos de bioseguridad certificados, en consultorios pensados
+          para que la visita al dentista se sienta como lo que debería ser: tranquila,
+          puntual y sin sorpresas en el presupuesto.
+        </p>
+
+        <ul class="nosotros-checks revelar" style="--retraso:.24s">
+          <li>
+            <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
+            <span><strong>Plan y presupuesto por escrito</strong> antes de iniciar cualquier tratamiento.</span>
+          </li>
+          <li>
+            <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
+            <span><strong>Un especialista por área</strong>, trabajando sobre el mismo caso.</span>
+          </li>
+          <li>
+            <span class="nc-icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></span>
+            <span><strong>Citas puntuales</strong> y seguimiento personal después de cada sesión.</span>
+          </li>
+        </ul>
+
+        <div class="nosotros-acciones revelar" style="--retraso:.3s">
+          <a href="subpaginas/nosotros.html" class="btn btn-turquesa">
+            Conoce la clínica <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+          </a>
+          <a href="subpaginas/tratamientos.html" class="btn btn-contorno">
+            Ver tratamientos
           </a>
         </div>
-
       </div>
 
-      <!-- Características, a modo de ficha técnica editorial (número dorado
-           + divisores finos) en vez de lista vertical dentro de la columna
-           de texto — se lee como una sección propia, no como relleno. -->
-      <div class="row caracteristicas-editorial g-4">
-        <div class="col-md-4 revelar">
-          <span class="caracteristicas-editorial__numero">01</span>
-          <h3>Alta tecnología</h3>
-          <p>Escáner intraoral 3D y diseño de sonrisa digital.</p>
-        </div>
-        <div class="col-md-4 revelar">
-          <span class="caracteristicas-editorial__numero">02</span>
-          <h3>Instalaciones de lujo</h3>
-          <p>Consultorios amplios y bioseguridad certificada.</p>
-        </div>
-        <div class="col-md-4 revelar">
-          <span class="caracteristicas-editorial__numero">03</span>
-          <h3>Equipo especializado</h3>
-          <p>Posgrado en cada área, trabajo interdisciplinario.</p>
-        </div>
+    </div>
+
+    <!-- ===== 3b. PILARES: los cuatro argumentos de la clínica ===== -->
+    <div class="container">
+      <div class="pilares-editorial">
+        <article class="pilar revelar">
+          <span class="pilar__num">01</span>
+          <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-microchip"></use></svg></span>
+          <h3>Diagnóstico digital</h3>
+          <p>Escáner intraoral 3D y radiología digital: vemos tu boca en pantalla, sin pastas ni suposiciones.</p>
+        </article>
+        <article class="pilar revelar" style="--retraso:.1s">
+          <span class="pilar__num">02</span>
+          <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-wand-magic-sparkles"></use></svg></span>
+          <h3>Diseño de sonrisa</h3>
+          <p>Simulamos el resultado antes de tocar un diente, para que decidas viendo, no imaginando.</p>
+        </article>
+        <article class="pilar revelar" style="--retraso:.2s">
+          <span class="pilar__num">03</span>
+          <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
+          <h3>Equipo con posgrado</h3>
+          <p>Ortodoncia, implantología, endodoncia, periodoncia y odontopediatría, en trabajo interdisciplinario.</p>
+        </article>
+        <article class="pilar revelar" style="--retraso:.3s">
+          <span class="pilar__num">04</span>
+          <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
+          <h3>Confort y bioseguridad</h3>
+          <p>Consultorios amplios, esterilización certificada y acompañamiento en cada etapa del tratamiento.</p>
+        </article>
       </div>
 
-      <!-- Estadísticas: antes vivían en su propia franja (.franja-stats,
-           angosta y suelta entre dos secciones grandes) — al pasar por
-           scroll-snap se sentía frágil, medio cortada. Fusionada aquí, el
-           contador queda dentro de una sección estable de sobra alta y
-           la prueba social refuerza el mensaje de "Nosotros" en el mismo
-           golpe de vista, en vez de sentirse un bloque aparte. -->
-      <div class="row nosotros-stats text-center g-4">
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="8500">0</span><span class="stat-numero">+</span>
-          <p class="stat-texto">Pacientes felices</p>
+      <!-- ===== 3c. CONTADOR =====
+           Losa de obsidiana sobre el lienzo blanco: el contraste hace que el
+           oro del número se lea de verdad (sobre blanco un degradado dorado
+           claro se apaga). Los números usan tabular-nums para que no
+           "salten" de ancho mientras el contador sube, y cada columna lleva
+           una regla dorada que se dibuja de 0 a 100% al entrar en pantalla
+           — ver .contador-lujo en estilos.css. -->
+      <div class="contador-lujo revelar" aria-label="Cifras de la clínica">
+        <div class="cl-item">
+          <span class="cl-num"><span data-contador="8500">0</span><i class="cl-sufijo">+</i></span>
+          <span class="cl-etiqueta">Pacientes atendidos</span>
+          <span class="cl-linea" aria-hidden="true"></span>
         </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="12">0</span>
-          <p class="stat-texto">Especialistas</p>
+        <div class="cl-item">
+          <span class="cl-num"><span data-contador="12">0</span></span>
+          <span class="cl-etiqueta">Especialistas</span>
+          <span class="cl-linea" aria-hidden="true"></span>
         </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="20">0</span><span class="stat-numero">+</span>
-          <p class="stat-texto">Tratamientos</p>
+        <div class="cl-item">
+          <span class="cl-num"><span data-contador="20">0</span><i class="cl-sufijo">+</i></span>
+          <span class="cl-etiqueta">Tratamientos</span>
+          <span class="cl-linea" aria-hidden="true"></span>
         </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="98">0</span><span class="stat-numero">%</span>
-          <p class="stat-texto">Satisfacción</p>
+        <div class="cl-item">
+          <span class="cl-num"><span data-contador="98">0</span><i class="cl-sufijo">%</i></span>
+          <span class="cl-etiqueta">Satisfacción</span>
+          <span class="cl-linea" aria-hidden="true"></span>
         </div>
       </div>
     </div>
@@ -849,7 +914,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=34"></script>
+  <script src="scripts/script.js?v=35"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
   <script src="scripts/testimonios-esfera.js?v=1"></script>

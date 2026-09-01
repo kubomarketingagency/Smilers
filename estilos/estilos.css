@@ -29,6 +29,17 @@
   /* Gradiente oro de 4 paradas del swatch de marca, para wordmarks y títulos */
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
 
+  /* Variante "oro profundo" para fondos BLANCOS/PLATEADOS: el degradado de
+     arriba está calibrado contra el ónix, y sobre blanco su parada clara
+     (#F7EF8A) prácticamente desaparece. Este usa las mismas cuatro paradas
+     desplazadas hacia el ámbar oscuro, de modo que hasta la parada MÁS
+     clara (#9C7622) pase 4.5:1 sobre blanco — el umbral AA de texto normal,
+     no solo el de texto grande — y la más oscura llegue a 8:1. Las secciones claras que lo necesiten
+     redefinen --gradiente-oro con esta variante (ver .fondo-perla) y así
+     todos los titulares/números ya escritos con var(--gradiente-oro) se
+     oscurecen solos, sin duplicar selectores. */
+  --gradiente-oro-profundo: linear-gradient(100deg, #6E5216 0%, #9C7622 32%, #74571A 64%, #8B6A20 100%);
+
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
@@ -370,6 +381,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .btn-blanco:hover {
   background: var(--turquesa-claro);
   color: var(--turquesa-profundo);
+  transform: translateY(-4px) scale(1.04);
+}
+
+/* Botón de contorno para FONDOS CLAROS: el .btn-fantasma de abajo está
+   pensado para el hero (borde plata sobre negro) y sobre blanco casi no se
+   ve. Este usa el ónix como trazo y se rellena al pasar el cursor — el
+   secundario natural junto a .btn-turquesa en secciones claras. */
+.btn-contorno {
+  background: transparent;
+  color: var(--turquesa-accion);
+  border-color: rgba(28, 28, 28, .35);
+}
+.btn-contorno:hover,
+.btn-contorno:focus {
+  background: var(--turquesa-accion);
+  color: var(--marmol);
+  border-color: var(--turquesa-accion);
   transform: translateY(-4px) scale(1.04);
 }
 
@@ -975,6 +1003,27 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(210, 172, 71, .07) 0%, transparent 65%);
 }
 
+/* Perla: blanco puro que se funde hacia un plateado muy claro, con dos
+   halos diluidos (uno dorado arriba a la derecha, uno plata abajo a la
+   izquierda) para que el lienzo no se vea plano. Es el fondo "moderno" de
+   Nosotros: al ser casi blanco obliga a oscurecer el oro, así que la clase
+   redefine de una vez toda la familia dorada para esta sección — el
+   degradado con la variante profunda y los tonos planos (--gold-500/700)
+   con sus equivalentes legibles sobre blanco. Cualquier bloque interno que
+   vuelva a fondo oscuro (la losa del contador, el sello del mosaico)
+   restaura los valores brillantes en su propio selector. */
+.seccion-clara.fondo-perla {
+  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gold-500: #9A7524;   /* 4.8:1 sobre blanco */
+  --gold-700: #7A5C19;   /* 6.6:1 sobre blanco — texto pequeño */
+  --hairline-oro: rgba(122, 92, 25, .26);
+  background-color: #FFFFFF;
+  background-image:
+    radial-gradient(ellipse 55% 40% at 84% 4%, rgba(210, 172, 71, .12) 0%, transparent 62%),
+    radial-gradient(ellipse 70% 55% at 6% 96%, rgba(192, 192, 192, .28) 0%, transparent 66%),
+    linear-gradient(180deg, #FFFFFF 0%, #F7F7F8 52%, #ECEDEE 100%);
+}
+
 .titulo-seccion {
   font-family: var(--fuente-elegante);
   font-weight: 400;
@@ -1014,12 +1063,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 7. NOSOTROS ======================================================
-   Rediseño editorial: etiqueta pequeña + regla dorada sobre el titular
-   (como un "kicker" de revista), imagen más grande y asimétrica (7/5 en
-   vez de 6/6), y las características antes en lista vertical ahora en una
-   fila propia a modo de ficha técnica (número dorado + divisores finos,
-   mismo lenguaje que .nosotros-stats) — este layout es la base que se
-   reutilizará para más contenido tipo blog más adelante. */
+   Split editorial a media pantalla: mosaico de tres fotos ocupando la mitad
+   izquierda del viewport en escritorio (con la principal sangrando hasta el
+   borde) y la columna de texto en la otra mitad; debajo, la rejilla de
+   cuatro pilares y la losa del contador (sección 8b). Sobre el lienzo
+   .fondo-perla — blanco a plateado — con toda la familia dorada oscurecida
+   ahí mismo para que ni los titulares ni los números se apaguen contra el
+   blanco. Las clases .marco-imagen / .tarjeta-flotante / .lista-caracteristicas
+   de más abajo ya no las usa index.html, pero siguen vivas porque
+   subpaginas/nosotros.html las mantiene. */
 .etiqueta-editorial {
   display: inline-flex;
   align-items: center;
@@ -1039,36 +1091,258 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background: var(--gold-500);
 }
 
-.caracteristicas-editorial {
-  margin: 4rem 0 0;
-  padding-top: 3rem;
-  border-top: 1px solid rgba(210, 172, 71, .28);
+/* ---- 7a. Split editorial a media pantalla ------------------------------
+   En escritorio la sección deja de vivir dentro del .container: .nosotros-split
+   es una rejilla 1fr/1fr de ancho completo, así que el mosaico de imágenes
+   ocupa exactamente la mitad del viewport y la foto principal sangra hasta el
+   borde izquierdo de la pantalla (radio solo en las esquinas interiores). El
+   texto vive en la otra mitad, con su propio padding en lugar del contenedor
+   de Bootstrap. Por debajo de 992px la rejilla se apila y recupera un padding
+   lateral propio, porque ya no hay .container que se lo dé. */
+.seccion-nosotros { padding: clamp(72px, 9vw, 116px) 0 clamp(64px, 8vw, 104px); }
+
+.nosotros-split {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-items: center;
+  gap: clamp(2.2rem, 5vw, 3.5rem);
+  padding-inline: clamp(1.1rem, 5vw, 2rem);
+  perspective: 1200px;
 }
-.caracteristicas-editorial__numero {
+@media (min-width: 992px) {
+  .nosotros-split {
+    grid-template-columns: 1fr 1fr;   /* la imagen = media pantalla exacta */
+    gap: 0;
+    padding-inline: 0;
+  }
+}
+
+/* Mosaico: una pieza vertical grande + dos apiladas. Se prefirió el mosaico
+   a una sola foto porque llena la media pantalla sin tener que estirar una
+   imagen de 4:3 hasta deformarla, y porque deja contar tres cosas a la vez
+   (consulta, tecnología, equipo) en el mismo golpe de vista. */
+.nosotros-media {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(10px, 1.1vw, 16px);
+  min-height: clamp(400px, 58vh, 560px);
+  perspective: 1200px;
+}
+@media (min-width: 992px) {
+  .nosotros-media { min-height: clamp(520px, 76vh, 800px); }
+}
+
+.nm-figura {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--neutral-100);
+  box-shadow: 0 18px 44px rgba(28, 28, 28, .16);
+}
+/* Hilo blanco interior: separa la foto del lienzo casi blanco sin dibujar un
+   borde duro alrededor. */
+.nm-figura::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, .28);
+  pointer-events: none;
+}
+.nm-figura img {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Arranca ampliada y vuelve a 1 al revelarse: el "acercamiento de cine"
+     que acompaña al velo (clip-path) de .revelar--velo. */
+  transform: scale(1.12);
+  transition: transform 1.3s cubic-bezier(.16, 1, .3, 1);
+}
+.nm-figura.visible img { transform: scale(1); }
+.nm-figura.visible:hover img { transform: scale(1.06); }
+
+.nm-figura--principal { grid-row: 1 / 3; }
+@media (min-width: 992px) {
+  /* Sangra al borde izquierdo de la pantalla: solo esquinas interiores. */
+  .nm-figura--principal { border-radius: 0 32px 32px 0; }
+}
+
+/* Sello de trayectoria: vidrio ónix apoyado en la esquina del mosaico. Al
+   estar sobre fondo oscuro recupera el oro brillante (la sección lo había
+   oscurecido para el blanco). */
+.nm-sello {
+  --gold-500: #D2AC47;
+  --gold-700: #AE8625;
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  position: absolute;
+  z-index: 3;
+  left: clamp(1rem, 2.4vw, 2.2rem);
+  bottom: clamp(1rem, 2.4vw, 2.2rem);
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  padding: .95rem 1.35rem;
+  border-radius: 16px;
+  background: rgba(20, 20, 20, .82);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(210, 172, 71, .5);
+  box-shadow: 0 20px 44px rgba(28, 28, 28, .38);
+}
+.nm-sello__num {
   font-family: var(--fuente-elegante);
-  font-size: 1.7rem;
+  font-size: clamp(2rem, 3.2vw, 2.6rem);
   line-height: 1;
   background: var(--gradiente-oro);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--gold-500);
-  margin-bottom: .7rem;
 }
-.caracteristicas-editorial h3 { font-size: 1.05rem; margin-bottom: .4rem; color: var(--texto); }
-.caracteristicas-editorial p { font-size: .92rem; color: var(--texto-suave); margin: 0; }
-@media (min-width: 768px) {
-  .caracteristicas-editorial .col-md-4 { position: relative; }
-  .caracteristicas-editorial .col-md-4::after {
-    content: '';
-    position: absolute;
-    right: -2px; top: 6px;
-    height: calc(100% - 12px);
-    width: 1px;
-    background: rgba(210, 172, 71, .28);
+/* "+" como superíndice de verdad: con vertical-align alto y cuerpo muy
+   pequeño se leía como un apóstrofo delante del número. */
+.nm-sello__num::before {
+  content: '+';
+  /* En Italiana el signo "+" es un trazo finísimo que a cuerpo pequeño se
+     confunde con un apóstrofo; la sans del sistema de menús sí lo dibuja
+     como una cruz reconocible. */
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .34em;
+  vertical-align: 1.15em;
+  margin-right: .08em;
+}
+.nm-sello__txt {
+  font-family: var(--fuente-menu);
+  font-size: .68rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--silver-300);
+}
+
+/* ---- 7b. Columna de texto --------------------------------------------- */
+.nosotros-cuerpo {
+  perspective: 1200px;
+  max-width: 640px;
+}
+@media (min-width: 992px) {
+  .nosotros-cuerpo {
+    padding-left: clamp(2.5rem, 4.5vw, 5rem);
+    padding-right: clamp(1.5rem, 4vw, 4rem);
   }
-  .caracteristicas-editorial .col-md-4:last-child::after { display: none; }
+}
+.nosotros-cuerpo .parrafo { max-width: 58ch; }
+/* Primer párrafo: un punto más grande y con más aire, hace de entradilla. */
+.parrafo-lead {
+  font-size: clamp(1.02rem, .55vw + .9rem, 1.15rem);
+  line-height: 1.78;
+  color: var(--texto);
+}
+
+.nosotros-checks {
+  list-style: none;
+  padding: 0;
+  margin: 1.9rem 0 2.1rem;
+  display: grid;
+  gap: .85rem;
+}
+.nosotros-checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: .8rem;
+  font-size: .95rem;
+  line-height: 1.6;
+  color: var(--texto-suave);
+}
+.nosotros-checks strong { color: var(--texto); font-weight: 700; }
+.nc-icono {
+  flex: 0 0 20px;
+  display: grid;
+  place-items: center;
+  margin-top: .18rem;
+  font-size: 1.05rem;
+  color: var(--gold-700);
+}
+
+.nosotros-acciones { display: flex; flex-wrap: wrap; gap: .9rem; }
+
+/* ---- 7c. Pilares: rejilla sin huecos, separada solo por hilo dorado -----
+   El truco de "gap: 1px + fondo del contenedor" da los divisores en todos
+   los breakpoints sin tener que apagar bordes por posición en la fila. */
+.pilares-editorial {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--hairline-oro, rgba(122, 92, 25, .2));
+  border: 1px solid var(--hairline-oro, rgba(122, 92, 25, .2));
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(28, 28, 28, .07);
+  perspective: 1200px;
+}
+@media (min-width: 576px) { .pilares-editorial { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 992px) { .pilares-editorial { grid-template-columns: repeat(4, 1fr); } }
+
+.pilar {
+  position: relative;
+  padding: clamp(1.6rem, 2.4vw, 2.2rem) clamp(1.3rem, 2vw, 1.8rem);
+  background: rgba(255, 255, 255, .92);
+  transition: background .5s ease;
+}
+.pilar:hover { background: #FFFFFF; }
+/* Regla dorada que baja por el borde izquierdo al pasar el cursor. */
+.pilar::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 2px;
+  height: 0;
+  background: linear-gradient(180deg, var(--gold-500), transparent);
+  transition: height .55s cubic-bezier(.16, 1, .3, 1);
+}
+.pilar:hover::before { height: 100%; }
+.pilar__num {
+  font-family: var(--fuente-menu);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  color: var(--gold-700);
+}
+.pilar__icono {
+  display: block;
+  margin: 1rem 0 .9rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--gold-700);
+}
+.pilar h3 { font-size: 1.02rem; margin-bottom: .45rem; color: var(--texto); }
+.pilar p { font-size: .9rem; line-height: 1.62; color: var(--texto-suave); margin: 0; }
+
+/* Halos de fondo de la sección (plata y oro, muy diluidos). */
+.nosotros-halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+.nosotros-halo--plata {
+  width: 420px; height: 420px;
+  top: 6%; left: -160px;
+  background: radial-gradient(circle, rgba(192, 192, 192, .5) 0%, transparent 70%);
+}
+.nosotros-halo--oro {
+  width: 340px; height: 340px;
+  bottom: 12%; right: -120px;
+  background: radial-gradient(circle, rgba(210, 172, 71, .3) 0%, transparent 70%);
 }
 
 .marco-imagen {
@@ -1155,17 +1429,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 8. FRANJA DE ESTADÍSTICAS =========================================
-   .stat-numero/.stat-texto son compartidos por dos contextos distintos:
-   1) .franja-stats — sección propia, oscura, de ancho completo (la sigue
-      usando subpaginas/nosotros.html tal cual).
-   2) .nosotros-stats — fusionada como fila de cierre dentro de #nosotros en
-      index.html (ver comentario ahí): antes vivían en su propia franja
-      suelta entre dos secciones grandes, y bajo scroll-snap esa franja tan
-      angosta se sentía frágil / a medio cortar. Solo cambia el contenedor;
-      los números en sí usan el mismo tratamiento tipográfico base, con un
-      tamaño más compacto (ver ".nosotros-stats .stat-numero/.stat-texto"
-      más abajo) para no pesar tanto en una sección que ya trae foto +
-      texto + lista. */
+   .franja-stats es la franja oscura de ancho completo que sigue usando
+   subpaginas/nosotros.html con .stat-numero/.stat-texto. El contador de la
+   portada ya no vive aquí: se rehízo como .contador-lujo (sección 8b), con
+   su propio marcado y su propia tipografía. */
 .franja-stats {
   position: relative;
   overflow: hidden;
@@ -1180,19 +1447,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
   opacity: .6;
 }
-.nosotros-stats {
-  position: relative;
-  margin-top: 3rem;
-  padding: 2.2rem 1.5rem;
-  background: var(--onix);
-  border-radius: var(--radio);
-  border-top: 1px solid rgba(210, 172, 71, .3);
-}
 @media (min-width: 992px) {
-  .franja-stats .col-lg-3,
-  .nosotros-stats .col-lg-3 { position: relative; }
-  .franja-stats .col-lg-3::after,
-  .nosotros-stats .col-lg-3::after {
+  .franja-stats .col-lg-3 { position: relative; }
+  .franja-stats .col-lg-3::after {
     content: '';
     position: absolute;
     right: -2px; top: 15%;
@@ -1200,8 +1457,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     width: 1px;
     background: rgba(210, 172, 71, .3);
   }
-  .franja-stats .row > div:last-child::after,
-  .nosotros-stats > div:last-child::after { display: none; }
+  .franja-stats .row > div:last-child::after { display: none; }
 }
 .stat-numero {
   font-family: var(--fuente-elegante);
@@ -1222,17 +1478,118 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin: .6rem 0 0;
   font-weight: 500;
 }
-/* Versión compacta fusionada en #nosotros: no necesita pesar tanto como la
-   franja de ancho completo. */
-.nosotros-stats .stat-numero { font-size: clamp(2rem, 4.2vw, 2.8rem); }
-.nosotros-stats .stat-texto { font-size: .72rem; letter-spacing: .14em; margin-top: .4rem; }
-/* Sobre fondo claro la plata clara del texto pierde contraste... */
+/* Sobre fondo claro la plata clara del texto pierde contraste. */
 .seccion-clara .stat-texto { color: var(--texto-suave); }
-/* ...pero .nosotros-stats ahora es su propia "banda" con fondo oscuro
-   (var(--onix)) dentro de #nosotros para que el contador resalte de
-   verdad sobre el fondo claro de la sección, así que necesita el tono
-   plata claro normal otra vez, no el oscurecido de arriba. */
-.nosotros-stats .stat-texto { color: var(--silver-300); }
+
+
+/* ===== 8b. CONTADOR DE LUJO (cierre de #nosotros) =======================
+   Reemplaza a la vieja .nosotros-stats. Tres decisiones detrás:
+   1) Losa de obsidiana sobre el lienzo blanco de la sección: es el único
+      punto donde el oro puede volver a su versión brillante y leerse como
+      metal. Por eso la clase restaura la familia dorada (--gold-500,
+      --gold-700 y --gradiente-oro) que .fondo-perla había oscurecido.
+   2) font-variant-numeric: tabular-nums — sin esto los dígitos cambian de
+      ancho mientras el contador sube y el número entero "baila" de
+      izquierda a derecha durante la animación.
+   3) La entrada de las cuatro columnas y la regla dorada que se dibuja bajo
+      cada una cuelgan de .visible del PADRE (un solo .revelar), en vez de
+      cuatro observers independientes: así entran siempre en el mismo orden,
+      pase lo que pase con el scroll. ==================================== */
+.contador-lujo {
+  --gold-500: #D2AC47;
+  --gold-700: #AE8625;
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(2.4rem, 4vw, 3.6rem);
+  padding: clamp(1.8rem, 3vw, 2.8rem) clamp(1rem, 2.5vw, 2rem);
+  border-radius: 26px;
+  border: 1px solid rgba(210, 172, 71, .26);
+  background:
+    radial-gradient(ellipse 75% 130% at 14% 0%, rgba(210, 172, 71, .16) 0%, transparent 62%),
+    linear-gradient(135deg, #1C1C1C 0%, #242424 48%, #161616 100%);
+  box-shadow: 0 26px 62px rgba(28, 28, 28, .3);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1.6rem, 3vw, 2.2rem) 0;
+}
+@media (min-width: 992px) {
+  .contador-lujo { grid-template-columns: repeat(4, 1fr); }
+}
+/* Hilo dorado superior, igual que el de .franja-stats */
+.contador-lujo::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+  opacity: .75;
+}
+
+.cl-item {
+  position: relative;
+  text-align: center;
+  padding: .2rem clamp(.6rem, 1.5vw, 1.2rem) 1.1rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
+              transform .7s cubic-bezier(.16, 1, .3, 1);
+}
+.contador-lujo.visible .cl-item { opacity: 1; transform: none; }
+.contador-lujo.visible .cl-item:nth-child(2) { transition-delay: .1s; }
+.contador-lujo.visible .cl-item:nth-child(3) { transition-delay: .2s; }
+.contador-lujo.visible .cl-item:nth-child(4) { transition-delay: .3s; }
+@media (min-width: 992px) {
+  .cl-item + .cl-item { border-left: 1px solid rgba(210, 172, 71, .2); }
+}
+
+.cl-num {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: var(--fuente-elegante);
+  font-size: clamp(2.3rem, 4.2vw, 3.3rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+/* +/% como superíndice: alineados a la línea base (y con un cuerpo mucho
+   menor) se leían como subíndices colgando del número. */
+.cl-sufijo {
+  font-style: normal;
+  /* Misma razón que en .nm-sello__num::before: el "+" de la serif elegante
+     no se lee a este cuerpo. */
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: .34em;
+  align-self: flex-start;
+  margin: .35em 0 0 .1em;
+}
+.cl-etiqueta {
+  display: block;
+  margin-top: .75rem;
+  font-family: var(--fuente-menu);
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--silver-300);
+}
+.cl-linea {
+  position: absolute;
+  left: 50%; bottom: 0;
+  height: 2px;
+  width: 0;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+  transition: width 1.1s cubic-bezier(.16, 1, .3, 1) .35s;
+}
+.contador-lujo.visible .cl-linea { width: 68px; }
 
 
 /* ===== 9. CARDS DE ESPECIALIDADES ======================================= */
@@ -1963,6 +2320,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transition: opacity .7s cubic-bezier(.16, 1, .3, 1),
               transform .7s cubic-bezier(.16, 1, .3, 1),
               filter .7s cubic-bezier(.16, 1, .3, 1);
+  /* Escalonado "a mano": las cascadas por nth-child de más abajo solo
+     funcionan cuando los elementos son hijos directos de un .row de
+     Bootstrap. En los bloques que usan rejillas propias (ej. #nosotros)
+     cada elemento declara su turno con style="--retraso:.12s". */
+  transition-delay: var(--retraso, 0s);
   will-change: transform, opacity, filter;
 }
 .revelar.visible {
@@ -1970,6 +2332,21 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   transform: translateY(0) scale(1) rotateX(0);
   filter: blur(0);
 }
+
+/* Variante "velo": en vez de subir y desenfocarse, la pieza se descubre de
+   arriba hacia abajo con un clip-path (y su <img> vuelve de scale(1.12) a 1,
+   ver .nm-figura img). Es la entrada de las fotos del mosaico de Nosotros.
+   No usa transform a propósito: esos mismos elementos llevan el paralaje de
+   scroll, que escribe transform inline y pisaría cualquier valor de aquí. */
+.revelar--velo {
+  transform: none;
+  filter: none;
+  clip-path: inset(0 0 100% 0);
+  transition: opacity .9s cubic-bezier(.16, 1, .3, 1),
+              clip-path 1.2s cubic-bezier(.16, 1, .3, 1);
+  transition-delay: var(--retraso, 0s);
+}
+.revelar--velo.visible { clip-path: inset(0 0 0 0); }
 /* El giro 3D solo se aprecia si el contenedor define perspectiva. */
 .row, .lista-caracteristicas, .container { perspective: 1200px; }
 
@@ -1978,7 +2355,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    El desenfoque también baja, ya que un blur grande sobre una pantalla
    chica reduce contraste de golpe en vez de sentirse elegante. */
 @media (max-width: 767.98px) {
-  .revelar { transform: translateY(42px) scale(.94) rotateX(4deg); filter: blur(5px); }
+  .revelar:not(.revelar--velo) { transform: translateY(42px) scale(.94) rotateX(4deg); filter: blur(5px); }
 }
 /* Cascada dorada: varias .revelar seguidas dentro de la misma fila/lista
    entran en secuencia marcada (no todas a la vez), como si la luz
@@ -2032,6 +2409,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .titulo-seccion.text-start::after { left: 0; transform: none; background: linear-gradient(90deg, var(--naranja), transparent); }
 .revelar.visible .titulo-seccion::after { width: 90px; }
+/* ...y cuando el propio titular ES el elemento revelado (rejillas que ponen
+   .revelar pieza por pieza, como #nosotros) en vez de estar dentro de una
+   columna revelada. */
+.titulo-seccion.revelar.visible::after { width: 90px; }
 
 
 /* ===== 13b. TRANSICIONES ENTRE SECCIONES ================================
@@ -2064,6 +2445,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* Respeta a usuarios que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   .revelar { opacity: 1; transform: none; filter: none; transition: none; }
+  .revelar--velo { clip-path: none; }
+  .nm-figura img { transform: none; transition: none; }
+  .cl-item { opacity: 1; transform: none; transition: none; }
+  .cl-linea { width: 68px; transition: none; }
   .row > .revelar, .lista-caracteristicas > li { transition-delay: 0s; }
   .titulo-seccion::after { transition: none; }
   .cortina { display: none; }
@@ -2882,7 +3267,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
   .seccion { padding: 40px 0; }
   .franja-stats { padding: 30px 0; }
-  .nosotros-stats { margin-top: 2rem; padding-top: 1.6rem; }
+  .contador-lujo { margin-top: 2rem; }
   .timeline-item { margin-bottom: 1.6rem; }
   .proceso-linea { display: none; }
 

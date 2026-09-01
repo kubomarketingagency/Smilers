@@ -7,6 +7,7 @@
      4. Botón "volver arriba"
      5. Animaciones de aparición (IntersectionObserver)
      5b. Transición "cierre" entre secciones (paneles tipo obturador)
+     5c. Paralaje de scroll de las piezas con data-parallax
      6. Contadores animados de estadísticas
      6b. Selector de mapa (Matriz / Sucursal) en el footer
      7. Formulario del footer -> API de WhatsApp
@@ -256,6 +257,55 @@ document.addEventListener('DOMContentLoaded', function () {
     cortinas.forEach(function (el) { obsCortinas.observe(el); });
   } else {
     cortinas.forEach(function (el) { el.classList.add('abierta'); });
+  }
+
+
+  /* ===== 5c. PARALAJE DE SCROLL (piezas con data-parallax) =============
+     Cada elemento con data-parallax="N" se desplaza N píxeles en vertical
+     a lo largo de su recorrido por la pantalla; con valores de distinto
+     signo y magnitud, las piezas del mosaico de "Nosotros" se separan unos
+     píxeles y se vuelven a alinear mientras se hace scroll, que es lo que
+     da la sensación de profundidad.
+     Solo se escribe transform (translate3d): ni layout ni pintado, así que
+     el compositor lo resuelve solo y no cuesta frames. Por eso mismo esos
+     elementos entran con .revelar--velo (clip-path), no con la variante
+     normal de .revelar: si usaran transform, el valor inline de aquí lo
+     pisaría a media animación.
+     El listener es passive y está limitado a un rAF por frame — sin eso,
+     un trackpad dispara "scroll" muchas más veces de las que la pantalla
+     puede dibujar. ==================================================== */
+  const piezasParallax = document.querySelectorAll('[data-parallax]');
+
+  if (piezasParallax.length && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let frameParallax = false;
+
+    function actualizarParallaxScroll() {
+      const alto = window.innerHeight || 1;
+
+      piezasParallax.forEach(function (pieza) {
+        const caja = pieza.getBoundingClientRect();
+        // Fuera de pantalla (con un margen): no vale la pena tocarlo.
+        if (caja.bottom < -220 || caja.top > alto + 220) return;
+
+        // -1 = el centro de la pieza entra por el borde inferior;
+        //  0 = está a media pantalla;  1 = sale por el borde superior.
+        const progreso = ((caja.top + caja.height / 2) / alto - 0.5) * -2;
+        const fuerza = Number(pieza.dataset.parallax || 0);
+        pieza.style.transform = 'translate3d(0,' + (progreso * fuerza).toFixed(2) + 'px,0)';
+      });
+
+      frameParallax = false;
+    }
+
+    function pedirParallaxScroll() {
+      if (frameParallax) return;
+      frameParallax = true;
+      requestAnimationFrame(actualizarParallaxScroll);
+    }
+
+    window.addEventListener('scroll', pedirParallaxScroll, { passive: true });
+    window.addEventListener('resize', pedirParallaxScroll);
+    actualizarParallaxScroll();
   }
 
 
