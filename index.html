@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=27">
+  <link rel="stylesheet" href="estilos/estilos.css?v=28">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -255,6 +255,12 @@
   </div>
 
 
+  <!-- Oscurecimiento de acercamiento: capa fija que se oscurece a medida
+       que Tratamientos se aproxima (en cualquiera de los dos sentidos de
+       scroll) y se aclara de nuevo apenas se entra a la sección — ver
+       script.js, "14f. OSCURECIMIENTO AL ACERCARSE A TRATAMIENTOS". -->
+  <div class="acercamiento-negro" id="acercamientoNegro" aria-hidden="true"></div>
+
   <!-- ============================================================
        3. SECCIÓN RESUMEN — NOSOTROS
        ============================================================ -->
@@ -264,8 +270,8 @@
     <div class="container">
       <div class="row align-items-center g-5">
 
-        <!-- Imagen -->
-        <div class="col-lg-6 revelar">
+        <!-- Imagen (más grande y asimétrica: 7/5 en vez de 6/6) -->
+        <div class="col-lg-7 revelar">
           <div class="marco-imagen">
             <img src="imagenes/nosotros.webp" width="1000" height="750"
                  alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
@@ -279,7 +285,8 @@
         </div>
 
         <!-- Texto -->
-        <div class="col-lg-6 revelar">
+        <div class="col-lg-5 revelar">
+          <span class="etiqueta-editorial">Nuestra clínica</span>
           <h2 class="titulo-seccion text-start">
             Pensada para tu <span class="texto-turquesa">comodidad</span>
           </h2>
@@ -288,36 +295,32 @@
             y tratamientos personalizados, planificados a tu ritmo.
           </p>
 
-          <!-- Lista de características de las instalaciones -->
-          <ul class="lista-caracteristicas">
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-microchip"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-microchip"></use></svg></i></span>
-              <div>
-                <h3>Alta tecnología</h3>
-                <p>Escáner intraoral 3D y diseño de sonrisa digital.</p>
-              </div>
-            </li>
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-couch"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-couch"></use></svg></i></span>
-              <div>
-                <h3>Instalaciones de lujo</h3>
-                <p>Consultorios amplios y bioseguridad certificada.</p>
-              </div>
-            </li>
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-user-doctor"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></i></span>
-              <div>
-                <h3>Equipo especializado</h3>
-                <p>Posgrado en cada área, trabajo interdisciplinario.</p>
-              </div>
-            </li>
-          </ul>
-
           <a href="subpaginas/nosotros.html" class="btn btn-turquesa mt-3">
             Conoce más sobre nosotros <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
           </a>
         </div>
 
+      </div>
+
+      <!-- Características, a modo de ficha técnica editorial (número dorado
+           + divisores finos) en vez de lista vertical dentro de la columna
+           de texto — se lee como una sección propia, no como relleno. -->
+      <div class="row caracteristicas-editorial g-4">
+        <div class="col-md-4 revelar">
+          <span class="caracteristicas-editorial__numero">01</span>
+          <h3>Alta tecnología</h3>
+          <p>Escáner intraoral 3D y diseño de sonrisa digital.</p>
+        </div>
+        <div class="col-md-4 revelar">
+          <span class="caracteristicas-editorial__numero">02</span>
+          <h3>Instalaciones de lujo</h3>
+          <p>Consultorios amplios y bioseguridad certificada.</p>
+        </div>
+        <div class="col-md-4 revelar">
+          <span class="caracteristicas-editorial__numero">03</span>
+          <h3>Equipo especializado</h3>
+          <p>Posgrado en cada área, trabajo interdisciplinario.</p>
+        </div>
       </div>
 
       <!-- Estadísticas: antes vivían en su propia franja (.franja-stats,
@@ -669,6 +672,6 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=27"></script>
+  <script src="scripts/script.js?v=28"></script>
 </body>
 </html>

@@ -51,6 +51,7 @@
   --taupe:         var(--neutral-200);
   --marmol:        var(--neutral-100);
   --marfil:        #C9C2B5; /* tono intermedio entre taupe y mármol, para fondos suaves */
+  --crema-editorial: #F1E7D4; /* crema cálido para el "cuerpo" editorial (Nosotros y futuras secciones tipo blog): distinto del mármol casi blanco */
   --plata:         var(--silver-500);
   --esmeralda:     #006400; /* micro-acento: solo en dosis pequeñas (puntos, líneas, estados) */
 
@@ -410,7 +411,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    ónix del resto de la página (que ya es oscuro en todas partes, así que
    nunca compite con contenido claro debajo). Barra delgada a propósito. */
 .navbar-principal {
-  padding: .35rem 0;
+  padding: .22rem 0;
   background: transparent;
   transition: transform .35s ease;
   z-index: 1030;
@@ -426,7 +427,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* Estado con scroll (clase añadida desde script.js): solo encoge el logo,
    sigue sin fondo. */
 .navbar-principal.con-scroll {
-  padding: .18rem 0;
+  padding: .12rem 0;
 }
 
 /* Marca (logotipo tipográfico: icono + wordmark), inspirada en el isotipo
@@ -446,8 +447,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .marca-icono {
   flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   background: var(--onix);
@@ -575,7 +576,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .45rem;
+  gap: 1.1rem;
   text-align: center;
 }
 .navbar-collapse .nav-link {
@@ -585,7 +586,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   text-transform: uppercase;
   letter-spacing: .34em;
   font-size: clamp(.95rem, 2vw, 1.25rem);
-  padding: .5rem 1rem !important;
+  padding: .65rem 1rem !important;
   min-height: 0;
   position: relative;
   display: inline-flex;
@@ -797,10 +798,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    ========================================================================== */
 .hero-cine {
   position: relative;
-  /* Más alto que antes: da más recorrido de scroll para que el fundido del
-     hero y la entrada/estancia/salida de profesionales se sientan pausados
-     en vez de sucederse casi de golpe (ver actualizarCine() en script.js). */
-  height: 340vh;
+  /* Más alto todavía: más recorrido de scroll para que el fundido del hero
+     y la entrada/estancia/salida de profesionales se sientan pausados y
+     cinematográficos en vez de sucederse casi de golpe (ver actualizarCine()
+     en script.js). */
+  height: 460vh;
 }
 .hero-cine-pin {
   position: sticky;
@@ -873,7 +875,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--naranja);
 }
 @media (max-width: 767.98px) {
-  .hero-cine { height: 280vh; }
+  .hero-cine { height: 380vh; }
   /* Las 4 fotos también en móvil (antes se ocultaban 2 por espacio):
      columnas más angostas para que las 4 quepan sin recortarse de más. */
   .hero-etapa2-col { min-width: 0; }
@@ -936,11 +938,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 /* Lienzo liso, sin vetado: para secciones que piden minimalismo puro (ej.
-   Nosotros) en vez del mármol con textura — un blanco cálido con un
-   degradado apenas perceptible, sin ningún patrón repetido. */
+   Nosotros/el "cuerpo" editorial) en vez del mármol con textura. Crema
+   cálido en vez del blanco de --neutral-100 a propósito: contrasta con el
+   mármol casi blanco de otras secciones claras del sitio en vez de
+   repetirlo, sin dejar de sentirse "claro" frente al ónix del resto. */
 .seccion-clara.fondo-lino {
-  background-color: var(--neutral-100);
-  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(210, 172, 71, .05) 0%, transparent 65%);
+  background-color: var(--crema-editorial);
+  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(210, 172, 71, .07) 0%, transparent 65%);
 }
 
 .titulo-seccion {
@@ -981,7 +985,64 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }
 
 
-/* ===== 7. NOSOTROS ====================================================== */
+/* ===== 7. NOSOTROS ======================================================
+   Rediseño editorial: etiqueta pequeña + regla dorada sobre el titular
+   (como un "kicker" de revista), imagen más grande y asimétrica (7/5 en
+   vez de 6/6), y las características antes en lista vertical ahora en una
+   fila propia a modo de ficha técnica (número dorado + divisores finos,
+   mismo lenguaje que .nosotros-stats) — este layout es la base que se
+   reutilizará para más contenido tipo blog más adelante. */
+.etiqueta-editorial {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+  margin-bottom: 1rem;
+}
+.etiqueta-editorial::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--gold-500);
+}
+
+.caracteristicas-editorial {
+  margin: 4rem 0 0;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(210, 172, 71, .28);
+}
+.caracteristicas-editorial__numero {
+  display: block;
+  font-family: var(--fuente-elegante);
+  font-size: 1.7rem;
+  line-height: 1;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+  margin-bottom: .7rem;
+}
+.caracteristicas-editorial h3 { font-size: 1.05rem; margin-bottom: .4rem; color: var(--texto); }
+.caracteristicas-editorial p { font-size: .92rem; color: var(--texto-suave); margin: 0; }
+@media (min-width: 768px) {
+  .caracteristicas-editorial .col-md-4 { position: relative; }
+  .caracteristicas-editorial .col-md-4::after {
+    content: '';
+    position: absolute;
+    right: -2px; top: 6px;
+    height: calc(100% - 12px);
+    width: 1px;
+    background: rgba(210, 172, 71, .28);
+  }
+  .caracteristicas-editorial .col-md-4:last-child::after { display: none; }
+}
+
 .marco-imagen {
   position: relative;
   /* Contiene los marcos decorativos ::before/::after (z-index:-1) */
@@ -1243,9 +1304,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    que se desvanece hacia abajo, para no tapar el acordeón que sigue. */
 .acordeon-etiqueta {
   position: absolute;
-  top: 0; right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 3;
-  padding: 90px 2.2rem 3.5rem 3.5rem;
+  padding: 42px 2rem 22px;
+  text-align: center;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
 }
@@ -1363,7 +1425,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .ag-panel__desc {
   font-family: var(--fuente-cuerpo);
-  font-size: .85rem;
+  font-size: 1rem;
+  line-height: 1.4;
   color: var(--silver-300);
   max-width: 34ch;
 }
@@ -1401,9 +1464,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      a 100vh — el acordeón horizontal de escritorio no aplica aquí. */
   .acordeon-seccion { height: auto; }
   /* La etiqueta fija de esquina tenía sentido como ancla persistente del
-     acordeón horizontal de escritorio; en la lista vertical de móvil solo
-     estorbaba sobre las fotos, así que se quita del todo aquí. */
-  .acordeon-etiqueta { display: none; }
+     acordeón horizontal de escritorio; en la lista vertical de móvil se
+     convierte en un título simple arriba del todo, en vez de flotar sobre
+     las fotos (donde solo estorbaba). */
+  .acordeon-etiqueta {
+    position: relative;
+    top: auto; left: auto; right: auto;
+    padding: 56px 1.5rem 20px;
+    background: none;
+  }
   .acordeon-galeria {
     flex-direction: column;
     height: auto;
@@ -1415,8 +1484,28 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     transition: height .5s cubic-bezier(.16, 1, .3, 1);
   }
   .ag-panel.ag-panel--activo { height: 320px; flex-grow: 0; }
-  .ag-panel__texto { transform: translateY(10px); }
-  .ag-panel.ag-panel--activo .ag-panel__texto { transform: translateY(0); }
+
+  /* Sin cursor no hay hover: el nombre de cada tratamiento (dorado) queda
+     visible siempre, aun colapsado, para que se sepa qué es cada foto
+     antes de tocarla. Solo la descripción y el "Ir" se reservan para el
+     panel ya abierto (primer tap: revela; segundo tap: navega). */
+  .ag-panel__texto { opacity: 1; transform: none; }
+  .ag-panel__titulo {
+    color: var(--gold-200);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .7);
+  }
+  .ag-panel__desc,
+  .ag-panel__ir {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity .35s ease, max-height .35s ease;
+  }
+  .ag-panel.ag-panel--activo .ag-panel__desc,
+  .ag-panel.ag-panel--activo .ag-panel__ir {
+    opacity: 1;
+    max-height: 70px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1497,6 +1586,26 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 
+/* ===== 9c. OSCURECIMIENTO DE ACERCAMIENTO A TRATAMIENTOS ================
+   Capa fija de un solo color: su opacidad la controla script.js según qué
+   tan cerca está el acordeón de Tratamientos del borde superior de la
+   pantalla — sube a medida que se acerca (en cualquier sentido de scroll)
+   y vuelve a bajar apenas se entra, sin quedar un velo oscuro encima del
+   acordeón. Solo opacity, así que es barata para el compositor aunque se
+   actualice en cada frame de scroll. */
+.acercamiento-negro {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: var(--onix);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .acercamiento-negro { display: none; }
+}
+
+
 /* ===== 10. BANDA CTA ==================================================== */
 /* Franja más alta con un fondo tipo masonry (fotos reales, en columnas CSS)
    en vez del plano de color liso de antes; el texto flota encima sobre un
@@ -1552,6 +1661,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .banda-cta-masonry__col img {
   display: block;
   width: 100%;
+  /* Las fotos de origen (hero, equipo, tratamientos...) traen proporciones
+     bien distintas entre sí; sin una relación de aspecto fija cada una
+     ocupaba el alto que le tocara por su propia forma, así que la columna
+     se veía dispareja (unas fotos "más chicas" que otras). Con aspect-ratio
+     + cover todas las miniaturas quedan del mismo tamaño y llenan su
+     espacio por igual, sea cual sea la foto original. */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
   filter: grayscale(1) contrast(1.05) brightness(.55);
 }
 @media (min-width: 992px) {
@@ -1593,7 +1710,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 .marca-footer { display: inline-flex; }
-.marca-footer .marca-slogan { color: var(--turquesa-claro); text-transform: none; letter-spacing: .5px; font-weight: 500; }
+.marca-footer .marca-slogan { color: var(--plata); text-transform: none; letter-spacing: .5px; font-weight: 500; }
 
 .footer-titulo {
   display: inline-block;
@@ -1607,12 +1724,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   position: relative;
   padding-bottom: .6rem;
 }
+/* Detalle dorado a propósito, distinto del plateado que domina el resto
+   del footer: el acento bajo cada título y el punto de las direcciones,
+   como toque cálido puntual sobre tanto gris/plata. */
 .footer-titulo::after {
   content: '';
   position: absolute;
   left: 0; right: 0; bottom: 0;
   height: 3px;
-  background: var(--naranja);
+  background: var(--durazno);
   border-radius: 3px;
 }
 .footer-titulo::before {
@@ -1621,7 +1741,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   right: -14px; bottom: -3px;
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--naranja);
+  background: var(--durazno);
 }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .7); }
@@ -1634,9 +1754,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   gap: .7rem;
   align-items: flex-start;
 }
-.footer-contacto i { color: var(--naranja); margin-top: 5px; }
+.footer-contacto i { color: var(--durazno); margin-top: 5px; }
 .footer-contacto a { color: rgba(255, 255, 255, .78); }
-.footer-contacto a:hover { color: var(--naranja); }
+.footer-contacto a:hover { color: var(--durazno); }
 
 /* Redes sociales */
 .redes-sociales { display: flex; gap: .7rem; }
@@ -1650,7 +1770,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: 1.05rem;
 }
 .redes-sociales a:hover {
-  background: var(--naranja);
+  background: var(--durazno);
+  color: var(--onix);
   transform: translateY(-4px);
 }
 
@@ -1669,8 +1790,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: rgba(255, 255, 255, .6);
   transition: var(--transicion);
 }
-.mapa-tab:hover { border-color: var(--naranja); color: #fff; }
-.mapa-tab.activo { background: var(--naranja); border-color: var(--naranja); color: var(--onix); }
+.mapa-tab:hover { border-color: var(--durazno); color: #fff; }
+.mapa-tab.activo { background: var(--durazno); border-color: var(--durazno); color: var(--onix); }
 
 .mapa-contenedor {
   position: relative;
@@ -1701,8 +1822,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .form-footer .form-control::placeholder { color: rgba(255, 255, 255, .4); }
 .form-footer .form-control:focus {
   background: rgba(255, 255, 255, .12);
-  border-color: var(--naranja);
-  box-shadow: 0 0 0 .2rem rgba(192, 192, 192, .22);
+  border-color: var(--durazno);
+  box-shadow: 0 0 0 .2rem rgba(210, 172, 71, .22);
   color: #fff;
 }
 /* Estado de error (lo activa el JS) */
@@ -1738,30 +1859,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .wsp-flotante {
   position: fixed;
   bottom: 25px; right: 25px;
-  width: 58px; height: 58px;
+  width: 66px; height: 66px;
   background: #25d366;
   color: #fff;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 1.7rem;
+  font-size: 2.1rem;
   box-shadow: 0 8px 24px rgba(37, 211, 102, .45);
   z-index: 1040;
   animation: pulso 2.2s infinite;
 }
 .wsp-flotante:hover { color: #fff; transform: scale(1.08); }
-
-/* Micro-acento esmeralda: punto de "disponible ahora", en dosis mínima,
-   la única aparición del verde de la pared viva del local en toda la UI. */
-.wsp-flotante::after {
-  content: '';
-  position: absolute;
-  top: 1px; right: 1px;
-  width: 13px; height: 13px;
-  border-radius: 50%;
-  background: var(--esmeralda);
-  border: 2px solid var(--onix);
-}
 
 @keyframes pulso {
   0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
@@ -1924,7 +2033,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .footer { padding-top: 60px; }
   .footer-bottom { justify-content: center; text-align: center; }
   .marco-imagen::before { display: none; }
-  .wsp-flotante { width: 52px; height: 52px; font-size: 1.5rem; }
+  .wsp-flotante { width: 58px; height: 58px; font-size: 1.85rem; }
 }
 
 /* ===== 15. OBJETOS DECORATIVOS DE FONDO ================================= */

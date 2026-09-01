@@ -18,6 +18,7 @@
      13. FAQ: abrir pregunta enlazada por #hash
      14. Carrusel del hero: sincronizar puntos con el slide activo
      14e. Cierre cine: cortina negra que se levanta antes de la banda CTA
+     14f. Oscurecimiento al acercarse a Tratamientos (ambos sentidos)
      (la intro de marca en banners de páginas interiores es 100% CSS,
       ver .banner-video-intro / .intro-logo en estilos.css)
    ========================================================================== */
@@ -844,19 +845,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // ...se queda completa y quieta del 58% al 80% (zona de estancia,
       // sin animación) para poder verla y leer la frase con calma...
-      // ...y del 80% al 100% se desenfoca hasta desaparecer, justo antes
-      // de que el pin se suelte y aparezca la siguiente sección (Nosotros)
-      // — la transición "borrosa" que pidió el brief, en vez de un corte seco.
+      // ...y del 80% al 100% sale escalonada hacia el lado CONTRARIO al que
+      // entró (si entró subiendo, sale deslizándose de lado) y se difumina
+      // columna por columna, en vez de un corte seco — la sección de abajo
+      // (Nosotros, usada como "cuerpo" con más contenido) va apareciendo
+      // detrás mientras esto se disuelve.
       var salida2 = acotar((progreso - .80) / .20);
-      etapa2.style.opacity = String(entrada2 * (1 - salida2));
-      etapa2.style.filter = salida2 > 0 ? 'blur(' + (salida2 * 22) + 'px)' : '';
+      etapa2.style.opacity = String(entrada2);
 
       columnas.forEach(function (col, indice) {
         // Escalonado más marcado entre columnas (antes .12) para que se
         // note claramente cómo van apareciendo una tras otra, no casi juntas.
         var propio = acotar((entrada2 - indice * .16) / (1 - indice * .16 || 1));
-        col.style.opacity = String(propio);
-        col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px)';
+        // La salida se escalona en el orden CONTRARIO al de entrada (la
+        // última columna en entrar es la primera en irse), para que se
+        // sienta como un movimiento distinto y no un simple "reversa".
+        var indiceSalida = columnas.length - 1 - indice;
+        var salidaPropia = acotar((salida2 - indiceSalida * .15) / (1 - indiceSalida * .15 || 1));
+
+        col.style.opacity = String(propio * (1 - salidaPropia));
+        col.style.transform = 'translateY(' + ((1 - propio) * 40) + 'px) translateX(' + (salidaPropia * -70) + 'px)';
+        col.style.filter = salidaPropia > 0 ? 'blur(' + (salidaPropia * 20) + 'px)' : '';
         // Efecto acordeón: cada columna arranca angosta y se "despliega"
         // hasta su ancho pleno en vez de solo aparecer en su sitio.
         col.style.flexGrow = String(.12 + propio * .88);
@@ -864,11 +873,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (tagline) {
         var propioTag = acotar((entrada2 - .3) / .7);
-        tagline.style.opacity = String(propioTag);
-        tagline.style.transform = 'translateY(' + ((1 - propioTag) * 24) + 'px)';
-        // Borrosa -> nítida: arranca en un blur fuerte y se enfoca del todo
-        // justo cuando termina de aparecer.
-        tagline.style.filter = 'blur(' + ((1 - propioTag) * 16) + 'px)';
+        tagline.style.opacity = String(propioTag * (1 - salida2));
+        tagline.style.transform = 'translateY(' + ((1 - propioTag) * 24 + salida2 * -30) + 'px)';
+        // Borrosa -> nítida al entrar, y vuelve a desenfocarse al salir.
+        var blurTag = Math.max((1 - propioTag) * 16, salida2 * 16);
+        tagline.style.filter = 'blur(' + blurTag + 'px)';
       }
 
       tickeandoCine = false;
@@ -883,26 +892,40 @@ document.addEventListener('DOMContentLoaded', function () {
     actualizarCine();
 
 
-    /* ===== 14d. AUTO-SCROLL ASISTIDO ====================================
-       Dos "asistencias" puntuales, no un scroll-snap de CSS: aquel se quitó
-       por completo (ver el comentario junto a scroll-padding-top en
+    /* ===== 14d. AUTO-SCROLL ASISTIDO (bidireccional) ====================
+       Asistencias puntuales, no un scroll-snap de CSS: aquel se quitó por
+       completo (ver el comentario junto a scroll-padding-top en
        estilos.css) porque se quedaba trabado al pelear con cada evento de
        scroll. Este mecanismo en cambio espera a que el usuario se detenga
        de verdad (250ms sin eventos de scroll, aproxima "scrollend") y solo
        ENTONCES completa el recorrido con un scrollTo suave, una sola vez
        por acercamiento — nunca interrumpe un scroll en curso ni se repite
        en bucle, así que no puede volver a trabar la página.
-       1) Smilers -> Profesionales: si el usuario bajó un poco desde el
-          arranque del hero y se detiene, se completa el recorrido hasta
-          que el mosaico de profesionales quede totalmente revelado.
-       2) Llegada a Tratamientos: si el usuario se detiene cerca del borde
-          del acordeón (pantalla completa, solo en desktop/tablet — en
-          móvil la sección crece con el contenido y no aplica), se ajusta
-          para que quede exactamente a pantalla completa en vez de a medias. */
+       Cada asistencia respeta la DIRECCIÓN con la que se llegó: se activa
+       solo si el usuario venía avanzando hacia ella, nunca si se alejaba
+       (si no, al alejarse de un tirón lo suficiente como para pausar justo
+       en la zona, lo arrastraría de vuelta contra su propia intención).
+       1) Smilers -> Profesionales (bajando): si el usuario bajó un poco
+          desde el arranque del hero y se detiene, se completa el recorrido
+          hasta que el mosaico de profesionales quede revelado y sostenido.
+       2) Profesionales -> Smilers (subiendo): el simétrico de (1) — si va
+          subiendo y se detiene ya casi saliendo del pin por abajo, completa
+          el regreso hasta quedar sostenido del otro lado del mosaico.
+       3) Llegada a Tratamientos (bajando): si el usuario se detiene cerca
+          del borde del acordeón (pantalla completa, solo en desktop/tablet
+          — en móvil la sección crece con el contenido y no aplica), se
+          ajusta para que quede exactamente a pantalla completa.
+       4) Salida de Tratamientos hacia Nosotros (subiendo): el simétrico de
+          (3) — si se detiene saliendo del acordeón por arriba, ajusta para
+          que su borde inferior quede exacto contra el pie de pantalla. */
     var especialidades = document.getElementById('especialidades');
     var avanzoHero = false;
-    var alineoTratamientos = false;
+    var retrocedioHero = false;
+    var alineoTratamientosAbajo = false;
+    var alineoTratamientosArriba = false;
     var idleTimerAsistido;
+    var ultimoScrollYAsistido = window.scrollY;
+    var direccionAsistida = 'down';
 
     function progresoHero() {
       var rect = envoltorio.getBoundingClientRect();
@@ -912,36 +935,101 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function alScrollQuieto() {
       var progreso = progresoHero();
+
       if (progreso < .02) {
         avanzoHero = false;
-      } else if (progreso < .22 && !avanzoHero) {
+      } else if (progreso < .22 && !avanzoHero && direccionAsistida === 'down') {
         avanzoHero = true;
         var alturaDesplazable = envoltorio.offsetHeight - window.innerHeight;
         var topEnvoltorio = envoltorio.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ top: topEnvoltorio + alturaDesplazable * .62, behavior: 'smooth' });
       }
 
+      if (progreso > .98) {
+        retrocedioHero = false;
+      } else if (progreso > .78 && !retrocedioHero && direccionAsistida === 'up') {
+        retrocedioHero = true;
+        var alturaDesplazable2 = envoltorio.offsetHeight - window.innerHeight;
+        var topEnvoltorio2 = envoltorio.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: topEnvoltorio2 + alturaDesplazable2 * .76, behavior: 'smooth' });
+      }
+
       if (especialidades && window.matchMedia('(min-width: 768px)').matches) {
         var rectEsp = especialidades.getBoundingClientRect();
         var visible = Math.min(rectEsp.bottom, window.innerHeight) - Math.max(rectEsp.top, 0);
         var proporcionVisible = visible / rectEsp.height;
-        // Umbral alto (35%) a propósito: si fuera bajo, detenerse a leer el
-        // contador de Nosotros (justo antes de Tratamientos) ya bastaba
-        // para "verse arrastrado" de golpe hacia el acordeón sin querer.
-        // Solo se completa el ajuste cuando ya se avanzó de verdad hacia él.
+
         if (proporcionVisible < .06) {
-          alineoTratamientos = false;
-        } else if (proporcionVisible > .35 && proporcionVisible < .96 && Math.abs(rectEsp.top) > 4 && !alineoTratamientos) {
-          alineoTratamientos = true;
-          window.scrollTo({ top: rectEsp.top + window.scrollY, behavior: 'smooth' });
+          alineoTratamientosAbajo = false;
+          alineoTratamientosArriba = false;
+        } else if (proporcionVisible > .35 && proporcionVisible < .96) {
+          // Bajando y acercándose desde arriba (su borde superior aún no
+          // llega al tope de pantalla): alinear ese borde contra el tope.
+          if (direccionAsistida === 'down' && rectEsp.top > 4 && !alineoTratamientosAbajo) {
+            alineoTratamientosAbajo = true;
+            window.scrollTo({ top: rectEsp.top + window.scrollY, behavior: 'smooth' });
+          }
+          // Subiendo y acercándose desde abajo (su borde inferior ya no
+          // llega al pie de pantalla): alinear ese borde contra el pie.
+          if (direccionAsistida === 'up' && rectEsp.bottom < window.innerHeight - 4 && !alineoTratamientosArriba) {
+            alineoTratamientosArriba = true;
+            window.scrollTo({ top: rectEsp.bottom + window.scrollY - window.innerHeight, behavior: 'smooth' });
+          }
         }
       }
     }
 
     window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      if (y > ultimoScrollYAsistido + 1) direccionAsistida = 'down';
+      else if (y < ultimoScrollYAsistido - 1) direccionAsistida = 'up';
+      ultimoScrollYAsistido = y;
+
       clearTimeout(idleTimerAsistido);
       idleTimerAsistido = setTimeout(alScrollQuieto, 250);
     }, { passive: true });
+  })();
+
+
+  /* ===== 14f. OSCURECIMIENTO AL ACERCARSE A TRATAMIENTOS ================
+     Capa fija (.acercamiento-negro) que se oscurece a medida que el borde
+     superior del acordeón de Tratamientos se acerca al tope de pantalla, y
+     se vuelve a aclarar tanto si se termina de cruzar hacia adentro como si
+     uno se aleja de nuevo — es una función continua de la posición, así
+     que funciona igual de suave subiendo que bajando sin lógica aparte. */
+  (function () {
+    var especialidadesOsc = document.getElementById('especialidades');
+    var capaNegra = document.getElementById('acercamientoNegro');
+    if (!especialidadesOsc || !capaNegra) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var tickeandoOsc = false;
+
+    function acotarOsc(valor) { return Math.min(1, Math.max(0, valor)); }
+
+    function actualizarAcercamiento() {
+      var top = especialidadesOsc.getBoundingClientRect().top;
+      var progresoOsc;
+      if (top >= 0) {
+        // Se acerca desde abajo (bajando) o se aleja hacia abajo (subiendo):
+        // más oscuro cuanto más cerca del tope de pantalla.
+        progresoOsc = acotarOsc(1 - top / window.innerHeight);
+      } else {
+        // Ya se cruzó su borde superior: se aclara de nuevo a medida que la
+        // sección sigue subiendo en pantalla (ya estamos "dentro").
+        progresoOsc = acotarOsc(1 + top / window.innerHeight);
+      }
+      capaNegra.style.opacity = String(progresoOsc * .55);
+      tickeandoOsc = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
+    }, { passive: true });
+    window.addEventListener('resize', function () {
+      if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
+    });
+    actualizarAcercamiento();
   })();
 
 
