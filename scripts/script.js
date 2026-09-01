@@ -315,10 +315,13 @@ document.addEventListener('DOMContentLoaded', function () {
         borroso hasta que la capa se recompone.
 
      El listener es passive y está limitado a un rAF por cuadro. =========== */
-  const haceParallax = window.matchMedia('(min-width: 992px)').matches
-    && window.matchMedia('(pointer: fine)').matches;
+  const punteroFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const haceParallax = punteroFino && window.matchMedia('(min-width: 992px)').matches;
   const piezasParallax = haceParallax ? document.querySelectorAll('[data-parallax]') : [];
-  const escenasSalida = document.querySelectorAll('[data-escena-salida]');
+  /* La salida de escena la pinta el CSS solo con puntero fino (ver
+     .escena-salida en estilos.css): en táctil ni siquiera hace falta
+     calcular las variables. */
+  const escenasSalida = punteroFino ? document.querySelectorAll('[data-escena-salida]') : [];
 
   if ((piezasParallax.length || escenasSalida.length)
       && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
@@ -749,14 +752,25 @@ document.addEventListener('DOMContentLoaded', function () {
       ['imagenes/equipo-4.webp', 'imagenes/implantologia.webp', 'imagenes/nosotros.webp']
     ];
 
+    /* Las columnas miden 190-220px de ancho, así que pedir el original de
+       1920px era decodificar ~10 MB de bitmap por foto para pintarla del
+       tamaño de un pulgar — con doce columnas duplicadas eso son cientos de
+       megas de imagen decodificada por un fondo que además va detrás de un
+       velo oscuro. Se usa la variante de 480px (ver imagenes/*-480.webp),
+       de sobra para el doble de densidad. */
+    function versionChica(src) {
+      return src.replace(/\.webp$/, '-480.webp');
+    }
+
     function crearColumna(grupo) {
       var col = document.createElement('div');
       col.className = 'banda-cta-masonry__col';
       grupo.forEach(function (src) {
         var img = document.createElement('img');
-        img.src = src;
+        img.src = versionChica(src);
         img.alt = '';
         img.loading = 'lazy';
+        img.decoding = 'async';
         col.appendChild(img);
       });
       return col;

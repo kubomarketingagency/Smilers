@@ -1196,9 +1196,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   gap: .85rem;
   padding: .95rem 1.35rem;
   border-radius: 16px;
-  background: rgba(20, 20, 20, .82);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  /* Antes esto era vidrio esmerilado (backdrop-filter: blur(16px)). Con un
+     fondo al 82% de opacidad el desenfoque casi no se veía, y en cambio
+     costaba muchísimo: un backdrop-filter obliga a recomponer lo que queda
+     detrás, y este vive dentro de un subárbol al que el scroll le cambia la
+     opacidad — o sea, a recalcularlo en cada cuadro. Con el ónix sólido se
+     ve igual y no cuesta nada. */
+  background: #141414;
   border: 1px solid rgba(210, 172, 71, .5);
   box-shadow: 0 20px 44px rgba(28, 28, 28, .38);
 }
@@ -1417,30 +1421,41 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    rasterizarlo a otro tamaño, y en iOS lo deja borroso hasta que la capa se
    recompone. Solo opacidad y traslación, que el compositor resuelve sin
    volver a dibujar el texto. */
-.escena-salida .nosotros-split,
-.escena-salida > .container {
-  opacity: var(--escena-op, 1);
-  transform: translate3d(0, var(--escena-y, 0px), 0);
-  will-change: opacity, transform;
+/* Solo con puntero fino (escritorio). En un teléfono este efecto obliga a
+   sostener cuatro capas de composición del tamaño de media sección, con
+   fotos grandes dentro, durante todo el recorrido — y el scroll táctil, que
+   es donde más se nota cualquier hipo, es justo el que no puede pagarlo. La
+   entrada pieza por pieza de .revelar se conserva en todas partes. */
+@media (hover: hover) and (pointer: fine) {
+  .escena-salida .nosotros-split,
+  .escena-salida > .container {
+    opacity: var(--escena-op, 1);
+    transform: translate3d(0, var(--escena-y, 0px), 0);
+    will-change: opacity, transform;
+  }
 }
 
-/* Halos de fondo de la sección (plata y oro, muy diluidos). */
+/* Halos de fondo de la sección (plata y oro, muy diluidos).
+   Sin filter: blur(). El degradado radial YA es un difuminado — sumarle un
+   blur de 70px encima obligaba al navegador a rasterizar dos superficies de
+   cientos de píxeles y desenfocarlas, para un resultado prácticamente
+   idéntico al del degradado solo. Se compensa alargando la parada de
+   transparencia y agrandando el halo. */
 .nosotros-halo {
   position: absolute;
   border-radius: 50%;
-  filter: blur(70px);
   pointer-events: none;
   z-index: 0;
 }
 .nosotros-halo--plata {
-  width: 420px; height: 420px;
-  top: 6%; left: -160px;
-  background: radial-gradient(circle, rgba(192, 192, 192, .5) 0%, transparent 70%);
+  width: 620px; height: 620px;
+  top: 2%; left: -240px;
+  background: radial-gradient(circle, rgba(192, 192, 192, .42) 0%, rgba(192, 192, 192, .16) 45%, transparent 72%);
 }
 .nosotros-halo--oro {
-  width: 340px; height: 340px;
-  bottom: 12%; right: -120px;
-  background: radial-gradient(circle, rgba(210, 172, 71, .3) 0%, transparent 70%);
+  width: 520px; height: 520px;
+  bottom: 8%; right: -190px;
+  background: radial-gradient(circle, rgba(210, 172, 71, .26) 0%, rgba(210, 172, 71, .10) 45%, transparent 72%);
 }
 
 .marco-imagen {
@@ -2475,13 +2490,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    se conservan, así que el gesto sigue estando; lo que desaparece es la
    parte que no se nota y sí se paga. */
 @media (max-width: 767.98px) {
+  .revelar:not(.revelar--velo) { transform: translateY(42px) scale(.94); }
+}
+/* Por tipo de puntero, no por ancho: una tablet de 900px sigue siendo táctil
+   y paga lo mismo. Sin perspective tampoco hace falta el giro 3D. */
+@media (hover: none) and (pointer: coarse) {
   .revelar:not(.revelar--velo) { transform: translateY(42px) scale(.94); filter: none; }
   .revelar.visible { filter: none; }
   .row, .lista-caracteristicas, .container { perspective: none; }
-}
-@media (hover: none) and (pointer: coarse) {
-  .revelar:not(.revelar--velo) { filter: none; }
-  .revelar.visible { filter: none; }
 }
 /* Cascada dorada: varias .revelar seguidas dentro de la misma fila/lista
    entran en secuencia marcada (no todas a la vez), como si la luz

@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=6e8d37422a">
+  <link rel="stylesheet" href="estilos/estilos.css?v=1a84aee4a1">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -285,17 +285,23 @@
 
       <div class="nosotros-media">
         <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-26">
-          <img src="imagenes/nosotros.webp" width="1000" height="750"
+          <img src="imagenes/nosotros.webp"
+               srcset="imagenes/nosotros-720.webp 720w, imagenes/nosotros.webp 1000w"
+               sizes="(min-width: 992px) 30vw, 52vw" width="1000" height="750"
                alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
-               loading="lazy">
+               loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="18">
-          <img src="imagenes/tecnologia.webp" width="800" height="600"
-               alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy">
+          <img src="imagenes/tecnologia.webp"
+               srcset="imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w"
+               sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
+               alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="34">
-          <img src="imagenes/equipo-2.webp" width="800" height="600"
-               alt="Especialista del equipo de Smilers Dental Clinique en consulta" loading="lazy">
+          <img src="imagenes/equipo-2.webp"
+               srcset="imagenes/equipo-2-720.webp 720w, imagenes/equipo-2.webp 900w"
+               sizes="(min-width: 992px) 20vw, 34vw" width="900" height="1350"
+               alt="Especialista del equipo de Smilers Dental Clinique en consulta" loading="lazy" decoding="async">
         </figure>
 
         <!-- Sello de trayectoria: mismo dato que la tarjeta flotante anterior,
@@ -395,17 +401,23 @@
 
       <div class="nosotros-media">
         <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-22">
-          <img src="imagenes/hero-2.webp" width="1000" height="750"
+          <img src="imagenes/hero-2.webp"
+               srcset="imagenes/hero-2-720.webp 720w, imagenes/hero-2.webp 1920w"
+               sizes="(min-width: 992px) 30vw, 52vw" width="1920" height="1280"
                alt="Consultorio de Smilers Dental Clinique con sillón odontológico y equipo digital"
-               loading="lazy">
+               loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="16">
-          <img src="imagenes/cirugia.webp" width="800" height="600"
-               alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy">
+          <img src="imagenes/cirugia.webp"
+               srcset="imagenes/cirugia-720.webp 720w, imagenes/cirugia.webp 1200w"
+               sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="1800"
+               alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy" decoding="async">
         </figure>
         <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="30">
-          <img src="imagenes/implantologia.webp" width="800" height="600"
-               alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy">
+          <img src="imagenes/implantologia.webp"
+               srcset="imagenes/implantologia-720.webp 720w, imagenes/implantologia.webp 1200w"
+               sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
+               alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy" decoding="async">
         </figure>
 
         <div class="nm-sello nm-sello--der revelar" style="--retraso:.38s">
@@ -522,7 +534,7 @@
          role="list" aria-label="Especialidades de Smilers Dental Clinique">
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Rehabilitación Oral">
-          <span class="ag-panel__media"><img src="imagenes/antes-despues.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/antes-despues.webp" srcset="imagenes/antes-despues-480.webp 480w, imagenes/antes-despues-720.webp 720w, imagenes/antes-despues.webp 1400w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -533,7 +545,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Endodoncia">
-          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" srcset="imagenes/tecnologia-480.webp 480w, imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -544,7 +556,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#estetica-dental" class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-label="Estética Dental" aria-current="true">
-          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" srcset="imagenes/sonrisa-480.webp 480w, imagenes/sonrisa-720.webp 720w, imagenes/sonrisa.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -555,7 +567,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#cirugia-oral" class="ag-panel" role="listitem" tabindex="0" aria-label="Cirugía Oral y Maxilofacial">
-          <span class="ag-panel__media"><img src="imagenes/cirugia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/cirugia.webp" srcset="imagenes/cirugia-480.webp 480w, imagenes/cirugia-720.webp 720w, imagenes/cirugia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -566,7 +578,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#implantologia" class="ag-panel" role="listitem" tabindex="0" aria-label="Implantología">
-          <span class="ag-panel__media"><img src="imagenes/implantologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/implantologia.webp" srcset="imagenes/implantologia-480.webp 480w, imagenes/implantologia-720.webp 720w, imagenes/implantologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -577,7 +589,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html#ortodoncia" class="ag-panel" role="listitem" tabindex="0" aria-label="Ortodoncia">
-          <span class="ag-panel__media"><img src="imagenes/aligner.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/aligner.webp" srcset="imagenes/aligner-480.webp 480w, imagenes/aligner-720.webp 720w, imagenes/aligner.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -588,7 +600,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Periodoncia">
-          <span class="ag-panel__media"><img src="imagenes/nosotros.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/nosotros.webp" srcset="imagenes/nosotros-480.webp 480w, imagenes/nosotros-720.webp 720w, imagenes/nosotros.webp 1000w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -599,7 +611,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Armonización Orofacial">
-          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/sonrisa.webp" srcset="imagenes/sonrisa-480.webp 480w, imagenes/sonrisa-720.webp 720w, imagenes/sonrisa.webp 800w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -610,7 +622,7 @@
         </a>
 
         <a href="subpaginas/tratamientos.html" class="ag-panel" role="listitem" tabindex="0" aria-label="Odontopediatría">
-          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" alt="" loading="lazy"></span>
+          <span class="ag-panel__media"><img src="imagenes/tecnologia.webp" srcset="imagenes/tecnologia-480.webp 480w, imagenes/tecnologia-720.webp 720w, imagenes/tecnologia.webp 1200w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
           <span class="ag-panel__texto">
             <span class="ag-panel__barra" aria-hidden="true"></span>
@@ -1001,7 +1013,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=67e5b54a57"></script>
+  <script src="scripts/script.js?v=a4f1041933"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
   <script src="scripts/testimonios-esfera.js?v=51a6dff9ea"></script>
