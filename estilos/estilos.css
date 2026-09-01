@@ -1227,6 +1227,44 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--silver-300);
 }
 
+/* Segunda banda (Instalaciones): la misma rejilla, espejada. La página
+   alterna el peso de izquierda a derecha en vez de repetir dos veces el
+   mismo bloque. El mosaico se invierte de verdad — la foto grande pasa a la
+   columna derecha y sangra hacia ESE borde — en vez de limitarse a mover el
+   bloque entero, que dejaría la foto grande otra vez del lado interior. */
+.nosotros-split--invertido { margin-top: clamp(3rem, 6vw, 5rem); }
+
+@media (min-width: 992px) {
+  .nosotros-split--invertido .nosotros-media {
+    order: 2;
+    grid-template-columns: 1fr 1.5fr;
+  }
+  .nosotros-split--invertido .nm-figura--principal {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    border-radius: 32px 0 0 32px;
+  }
+  .nosotros-split--invertido .nm-figura--alta { grid-column: 1; grid-row: 1; }
+  .nosotros-split--invertido .nm-figura--baja { grid-column: 1; grid-row: 2; }
+
+  .nosotros-split--invertido .nosotros-cuerpo {
+    order: 1;
+    margin-left: auto;   /* pega el texto al centro de la pantalla, no al borde */
+    padding-left: clamp(1.5rem, 4vw, 4rem);
+    padding-right: clamp(2.5rem, 4.5vw, 5rem);
+  }
+}
+
+/* El sello de esta banda vive en la esquina contraria, para que no quede
+   justo debajo del de la banda de arriba al hacer scroll. */
+.nm-sello--der {
+  left: auto;
+  right: clamp(1rem, 2.4vw, 2.2rem);
+}
+/* Sin el "+" delante: aquí el dato es exacto (dos sedes), no un "más de". */
+.nm-sello__num--liso::before { content: none; }
+
+
 /* ---- 7b. Columna de texto --------------------------------------------- */
 .nosotros-cuerpo {
   perspective: 1200px;
@@ -1272,6 +1310,39 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 .nosotros-acciones { display: flex; flex-wrap: wrap; gap: .9rem; }
+
+/* Ficha de sedes y horario: dos columnas (etiqueta / dato) separadas por un
+   hilo dorado, en vez de una lista con viñetas — se lee como el pie de una
+   ficha técnica y no como relleno. */
+.nosotros-sedes {
+  list-style: none;
+  padding: 0;
+  margin: 1.9rem 0 2.1rem;
+  border-top: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
+}
+.nosotros-sedes li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem 1.2rem;
+  padding: .8rem 0;
+  border-bottom: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
+}
+.ns-clave {
+  flex: 0 0 6.5rem;
+  font-family: var(--fuente-menu);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+  padding-top: .12rem;
+}
+.ns-valor {
+  flex: 1 1 14rem;
+  font-size: .93rem;
+  line-height: 1.55;
+  color: var(--texto-suave);
+}
 
 /* ---- 7c. Pilares: rejilla sin huecos, separada solo por hilo dorado -----
    El truco de "gap: 1px + fondo del contenedor" da los divisores en todos
@@ -1329,16 +1400,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ---- 7d. Salida ligada al scroll ---------------------------------------
    La ENTRADA ya la hacen .revelar / .revelar--velo pieza por pieza. Lo que
    faltaba era la salida: hasta ahora la sección simplemente se iba hacia
-   arriba con el scroll. Ahora se retira — se desvanece, se encoge un punto
-   y sube un poco — a medida que su borde inferior cruza la mitad baja de la
-   pantalla. Los valores los escribe el JS en --escena-op / --escena-y /
-   --escena-k (ver script.js, "5d. SALIDA DE ESCENA"), así que el efecto va
-   pegado al scroll en vez de dispararse de golpe con un umbral. */
+   arriba con el scroll. Ahora se retira — se desvanece y sube — a medida que
+   su borde inferior cruza la mitad baja de la pantalla. Los valores los
+   escribe el JS en --escena-op / --escena-y (ver script.js, "5c. EFECTOS
+   LIGADOS AL SCROLL"), así que el efecto va pegado al scroll en vez de
+   dispararse de golpe con un umbral.
+   Sin scale a propósito: escalar un bloque de texto obliga al navegador a
+   rasterizarlo a otro tamaño, y en iOS lo deja borroso hasta que la capa se
+   recompone. Solo opacidad y traslación, que el compositor resuelve sin
+   volver a dibujar el texto. */
 .escena-salida .nosotros-split,
 .escena-salida > .container {
   opacity: var(--escena-op, 1);
-  transform: translate3d(0, var(--escena-y, 0px), 0) scale(var(--escena-k, 1));
-  transform-origin: center top;
+  transform: translate3d(0, var(--escena-y, 0px), 0);
   will-change: opacity, transform;
 }
 
@@ -1999,6 +2073,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    defecto sea "none" y no "blur(0px)": con la propiedad puesta, el navegador
    mantiene la capa de composición viva y el desenfoque se queda encendido
    encima de las fotos. */
+/* Nace OCULTA, no solo transparente: una capa fija a pantalla completa con
+   backdrop-filter se queda viva en el compositor de iOS aunque el filtro
+   valga "none", y el desenfoque se quedaba encendido sobre toda la página.
+   El JS (14f) la enciende con visibility solo mientras hace falta, y en
+   móvil ni siquiera le pone desenfoque: solo el oscurecimiento. */
 .acercamiento-negro {
   position: fixed;
   inset: 0;
@@ -2007,6 +2086,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {

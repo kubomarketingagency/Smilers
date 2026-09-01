@@ -30,7 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=37">
+  <link rel="stylesheet" href="estilos/estilos.css?v=38">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en paralelo con el CSS ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1.webp" fetchpriority="high">
@@ -383,8 +383,87 @@
           <p>Consultorios amplios, esterilización certificada y acompañamiento en cada etapa del tratamiento.</p>
         </article>
       </div>
+    </div>
 
-      <!-- ===== 3c. CONTADOR =====
+    <!-- ===== 3c. SEGUNDA BANDA: INSTALACIONES =====
+         Mismo mecanismo que la primera, con el mosaico espejado al lado
+         derecho (ver .nosotros-split--invertido): la página alterna el peso
+         de izquierda a derecha en vez de repetir el mismo bloque dos veces.
+         El mosaico va primero en el HTML también aquí, para que al apilarse
+         en móvil las dos bandas se lean igual: foto y después texto. -->
+    <div class="nosotros-split nosotros-split--invertido">
+
+      <div class="nosotros-media">
+        <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-22">
+          <img src="imagenes/hero-2.webp" width="1000" height="750"
+               alt="Consultorio de Smilers Dental Clinique con sillón odontológico y equipo digital"
+               loading="lazy">
+        </figure>
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.14s" data-parallax="16">
+          <img src="imagenes/cirugia.webp" width="800" height="600"
+               alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy">
+        </figure>
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.26s" data-parallax="30">
+          <img src="imagenes/implantologia.webp" width="800" height="600"
+               alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy">
+        </figure>
+
+        <div class="nm-sello nm-sello--der revelar" style="--retraso:.38s">
+          <span class="nm-sello__num nm-sello__num--liso">2</span>
+          <span class="nm-sello__txt">sedes<br>en Quito</span>
+        </div>
+      </div>
+
+      <div class="nosotros-cuerpo">
+        <span class="etiqueta-editorial revelar">Instalaciones</span>
+
+        <h2 class="titulo-seccion text-start revelar" style="--retraso:.06s">
+          Un consultorio donde
+          <span class="texto-turquesa">se respira calma</span>
+        </h2>
+
+        <p class="parrafo parrafo-lead revelar" style="--retraso:.12s">
+          Nuestras dos sedes están equipadas igual, así que puedes ir a la que
+          te quede mejor sin cambiar de experiencia: consultorios amplios con
+          luz natural, sillón ergonómico y una pantalla al frente para que veas
+          tus radiografías mientras te las explicamos.
+        </p>
+
+        <p class="parrafo revelar" style="--retraso:.18s">
+          La esterilización se hace en un área independiente, con autoclave y
+          control de ciclo por cada instrumental. Y después están los detalles
+          que no salen en ningún folleto: música si te ayuda a relajarte, una
+          manta si tienes frío y el tiempo que necesites entre paso y paso.
+          Aquí nadie te apura.
+        </p>
+
+        <ul class="nosotros-sedes revelar" style="--retraso:.24s">
+          <li>
+            <span class="ns-clave">Matriz</span>
+            <span class="ns-valor">General Camilo Destruge y Francisco Salazar</span>
+          </li>
+          <li>
+            <span class="ns-clave">Sucursal</span>
+            <span class="ns-valor">Valparaíso N2158 y José Aguirre</span>
+          </li>
+          <li>
+            <span class="ns-clave">Horario</span>
+            <span class="ns-valor">Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</span>
+          </li>
+        </ul>
+
+        <div class="nosotros-acciones revelar" style="--retraso:.3s">
+          <a href="subpaginas/galeria.html" class="btn btn-contorno">
+            Ver la galería <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <!-- ===== 3d. CONTADOR =====
            Losa de obsidiana sobre el lienzo blanco: el contraste hace que el
            oro del número se lea de verdad (sobre blanco un degradado dorado
            claro se apaga). Los números usan tabular-nums para que no
@@ -922,7 +1001,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="scripts/script.js?v=36"></script>
+  <script src="scripts/script.js?v=37"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
   <script src="scripts/testimonios-esfera.js?v=2"></script>

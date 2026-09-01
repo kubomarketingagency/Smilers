@@ -7,7 +7,7 @@
      4. Botón "volver arriba"
      5. Animaciones de aparición (IntersectionObserver)
      5b. Transición "cierre" entre secciones (paneles tipo obturador)
-     5c. Paralaje de scroll de las piezas con data-parallax
+     5c. Efectos ligados al scroll (paralaje + salida de escena)
      6. Contadores animados de estadísticas
      6b. Selector de mapa (Matriz / Sucursal) en el footer
      7. Formulario del footer -> API de WhatsApp
@@ -260,101 +260,89 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 5c. PARALAJE DE SCROLL (piezas con data-parallax) =============
-     Cada elemento con data-parallax="N" se desplaza N píxeles en vertical
-     a lo largo de su recorrido por la pantalla; con valores de distinto
-     signo y magnitud, las piezas del mosaico de "Nosotros" se separan unos
-     píxeles y se vuelven a alinear mientras se hace scroll, que es lo que
-     da la sensación de profundidad.
-     Solo se escribe transform (translate3d): ni layout ni pintado, así que
-     el compositor lo resuelve solo y no cuesta frames. Por eso mismo esos
-     elementos entran con .revelar--velo (clip-path), no con la variante
-     normal de .revelar: si usaran transform, el valor inline de aquí lo
-     pisaría a media animación.
-     El listener es passive y está limitado a un rAF por frame — sin eso,
-     un trackpad dispara "scroll" muchas más veces de las que la pantalla
-     puede dibujar. ==================================================== */
-  const piezasParallax = document.querySelectorAll('[data-parallax]');
+  /* ===== 5c. EFECTOS LIGADOS AL SCROLL =================================
+     Un SOLO listener y un SOLO requestAnimationFrame para los dos efectos
+     que dependen de la posición de scroll en la portada. Antes eran dos
+     bloques con su propio listener y su propio rAF: cada uno leía
+     getBoundingClientRect por su cuenta, o sea dos rondas de cálculo de
+     layout por cuadro, que en móvil es justo lo que hace que el scroll se
+     "trabe". Aquí se leen todas las cajas primero y se escriben todos los
+     estilos después, que es el orden que evita el layout thrashing.
 
-  if (piezasParallax.length && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    let frameParallax = false;
+     a) data-parallax="N" — la pieza se desplaza N píxeles en vertical a lo
+        largo de su recorrido por la pantalla. Con valores de distinto signo
+        y magnitud, las piezas del mosaico de "Nosotros" se separan unos
+        píxeles y se vuelven a alinear, que es lo que da la profundidad.
+        Solo en escritorio con puntero fino: en táctil el scroll no emite
+        eventos de forma continua (iOS los agrupa), así que el paralaje se
+        ve a saltos en vez de fluido — mejor no tenerlo que tenerlo mal.
+        Por eso esas piezas entran con .revelar--velo (clip-path) y no con
+        la variante normal: si usaran transform, el valor inline de aquí lo
+        pisaría a media animación.
 
-    function actualizarParallaxScroll() {
-      const alto = window.innerHeight || 1;
+     b) data-escena-salida — la ENTRADA de una sección ya la resuelve
+        .revelar pieza por pieza; la salida no existía, la sección
+        simplemente se iba hacia arriba. Ahora se retira (se desvanece y
+        sube) según cuánto le queda de pantalla a su borde inferior. Sin
+        escalado a propósito: un scale sobre un bloque de texto obliga al
+        navegador a rasterizarlo a otro tamaño y en iOS deja el texto
+        borroso hasta que la capa se recompone.
 
-      piezasParallax.forEach(function (pieza) {
-        const caja = pieza.getBoundingClientRect();
-        // Fuera de pantalla (con un margen): no vale la pena tocarlo.
-        if (caja.bottom < -220 || caja.top > alto + 220) return;
-
-        // -1 = el centro de la pieza entra por el borde inferior;
-        //  0 = está a media pantalla;  1 = sale por el borde superior.
-        const progreso = ((caja.top + caja.height / 2) / alto - 0.5) * -2;
-        const fuerza = Number(pieza.dataset.parallax || 0);
-        pieza.style.transform = 'translate3d(0,' + (progreso * fuerza).toFixed(2) + 'px,0)';
-      });
-
-      frameParallax = false;
-    }
-
-    function pedirParallaxScroll() {
-      if (frameParallax) return;
-      frameParallax = true;
-      requestAnimationFrame(actualizarParallaxScroll);
-    }
-
-    window.addEventListener('scroll', pedirParallaxScroll, { passive: true });
-    window.addEventListener('resize', pedirParallaxScroll);
-    actualizarParallaxScroll();
-  }
-
-
-  /* ===== 5d. SALIDA DE ESCENA (secciones con data-escena-salida) =======
-     La ENTRADA de una sección ya la resuelve .revelar, pieza por pieza. La
-     SALIDA, en cambio, no existía: la sección simplemente se iba hacia
-     arriba con el scroll. Aquí se calcula, a partir de dónde está su borde
-     inferior, cuánto le queda de pantalla, y se escriben tres variables CSS
-     (--escena-op / --escena-y / --escena-k) que el estilo usa para
-     desvanecerla, subirla y encogerla un punto mientras se retira.
-     Va ligado al scroll a propósito, no a un umbral: el efecto avanza al
-     ritmo del dedo en vez de dispararse de golpe. Comparte la misma
-     disciplina que el paralaje de arriba (rAF por frame, listener passive)
-     y se apaga con "menos movimiento". =============================== */
+     El listener es passive y está limitado a un rAF por cuadro. =========== */
+  const haceParallax = window.matchMedia('(min-width: 992px)').matches
+    && window.matchMedia('(pointer: fine)').matches;
+  const piezasParallax = haceParallax ? document.querySelectorAll('[data-parallax]') : [];
   const escenasSalida = document.querySelectorAll('[data-escena-salida]');
 
-  if (escenasSalida.length && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
-    let frameSalida = false;
+  if ((piezasParallax.length || escenasSalida.length)
+      && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    let frameScroll = false;
 
-    function actualizarSalidaEscena() {
+    function actualizarEfectosScroll() {
       const alto = window.innerHeight || 1;
-      // El retiro ocupa la mitad baja de la pantalla: empieza cuando el pie
-      // de la sección cruza el 50% y termina cuando sale por arriba.
-      const tramo = alto * 0.5;
+      const tramoSalida = alto * 0.5;   // el retiro ocupa la mitad baja de la pantalla
+      const escrituras = [];
+
+      // --- 1) LEER: todas las cajas de una sola pasada
+      piezasParallax.forEach(function (pieza) {
+        const caja = pieza.getBoundingClientRect();
+        if (caja.bottom < -220 || caja.top > alto + 220) return;
+        // -1 = el centro entra por abajo; 0 = a media pantalla; 1 = sale por arriba
+        const progreso = ((caja.top + caja.height / 2) / alto - 0.5) * -2;
+        const fuerza = Number(pieza.dataset.parallax || 0);
+        escrituras.push([pieza, 'parallax', progreso * fuerza]);
+      });
 
       escenasSalida.forEach(function (escena) {
         const caja = escena.getBoundingClientRect();
         if (caja.top > alto || caja.bottom < -100) return;
-
-        let f = caja.bottom / tramo;
-        f = Math.min(1, Math.max(0, f));
-
-        escena.style.setProperty('--escena-op', f.toFixed(3));
-        escena.style.setProperty('--escena-y', (-(1 - f) * 60).toFixed(1) + 'px');
-        escena.style.setProperty('--escena-k', (0.94 + f * 0.06).toFixed(4));
+        escrituras.push([escena, 'salida', Math.min(1, Math.max(0, caja.bottom / tramoSalida))]);
       });
 
-      frameSalida = false;
+      // --- 2) ESCRIBIR: ya sin volver a consultar el layout
+      escrituras.forEach(function (orden) {
+        const el = orden[0];
+        if (orden[1] === 'parallax') {
+          el.style.transform = 'translate3d(0,' + orden[2].toFixed(2) + 'px,0)';
+        } else {
+          const f = orden[2];
+          el.style.setProperty('--escena-op', f.toFixed(3));
+          el.style.setProperty('--escena-y', (-(1 - f) * 55).toFixed(1) + 'px');
+        }
+      });
+
+      frameScroll = false;
     }
 
-    function pedirSalidaEscena() {
-      if (frameSalida) return;
-      frameSalida = true;
-      requestAnimationFrame(actualizarSalidaEscena);
+    function pedirEfectosScroll() {
+      if (frameScroll) return;
+      frameScroll = true;
+      requestAnimationFrame(actualizarEfectosScroll);
     }
 
-    window.addEventListener('scroll', pedirSalidaEscena, { passive: true });
-    window.addEventListener('resize', pedirSalidaEscena);
-    actualizarSalidaEscena();
+    window.addEventListener('scroll', pedirEfectosScroll, { passive: true });
+    window.addEventListener('resize', pedirEfectosScroll);
+    actualizarEfectosScroll();
   }
 
 
@@ -1114,6 +1102,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var PICO   = .45;  // punto de máximo desenfoque (acercándose)
     var DENTRO = .15;  // a partir de aquí ya estamos "dentro": velo apagado
 
+    /* El backdrop-filter de una capa fija a pantalla completa es de lo más
+       caro que se le puede pedir a un móvil: obliga a recomponer TODO lo que
+       queda debajo en cada cuadro. Peor aún, en Safari de iOS esa capa se
+       queda viva aunque se le ponga "none" y el desenfoque se queda
+       encendido sobre toda la página — el bug reportado: la portada entera
+       borrosa, con los botones flotantes (z-index 1040, por encima de esta
+       capa) como lo único nítido. Así que en pantallas chicas el velo solo
+       oscurece, sin desenfocar; y cuando el progreso llega a 0 la capa se
+       oculta con visibility, que sí desmonta la capa de composición. */
+    var usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
+
     function actualizarAcercamiento() {
       var t = especialidadesOsc.getBoundingClientRect().top / window.innerHeight;
       var progresoOsc;
@@ -1127,17 +1126,23 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       capaNegra.style.opacity = String(progresoOsc * .5);
-      /* En 0 se quita el backdrop-filter por completo (no "blur(0px)"): dejar
-         la propiedad puesta mantiene viva la capa de composición y el
-         desenfoque se queda "encendido" sobre las fotos en algunos
-         navegadores. */
+
       if (progresoOsc <= .01) {
+        /* Apagado: no basta con "none" en el filtro (ver arriba), hace falta
+           sacar la capa del árbol de pintado. */
+        capaNegra.style.visibility = 'hidden';
         capaNegra.style.webkitBackdropFilter = 'none';
         capaNegra.style.backdropFilter = 'none';
       } else {
-        var desenfoque = 'blur(' + (progresoOsc * 8).toFixed(1) + 'px)';
-        capaNegra.style.webkitBackdropFilter = desenfoque;
-        capaNegra.style.backdropFilter = desenfoque;
+        capaNegra.style.visibility = 'visible';
+        if (usarDesenfoque) {
+          var desenfoque = 'blur(' + (progresoOsc * 8).toFixed(1) + 'px)';
+          capaNegra.style.webkitBackdropFilter = desenfoque;
+          capaNegra.style.backdropFilter = desenfoque;
+        } else {
+          capaNegra.style.webkitBackdropFilter = 'none';
+          capaNegra.style.backdropFilter = 'none';
+        }
       }
       tickeandoOsc = false;
     }
@@ -1146,6 +1151,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
     }, { passive: true });
     window.addEventListener('resize', function () {
+      usarDesenfoque = window.matchMedia('(min-width: 992px)').matches;
       if (!tickeandoOsc) { tickeandoOsc = true; requestAnimationFrame(actualizarAcercamiento); }
     });
     actualizarAcercamiento();
