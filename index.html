@@ -39,7 +39,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=4dbfa87931">
+  <link rel="stylesheet" href="estilos/estilos.css?v=8b479d52a3">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
        paralelo con el CSS. Dos entradas con "media" porque el hero usa
@@ -785,12 +785,19 @@
             <span class="tst-firma__linea"></span>
             <span class="tst-firma__tratamiento" data-tratamiento></span>
           </p>
+          <!-- Las marcas de progreso son BOTONES, no adornos: al tocar una,
+               la pagina se desliza hasta la meseta de ese testimonio (ver
+               testimonios-esfera.js, "IR A UN TESTIMONIO"). En movil, donde
+               la seccion son cuatro pantallas y media de scroll, era la
+               unica forma de volver a uno concreto sin recorrerla entera.
+               El aria-label lo completa el JS con el nombre real de cada
+               paciente en cuanto lee la lista de abajo. -->
           <ol class="tst-pasos">
-            <li data-paso class="es-activo"></li>
-            <li data-paso></li>
-            <li data-paso></li>
-            <li data-paso></li>
-            <li data-paso></li>
+            <li><button type="button" class="es-activo" data-paso aria-label="Ir al testimonio 1"></button></li>
+            <li><button type="button" data-paso aria-label="Ir al testimonio 2"></button></li>
+            <li><button type="button" data-paso aria-label="Ir al testimonio 3"></button></li>
+            <li><button type="button" data-paso aria-label="Ir al testimonio 4"></button></li>
+            <li><button type="button" data-paso aria-label="Ir al testimonio 5"></button></li>
           </ol>
         </div>
 
@@ -1104,9 +1111,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=a3e3d69559"></script>
+  <script src="scripts/script.js?v=68ec741041"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=56dc4e9144"></script>
+  <script src="scripts/testimonios-esfera.js?v=7ba4270b3b"></script>
 </body>
 </html>

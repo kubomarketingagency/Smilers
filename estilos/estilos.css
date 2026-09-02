@@ -55,7 +55,15 @@
      blanco (2.16:1, ilegible) y sigue reservado a las piezas oscuras de la
      sección -.nm-sello y .contador-lujo-, que restauran la familia
      brillante en su propio selector. */
-  --gradiente-oro-profundo: linear-gradient(100deg, #7A5804 0%, #B8850F 34%, #8C6508 66%, #A87C10 100%);
+  /* Recalibrado a la saturación del logo (ver .seccion-clara.fondo-perla).
+     El recorrido es más corto que el del degradado brillante -de #7E5F12 a
+     #AE8625 y no de #7A5804 a #B8850F- porque la parada clara ya no puede
+     pasarse: #AE8625 ES la parada del logo y ya está justo en el 3:1 sobre
+     el marfil. Un degradado corto además sienta mejor a un titular grande, que
+     era la otra mitad de "no tan grotesco": el anterior recorría tanto tono
+     que la palabra se leía a dos colores. Las cuatro paradas, medidas sobre
+     #F6F3EC: 5.27 · 3.04 · 4.32 · 3.19. */
+  --gradiente-oro-profundo: linear-gradient(100deg, #7E5F12 0%, #AE8625 34%, #8E6C18 66%, #A97F1F 100%);
 
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
@@ -1200,18 +1208,65 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    restaura los valores brillantes en su propio selector. */
 .seccion-clara.fondo-perla {
   --gradiente-oro: var(--gradiente-oro-profundo);
-  /* Los dos tonos planos, en la misma recta saturada que el degradado de
-     arriba: el claro viste acentos e iconos grandes, el oscuro el texto
-     pequeño (etiquetas, numeración de pilares, claves de la ficha de
-     sedes) y por eso pasa de 4.5:1. */
-  --gold-500: #A87C10;   /* 3.8:1 sobre blanco · acentos y trazos */
-  --gold-700: #8C6508;   /* 5.3:1 sobre blanco · texto pequeño */
-  --hairline-oro: rgba(168, 124, 16, .3);
-  background-color: #FFFFFF;
+
+  /* EL DORADO DE ESTA SECCIÓN, SEGUNDA VUELTA.
+     La primera corrección subió la saturación al 83% para que el titular
+     dejara de verse marrón oliva, y de contraste iba sobrada... pero el
+     dorado del logo (#D2AC47) está al 61%, y a 83% el tono se aleja de la
+     marca por el otro lado: en vez de oliva, mostaza. Los dos son el mismo
+     matiz de siempre (42-43 grados), lo que cambia es cuánta saturación
+     aguanta antes de dejar de parecerse al logo.
+
+     El plano claro ya no es un tono inventado: es #AE8625, LA CUARTA PARADA
+     DEL SWATCH DEL LOGO tal cual, sin retocar. Sobre el marfil nuevo llega
+     justo al mínimo, y ese es todo el margen que hay.
+
+       #AE8625  3.04:1 arriba · 2.81:1 abajo   · el tono del logo
+       #7E5F12  5.27:1 arriba · 4.96:1 abajo   · texto pequeño
+
+     Lo que hay que tener claro para no romperlo: #AE8625 viste ICONOS,
+     TRAZOS y la palabra destacada del titular -piezas grandes o gráficas,
+     donde el mínimo son 3:1-, nunca texto de leer. Todo el texto pequeño en
+     oro (etiqueta editorial, numeración de pilares, claves de la ficha de
+     sedes) va en #7E5F12, que pasa de 4.5:1 en cualquier punto del lienzo.
+     Ponerle #AE8625 a un texto de 0.7rem sí sería un fallo de accesibilidad.
+
+     Y ojo con la intuición al revés: OSCURECER el fondo no ayuda a un dorado
+     oscuro, lo empeora. De ahí que el marfil de abajo no pueda bajar más sin
+     tirar de #AE8625 por debajo de 2.8.
+
+     El champán #D2AC47 -la parada brillante del logo- sigue sin poder ir
+     sobre fondo claro: da 2.16:1 contra blanco PURO, que es su techo
+     teórico, así que ningún fondo claro lo arregla. Sigue reservado a las
+     piezas oscuras de la sección (.nm-sello, .contador-lujo), que son justo
+     donde el dorado del logo ya se ve tal cual es. */
+  --gold-500: #AE8625;   /* parada 4 del swatch de marca · acentos y trazos */
+  --gold-700: #7E5F12;   /* misma recta, oscurecida · texto pequeño */
+
+  /* Hilo neutro cálido en vez de dorado: ver .pilares-editorial. */
+  --hairline-oro: rgba(174, 134, 37, .22);
+  --hairline-suave: rgba(122, 108, 82, .16);
+
+  /* EL BLANCO, MENOS BRILLANTE. Era #FFFFFF -> #F7F7F8 -> #ECEDEE: blanco
+     puro arriba y, lo que más se notaba, FRÍO -esos dos últimos tonos tiran
+     a azul-gris-, o sea el peor vecino posible para un dorado. Ahora es un
+     marfil cálido: baja el brillo, la sección deja de deslumbrar entre dos
+     bloques en ónix, y el oro se apoya en un fondo de su misma familia en
+     vez de pelearse con un gris azulado.
+
+     El recorrido vertical se deja MUY corto a propósito (16 puntos de
+     luminosidad entre la primera parada y la última). Cuanto más oscuro el
+     fondo, menos contraste tiene encima un dorado oscuro, así que la parada
+     final es la que marca el límite de todo lo demás: bajarla otro escalón
+     tiraría a #AE8625 por debajo de 2.8:1. Y abajo, además, casi no hay oro
+     suelto sobre el lienzo — están la losa del contador (que es ónix y
+     restaura el champán brillante) y las tarjetas de los pilares, que ponen
+     su propio fondo casi blanco. */
+  background-color: #F4F1EA;
   background-image:
-    radial-gradient(ellipse 55% 40% at 84% 4%, rgba(210, 172, 71, .12) 0%, transparent 62%),
-    radial-gradient(ellipse 70% 55% at 6% 96%, rgba(192, 192, 192, .28) 0%, transparent 66%),
-    linear-gradient(180deg, #FFFFFF 0%, #F7F7F8 52%, #ECEDEE 100%);
+    radial-gradient(ellipse 55% 40% at 84% 4%, rgba(210, 172, 71, .16) 0%, transparent 62%),
+    radial-gradient(ellipse 70% 55% at 6% 96%, rgba(150, 143, 131, .20) 0%, transparent 66%),
+    linear-gradient(180deg, #F6F3EC 0%, #F3EFE7 55%, #EFEAE0 100%);
 }
 
 /* DÓNDE VA EL ORO DENTRO DE ESTA SECCIÓN, Y POR QUÉ SE INVIRTIÓ.
@@ -1570,12 +1625,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .nosotros-checks strong { color: var(--texto); font-weight: 700; }
 .nc-icono {
-  flex: 0 0 20px;
+  /* El icono es un circle-check MACIZO: en oro plano quedaban tres manchas
+     mostaza del tamaño de una moneda bajando por la columna, que pesaban
+     más que el texto al que acompañan. A 0.92rem y con el oro claro de la
+     sección son una viñeta, que es su papel. */
+  flex: 0 0 18px;
   display: grid;
   place-items: center;
-  margin-top: .18rem;
-  font-size: 1.05rem;
-  color: var(--gold-700);
+  margin-top: .26rem;
+  font-size: .92rem;
+  color: var(--gold-500);
 }
 
 .nosotros-acciones { display: flex; flex-wrap: wrap; gap: .9rem; }
@@ -1587,14 +1646,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   list-style: none;
   padding: 0;
   margin: 1.35rem 0 1.55rem;
-  border-top: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
+  /* Mismo criterio que la rejilla de pilares: las reglas de una ficha
+     técnica separan filas, no subrayan en dorado. En oro, cuatro líneas
+     seguidas competían con las claves -que sí van en oro- y el bloque
+     entero se veía amarillo. */
+  border-top: 1px solid var(--hairline-suave, rgba(122, 108, 82, .18));
 }
 .nosotros-sedes li {
   display: flex;
   flex-wrap: wrap;
   gap: .2rem 1.2rem;
   padding: .62rem 0;
-  border-bottom: 1px solid var(--hairline-oro, rgba(122, 92, 25, .26));
+  border-bottom: 1px solid var(--hairline-suave, rgba(122, 108, 82, .18));
 }
 .ns-clave {
   flex: 0 0 6.5rem;
@@ -1621,11 +1684,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 1px;
-  background: var(--hairline-oro, rgba(122, 92, 25, .2));
-  border: 1px solid var(--hairline-oro, rgba(122, 92, 25, .2));
-  border-radius: 22px;
+  /* Hilo NEUTRO cálido, no dorado, y sin borde exterior. Con las dos cosas
+     en oro, las cuatro tarjetas se leían como una tabla: un marco mostaza
+     cerrado con una cruz mostaza dentro, que es de donde venía lo de
+     "grotesco". Los divisores tienen que separar, no dibujar una caja — el
+     oro se guarda para los acentos de dentro, que es donde se ve. */
+  background: var(--hairline-suave, rgba(122, 108, 82, .16));
+  border: 0;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(28, 28, 28, .07);
+  /* Sombra más baja y más difusa: la de 16/40 despegaba el bloque del
+     lienzo como si flotara aparte de la sección. */
+  box-shadow: 0 10px 30px rgba(28, 28, 28, .05);
   perspective: 1200px;
 }
 /* Dos columnas desde 360 px, no desde 576: apiladas de una en una, las
@@ -1635,7 +1705,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 @media (min-width: 992px) { .pilares-editorial { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 575.98px) {
   .pilar { padding: 1rem .85rem; }
-  .pilar__icono { margin: .5rem 0 .4rem; font-size: 1.15rem; }
+  .pilar__icono { width: 28px; height: 28px; margin: .55rem 0 .45rem; font-size: .88rem; }
   .pilar h3 { font-size: .9rem; }
   .pilar p { font-size: .8rem; line-height: 1.5; }
 }
@@ -1643,10 +1713,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pilar {
   position: relative;
   padding: clamp(1.25rem, 1.8vw, 1.7rem) clamp(1.1rem, 1.6vw, 1.5rem);
-  background: rgba(255, 255, 255, .92);
+  /* Blanco a media opacidad: deja pasar el marfil del lienzo, así que las
+     tarjetas se apoyan en la sección en vez de ser cuatro rectángulos
+     blancos pegados encima. */
+  background: rgba(255, 255, 255, .55);
   transition: background .5s ease;
 }
-.pilar:hover { background: #FFFFFF; }
+.pilar:hover { background: rgba(255, 255, 255, .92); }
 /* Regla dorada que baja por el borde izquierdo al pasar el cursor. */
 .pilar::before {
   content: '';
@@ -1666,9 +1739,20 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--gold-700);
 }
 .pilar__icono {
-  display: block;
-  margin: .7rem 0 .6rem;
-  font-size: 1.3rem;
+  /* Ficha redonda en vez de un glifo dorado suelto. Un icono a 1.3rem
+     colgando en medio del texto no tiene forma propia y se leía como un
+     borrón mostaza; dentro de un disco con un velo del mismo oro al 10% se
+     lee como una pieza pensada, y de paso el color puede bajar de tamaño
+     sin perder presencia. */
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: .75rem 0 .65rem;
+  border-radius: 50%;
+  background: rgba(174, 134, 37, .12);
+  box-shadow: inset 0 0 0 1px rgba(174, 134, 37, .20);
+  font-size: 1rem;
   line-height: 1;
   color: var(--gold-700);
 }
@@ -1785,7 +1869,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nosotros-halo--oro {
   width: 520px; height: 520px;
   bottom: 8%; right: -190px;
-  background: radial-gradient(circle, rgba(210, 172, 71, .26) 0%, rgba(210, 172, 71, .10) 45%, transparent 72%);
+  /* Sube de .26 a .32: sobre el blanco frío de antes un velo dorado se
+     notaba enseguida, pero sobre el marfil nuevo -que ya es cálido- al 26%
+     desaparecía y la sección se quedaba plana. */
+  background: radial-gradient(circle, rgba(210, 172, 71, .32) 0%, rgba(210, 172, 71, .12) 45%, transparent 72%);
 }
 
 .marco-imagen {
@@ -2394,8 +2481,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    Controlado por script.js, sección 14e (misma técnica de progreso 0-1
    que actualizarCine(), aplicada nada más que a una capa negra). */
 .cierre-cine {
+  /* 150vh, no 190. Ojo con la cuenta: lo que dura un pin no es su alto sino
+     su alto MENOS la pantalla, o sea el recorrido real de scroll. Con 190vh
+     eran 90vh de recorrido repartidos en 27 de negro + 27 de revelado + 36
+     sosteniendo una banda que ya estaba nítida: casi la mitad del bloque no
+     hacía nada, y el difuminado -que es lo único que hay que ver aquí-
+     quedaba encajonado en el tercio de en medio.
+
+     Con 150vh el recorrido baja a 50vh y se reparte 6 + 30 + 14 (ver el
+     reparto en script.js, 14e): el revelado empieza casi nada más entrar,
+     ocupa MÁS recorrido que antes en proporción y el bloque entero dura 40vh
+     menos. Más visto y menos prolongado, que era el encargo. */
   position: relative;
-  height: 190vh;
+  height: 150vh;
 }
 .cierre-cine-pin {
   position: sticky;
@@ -2429,7 +2527,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    body y el revelado empezaba con un halo claro alrededor. */
 .cierre-cine-pin { background: var(--onix); }
 @media (max-width: 767.98px) {
-  .cierre-cine { height: 150vh; }
+  /* 130vh = 30vh de recorrido, repartidos 3.6 + 18 + 8.4. */
+  .cierre-cine { height: 130vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cierre-cine { height: auto; }
@@ -4140,9 +4239,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    cuántos faltan, que si no el pin se siente sin fondo. */
 .tst-pasos {
   list-style: none;
-  margin: 2.2rem 0 0;
+  /* El margen baja de 2.2rem porque las marcas ya no miden 2px de alto sino
+     30 (ver abajo): sin bajarlo, el bloque de texto crecía 28px y en el
+     teléfono el pin recortaba la última línea. */
+  margin: 1.3rem 0 0;
   padding: 0;
   display: flex;
+  align-items: center;
   gap: .5rem;
   /* Las marcas crecen de 26px a 44px con una transición de "width", que es
      una propiedad de layout: durante esos 400 ms el navegador rehace la caja
@@ -4151,19 +4254,52 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      queda encerrado en esta lista: no sube al panel, ni al pin, ni a la
      sección. Es la diferencia entre repintar cinco barritas y volver a medir
      media portada cada vez que la esfera cambia de testimonio.
-     "size" necesita la altura explícita; es la misma de .tst-pasos li. */
-  height: 2px;
+     "size" necesita la altura explícita; es la del área de toque. */
+  height: 30px;
   contain: layout size;
 }
-.tst-pasos li {
+.tst-pasos li { display: flex; }
+
+/* La marca visible sigue siendo una raya de 2px, pero el elemento que la
+   contiene mide 30px de alto: eso es el ÁREA DE TOQUE. Una raya de 2px es
+   imposible de acertar con el dedo, y estos botones son justo lo que hace
+   navegable la sección en un teléfono. Los 26x30 quedan por debajo de los
+   44x44 que recomienda Apple, pero son cinco objetivos en fila y agrandarlos
+   más obligaría a separarlos tanto que dejarían de leerse como una barra de
+   progreso; a cambio van con margen vertical de sobra y sin nada pulsable
+   alrededor con lo que confundirlos. */
+.tst-pasos [data-paso] {
+  position: relative;
   width: 26px;
-  height: 2px;
-  background: rgba(217, 214, 208, .25);
-  transition: background .4s ease, width .4s ease;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: width .4s ease;
 }
-.tst-pasos li.es-activo {
-  width: 44px;
-  background: var(--gold-500);
+.tst-pasos [data-paso]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: rgba(217, 214, 208, .25);
+  transition: background .4s ease;
+}
+.tst-pasos [data-paso].es-activo { width: 44px; }
+.tst-pasos [data-paso].es-activo::after { background: var(--gold-500); }
+/* Con cursor: la marca se aclara al pasar por encima, que es lo que dice
+   que se puede pulsar. En táctil no existe hover y de eso se encarga la
+   pista del primer testimonio (ver .tst-pista-toque). */
+.tst-pasos [data-paso]:hover::after { background: rgba(210, 172, 71, .6); }
+.tst-pasos [data-paso]:focus-visible { outline: none; }
+.tst-pasos [data-paso]:focus-visible::after {
+  background: var(--gold-100);
+  box-shadow: 0 0 0 2px rgba(210, 172, 71, .45);
 }
 
 /* --- Esfera --- */
@@ -4240,6 +4376,71 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .72rem;
   color: var(--texto-suave);
 }
+/* ---- PISTA DE "ESTO SE TOCA", SOLO EN EL PRIMER TESTIMONIO -------------
+   Un anillo dorado que sale del borde del disco y se abre hacia fuera, más
+   un empujoncito al chip de "Antes / ver el después". Lo enciende
+   testimonios-esfera.js poniendo .tst-pista-toque en la sección mientras el
+   testimonio del frente sea el primero y el visitante no haya revelado
+   todavía ninguna foto.
+
+   Cinco repeticiones y para: una pista que parpadea sin fin deja de leerse
+   como una invitación y pasa a ser un elemento animado más del fondo. Si el
+   visitante vuelve al primer testimonio, el JS quita y repone la clase, lo
+   que reinicia la animación y le da otras cinco. */
+.testimonios-revelar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(210, 172, 71, .75);
+  box-shadow: 0 0 14px rgba(210, 172, 71, .3);
+  opacity: 0;
+  pointer-events: none;
+}
+.tst-en-juego.tst-pista-toque .testimonios-revelar::before {
+  animation: pistaAnillo 2.6s cubic-bezier(.16, 1, .3, 1) 5;
+}
+/* El anillo tiene que salir POR FUERA del disco del frente, y el botón no
+   siempre es más grande que él: en escritorio lo desborda (55% del lienzo
+   contra ~53% del disco) pero en teléfono se queda por dentro (66% contra
+   ~69%: botón de 267px dentro de un disco de 280). Con un inset fijo el
+   anillo quedaba dibujado ENCIMA de la foto y no se veía.
+
+   Escalando nace bajo el disco y sale por el borde, que además es lo que
+   hace que se lea como algo que brota de ahí. El pico de opacidad va en el
+   30% y no antes a propósito: ahí el anillo mide 304px en teléfono, o sea
+   24px por fuera del disco, ya sobre el ónix. Con el pico en el 22% caía
+   justo en el canto de la foto -donde la máscara del lienzo lo difumina- y
+   la pista no se veía aunque estuviera corriendo. */
+@keyframes pistaAnillo {
+  0%   { transform: scale(1.02); opacity: 0; }
+  30%  { transform: scale(1.14); opacity: .9; }
+  72%  { transform: scale(1.28); opacity: 0; }
+  100% { transform: scale(1.36); opacity: 0; }
+}
+/* El chip ya vive en translateY(150%); la animación repite ese valor en las
+   puntas para que el "latido" salga y vuelva exactamente a su sitio. */
+.tst-en-juego.tst-pista-toque .testimonios-revelar__chip {
+  animation: pistaChip 2.6s ease-in-out 5;
+}
+@keyframes pistaChip {
+  0%, 100% { transform: translateY(150%); }
+  22%      { transform: translateY(118%); }
+  48%      { transform: translateY(150%); }
+}
+/* Ya revelada una foto, el JS quita .tst-pista-toque; esto es el seguro por
+   si la clase siguiera puesta al pasar al "después". */
+.mostrando-despues .testimonios-revelar::before,
+.mostrando-despues .testimonios-revelar__chip { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tst-en-juego.tst-pista-toque .testimonios-revelar::before,
+  .tst-en-juego.tst-pista-toque .testimonios-revelar__chip { animation: none; }
+  /* Sin movimiento, la pista es un anillo fijo: se sigue viendo que el
+     disco es un control, que es lo que hay que comunicar. */
+  .tst-en-juego.tst-pista-toque .testimonios-revelar::before { opacity: .55; }
+}
+
 /* En táctil, sin desenfoque de fondo. Un backdrop-filter obliga a releer y
    volver a difuminar lo que hay debajo en cada cuadro, y debajo de este chip
    está justo el lienzo WebGL de la esfera, que cambia entero mientras gira:
@@ -4308,7 +4509,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .tst-comillas { font-size: clamp(2.4rem, 9vw, 3.4rem); }
   .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
   .tst-firma { justify-content: center; }
-  .tst-pasos { margin-top: 1.4rem; justify-content: center; }
+  .tst-pasos { margin-top: .5rem; justify-content: center; }
   .testimonios-revelar { width: 66%; }  /* el encuadre 0.232 de movil agranda el disco */
   .testimonios-revelar__pista { display: none; }
 }
@@ -4320,7 +4521,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .esfera-activa .testimonios-etiqueta { padding: 74px 1.2rem 10px; }
   .esfera-activa .testimonios-escena { padding: 88px 1.2rem 18px; }
   .tst-cita { font-size: 1rem; }
-  .tst-pasos { margin-top: .9rem; }
+  .tst-pasos { margin-top: .2rem; }
 }
 
 @media (max-width: 767.98px) {

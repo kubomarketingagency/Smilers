@@ -1003,8 +1003,36 @@ void main() {
     var ultimaOpacidadBoton = -1;
     var ultimoBotonActivo = null;
 
+    /* ---- PISTA DE "ESTO SE TOCA" -----------------------------------------
+       El disco del frente cambia del antes al despues, pero nada lo decia:
+       con raton se descubre sin querer al pasar por encima, y en un telefono
+       -donde no hay hover y la pista de texto va oculta por sitio- no se
+       descubria nunca. La pista solo sale en el PRIMER testimonio: una vez
+       aprendido el gesto, repetirla en los otros cuatro seria ruido.
+
+       Se apaga para siempre en cuanto el visitante revela una foto o toca
+       una marca de progreso; hasta entonces vuelve a salir cada vez que se
+       regresa al primero (el CSS la deja en unas pocas repeticiones, no
+       eternas, para que no se convierta en un parpadeo de fondo). */
+    var pistaGastada = false;
+
+    function apagarPista() {
+      if (pistaGastada) return;
+      pistaGastada = true;
+      seccion.classList.remove('tst-pista-toque');
+    }
+
+    function ajustarPista(indice) {
+      if (pistaGastada) return;
+      /* Quitar y volver a poner la clase reinicia la animación del CSS, que
+         es justo lo que se quiere al regresar al primer testimonio. */
+      seccion.classList.toggle('tst-pista-toque', indice === 0);
+    }
+
     function fijarRevelado(encendido) {
       if (revelando === encendido) return;
+      /* Reveló una foto: ya sabe que se toca. */
+      if (encendido) apagarPista();
       revelando = encendido;
       esfera.revelar(encendido);
       if (boton) boton.setAttribute('aria-pressed', encendido ? 'true' : 'false');
@@ -1051,8 +1079,8 @@ void main() {
        testimonio y la banda de abajo. Con el 96%, quedan ~21vh de scroll ya
        en negro absoluto antes del relevo, y el cambio de una sección a la
        otra ocurre con la pantalla apagada: no hay costura que ver. */
-    var CIERRE_DESDE = 0.86;
-    var CIERRE_HASTA = 0.96;
+    var CIERRE_DESDE = 0.845;
+    var CIERRE_HASTA = 0.965;
 
     /* ---- meseta por testimonio ------------------------------------------
        Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
@@ -1114,7 +1142,16 @@ void main() {
          están juntas y no hay nada que reescribir en cada cuadro. */
       if (hojas.length === 2) {
         var c = acotar((progreso - CIERRE_DESDE) / (CIERRE_HASTA - CIERRE_DESDE));
-        var suave = c * c * (3 - 2 * c);
+        /* Smootherstep (6c^5-15c^4+10c^3) en vez de smoothstep, y sobre un
+           tramo un 20% más largo. El smoothstep de antes sale de cero con
+           pendiente nula pero acelera enseguida, y como las hojas recorren
+           media pantalla cada una, el arranque se notaba: la imagen estaba
+           quieta y de pronto los dos filos ya venían lanzados. Smootherstep
+           también deja la SEGUNDA derivada en cero en las dos puntas, o sea
+           que ni empieza ni termina con tirón — las hojas se despegan sin
+           que se vea el instante en que empiezan a moverse y se posan en el
+           centro en vez de chocar. */
+        var suave = c * c * c * (c * (c * 6 - 15) + 10);
         var fuera = ((1 - suave) * 100).toFixed(2);
         if (fuera !== ultimoCierre) {
           ultimoCierre = fuera;
@@ -1143,7 +1180,12 @@ void main() {
         if (salidaTratamiento) salidaTratamiento.textContent = item.tratamiento;
         pasos.forEach(function (paso, i) {
           paso.classList.toggle('es-activo', i === indice);
+          /* aria-current, no solo la clase: un lector de pantalla tiene que
+             poder decir cuál de los cinco botones es el que está sonando. */
+          if (i === indice) paso.setAttribute('aria-current', 'true');
+          else paso.removeAttribute('aria-current');
         });
+        ajustarPista(indice);
         fijarRevelado(false);   // al cambiar de testimonio vuelve al "antes"
       }
 
@@ -1213,11 +1255,52 @@ void main() {
        los cinco que la página no terminaba de encuadrar nunca. Ahora que el
        reparto es asimétrico su meseta cae en el 0.80 y el tope está en el
        0.86, así que entra como los demás. */
+    /* ---- IR A UN TESTIMONIO ---------------------------------------------
+       La Y de documento en la que el testimonio i se queda quieto al frente:
+       el centro de su meseta, deshaciendo el mapeo progreso -> t. La usan
+       las dos cosas que llevan a un testimonio -el imán al detenerse el
+       scroll y las marcas de progreso, que ahora son botones- para que no
+       haya dos versiones del mismo cálculo que se puedan desincronizar si
+       mañana se toca REPOSO_INICIO o TRAMO_GIRO. */
+    function yDeTestimonio(indice) {
+      var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
+      var tramos = items.length - 1;
+      if (recorrido <= 0 || tramos <= 0) return null;
+      var progreso = REPOSO_INICIO + (acotar(indice / tramos)) * TRAMO_GIRO;
+      var tope = seccion.getBoundingClientRect().top + window.scrollY;
+      return Math.round(tope + progreso * recorrido);
+    }
+
+    /* ---- LAS MARCAS DE PROGRESO SON BOTONES ------------------------------
+       En escritorio la sección se recorre con la rueda sin esfuerzo, pero en
+       un teléfono son cuatro pantallas y media de scroll: volver al segundo
+       testimonio significaba deslizar a ciegas hasta dar con él. Ahora se
+       toca su marca y la página se desliza sola hasta su meseta, con el
+       mismo recorrido abortable que usa el imán -cualquier gesto lo para-.
+
+       El aria-label se completa aquí y no en el HTML porque los nombres
+       viven en la lista de testimonios: si mañana se edita uno, la etiqueta
+       del botón se actualiza sola. */
+    pasos.forEach(function (paso, indice) {
+      var quien = items[indice];
+      if (quien && quien.nombre) {
+        paso.setAttribute('aria-label', 'Ir al testimonio de ' + quien.nombre);
+      }
+      paso.addEventListener('click', function () {
+        var destino = yDeTestimonio(indice);
+        if (destino === null) return;
+        apagarPista();
+        var salto = Math.abs(destino - window.scrollY);
+        if (window.SmilersScroll && window.SmilersScroll.deslizarA) {
+          window.SmilersScroll.deslizarA(destino, Math.min(900, 380 + salto * 0.35));
+        } else {
+          window.scrollTo({ top: destino, behavior: 'smooth' });
+        }
+      });
+    });
+
     if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
       window.SmilersScroll.alDetenerse(function () {
-        var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
-        if (recorrido <= 0) return null;
-
         var progreso = progresoSeccion;
         if (progreso <= 0.04 || progreso >= CIERRE_DESDE) return null;
 
@@ -1225,8 +1308,8 @@ void main() {
         if (tramos <= 0) return null;
 
         var lineal = acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * tramos;
-        var objetivo = REPOSO_INICIO + (Math.round(lineal) / tramos) * TRAMO_GIRO;
-        var tope = seccion.getBoundingClientRect().top + window.scrollY;
+        var destino = yDeTestimonio(Math.round(lineal));
+        if (destino === null) return null;
 
         /* "maximo" en 0.62 de pantalla y no el tope común (0.55): entre el
            centro de una meseta y el de la vecina hay medio tramo, que con el
@@ -1234,7 +1317,7 @@ void main() {
            escritorio (520vh) y 0.43 en móvil (460vh). Con el tope común
            quedaba tan al filo que cualquier variación de alto lo descartaba y
            el imán no se movía nunca. */
-        return { y: Math.round(tope + objetivo * recorrido), maximo: 0.62 };
+        return { y: destino, maximo: 0.62 };
       });
     }
 
@@ -1256,6 +1339,10 @@ void main() {
            quedan siempre en su estado final. */
         guarda: seccion,
         alCambiarVisibilidad: function (dentro) {
+          /* La pista del primer testimonio es una animación en bucle: si
+             corriera con la sección fuera de pantalla estaría componiendo un
+             anillo cada cuadro durante toda la portada para nada. */
+          seccion.classList.toggle('tst-en-juego', dentro);
           /* Las dos hojas del obturador solo necesitan capa propia mientras
              la sección está en juego; fuera de ella son dos rectángulos
              negros quietos y no hay por qué tenerlas reservadas en la GPU

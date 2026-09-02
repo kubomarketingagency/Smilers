@@ -1629,10 +1629,22 @@ document.addEventListener('DOMContentLoaded', function () {
       if (progreso === ultimoProgresoCierre) return;
       ultimoProgresoCierre = progreso;
 
-      // 0%-30%: se queda en negro (el instante de "pausa" antes de revelar).
-      // 30%-60%: la cortina negra se desvanece, descubriendo la banda CTA.
-      // 60%-100%: ya revelada del todo, se sostiene así hasta soltar el pin.
-      var revelado = acotar((progreso - .30) / .30);
+      // 0%-12%: se queda en negro (el instante de "pausa" antes de revelar).
+      // 12%-72%: la cortina negra se desvanece, descubriendo la banda CTA.
+      // 72%-100%: ya revelada del todo, se sostiene así hasta soltar el pin.
+      //
+      // Antes era 30/60/100 sobre 90vh de recorrido: 27vh en negro antes de
+      // que empezara a aparecer nada -que, pegados a las hojas del cierre de
+      // Testimonios, se leían como una sola pantalla apagada larguísima- y
+      // 36vh más sosteniendo una banda ya nítida. El difuminado, que es lo
+      // único que hay que ver aquí, ocupaba el tercio de en medio y pasaba
+      // casi de largo.
+      //
+      // Ahora son 50vh de recorrido (ver .cierre-cine en estilos.css)
+      // repartidos 6 + 30 + 14: el revelado arranca casi al entrar y se lleva
+      // el 60% del bloque en vez del 30%. En vh reales pasa de 27 a 30, o sea
+      // que el difuminado se ve MÁS aunque el bloque entero dure 40vh menos.
+      var revelado = acotar((progreso - .12) / .60);
       negro.style.opacity = String(1 - revelado);
 
       /* La banda sale del desenfoque a la vez que el negro se levanta: las
