@@ -48,16 +48,16 @@
   <link rel="preload" as="image" href="imagenes/hero-1-720.webp?v=44baaaa35a" media="(max-width: 767.98px)" fetchpriority="high">
   <link rel="preload" as="image" href="imagenes/hero-1.webp?v=9bd092de88" media="(min-width: 768px)" fetchpriority="high">
 
-  <!-- ===== El clip de bienvenida, pedido desde el <head>. El <video> del
-       body no trae src (lo elige un script en línea, según el ancho), y un
-       <script> normal no puede ejecutarse hasta que hayan bajado todas las
-       hojas de estilo de aquí arriba. Con esto la descarga arranca antes
-       incluso de eso. Donde el navegador no entienda as="video" la línea se
-       ignora y no pasa nada: el <video> lo pide igual, solo que un poco
-       después. Los 'media' evitan bajar el corte que no toca y, con "menos
-       movimiento", no bajar ninguno. ===== -->
-  <link rel="preload" as="video" href="video-hero/SmilersCelular-720.mp4?v=df614e064a" media="(max-width: 767.98px) and (prefers-reduced-motion: no-preference)">
-  <link rel="preload" as="" href="video-hero/SmilersCompu-720.mp4?v=442156d929" media="(min-width: 768px) and (prefers-reduced-motion: no-preference)">
+  <!-- ===== El clip de bienvenida NO se precarga desde aquí. Se intentó con
+       <link rel="preload" as="video">, pero ningún navegador admite ese
+       valor de "as": Chrome descarta la línea y encima la denuncia en
+       consola (<link rel=preload> must have a valid "as" value). O sea,
+       cero beneficio y una advertencia de regalo.
+       La descarga la arranca igual el <script> en línea que va pegado al
+       <video>, casi al principio del body: para cuando corre, el navegador
+       apenas ha leído este <head>, así que lo que se pierde son unos pocos
+       milisegundos. Ese mismo script es el que elige el corte según el
+       ancho y el que no pide nada si hay "menos movimiento". ===== -->
 </head>
 
 <body>
