@@ -39,7 +39,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=75f3d33bda">
+  <link rel="stylesheet" href="estilos/estilos.css?v=aa14534cc0">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
        paralelo con el CSS. Dos entradas con "media" porque el hero usa
@@ -398,17 +398,14 @@
         </h2>
 
         <p class="parrafo parrafo-lead revelar" style="--retraso:.08s">
-          En Smilers Dental Clinique cuidamos tu sonrisa como cuidaríamos la nuestra.
-          Somos una clínica dental integral en Quito —diagnóstico digital, estética,
-          rehabilitación y todas las especialidades bajo un mismo techo— y antes de
+          Somos una clínica dental integral en Quito: diagnóstico digital, estética,
+          rehabilitación y todas las especialidades bajo un mismo techo. Antes de
           empezar te mostramos en pantalla qué vamos a hacer, por qué y cuánto cuesta.
         </p>
 
         <p class="parrafo revelar" style="--retraso:.12s">
-          Trabajamos en dos sedes con escáner intraoral 3D y diseño digital de sonrisa,
-          en consultorios pensados para que estés cómodo. Y si te dan nervios las
-          visitas al dentista, dilo con confianza: buena parte de nuestro trabajo es
-          que salgas de aquí más tranquilo de lo que entraste.
+          Y si te dan nervios las visitas al dentista, dilo con confianza: buena parte
+          de nuestro trabajo es que salgas más tranquilo de lo que entraste.
         </p>
 
         <ul class="nosotros-checks revelar" style="--retraso:.16s">
@@ -447,19 +444,19 @@
           <h3>Diagnóstico digital</h3>
           <p>Escáner intraoral 3D y radiología digital: vemos tu boca en pantalla, sin pastas ni suposiciones.</p>
         </article>
-        <article class="pilar revelar" style="--retraso:.07s">
+        <article class="pilar revelar" style="--retraso:.08s">
           <span class="pilar__num">02</span>
           <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-wand-magic-sparkles"></use></svg></span>
           <h3>Diseño de sonrisa</h3>
           <p>Simulamos el resultado antes de tocar un diente, para que decidas viendo, no imaginando.</p>
         </article>
-        <article class="pilar revelar" style="--retraso:.2s">
+        <article class="pilar revelar" style="--retraso:.16s">
           <span class="pilar__num">03</span>
           <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
           <h3>Equipo con posgrado</h3>
           <p>Ortodoncia, implantología, endodoncia, periodoncia y odontopediatría, en trabajo interdisciplinario.</p>
         </article>
-        <article class="pilar revelar" style="--retraso:.2s">
+        <article class="pilar revelar" style="--retraso:.24s">
           <span class="pilar__num">04</span>
           <span class="pilar__icono"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
           <h3>Confort y bioseguridad</h3>
@@ -512,18 +509,16 @@
         </h2>
 
         <p class="parrafo parrafo-lead revelar" style="--retraso:.08s">
-          Nuestras dos sedes están equipadas igual, así que puedes ir a la que
-          te quede mejor sin cambiar de experiencia: consultorios amplios con
-          luz natural, sillón ergonómico y una pantalla al frente para que veas
-          tus radiografías mientras te las explicamos.
+          Nuestras dos sedes están equipadas igual: consultorios amplios con luz
+          natural, sillón ergonómico y una pantalla al frente para que veas tus
+          radiografías mientras te las explicamos.
         </p>
 
         <p class="parrafo revelar" style="--retraso:.12s">
-          La esterilización se hace en un área independiente, con autoclave y
-          control de ciclo por cada instrumental. Y después están los detalles
-          que no salen en ningún folleto: música si te ayuda a relajarte, una
-          manta si tienes frío y el tiempo que necesites entre paso y paso.
-          Aquí nadie te apura.
+          Esterilización en área independiente, con control de ciclo por cada
+          instrumental. Y los detalles que no salen en ningún folleto: música si
+          te relaja, una manta si tienes frío y el tiempo que necesites entre
+          paso y paso. Aquí nadie te apura.
         </p>
 
         <ul class="nosotros-sedes revelar" style="--retraso:.16s">
@@ -592,9 +587,9 @@
 
     <!-- Ceremonia de entrada: mismo mecanismo .cortina/blur que el resto
          del sitio, con el mensaje "Tratamientos" a pantalla completa;
-         data-retraso-ms le pide al observer (script.js, 5b) que espere 1s
-         quieta antes de desvanecerse y revelar el acordeón. -->
-    <div class="cortina acordeon-intro" aria-hidden="true" data-retraso-ms="1000">
+         data-retraso-ms le pide al observer (script.js, 5b) que espere ese
+         tiempo quieta antes de desvanecerse y revelar el acordeón. -->
+    <div class="cortina acordeon-intro" aria-hidden="true" data-retraso-ms="550">
       <span class="cortina-panel"><span class="acordeon-intro__texto">Tratamientos</span></span>
     </div>
 
@@ -757,6 +752,19 @@
            sola y entrega la pantalla ya en negro al cierre de cine que
            viene justo después, sin corte seco entre las dos. -->
       <div class="testimonios-velo" data-velo-testimonios aria-hidden="true"></div>
+
+      <!-- Cierre de la sección: dos hojas negras que entran desde arriba y
+           desde abajo hasta juntarse en el centro cuando el último
+           testimonio ya pasó — como el obturador de una cámara cerrándose.
+           Van por encima del velo (que ahora solo hace la apertura) y
+           entregan la pantalla en negro al cierre de cine que viene
+           después, que la vuelve a abrir con un difuminado sobre la banda
+           de contacto. Las mueve testimonios-esfera.js con el mismo
+           progreso de scroll que gira la esfera. -->
+      <div class="testimonios-cierre" data-cierre-testimonios aria-hidden="true">
+        <span class="tc-hoja tc-hoja--arriba"></span>
+        <span class="tc-hoja tc-hoja--abajo"></span>
+      </div>
 
       <!-- Etiqueta fija, mismo criterio que la de Tratamientos -->
       <div class="testimonios-etiqueta">
@@ -1096,9 +1104,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=7ed6ce8e68"></script>
+  <script src="scripts/script.js?v=245e0f6eaf"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=cb84fe7847"></script>
+  <script src="scripts/testimonios-esfera.js?v=e6334f61a0"></script>
 </body>
 </html>

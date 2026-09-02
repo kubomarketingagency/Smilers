@@ -92,10 +92,125 @@ var SmilersScroll = (function () {
     requestAnimationFrame(correr);
   }
 
-  window.addEventListener('scroll', pedir, { passive: true });
+  /* ---- DESLIZAMIENTO PROPIO, Y ABORTABLE -------------------------------
+     window.scrollTo({behavior:'smooth'}) NO se puede cancelar: una vez
+     lanzado sigue hasta el final aunque el visitante vuelva a tocar la
+     pantalla, y su gesto y el del navegador se pelean por el mismo scroll.
+     Eso era exactamente lo que hacía que las asistencias de scroll se
+     sintieran como si la página tuviera vida propia — y por lo que hubo que
+     apagarlas en táctil.
+
+     Aquí el recorrido se anima a mano, cuadro a cuadro, y CUALQUIER gesto
+     del visitante (rueda, dedo, tecla, arrastre de la barra) lo aborta en
+     el acto. Con eso la página puede volver a acompañar el scroll sin
+     quitarle nunca el mando a quien está leyendo. ---------------------- */
+  var deslizamiento = null;
+  var bloqueadoHasta = 0;
+
+  function abortar() {
+    if (deslizamiento) {
+      deslizamiento.vivo = false;
+      /* Y ADEMÁS el imán se aparta un rato. Sin esto, interrumpir un
+         encuadre no servía de nada: el gesto lo paraba en seco, sí, pero
+         al detenerse el scroll el imán volvía a engancharse y terminaba
+         igual el recorrido — medido, se quedaba quieto 0.7s y luego
+         completaba los 397px él solo. Que es exactamente la sensación de
+         página con vida propia que se quería quitar. Si el visitante
+         interrumpió el encuadre es que no lo quería: se le deja el mando. */
+      bloqueadoHasta = Date.now() + 1400;
+    }
+    deslizamiento = null;
+  }
+
+  function deslizarA(destino, duracion) {
+    abortar();
+    var inicio = window.scrollY;
+    var salto = destino - inicio;
+    if (Math.abs(salto) < 2) return;
+    var d = duracion || 620;
+    var t0 = 0;
+    var mio = { vivo: true };
+    deslizamiento = mio;
+
+    function paso(ahora) {
+      if (!mio.vivo) return;
+      if (!t0) t0 = ahora;
+      var t = Math.min(1, (ahora - t0) / d);
+      /* easeInOutCubic: sale de quieto y llega a quieto, sin tirón en
+         ninguna de las dos puntas. */
+      var e = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      /* behavior:'auto' EXPLÍCITO, no scrollTo(x, y) a secas: la hoja
+         declara html{scroll-behavior:smooth}, y con eso un scrollTo pelado
+         lo anima el navegador. Cada cuadro de este recorrido lanzaría
+         entonces su propia animación suave hacia el punto siguiente — un
+         arrastre gomoso, imposible de abortar, en vez del deslizamiento
+         cuadro a cuadro que se busca aquí. */
+      window.scrollTo({ top: Math.round(inicio + salto * e), behavior: 'auto' });
+      if (t < 1) requestAnimationFrame(paso);
+      else if (deslizamiento === mio) deslizamiento = null;
+    }
+    requestAnimationFrame(paso);
+  }
+
+  /* ---- IMÁN DE SECCIONES: quién decide adónde ir al detenerse ----------
+     Un solo detector de "el scroll ya paró" para todo el sitio, en vez de
+     un temporizador por efecto. Cada bloque registra una función que
+     recibe la dirección y devuelve la Y a la que le gustaría llevar la
+     página, o null si no le toca. Gana la primera que conteste, así que el
+     orden de registro es el orden de prioridad y nunca hay dos imanes
+     tirando a la vez. */
+  var quietos = [];
+  var idle = null;
+  var direccion = 'down';
+  var yPrevia = window.scrollY;
+  var SALTO_MAXIMO = .55;   // fracción de pantalla: más allá, el imán no toca nada
+
+  function alDetenerse() {
+    idle = null;
+    if (deslizamiento) return;
+    if (Date.now() < bloqueadoHasta) return;
+    for (var i = 0; i < quietos.length; i++) {
+      var respuesta = quietos[i](direccion);
+      if (respuesta === null || respuesta === undefined) continue;
+
+      /* La respuesta puede ser una Y a secas o {y, maximo}: hay imanes que
+         necesitan un tope de salto propio (ver el de testimonios, donde
+         entre el centro de una meseta y el de la siguiente hay media
+         pantalla larga y el tope común descartaba SIEMPRE el ajuste). */
+      var destino = typeof respuesta === 'number' ? respuesta : respuesta.y;
+      var tope = (typeof respuesta === 'object' && respuesta.maximo) || SALTO_MAXIMO;
+      if (typeof destino !== 'number' || !isFinite(destino)) continue;
+
+      var salto = destino - window.scrollY;
+      /* Un imán termina de encuadrar; no te lleva a otra parte de la
+         página. Si el ajuste que falta es mayor que su tope, es que el
+         visitante quería estar donde está. */
+      if (Math.abs(salto) > 4 && Math.abs(salto) < window.innerHeight * tope) {
+        deslizarA(destino, Math.min(820, 300 + Math.abs(salto) * .75));
+      }
+      return;
+    }
+  }
+
+  function alScroll() {
+    var y = window.scrollY;
+    if (y > yPrevia + 1) direccion = 'down';
+    else if (y < yPrevia - 1) direccion = 'up';
+    yPrevia = y;
+    pedir();
+    if (idle) clearTimeout(idle);
+    idle = setTimeout(alDetenerse, 220);
+  }
+
+  window.addEventListener('scroll', alScroll, { passive: true });
   window.addEventListener('resize', function () {
     for (var i = 0; i < reinicios.length; i++) reinicios[i]();
     pedir();
+  });
+
+  /* El gesto del visitante siempre gana. */
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (evt) {
+    window.addEventListener(evt, abortar, { passive: true });
   });
 
   return {
@@ -106,6 +221,10 @@ var SmilersScroll = (function () {
       if (escribir) escritores.push(escribir);
       if (alRedimensionar) reinicios.push(alRedimensionar);
     },
+    /* fn(direccion) -> Y deseada, o null. Ver el comentario del imán. */
+    alDetenerse: function (fn) { quietos.push(fn); },
+    deslizarA: deslizarA,
+    abortarDeslizamiento: abortar,
     pedir: pedir
   };
 })();
@@ -1183,108 +1302,89 @@ document.addEventListener('DOMContentLoaded', function () {
     SmilersScroll.pedir();
 
 
-    /* ===== 14d. AUTO-SCROLL ASISTIDO (bidireccional) ====================
-       Asistencias puntuales, no un scroll-snap de CSS: aquel se quitó por
-       completo (ver el comentario junto a scroll-padding-top en
-       estilos.css) porque se quedaba trabado al pelear con cada evento de
-       scroll. Este mecanismo en cambio espera a que el usuario se detenga
-       de verdad (250ms sin eventos de scroll, aproxima "scrollend") y solo
-       ENTONCES completa el recorrido con un scrollTo suave, una sola vez
-       por acercamiento — nunca interrumpe un scroll en curso ni se repite
-       en bucle, así que no puede volver a trabar la página.
-       Cada asistencia respeta la DIRECCIÓN con la que se llegó: se activa
-       solo si el usuario venía avanzando hacia ella, nunca si se alejaba
-       (si no, al alejarse de un tirón lo suficiente como para pausar justo
-       en la zona, lo arrastraría de vuelta contra su propia intención).
-       1) Smilers -> Profesionales (bajando): si el usuario bajó un poco
-          desde el arranque del hero y se detiene, se completa el recorrido
-          hasta que el mosaico de profesionales quede revelado y sostenido.
-       2) Profesionales -> Smilers (subiendo): el simétrico de (1) — si va
-          subiendo y se detiene ya casi saliendo del pin por abajo, completa
-          el regreso hasta quedar sostenido del otro lado del mosaico.
-       3) Llegada a Tratamientos (bajando): si el usuario se detiene cerca
-          del borde del acordeón (pantalla completa, solo en desktop/tablet
-          — en móvil la sección crece con el contenido y no aplica), se
-          ajusta para que quede exactamente a pantalla completa.
-       4) Salida de Tratamientos hacia Nosotros (subiendo): el simétrico de
-          (3) — si se detiene saliendo del acordeón por arriba, ajusta para
-          que su borde inferior quede exacto contra el pie de pantalla. */
-    /* SOLO CON RATÓN O TRACKPAD. En una pantalla táctil el scroll sigue
-       con inercia después de levantar el dedo, así que el "ya se detuvo"
-       cae justo cuando el visitante está por volver a deslizar: el
-       scrollTo suave se le monta encima al gesto siguiente y la página se
-       siente poseída, tirando sola hacia donde ella quiere. Con un ratón,
-       donde el scroll para en seco, la misma asistencia se lee como un
-       encuadre limpio — ahí sí se queda. */
-    var asistenciaActiva = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    /* ===== 14d. IMÁN DE SECCIONES ======================================
+       Al detenerse el scroll, la página termina de encuadrar la sección a
+       la que el visitante venía llegando, en vez de dejarla a medias. No es
+       scroll-snap de CSS -aquel se quitó porque peleaba con cada evento de
+       scroll y acababa trabando la página- sino un ajuste puntual que corre
+       SOLO cuando el scroll ya paró de verdad, y que cualquier gesto aborta
+       en el acto (ver "deslizarA" en el planificador, arriba).
+
+       Cada función registrada devuelve la Y a la que le gustaría llevar la
+       página, o null si no le toca. El planificador se queda con la primera
+       que conteste y comprueba, antes de mover nada, que el ajuste sea
+       pequeño: un imán termina de encuadrar, no te lleva a otra parte.
+
+       Los testimonios tienen el suyo propio, en testimonios-esfera.js, que
+       es donde se sabe dónde está la meseta de cada testimonio. Se registra
+       después que estos, así que estos tienen prioridad — no se solapan de
+       todos modos, viven en tramos distintos de la página.
+
+       Con "menos movimiento" no se registra nada: la página no se mueve
+       sola nunca. */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var especialidades = document.getElementById('especialidades');
-    var avanzoHero = false;
-    var retrocedioHero = false;
-    var alineoTratamientosAbajo = false;
-    var alineoTratamientosArriba = false;
-    var idleTimerAsistido;
-    var ultimoScrollYAsistido = window.scrollY;
-    var direccionAsistida = 'down';
 
-    /* Corre 250 ms DESPUÉS de que el scroll se detiene, nunca durante un
-       cuadro de scroll, así que aquí sí puede medir sin coste: no hay
-       escrituras de otros efectos con las que alternar. Aun así reutiliza
-       las medidas que 14c ya tomó en el último cuadro (progresoCine,
-       alturaDesplazableCine, topeCine) en vez de repetirlas. */
-    function alScrollQuieto() {
+    /* "Ya me ocupé de esta zona": evita que el imán vuelva a tirar en cuanto
+       el visitante se detiene otra vez dentro del mismo tramo. Se rearma al
+       salir de la zona por el extremo contrario. */
+    var hechoHeroAbajo = false;
+    var hechoHeroArriba = false;
+    var hechoTratAbajo = false;
+    var hechoTratArriba = false;
+
+    /* --- 1 y 2. Hero: completar la entrada al mosaico de profesionales, o
+       el regreso al wordmark. Reutiliza lo que 14c ya midió en el último
+       cuadro (progresoCine, alturaDesplazableCine, topeCine). --- */
+    SmilersScroll.alDetenerse(function (direccion) {
       var progreso = progresoCine;
+      if (alturaDesplazableCine <= 0) return null;
 
-      if (progreso < .02) {
-        avanzoHero = false;
-      } else if (progreso < .22 && !avanzoHero && direccionAsistida === 'down') {
-        avanzoHero = true;
-        window.scrollTo({ top: topeCine + alturaDesplazableCine * .62, behavior: 'smooth' });
+      if (progreso < .02) hechoHeroAbajo = false;
+      if (progreso > .98) hechoHeroArriba = false;
+
+      if (direccion === 'down' && progreso > .02 && progreso < .22 && !hechoHeroAbajo) {
+        hechoHeroAbajo = true;
+        return topeCine + alturaDesplazableCine * .62;
       }
-
-      if (progreso > .98) {
-        retrocedioHero = false;
-      } else if (progreso > .78 && !retrocedioHero && direccionAsistida === 'up') {
-        retrocedioHero = true;
-        window.scrollTo({ top: topeCine + alturaDesplazableCine * .76, behavior: 'smooth' });
+      if (direccion === 'up' && progreso > .78 && progreso < .98 && !hechoHeroArriba) {
+        hechoHeroArriba = true;
+        return topeCine + alturaDesplazableCine * .76;
       }
+      return null;
+    });
 
-      if (especialidades && window.matchMedia('(min-width: 768px)').matches) {
-        var rectEsp = especialidades.getBoundingClientRect();
-        var visible = Math.min(rectEsp.bottom, window.innerHeight) - Math.max(rectEsp.top, 0);
-        var proporcionVisible = visible / rectEsp.height;
+    /* --- 3 y 4. Tratamientos a pantalla completa. Solo en escritorio y
+       tablet: en móvil la sección crece con su contenido y no hay una
+       "pantalla exacta" que encuadrar. --- */
+    SmilersScroll.alDetenerse(function (direccion) {
+      if (!especialidades) return null;
+      if (!window.matchMedia('(min-width: 768px)').matches) return null;
 
-        if (proporcionVisible < .06) {
-          alineoTratamientosAbajo = false;
-          alineoTratamientosArriba = false;
-        } else if (proporcionVisible > .35 && proporcionVisible < .96) {
-          // Bajando y acercándose desde arriba (su borde superior aún no
-          // llega al tope de pantalla): alinear ese borde contra el tope.
-          if (direccionAsistida === 'down' && rectEsp.top > 4 && !alineoTratamientosAbajo) {
-            alineoTratamientosAbajo = true;
-            window.scrollTo({ top: rectEsp.top + window.scrollY, behavior: 'smooth' });
-          }
-          // Subiendo y acercándose desde abajo (su borde inferior ya no
-          // llega al pie de pantalla): alinear ese borde contra el pie.
-          if (direccionAsistida === 'up' && rectEsp.bottom < window.innerHeight - 4 && !alineoTratamientosArriba) {
-            alineoTratamientosArriba = true;
-            window.scrollTo({ top: rectEsp.bottom + window.scrollY - window.innerHeight, behavior: 'smooth' });
-          }
-        }
+      var rect = especialidades.getBoundingClientRect();
+      var alto = window.innerHeight;
+      var visible = Math.min(rect.bottom, alto) - Math.max(rect.top, 0);
+      var proporcion = visible / rect.height;
+
+      if (proporcion < .06) {
+        hechoTratAbajo = false;
+        hechoTratArriba = false;
+        return null;
       }
-    }
+      if (proporcion <= .35 || proporcion >= .96) return null;
 
-    if (asistenciaActiva) {
-      SmilersScroll.registrar(null, function (ctx) {
-        var y = ctx.y;
-        if (y > ultimoScrollYAsistido + 1) direccionAsistida = 'down';
-        else if (y < ultimoScrollYAsistido - 1) direccionAsistida = 'up';
-        ultimoScrollYAsistido = y;
+      if (direccion === 'down' && rect.top > 4 && !hechoTratAbajo) {
+        hechoTratAbajo = true;
+        return rect.top + window.scrollY;
+      }
+      if (direccion === 'up' && rect.bottom < alto - 4 && !hechoTratArriba) {
+        hechoTratArriba = true;
+        return rect.bottom + window.scrollY - alto;
+      }
+      return null;
+    });
 
-        clearTimeout(idleTimerAsistido);
-        idleTimerAsistido = setTimeout(alScrollQuieto, 250);
-      });
-    }
   })();
 
 
@@ -1383,8 +1483,13 @@ document.addEventListener('DOMContentLoaded', function () {
   (function () {
     var envoltorio = document.getElementById('cierreCine');
     var negro = document.getElementById('cierreCineNegro');
+    var banda = document.getElementById('bandaCta');
     var contenido = document.querySelector('#bandaCta .banda-cta-contenido');
     if (!envoltorio || !negro) return;
+
+    /* Desenfoque más contenido en táctil: es un filtro sobre una sección a
+       pantalla completa y hay que rehacerlo en cada cuadro del revelado. */
+    var BLUR_REVELADO = window.matchMedia('(hover: none) and (pointer: coarse)').matches ? 7 : 16;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var ultimoProgresoCierre = -1;
@@ -1411,6 +1516,15 @@ document.addEventListener('DOMContentLoaded', function () {
       // 60%-100%: ya revelada del todo, se sostiene así hasta soltar el pin.
       var revelado = acotar((progreso - .30) / .30);
       negro.style.opacity = String(1 - revelado);
+
+      /* La banda sale del desenfoque a la vez que el negro se levanta: las
+         dos hojas de Testimonios entregan la pantalla en negro y de ese
+         negro la siguiente sección se va enfocando, en vez de aparecer ya
+         nítida detrás de un fundido. */
+      if (banda) {
+        var desenfoque = (1 - revelado) * BLUR_REVELADO;
+        banda.style.filter = desenfoque > .15 ? 'blur(' + desenfoque.toFixed(1) + 'px)' : '';
+      }
 
       if (contenido) {
         contenido.style.opacity = String(revelado);

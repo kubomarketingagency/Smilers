@@ -937,6 +937,7 @@ void main() {
     var salidaNombre = seccion.querySelector('[data-nombre]');
     var salidaTratamiento = seccion.querySelector('[data-tratamiento]');
     var velo = seccion.querySelector('[data-velo-testimonios]');
+    var hojas = Array.prototype.slice.call(seccion.querySelectorAll('.tc-hoja'));
     var pasos = Array.prototype.slice.call(seccion.querySelectorAll('[data-paso]'));
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
 
@@ -993,6 +994,7 @@ void main() {
 
     var revelando = false;
     var ultimoIndice = -1;
+    var ultimoCierre = null;   // última posición escrita en las hojas del cierre
     var progresoSeccion = 0;   // lo mide la fase de lectura del planificador
 
     function fijarRevelado(encendido) {
@@ -1046,16 +1048,32 @@ void main() {
       var t = conParadas(acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * (items.length - 1));
       esfera.irA(t);
 
-      /* Velo: se abre en el primer tramo y se vuelve a cerrar en el último,
-         de modo que la sección entrega la pantalla ya en negro al cierre de
-         cine que viene después (que también arranca negro) en vez de cortar
-         en seco. Como el velo es del mismo ónix que el fondo de la sección,
-         mientras esta entra o sale de pantalla no se ve como un bloque
-         negro de más: solo apaga la esfera y el texto. */
+      /* APERTURA: el velo se disuelve en el primer tramo. Como es del mismo
+         ónix que el fondo de la sección, mientras esta entra en pantalla no
+         se ve como un bloque negro de más: solo apaga la esfera y el texto
+         hasta que el primer testimonio está en su sitio. */
       if (velo) {
-        var abriendo = acotar((0.06 - progreso) / 0.06);
-        var cerrando = acotar((progreso - 0.90) / 0.10);
-        velo.style.opacity = String(Math.max(abriendo, cerrando));
+        velo.style.opacity = String(acotar((0.06 - progreso) / 0.06));
+      }
+
+      /* CIERRE: dos hojas negras entran desde arriba y desde abajo hasta
+         juntarse en el centro, como el obturador de una cámara. Antes esto
+         era un fundido a negro del velo; en obturador el final de la
+         sección se lee como un cierre deliberado y no como que se apagó la
+         luz. Empieza en el 82% -no en el 90%- para que el movimiento tenga
+         recorrido de sobra y no se sienta un portazo.
+
+         Se escribe solo mientras las hojas se mueven: pasado el 100% ya
+         están juntas y no hay nada que reescribir en cada cuadro. */
+      if (hojas.length === 2) {
+        var c = acotar((progreso - 0.82) / 0.18);
+        var suave = c * c * (3 - 2 * c);
+        var fuera = ((1 - suave) * 100).toFixed(2);
+        if (fuera !== ultimoCierre) {
+          ultimoCierre = fuera;
+          hojas[0].style.transform = 'translate3d(0,-' + fuera + '%,0)';
+          hojas[1].style.transform = 'translate3d(0,' + fuera + '%,0)';
+        }
       }
 
       /* Qué tan "asentado" está el testimonio del frente: 1 justo encima,
@@ -1102,6 +1120,46 @@ void main() {
       boton.addEventListener('click', function () { fijarRevelado(!revelando); });
       boton.addEventListener('focus', function () { fijarRevelado(true); });
       boton.addEventListener('blur', function () { fijarRevelado(false); });
+    }
+
+    /* ---- IMÁN DE TESTIMONIOS --------------------------------------------
+       Cuando el scroll se detiene dentro de la sección, la página termina
+       de encuadrar el testimonio más cercano: lo lleva al centro exacto de
+       su meseta, que es donde la esfera está quieta y el texto se lee al
+       100% de opacidad. Sin esto uno se quedaba a menudo entre dos
+       testimonios, con el disco a medio girar y la cita medio transparente.
+
+       El cálculo vive AQUÍ y no en script.js porque es aquí donde se sabe
+       cómo se reparte el scroll entre testimonios (REPOSO y MESETA): la
+       meseta del testimonio i está centrada exactamente en t = i, así que
+       basta con deshacer el mapeo progreso -> t para saber a qué altura de
+       la página cae ese centro.
+
+       Los dos extremos quedan fuera a propósito: abajo del 4% manda la
+       apertura del velo y a partir del 80% ya están entrando las hojas del
+       cierre; un imán ahí pelearía con esas dos transiciones. */
+    if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
+      window.SmilersScroll.alDetenerse(function () {
+        var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
+        if (recorrido <= 0) return null;
+
+        var progreso = progresoSeccion;
+        if (progreso <= 0.04 || progreso >= 0.80) return null;
+
+        var tramos = items.length - 1;
+        if (tramos <= 0) return null;
+
+        var lineal = acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * tramos;
+        var objetivo = REPOSO + (Math.round(lineal) / tramos) * (1 - REPOSO * 2);
+        var tope = seccion.getBoundingClientRect().top + window.scrollY;
+
+        /* "maximo" en 0.62 de pantalla y no el tope común (0.55): entre el
+           centro de una meseta y el de la vecina hay medio tramo, que aquí
+           ronda el 0.45 de pantalla. Con el tope común quedaba tan al filo
+           que cualquier variación de alto lo descartaba y el imán no se
+           movía nunca. */
+        return { y: Math.round(tope + objetivo * recorrido), maximo: 0.62 };
+      });
     }
 
     /* Se engancha al planificador común del sitio si está (index.html carga
