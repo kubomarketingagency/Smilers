@@ -22,6 +22,7 @@
      14. Carrusel del hero: sincronizar puntos con el slide activo
      14e. Cierre cine: cortina negra que se levanta antes de la banda CTA
      14f. Oscurecimiento al acercarse a Tratamientos (ambos sentidos)
+     15. Splash de bienvenida (retirada; el vídeo lo arranca index.html)
      (la intro de marca en banners de páginas interiores es 100% CSS,
       ver .banner-video-intro / .intro-logo en estilos.css)
    ========================================================================== */
@@ -1208,6 +1209,15 @@ document.addEventListener('DOMContentLoaded', function () {
        4) Salida de Tratamientos hacia Nosotros (subiendo): el simétrico de
           (3) — si se detiene saliendo del acordeón por arriba, ajusta para
           que su borde inferior quede exacto contra el pie de pantalla. */
+    /* SOLO CON RATÓN O TRACKPAD. En una pantalla táctil el scroll sigue
+       con inercia después de levantar el dedo, así que el "ya se detuvo"
+       cae justo cuando el visitante está por volver a deslizar: el
+       scrollTo suave se le monta encima al gesto siguiente y la página se
+       siente poseída, tirando sola hacia donde ella quiere. Con un ratón,
+       donde el scroll para en seco, la misma asistencia se lee como un
+       encuadre limpio — ahí sí se queda. */
+    var asistenciaActiva = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
     var especialidades = document.getElementById('especialidades');
     var avanzoHero = false;
     var retrocedioHero = false;
@@ -1264,15 +1274,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    SmilersScroll.registrar(null, function (ctx) {
-      var y = ctx.y;
-      if (y > ultimoScrollYAsistido + 1) direccionAsistida = 'down';
-      else if (y < ultimoScrollYAsistido - 1) direccionAsistida = 'up';
-      ultimoScrollYAsistido = y;
+    if (asistenciaActiva) {
+      SmilersScroll.registrar(null, function (ctx) {
+        var y = ctx.y;
+        if (y > ultimoScrollYAsistido + 1) direccionAsistida = 'down';
+        else if (y < ultimoScrollYAsistido - 1) direccionAsistida = 'up';
+        ultimoScrollYAsistido = y;
 
-      clearTimeout(idleTimerAsistido);
-      idleTimerAsistido = setTimeout(alScrollQuieto, 250);
-    });
+        clearTimeout(idleTimerAsistido);
+        idleTimerAsistido = setTimeout(alScrollQuieto, 250);
+      });
+    }
   })();
 
 
@@ -1413,23 +1425,40 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
 
-  /* ===== 15. SPLASH DE BIENVENIDA (solo index.html, 1a vez por sesión) ===
-     El <div id="splashInicio"> solo existe en index.html. Si ya se vio en
-     esta pestaña, el script inline del <head> ya le puso "sin-splash" a
-     <html> (display:none por CSS) y aquí no hay nada que hacer.
+  /* ===== 15. SPLASH DE BIENVENIDA: CUÁNDO SE RETIRA =====================
+     El vídeo NO se arranca aquí: lo pone en marcha el <script> en línea que
+     va junto al elemento, al principio del <body> de index.html, para que
+     empiece a bajar mientras el navegador todavía lee el HTML. Aquí solo se
+     decide cuándo apartar la pantalla.
+
+     POR QUÉ CAMBIÓ ESTA PARTE
+     Antes había topes de tiempo fijos contados desde DOMContentLoaded: si a
+     los 1200 ms el vídeo no podía reproducirse, fuera; y a los 3800 ms,
+     fuera igual. En escritorio nunca se notó, pero en un teléfono con datos
+     el vídeo ni siquiera se había empezado a pedir a esa altura (el src se
+     asignaba justo aquí, después de Bootstrap y de este mismo archivo), así
+     que el primer tope saltaba siempre: la intro no se veía NUNCA en móvil.
+     Ahora los seguros cuentan desde que se abrió la página -no desde que
+     llegó este script- y, una vez que el clip arranca de verdad, se le deja
+     exactamente lo que le falta de duración en vez de un tope arbitrario
+     que lo cortaba a la mitad.
      ======================================================================== */
   (function () {
     var splash = document.getElementById('splashInicio');
     if (!splash || document.documentElement.classList.contains('sin-splash')) return;
 
-    sessionStorage.setItem('smilersSplashVisto', '1');
+    try { sessionStorage.setItem('smilersSplashVisto', '1'); } catch (e) {}
 
     var video = splash.querySelector('video');
     var retirado = false;
+    var temporizadores = [];
+
+    function esperar(ms, fn) { temporizadores.push(setTimeout(fn, ms)); }
 
     function retirarSplash() {
       if (retirado) return;
       retirado = true;
+      temporizadores.forEach(clearTimeout);
       splash.classList.add('oculto');
       setTimeout(function () { splash.remove(); }, 700); // = duración del fundido en CSS
     }
@@ -1439,40 +1468,68 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    var esMovil = window.innerWidth <= 767;
-    video.src = esMovil ? video.dataset.srcMovil : video.dataset.srcEscritorio;
-    video.load();
+    /* Red de seguridad: si el <script> en línea no llegó a correr (por lo que
+       sea), el src se pone aquí y no se pierde la intro. */
+    if (!video.getAttribute('src')) {
+      video.src = window.matchMedia('(max-width: 767.98px)').matches
+        ? video.dataset.srcMovil
+        : video.dataset.srcEscritorio;
+      video.muted = true;
+      video.playbackRate = 1.3;
+    }
 
-    /* Clip del logo animado: se acelera apenas para que termine solo (~3.7s)
-       antes del seguro de abajo, y el conjunto (video + fundido .6s) cierre
-       en ~4.3s, sin pasar de los 4.5s. */
-    video.playbackRate = 1.3;
-
-    /* Dos seguros, no uno:
-       - Si a los 1200ms el vídeo todavía no puede reproducirse (conexión
-         lenta), el splash se aparta y se deja ver el sitio. Antes solo
-         estaba el tope de 3.8s, así que en un móvil con datos el visitante
-         se quedaba mirando una pantalla en blanco casi cuatro segundos y
-         encima acababa sin ver la intro. Mejor entrar sin intro que esperar.
-       - El tope de 3.8s sigue, por si "ended" no llega nunca. */
-    var puedeReproducir = false;
-    video.addEventListener('canplay', function () { puedeReproducir = true; });
-    setTimeout(function () { if (!puedeReproducir) retirarSplash(); }, 1200);
-    setTimeout(retirarSplash, 3800); // seguro si "ended" no llega
+    /* El navegador rechazó el autoplay: no tiene sentido tapar el sitio con
+       una pantalla negra que no va a mostrar nada. */
+    if (video.dataset.autoplayBloqueado) { retirarSplash(); return; }
 
     video.addEventListener('ended', retirarSplash);
     video.addEventListener('error', retirarSplash);
 
-    var intentoReproduccion = video.play();
-    if (intentoReproduccion && typeof intentoReproduccion.catch === 'function') {
-      intentoReproduccion.catch(retirarSplash);
+    /* Milisegundos transcurridos desde que se abrió la página (no desde que
+       corrió este archivo, que es lo que antes descuadraba las cuentas). */
+    function desdeLaApertura() {
+      return (window.performance && performance.now) ? performance.now() : 0;
     }
 
-    /* Navegadores in-app que ni bloquean ni rechazan el autoplay: si sigue
-       pausado al primer instante, no tiene caso hacer esperar al visitante. */
-    setTimeout(function () {
-      if (video.paused && !video.ended) retirarSplash();
-    }, 1200);
+    /* Cuando el clip está corriendo de verdad, el splash vive lo que le
+       queda de duración más un margen para el fundido. Así no se corta a la
+       mitad porque el vídeo empezó tarde. */
+    var arranco = false;
+    function marcarArranque() {
+      if (arranco) return;
+      arranco = true;
+      var restante = isFinite(video.duration) ? Math.max(0, video.duration - video.currentTime) : 4;
+      esperar(restante / (video.playbackRate || 1) * 1000 + 500, retirarSplash);
+    }
+    video.addEventListener('playing', marcarArranque);
+    /* Y 'timeupdate' como red: en un escritorio rápido el clip ya viene
+       rodando cuando llega este archivo, o sea que 'playing' YA pasó y no
+       vuelve a dispararse nunca. Sin esta segunda vía el seguro de abajo
+       daría el vídeo por no arrancado y cortaría la intro a la mitad.
+       'timeupdate' en cambio sigue llegando varias veces por segundo
+       mientras el clip avanza. */
+    video.addEventListener('timeupdate', marcarArranque);
+
+    /* Seguro 1 — arranque. Si a los 2.6 s de abierta la página el vídeo ni
+       siquiera ha empezado (conexión muy lenta, navegador in-app que traga
+       el autoplay sin avisar), se aparta y se entra al sitio: mejor sin
+       intro que esperando. El margen mínimo de 500 ms es para el caso en que
+       este archivo llegue tarde y esos 2.6 s ya hayan pasado — el vídeo, que
+       se pidió al principio del HTML, entonces ya está a punto de arrancar. */
+    esperar(Math.max(500, 2600 - desdeLaApertura()), function () {
+      if (!arranco) retirarSplash();
+    });
+
+    /* Seguro 2 — tope duro, por si "ended" no llega nunca (p. ej. el clip se
+       queda congelado a media reproducción por falta de datos). */
+    esperar(Math.max(1000, 9000 - desdeLaApertura()), retirarSplash);
+
+    /* Reintento: normalmente ya está reproduciéndose desde el HTML. Si sigue
+       en pausa, se intenta una vez más antes de rendirse. */
+    if (video.paused && !video.ended) {
+      var intento = video.play();
+      if (intento && typeof intento.catch === 'function') intento.catch(retirarSplash);
+    }
   })();
 
 });

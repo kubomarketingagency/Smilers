@@ -23,8 +23,10 @@
 
      href / src                 <link>, <script>, <img>, <video>
      srcset / imagesrcset       <img>, <source>, <link rel=preload>
-     data-src-escritorio        el vídeo del splash, que carga script.js
+     data-src-escritorio        el vídeo del splash, que elige index.html
      data-src-movil             (misma idea)
+     data-antes / data-despues  las fotos de la esfera de testimonios, que
+                                carga testimonios-esfera.js
 
    Con eso, TODO lo que la página pide lleva el hash de su contenido en la
    URL, y por tanto todo puede ir "immutable" en el CDN sin riesgo de que
@@ -124,8 +126,9 @@ function sellarUrl(url, carpeta, pagina) {
   return ruta + esperada;
 }
 
-/* href/src y los dos data-* del vídeo del splash: un único valor por atributo. */
-const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil)="([^"]*)"/g;
+/* href/src y los data-* que llevan UNA sola url: el vídeo del splash y las
+   dos fotos de cada testimonio. */
+const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-antes|data-despues)="([^"]*)"/g;
 
 /* srcset/imagesrcset: lista separada por comas, cada entrada "url [descriptor]".
    El descriptor (480w, 2x...) se conserva tal cual. */
@@ -161,13 +164,11 @@ PAGINAS.forEach(function (pagina) {
     return salida;
   }
 
-  /* Los comentarios HTML se dejan intactos. index.html documenta dentro de
-     un comentario cómo cambiar el carrusel del hero por un <video>, con un
-     src y un poster de ejemplo que NO existen en el repo: sin esta pasada,
-     el script avisaba de un archivo inexistente en cada corrida y, peor,
-     habría sellado código de ejemplo si algún día ese archivo llegara a
-     existir. Se trocea por comentarios y solo se transforman los tramos de
-     marcado real. */
+  /* Los comentarios HTML se dejan intactos: dentro de uno puede haber
+     marcado de ejemplo, con rutas que no existen en el repo. Sin esta
+     pasada el script avisaría de archivos inexistentes en cada corrida y,
+     peor, sellaría código que nadie está usando. Se trocea el archivo por
+     comentarios y solo se transforman los tramos de marcado real. */
   const nuevo = original
     .split(/(<!--[\s\S]*?-->)/)
     .map(function (tramo) {

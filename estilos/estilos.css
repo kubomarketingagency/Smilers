@@ -261,7 +261,11 @@ body::before {
   transition: transform .6s cubic-bezier(.4, 0, .2, 1), filter .6s ease, opacity .6s ease;
 }
 @media (max-width: 767.98px) {
-  .splash-inicio video { max-width: 76vw; max-height: 56vh; }
+  /* El clip del teléfono es vertical (720x1280): con 56vh de alto se
+     quedaba como una estampilla en medio de la pantalla. Se le da el alto
+     que puede ocupar sin llegar a los bordes, que es donde el logo se lee
+     de verdad en un móvil. */
+  .splash-inicio video { max-width: 86vw; max-height: 66vh; }
 }
 /* Salida delicada: la capa se desvanece mientras el logo se aleja apenas y
    se desenfoca, en vez de un corte seco hacia el sitio. */
@@ -280,7 +284,8 @@ html.sin-splash .splash-inicio { display: none; }
 }
 
 /* Iconos: <i class="fa-solid fa-x"> ahora envuelve un <svg class="icono"> que
-   apunta al sprite propio (imagenes/iconos.svg) en vez de la fuente web de
+   apunta al sprite incrustado al principio de cada HTML (ver el <svg> oculto
+   justo despues de <body>) en vez de la fuente web de
    Font Awesome. El <i> conserva sus clases fa-* para que todo el CSS que ya
    apunta a "i" (color, tamaño, transform) siga funcionando sin cambios. */
 .icono {
