@@ -4,8 +4,8 @@
      Deep Obsidian Black #1C1C1C · Gris Pizarra #2F2F2F · Champagne Gold #D4AF37
      Sterling Silver #C0C0C0 · Warm Beige Taupe #968F83 · Mármol Calacatta #F7F5F1
      Warm Charcoal Grey #525252 (texto en claro) · Emerald Green #006400 (micro-acento)
-   Tipografías: Bodoni Moda (titulares, alto contraste, sin cursiva) ·
-     Montserrat (menús/subtítulos, mayúsculas trackeadas) · Lato (cuerpo)
+   Tipografías: Bodoni Moda (TODO el display, de la palabra "Smilers" del
+     banner al último rótulo de 11px) · Lato (solo el cuerpo de lectura)
 
    Nota de compatibilidad: se conservan los NOMBRES de variable originales
    (--naranja, --turquesa*, --durazno...) para no tener que re-tocar cada
@@ -63,7 +63,14 @@
      era la otra mitad de "no tan grotesco": el anterior recorría tanto tono
      que la palabra se leía a dos colores. Las cuatro paradas, medidas sobre
      #F6F3EC: 5.27 · 3.04 · 4.32 · 3.19. */
-  --gradiente-oro-profundo: linear-gradient(100deg, #7E5F12 0%, #AE8625 34%, #8E6C18 66%, #A97F1F 100%);
+  /* Recalibrado una vez más, y esta vez por una razón medible: con las
+     paradas anteriores la MISMA palabra cumplía o no según en qué punto del
+     lienzo cayera (3.04:1 arriba, 2.99:1 abajo). Las dos paradas claras bajan
+     a #A17A16 -mismo matiz de 43 grados, misma familia- y así el degradado
+     entero se mueve entre 3.30 y 5.27:1 sobre cualquier punto del marfil y
+     del blanco. Sigue siendo el mismo metal, sigue barriendo de oscuro a
+     claro; lo que ya no hace es depender de dónde caiga. */
+  --gradiente-oro-profundo: linear-gradient(100deg, #7E5F12 0%, #A17A16 34%, #8E6C18 66%, #A17A16 100%);
 
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
@@ -151,9 +158,34 @@
   /* Titulares: serif de alto contraste, sin cursiva ni manuscrita.
      Menús/subtítulos: sans geométrica, siempre en mayúsculas trackeadas.
      Cuerpo: sans limpia, máxima legibilidad. */
+  /* UNA SOLA TIPOGRAFÍA DE DISPLAY, Y ES LA DEL WORDMARK.
+     El sitio llegó a tener cuatro familias: Bodoni Moda en la palabra
+     "Smilers" del banner y en los <h>, Italiana en los titulares de sección,
+     Montserrat en menús y rótulos, Lato en el cuerpo. Cuatro voces distintas
+     diciendo lo mismo.
+
+     Ahora la voz es la del banner. Bodoni Moda es una didone: trazos gruesos
+     contra trazos finísimos, sin apenas transición entre ellos, y ese
+     contraste ES la identidad de la marca — es lo que hace que "Smilers"
+     se lea como una portada de moda y no como un rótulo de clínica. Las
+     otras dos familias de display se retiran y sus variables apuntan aquí,
+     así que el cambio alcanza de golpe a todo lo que ya estaba escrito
+     contra ellas, sin perseguir selector por selector.
+
+     LO QUE NO CAMBIA: el cuerpo de texto. Una didone a 15px con interlineado
+     de lectura es exactamente donde una didone falla — los trazos finos
+     desaparecen y el párrafo se vuelve una reja. Lato se queda para leer,
+     que es el reparto clásico de una revista: display con carácter, texto
+     neutro. Los pesos también se mueven: Bodoni Moda empieza en 400, así que
+     donde había un 200 de Montserrat ahora hay un 400, que en esta familia
+     ya es fino de verdad.
+
+     Los nombres de las variables se conservan aunque ahora las tres apunten
+     al mismo sitio: están escritas en cientos de reglas, y renombrarlas solo
+     serviría para ensuciar el diff. */
   --fuente-titulo: 'Bodoni Moda', serif;
-  --fuente-elegante: 'Italiana', serif;
-  --fuente-menu:   'Montserrat', sans-serif;
+  --fuente-elegante: 'Bodoni Moda', serif;
+  --fuente-menu:   'Bodoni Moda', serif;
   --fuente-cuerpo: 'Lato', sans-serif;
 
   --radio:    18px;
@@ -619,10 +651,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .marca-texto { display: flex; flex-direction: column; line-height: 1; }
 .marca-nombre {
-  font-family: var(--fuente-cuerpo);
+  /* La MISMA familia que la palabra "Smilers" del banner. Estaba en Lato, o
+     sea que la marca se escribia de dos formas distintas segun donde
+     apareciera: una en el hero y otra en la barra de arriba. El tracking
+     negativo tambien se va -era un ajuste para una sans- porque en una didone
+     apretar las letras es justo lo que le quita el aire. */
+  font-family: var(--fuente-titulo);
   font-weight: 700;
   font-size: 1.25rem;
-  letter-spacing: -.3px;
+  letter-spacing: .01em;
   background: var(--gradiente-oro);
   -webkit-background-clip: text;
   background-clip: text;
@@ -661,7 +698,17 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: grid;
   place-items: center;
   padding: 0;
-  color: var(--naranja);
+  /* ORO DE MARCA, Y EL MISMO EN LAS CINCO PÁGINAS. Era plata (--naranja), que
+     sobre el lienzo negro de la portada se ve pero sobre el blanco de las
+     páginas interiores da 1.5:1 — o sea, el único control de navegación del
+     sitio, invisible. El parche anterior lo pintaba de negro solo en las
+     interiores, y eso es justo lo que no se quería: dos barras distintas
+     según la página.
+     Con --gold-500 las tres barras son del oro de la marca en todas partes.
+     El valor lo pone cada lienzo: champán #D2AC47 sobre negro (el mismo del
+     wordmark del banner) y #AE8625 sobre blanco, que da 3.3:1 — por encima
+     del 3:1 que WCAG pide para un control de interfaz. */
+  color: var(--gold-500);
   z-index: 1031; /* por encima del overlay del menú, para poder cerrarlo */
 }
 .navbar-toggler:focus { box-shadow: none; }
@@ -710,7 +757,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      abierto (con display:flex siempre presente, pointer-events lo evita). */
   overflow-y: auto;
   padding: 90px 0;
-  background: rgba(10, 8, 6, .5);
+  /* .5 -> .82, y hace falta. El velo estaba calibrado para la portada, donde
+     detras hay un lienzo negro y el resultado es negro igualmente. En las
+     paginas claras detras hay blanco: al 50% el menu se abria sobre un gris
+     medio y los enlaces en oro daban 1.2:1, o sea ilegibles. Al 82% el velo
+     es oscuro se abra donde se abra, que es lo que el menu necesita para ser
+     el mismo en las cinco paginas. Sobre el negro de la portada la diferencia
+     no se aprecia: negro sobre negro. */
+  background: rgba(10, 8, 6, .82);
   -webkit-backdrop-filter: blur(40px) saturate(1.1);
   backdrop-filter: blur(40px) saturate(1.1);
   opacity: 0;
@@ -1212,7 +1266,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      rótulos, la lista de ventajas y la cabecera de cada pilar cuelgan de él,
      y a .22 sobre el marfil desaparecía. El neutro cálido se queda para lo
      que solo tiene que separar sin llamar la atención. */
-  --hairline-oro: rgba(174, 134, 37, .38);
+  --hairline-oro: rgba(210, 172, 71, .55);
   --hairline-suave: rgba(122, 108, 82, .16);
 
   /* CUERPO DE TEXTO A UN SOLO TONO, como en la página Nosotros. Antes eran
@@ -1267,15 +1321,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    #AE8625 es la parada oscura del swatch del logo y da 3.04:1 sobre este
    marfil, por encima del 3:1 que pide un texto de este cuerpo. */
 .seccion-clara.fondo-perla .titulo-seccion [class*="texto-"] {
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  /* Un escalon por debajo del #AE8625 del resto de la seccion, y esto se
-     midio: la parada del logo da 3.04:1 sobre el marfil de arriba pero 2.99
-     sobre el de abajo, o sea que la MISMA palabra cumplia o no segun donde
-     cayera en el degradado. #A17A16 es el mismo matiz (43 grados) y da 3.30
-     en el punto mas oscuro del lienzo. El oro del logo sigue tal cual en
-     todo lo que no es texto: hilos, puntos, palomitas e iconos. */
-  color: #A17A16;
+  /* DEGRADADO, no color plano: la palabra destacada recibe el mismo barrido
+     metálico que el wordmark del banner, que es de donde viene la identidad.
+     Se usa la rama profunda del swatch (ver --gradiente-oro-profundo), la
+     única que sobrevive sobre un lienzo claro. */
+  background: var(--gradiente-oro-profundo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #A17A16;   /* respaldo si background-clip:text no aplica */
   font-weight: 500;
 }
 
@@ -1506,7 +1560,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    del logo tal cual (#D2AC47), que sobre el lienzo claro sería ilegible. */
 .nm-sello__num {
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   font-size: clamp(1.6rem, 2.2vw, 2.05rem);
   line-height: 1;
   letter-spacing: .02em;
@@ -1622,7 +1676,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      una sola palabra en oro y medio peso más. De paso el titular gana
      contraste real (16:1 en vez de 3.8:1). */
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   /* El minimo es 1.5rem = 24px y no es cosmetico: la palabra destacada de
      este titular va en oro, y por debajo de 24px WCAG deja de considerarlo
      "texto grande" y le exige 4.5:1 en vez de 3:1 — que el oro sobre marfil
@@ -1758,6 +1812,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   height: 5px;
   margin-right: .8rem;
   border-radius: 50%;
+  /* Ornamento puro: el champán del banner, sin más. */
   background: var(--gold-500);
   vertical-align: middle;
   transform: translateY(-1px);
@@ -2197,7 +2252,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   align-items: baseline;
   justify-content: center;
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   font-size: clamp(1.95rem, 3.1vw, 2.7rem);
   line-height: 1;
   letter-spacing: .02em;
@@ -2780,10 +2835,42 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* Sobre el footer oscuro, una sombra de color al 35% no lee como profundidad
    sino como halo de neon. La profundidad sobre fondo oscuro es una sombra
    neutra (o ninguna): la luz no tine la sombra del color del objeto. */
-.footer .btn,
 .footer .marca-icono,
 .footer [class*="icono"] {
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+}
+
+/* El boton del formulario, con la forma del sistema: angulo recto, solo
+   trazo, mayusculas trackeadas, y se rellena de blanco al pasar el cursor.
+   Va aqui y no dentro de .pagina-clara a proposito: el footer es el mismo en
+   las cinco paginas y tiene que verse igual en las cinco. Los dos efectos del
+   boton del sitio -el destello diagonal y el marco que crece desde dentro- se
+   conservan; el marco interior pasa a oscuro, que es lo que se ve sobre el
+   relleno blanco del hover. */
+.footer .btn {
+  padding: 1.05rem 2.1rem;
+  border: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 0;
+  background: transparent;
+  color: #FFFFFF;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: background .45s cubic-bezier(.22, 1, .36, 1),
+              color .45s cubic-bezier(.22, 1, .36, 1);
+}
+.footer .btn::before { inset: 4px; border-radius: 0; border-color: rgba(10, 10, 10, .35); }
+.footer .btn:hover,
+.footer .btn:focus,
+.footer .btn:focus-visible {
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  color: var(--onix);
+  box-shadow: none;
+  transform: none;
 }
 
 .footer {
@@ -2810,7 +2897,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: block;
   font-family: var(--fuente-elegante);
   font-weight: 400;
-  letter-spacing: .04em;
+  /* Tracking amplio, como el resto de los rótulos del sitio: en Bodoni el
+     espaciado es lo que separa un titular de una etiqueta. */
+  letter-spacing: .14em;
+  text-transform: uppercase;
   color: var(--marmol);
   font-size: 1.3rem;
   margin-bottom: 1.5rem;
@@ -2824,9 +2914,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   position: absolute;
   left: 0; bottom: 0;
   width: 34px;
-  height: 2px;
+  height: 1px;
   background: var(--gradiente-oro);
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
@@ -2870,10 +2960,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .7rem;
-  letter-spacing: .14em;
+  letter-spacing: .18em;
   text-transform: uppercase;
   padding: .5rem 1.1rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid rgba(255, 255, 255, .18);
   background: transparent;
   color: rgba(255, 255, 255, .6);
@@ -2884,7 +2974,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 .mapa-contenedor {
   position: relative;
-  border-radius: var(--radio-sm);
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid rgba(192, 192, 192, .18);
   box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
@@ -2905,7 +2995,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background: rgba(255, 255, 255, .05);
   border: 1px solid rgba(255, 255, 255, .16);
   color: #fff;
-  border-radius: var(--radio-sm);
+  border-radius: 0;
   padding: .75rem 1rem;
   font-size: .92rem;
   transition: var(--transicion);
@@ -4807,8 +4897,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      compensa. */
   margin-right: -.16em;
 }
-.nos-titulo__ligero { font-weight: 200; }
-.nos-titulo__fuerte { font-weight: 600; }
+.nos-titulo__ligero { font-weight: 400; }   /* el fino de Bodoni */
+/* 700, no 600: en Montserrat la diferencia entre 200 y 600 se veia de lejos,
+   pero Bodoni Moda reparte el peso de otra forma y a 600 el corte entre "NOS"
+   y "OTROS" casi no se leia. */
+.nos-titulo__fuerte { font-weight: 700; }
 
 /* Regla dorada fina bajo el título: el "elemento decorativo sutil". */
 .nos-regla {
@@ -4923,7 +5016,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nos-lead {
   margin: 0 0 1.5rem;
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   /* Minimo 1.5rem = 24px: por debajo de ese cuerpo, la palabra en oro de
      .nos-lead em deja de contar como texto grande y pasaria a necesitar
      4.5:1. Ver la nota de ahi abajo. */
@@ -5043,7 +5136,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin: 0;
   max-width: 34ch;
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   font-size: clamp(1.2rem, 2vw, 1.7rem);
   line-height: 1.5;
   color: var(--nos-negro);
@@ -5121,7 +5214,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --nos-dorado: #AE8625;
   --nos-dorado-claro: #D2AC47;
   --nos-dorado-texto: #7E5F12;
-  --nos-linea: rgba(174, 134, 37, .38);
+  /* LOS HILOS, EN EL CHAMPÁN DEL BANNER. Un hilo de 1px no lleva texto
+     encima, así que no le aplica ningún mínimo de contraste: puede permitirse
+     la parada brillante del logo, #D2AC47, que es literalmente el oro de la
+     palabra "Smilers". Al 55% sobre blanco queda una línea cálida que se ve
+     sin pesar. El texto en oro sí sigue en la rama profunda: ahí el mínimo
+     manda. */
+  --nos-linea: rgba(210, 172, 71, .55);
   /* Y de paso se redefinen las variables SEMÁNTICAS del sitio, que es lo que
      hace que cientos de reglas escritas para el lienzo negro (párrafos,
      tarjetas, bordes, sombras) se adapten solas sin tener que perseguirlas
@@ -5155,6 +5254,17 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --turquesa-claro: rgba(10, 10, 10, .12);
   --acento-legible: #7E5F12;
   --acento-legible-hover: #0A0A0A;
+  /* EL DEGRADADO DE MARCA, EN SU CALIBRACIÓN PARA BLANCO. Todo lo que en el
+     sitio oscuro está escrito contra --gradiente-oro (el wordmark de la
+     navbar, los rótulos del footer, los aros de redes) pasa aquí, sin tocar
+     ni una de esas reglas, a la variante profunda del MISMO swatch de cuatro
+     paradas. Es obligatorio: la parada clara del degradado del banner es
+     #F7EF8A, que sobre blanco da 1.2:1 — no es que se lea mal, es que no se
+     ve. Mismo metal, mismo barrido, la luminosidad que el lienzo permite. */
+  --gradiente-oro: var(--gradiente-oro-profundo);
+  /* El gris claro de la marca (el eslogan bajo el wordmark) sobre blanco daba
+     1.9:1. Mismo papel, tono legible. */
+  --neutral-300: #6F6F6F;
   background: var(--nos-blanco);
   color: var(--nos-texto);
 }
@@ -5214,28 +5324,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .pagina-clara .revelar.visible { transform: translateY(0); }
 
-/* ---- 29b. NAVBAR SOBRE BLANCO ------------------------------------------
-   La navbar del sitio va escrita en plata y oro claro: sobre el lienzo negro
-   se ve, sobre blanco desaparece. En Nosotros el encabezado es una foto
-   oscura, así que allí solo hay que cambiarla DESPUÉS de pasarla de largo
-   (.con-scroll). En las otras tres el encabezado ya es blanco desde el
-   primer píxel, y por eso ahí el cambio es desde el principio. */
-.pagina-clara .navbar-principal.con-scroll {
-  background: rgba(255, 255, 255, .92);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(10, 10, 10, .08);
-}
-.pagina-clara .navbar-principal.con-scroll .marca-nombre,
-.pagina-clara:not(.pagina-nosotros) .navbar-principal .marca-nombre {
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  color: var(--nos-negro);
-}
-.pagina-clara .navbar-principal.con-scroll .marca-slogan,
-.pagina-clara:not(.pagina-nosotros) .navbar-principal .marca-slogan { color: #6B6B6B; }
-.pagina-clara .navbar-principal.con-scroll .navbar-toggler,
-.pagina-clara:not(.pagina-nosotros) .navbar-principal .navbar-toggler { color: var(--nos-negro); }
+/* ---- 29b. NAVBAR: LA MISMA EN LAS CINCO PÁGINAS ------------------------
+   AQUÍ HABÍA un bloque que sobre lienzo claro le ponía a la navbar fondo
+   blanco con desenfoque al hacer scroll, el wordmark en negro plano y la
+   hamburguesa en negro. Se retira entero: la barra tiene que ser la misma en
+   todo el sitio, y esas tres cosas la convertían en otra.
+
+   No hace falta ni una regla en su lugar. La navbar está escrita contra
+   variables -el wordmark contra --gradiente-oro, el eslogan contra
+   --neutral-300, la hamburguesa contra --gold-500-, y esas variables ya las
+   redefine .pagina-clara ahí arriba para el lienzo blanco. Misma barra, mismo
+   degradado de marca, mismo comportamiento al hacer scroll (solo encoge, sin
+   fondo); lo único que cambia es a qué luminosidad del swatch apunta el oro,
+   que es lo que hace falta para que se vea. */
 
 /* ---- 29c. ENCABEZADO DE PÁGINA ----------------------------------------
    .banner-pagina era una banda negra a sangre con el título centrado y
@@ -5254,7 +5355,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pagina-clara .banner-pagina h1 {
   margin: clamp(1.4rem, 3vw, 2.4rem) 0 0;
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   /* Un escalón menos que el "NOSOTROS" de la otra página: allí el titular es
      UNA palabra y puede permitirse 8.5rem; aquí son frases de cuatro o cinco,
      y a ese cuerpo ocupaban tres líneas y se comían la pantalla entera. */
@@ -5318,7 +5419,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ---- 29d. TÍTULOS Y CUERPO DE TEXTO ------------------------------------ */
 .pagina-clara .titulo-seccion {
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   font-size: clamp(1.5rem, 2.6vw, 2.4rem);
   line-height: 1.45;
   letter-spacing: .01em;
@@ -5328,8 +5429,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--nos-negro);
 }
 .pagina-clara .titulo-seccion [class*="texto-"] {
-  -webkit-text-fill-color: currentColor;
-  color: var(--nos-dorado);
+  background: var(--gradiente-oro-profundo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #A17A16;   /* respaldo si background-clip:text no aplica */
   font-weight: 500;
 }
 /* El subtítulo de sección era una línea de mayúsculas trackeadas en plata:
@@ -5469,6 +5573,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    y la manija son de las pocas cosas con las que se juega en el sitio-, solo
    pierde las esquinas redondeadas de sus etiquetas. */
 .pagina-clara .comparador-tag { border-radius: 0; }
+/* La etiqueta "Despues" iba con el oro profundo, que sobre una foto se lee
+   oliva. Aqui la etiqueta no esta sobre el lienzo blanco sino sobre la
+   fotografia, asi que puede llevar el champan del banner tal cual, con el
+   texto en negro encima. */
+.pagina-clara .comparador-tag-despues { background: #D2AC47; color: #0A0A0A; }
 .pagina-clara .comparador-nota {
   text-align: left;
   font-style: normal;
@@ -5498,7 +5607,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pagina-clara .banda-cta-overlay { display: none; }
 .pagina-clara .banda-cta h2 {
   font-family: var(--fuente-menu);
-  font-weight: 200;
+  font-weight: 400;
   font-size: clamp(1.3rem, 2.4vw, 2rem);
   line-height: 1.45;
   color: var(--nos-negro);
@@ -5513,6 +5622,40 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* Frontera con el footer, que sigue siendo negro y hace de cierre: sin ella
    el salto del blanco al negro se lee como que la página se corta. */
 .pagina-clara .footer { border-top: 1px solid rgba(10, 10, 10, .1); }
+
+/* EL FOOTER SIGUE SIENDO NEGRO, Y AQUÍ HAY QUE FRENAR DOS REGLAS DE ESTA
+   MISMA SECCIÓN. Todo lo de .pagina-clara está escrito para un lienzo blanco,
+   pero el footer es la excepción: es la única pieza oscura de estas páginas.
+   Sin esto, los rótulos de columna (que son <h3>) salían en negro sobre negro
+   por la regla de titulares de más arriba, y el botón del formulario salía
+   con trazo y texto negros, o sea invisible. */
+.pagina-clara .footer h2,
+.pagina-clara .footer h3,
+.pagina-clara .footer h4,
+.pagina-clara .footer .footer-titulo { color: var(--marmol); }
+/* El menu a pantalla completa es oscuro en las cinco paginas (ver
+   .navbar-collapse), asi que su boton tampoco puede heredar el trazo negro
+   de .pagina-clara .btn. */
+.pagina-clara .navbar-collapse .btn {
+  color: var(--marmol);
+  border-color: var(--gold-500);
+  background: transparent;
+}
+.pagina-clara .navbar-collapse .btn:hover,
+.pagina-clara .navbar-collapse .btn:focus,
+.pagina-clara .navbar-collapse .btn:focus-visible {
+  background: var(--gold-500);
+  border-color: var(--gold-500);
+  color: var(--onix);
+}
+
+/* El boton del footer ya no necesita parche: se define una sola vez en la
+   seccion 11, para las cinco paginas. Lo unico que hay que devolver aqui es
+   el color, porque .pagina-clara .btn lo habia pintado de negro. */
+.pagina-clara .footer .btn { color: #FFFFFF; border-color: rgba(255, 255, 255, .45); }
+.pagina-clara .footer .btn:hover,
+.pagina-clara .footer .btn:focus,
+.pagina-clara .footer .btn:focus-visible { background: #FFFFFF; color: var(--nos-negro); border-color: #FFFFFF; }
 
 
 /* ==========================================================================

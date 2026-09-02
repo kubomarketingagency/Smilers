@@ -14,9 +14,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Montserrat:wght@200;300;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/estilos.css?v=55147cfed1">
+  <link rel="stylesheet" href="../estilos/estilos.css?v=07369abc7b">
 </head>
 
 <body class="pagina-clara pagina-tratamientos">
@@ -460,6 +460,8 @@
   <footer class="footer">
     <div class="container">
       <div class="row g-5">
+
+        <!-- ===== Columna 1: Marca, contacto y redes ===== -->
         <div class="col-lg-4">
           <a href="../index.html" class="marca marca-footer mb-3">
             <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
@@ -472,6 +474,7 @@
             Clínica dental de primer nivel. Tecnología, calidez y resultados que se notan
             desde la primera visita.
           </p>
+
           <ul class="footer-contacto">
             <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Matriz: General Camilo Destruge y Francisco Salazar, Quito, Ecuador</li>
             <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
@@ -479,51 +482,91 @@
             <li><i class="fa-solid fa-envelope"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-envelope"></use></svg></i> <a href="mailto:hola@smilersdental.com">hola@smilersdental.com</a></li>
             <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
           </ul>
+
+          <!-- Redes sociales -->
           <div class="redes-sociales">
-            <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i></a>
-            <a href="https://www.facebook.com/smilersdentalclininque" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-facebook-f"></use></svg></i></a>
-            <a href="https://youtube.com/channel/UCfPuO7M0ElXIB8-dTLP70vg?sub_confirmation=1" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-youtube"></use></svg></i></a>
-            <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i></a>
+            <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram">
+              <i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i>
+            </a>
+            <a href="https://www.facebook.com/smilersdentalclininque" target="_blank" rel="noopener" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-facebook-f"></use></svg></i>
+            </a>
+            <a href="https://youtube.com/channel/UCfPuO7M0ElXIB8-dTLP70vg?sub_confirmation=1" target="_blank" rel="noopener" aria-label="YouTube">
+              <i class="fa-brands fa-youtube"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-youtube"></use></svg></i>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>
+            </a>
           </div>
         </div>
 
+        <!-- ===== Columna 2: Mapa de Google Maps (Matriz / Sucursal) ===== -->
         <div class="col-lg-4">
           <h3 class="footer-titulo">Ubícanos</h3>
+          <div class="mapa-tabs" role="tablist" aria-label="Elegir sede en el mapa">
+            <button type="button" class="mapa-tab activo" data-mapa="matriz" role="tab" aria-selected="true">Matriz</button>
+            <button type="button" class="mapa-tab" data-mapa="sucursal" role="tab" aria-selected="false">Sucursal</button>
+          </div>
           <div class="mapa-contenedor">
             <iframe
+              class="mapa-iframe activo" data-mapa="matriz"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7931033096556!2d-78.48951562090548!3d-0.20370809926387135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59beca7c779b7%3A0x70718cf4e28860a!2sSmilers%20Dental%20Clinique!5e0!3m2!1ses!2sec!4v1787633213334!5m2!1ses!2sec"
-              width="100%" height="260" style="border:0;"
               allowfullscreen="" loading="lazy"
               referrerpolicy="strict-origin-when-cross-origin"
-              title="Ubicación de Smilers Dental Clinique">
+              title="Ubicación de la Matriz — Smilers Dental Clinique">
+            </iframe>
+            <iframe
+              class="mapa-iframe" data-mapa="sucursal"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7869041411386!2d-78.5067450260317!3d-0.2273726353833921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d5998e7a8c26d9%3A0x3357fba232aaa79f!2sValparaiso%20N2-158%2C%20170136%20Quito!5e0!3m2!1ses!2sec!4v1788029067761!5m2!1ses!2sec"
+              allowfullscreen="" loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+              title="Ubicación de la Sucursal — Smilers Dental Clinique">
             </iframe>
           </div>
         </div>
 
+        <!-- ===== Columna 3: Formulario rápido (envía a WhatsApp) ===== -->
         <div class="col-lg-4" id="contacto">
           <h3 class="footer-titulo">Escríbenos</h3>
-          <p class="footer-texto small">Déjanos tu mensaje y te responderemos por WhatsApp.</p>
+          <p class="footer-texto small">
+            Déjanos tu mensaje y te responderemos por WhatsApp.
+          </p>
+
+          <!-- El JS intercepta el submit y arma el enlace wa.me -->
           <form id="formWhatsapp" class="form-footer" novalidate>
             <div class="mb-3">
               <label for="nombre" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+              <input type="text" class="form-control" id="nombre" name="nombre"
+                     placeholder="Tu nombre completo" required>
             </div>
+
             <div class="mb-3">
               <label for="mensaje" class="form-label">Mensaje</label>
-              <textarea class="form-control" id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
+              <textarea class="form-control" id="mensaje" name="mensaje" rows="4"
+                        placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
             </div>
+
             <button type="submit" class="btn btn-naranja w-100">
               <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Enviar por WhatsApp
             </button>
+
+            <!-- Zona de mensajes de validación / confirmación (la llena el JS) -->
             <p class="form-aviso" id="formAviso" role="status" aria-live="polite"></p>
           </form>
         </div>
+
       </div>
 
+      <!-- Línea inferior -->
       <div class="footer-bottom">
-        <p class="mb-0">© <span id="anioActual">2026</span> Smilers Dental Clinique. Todos los derechos reservados.</p>
-        <p class="mb-0"><a href="#contacto">Aviso de privacidad</a></p>
+        <p class="mb-0">
+          © <span id="anioActual">2026</span> Smilers Dental Clinique. Todos los derechos reservados.
+        </p>
+        <p class="mb-0">
+          <a href="#contacto">Aviso de privacidad</a>
+        </p>
       </div>
+
     </div>
   </footer>
 
