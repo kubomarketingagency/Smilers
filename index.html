@@ -6,10 +6,17 @@
 
   <!-- ===== SPLASH DE BIENVENIDA: marca la sesión ANTES de pintar nada, para
        que si ya se vio en esta pestaña no haya ni un parpadeo del splash
-       al navegar de vuelta a inicio. ===== -->
+       al navegar de vuelta a inicio.
+
+       PARA VOLVER A VERLA: abre la página con ?intro al final
+       (smilersdental.vercel.app/?intro). La marca vive en sessionStorage, o
+       sea que dura lo que dure la pestaña abierta -en un teléfono, semanas-
+       y recargar NO la borra. Sin esta puerta trasera, la única forma de
+       revisar la intro era cerrar la pestaña por completo. ===== -->
   <script>
     try {
-      if (sessionStorage.getItem('smilersSplashVisto')) {
+      if (!/[?&]intro(=|&|$)/.test(location.search) &&
+          sessionStorage.getItem('smilersSplashVisto')) {
         document.documentElement.classList.add('sin-splash');
       }
     } catch (e) { /* modo privado / almacenamiento bloqueado: se muestra el splash */ }
