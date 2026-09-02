@@ -3,7 +3,8 @@
    Contiene:
      1. Configuración global (número de WhatsApp)
      1b. Planificador único de scroll (un listener + un rAF para todo el
-         sitio, con fase de lectura y fase de escritura separadas)
+         sitio, con fase de lectura y fase de escritura separadas, y una
+         guarda por IntersectionObserver que duerme los efectos lejanos)
      2. Navbar con efecto scroll
      3. Cierre automático del menú en móvil
      4. Botón "volver arriba"
@@ -58,7 +59,18 @@ const NUMERO_WHATSAPP = '593997556002';
 
    Uso:
      SmilersScroll.registrar(funcionLeer, funcionEscribir);
+     SmilersScroll.registrar(leer, escribir, alRedimensionar, { guarda: el });
      SmilersScroll.pedir();   // forzar un cuadro (p. ej. tras un cambio propio)
+
+   La "guarda" es la segunda mitad de la optimización, y hace falta porque
+   la portada mide más de veinte pantallas: sin ella, con el hero en cuadro,
+   el planificador seguía llamando en cada cuadro a las lecturas del hero
+   cine, de los testimonios y del cierre — tres getBoundingClientRect para
+   calcular siempre el mismo 0. Con guarda, un IntersectionObserver duerme
+   la entrada mientras su sección esté a más de una pantalla, y el
+   planificador le da un cuadro completo justo al entrar y otro justo al
+   salir para que su estado final quede escrito. En gama baja son ~2/3 menos
+   de trabajo de layout por cuadro durante la mayor parte del recorrido.
 
    Contrato -importante para quien añada efectos nuevos-:
      · en "leer" SOLO se mide y se guarda en variables propias. Nada de
@@ -66,8 +78,15 @@ const NUMERO_WHATSAPP = '593997556002';
      · en "escribir" SOLO se escribe. Nada de volver a medir.
    Romper eso devuelve el thrashing de layout que este bloque elimina. ==== */
 var SmilersScroll = (function () {
-  var lectores = [];
-  var escritores = [];
+  /* Cada efecto registrado es una entrada {leer, escribir, activo}. El flag
+     "activo" lo mueve un IntersectionObserver cuando el efecto declara una
+     sección guarda (ver "registrar"): mientras esa sección está lejos, ni se
+     mide ni se escribe. Antes, con el hero en pantalla, el sitio seguía
+     llamando a getBoundingClientRect de #testimonios y de #cierreCine en
+     CADA cuadro para acabar calculando siempre el mismo 0 — tres lecturas
+     de layout por cuadro tiradas a la basura, que en gama baja son la
+     diferencia entre 60 y 45 fps. */
+  var entradas = [];
   var reinicios = [];
   var pedido = false;
   /* Medidas comunes, tomadas una sola vez por cuadro: window.innerHeight y
@@ -75,15 +94,25 @@ var SmilersScroll = (function () {
      pedía por su cuenta varias veces. */
   var ctx = { y: 0, alto: 0, ancho: 0 };
 
-  function correr() {
-    pedido = false;
+  function medir() {
     ctx.y = window.scrollY;
     ctx.alto = window.innerHeight || 1;
     ctx.ancho = window.innerWidth || 1;
+  }
 
-    var i;
-    for (i = 0; i < lectores.length; i++) lectores[i](ctx);
-    for (i = 0; i < escritores.length; i++) escritores[i](ctx);
+  function correr() {
+    pedido = false;
+    medir();
+
+    var i, e;
+    for (i = 0; i < entradas.length; i++) {
+      e = entradas[i];
+      if (e.activo && e.leer) e.leer(ctx);
+    }
+    for (i = 0; i < entradas.length; i++) {
+      e = entradas[i];
+      if (e.activo && e.escribir) e.escribir(ctx);
+    }
   }
 
   function pedir() {
@@ -213,13 +242,66 @@ var SmilersScroll = (function () {
     window.addEventListener(evt, abortar, { passive: true });
   });
 
+  /* ---- ¿manda el imán de CSS? ------------------------------------------
+     Misma consulta que la @media de "2b. IMÁN DE SCROLL" en estilos.css. Si
+     coincide, el navegador ya encuadra por su cuenta las COSTURAS entre
+     secciones, y los imanes de JS que apuntan a esas mismas costuras tienen
+     que callarse: un scrollTo cuadro a cuadro sobre un contenedor
+     "mandatory" se pelea con el anclaje del navegador y se nota como un
+     temblor al final del recorrido.
+
+     Los que apuntan a puntos INTERIORES de una sección más alta que la
+     pantalla (las mesetas del hero y las de cada testimonio) sí siguen
+     trabajando en escritorio: para el navegador esas posiciones ya son
+     válidas -regla del área grande- así que no las vuelve a anclar. */
+  var mqSnapCss = window.matchMedia(
+    '(min-width: 992px) and (hover: hover) and (pointer: fine)' +
+    ' and (prefers-reduced-motion: no-preference)'
+  );
+
   return {
+    /* true cuando el scroll-snap de CSS está activo (ver arriba). */
+    imanCssActivo: function () { return mqSnapCss.matches; },
     /* leer/escribir pueden ser null si un efecto solo hace una de las dos
-       cosas (el botón "volver arriba", por ejemplo, no mide nada). */
-    registrar: function (leer, escribir, alRedimensionar) {
-      if (leer) lectores.push(leer);
-      if (escribir) escritores.push(escribir);
+       cosas (el botón "volver arriba", por ejemplo, no mide nada).
+
+       "opciones.guarda" es el elemento que decide si al efecto le toca
+       trabajar: mientras esté a más de una pantalla de distancia, la entrada
+       queda dormida y no cuesta ni una lectura de layout. Solo tiene sentido
+       para efectos cuyo estado depende de UNA sección concreta -el hero cine,
+       los testimonios, el cierre-: los globales (navbar, botón subir) se
+       registran sin guarda y corren siempre.
+
+       "opciones.alCambiarVisibilidad(dentro)" avisa de ese cambio, que es el
+       momento correcto para pedir y soltar el will-change de las piezas que
+       ese efecto anima. */
+    registrar: function (leer, escribir, alRedimensionar, opciones) {
+      var e = { leer: leer || null, escribir: escribir || null, activo: true };
+      entradas.push(e);
       if (alRedimensionar) reinicios.push(alRedimensionar);
+
+      var guarda = opciones && opciones.guarda;
+      if (!guarda || typeof IntersectionObserver !== 'function') return;
+
+      e.activo = false;
+      new IntersectionObserver(function (registros) {
+        var dentro = registros[registros.length - 1].isIntersecting;
+        if (dentro === e.activo) return;
+
+        /* Tanto al entrar como al salir se corre UN cuadro completo con la
+           entrada despierta: al entrar, para que el primer fotograma visible
+           no sea el estado viejo; al salir, para dejar escrito el estado
+           final (progreso clavado en 0 o en 1) antes de dejar de mirarla.
+           Sin ese cuadro de cierre, una sección que se abandona muy rápido
+           se quedaba congelada a media transición. */
+        e.activo = true;
+        medir();
+        if (e.leer) e.leer(ctx);
+        if (e.escribir) e.escribir(ctx);
+        e.activo = dentro;
+
+        if (opciones.alCambiarVisibilidad) opciones.alCambiarVisibilidad(dentro);
+      }, { rootMargin: '100% 0px' }).observe(guarda);
     },
     /* fn(direccion) -> Y deseada, o null. Ver el comentario del imán. */
     alDetenerse: function (fn) { quietos.push(fn); },
@@ -1191,6 +1273,11 @@ document.addEventListener('DOMContentLoaded', function () {
        de foto a pantalla completa y hay que re-dibujarlas en cada cuadro. */
     var BLUR_SALIDA = window.matchMedia('(hover: none) and (pointer: coarse)').matches ? 8 : 20;
 
+    /* Mismo corte que el @media de estilos.css donde .hero-etapa2 pasa de
+       fila flex a rejilla 2x2. Se vuelve a leer al redimensionar. */
+    var mqRejilla = window.matchMedia('(max-width: 767.98px)');
+    var esRejilla = mqRejilla.matches;
+
     function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
 
     /* Escribe una propiedad solo si de verdad cambió. Antes este bloque
@@ -1283,7 +1370,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // única escritura de este bloque que dispara layout, de ahí que se
         // redondee a dos decimales: así deja de escribirse en cuanto la
         // columna llega a su ancho, en vez de en cada cuadro.
-        fijar(col, 'flexGrow', (.12 + propio * .88).toFixed(2));
+        //
+        // En móvil ni se escribe: allí .hero-etapa2 es una rejilla 2x2 (ver
+        // estilos.css, 5b) y flex-grow no significa nada en grid. Se seguía
+        // escribiendo igual, o sea que en el teléfono -el aparato que menos
+        // margen tiene- se estaban disparando cuatro recálculos de layout
+        // por cuadro durante toda la entrada del mosaico para no mover
+        // absolutamente nada en pantalla.
+        if (!esRejilla) fijar(col, 'flexGrow', (.12 + propio * .88).toFixed(2));
       });
 
       if (tagline) {
@@ -1296,9 +1390,25 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
+    /* Las cuatro columnas del mosaico piden capa de composición propia
+       mientras el hero está en cuadro, y la sueltan al salir. Se hace desde
+       aquí y no desde la hoja de estilos por el mismo criterio que .revelar
+       (ver estilos.css, sección 13): un will-change permanente sobre cuatro
+       fotos a pantalla completa deja esas texturas reservadas en la GPU
+       durante toda la visita, incluido el arranque, que es justo el peor
+       momento. En un teléfono de gama baja esa reserva es la diferencia
+       entre que la entrada de las columnas vaya fluida o a tirones. */
+    function pedirCapas(dentro) {
+      var valor = dentro ? 'transform, opacity' : '';
+      for (var i = 0; i < columnas.length; i++) columnas[i].style.willChange = valor;
+      if (heroTitulo) heroTitulo.style.willChange = valor;
+      if (tagline) tagline.style.willChange = valor;
+    }
+
     SmilersScroll.registrar(leerCine, actualizarCine, function () {
+      esRejilla = mqRejilla.matches;
       ultimoProgresoCine = -1;   // el layout cambió: hay que reescribir aunque el progreso sea el mismo
-    });
+    }, { guarda: envoltorio, alCambiarVisibilidad: pedirCapas });
     SmilersScroll.pedir();
 
 
@@ -1357,10 +1467,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* --- 3 y 4. Tratamientos a pantalla completa. Solo en escritorio y
        tablet: en móvil la sección crece con su contenido y no hay una
-       "pantalla exacta" que encuadrar. --- */
+       "pantalla exacta" que encuadrar.
+
+       Y solo cuando el scroll-snap de CSS NO está activo. Este imán apunta
+       justo al borde superior (o inferior) de #especialidades, que es
+       exactamente el punto de anclaje que declara la @media "2b. IMÁN DE
+       SCROLL" de estilos.css: en escritorio con puntero fino el trabajo ya
+       lo hace el navegador y dejar los dos encendidos era pelearse por el
+       mismo destino. En tablet táctil (768-991px) sigue siendo este. --- */
     SmilersScroll.alDetenerse(function (direccion) {
       if (!especialidades) return null;
       if (!window.matchMedia('(min-width: 768px)').matches) return null;
+      if (SmilersScroll.imanCssActivo()) return null;
 
       var rect = especialidades.getBoundingClientRect();
       var alto = window.innerHeight;
@@ -1532,8 +1650,24 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
+    /* Guarda: mientras el cierre esté a más de una pantalla, este bloque
+       no mide ni escribe nada. Es el efecto que más se notaba dormido de
+       balde — vive al final del documento, o sea que durante TODO el
+       recorrido de la portada estaba calculando un progreso que valía 0. */
     SmilersScroll.registrar(leerCierre, actualizarCierre, function () {
       ultimoProgresoCierre = -1;
+    }, {
+      guarda: envoltorio,
+      alCambiarVisibilidad: function (dentro) {
+        /* La capa negra y el contenido de la banda animan opacidad y
+           transform durante todo el revelado; se les da capa propia mientras
+           dura y se les quita al salir. Al .banda-cta NO se le pide nada: ya
+           lleva un blur() escrito cuadro a cuadro, que crea su propia capa,
+           y sumarle will-change solo duplicaría la reserva. */
+        var valor = dentro ? 'opacity' : '';
+        negro.style.willChange = valor;
+        if (contenido) contenido.style.willChange = dentro ? 'opacity, transform' : '';
+      }
     });
     SmilersScroll.pedir();
   })();

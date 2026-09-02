@@ -161,16 +161,94 @@
    lo que convierte a html/body en su propio contenedor de scroll y rompe
    el position:sticky del hero cine (sección 5b) — clip evita el
    desbordamiento horizontal sin ese efecto secundario. */
-/* Sin scroll-snap: se probó "proximity" (ver 13c más abajo, ahora vacío)
-   pero incluso en modo "proximity" -no "mandatory"- el scroll con rueda de
-   mouse o gestos normales podía quedarse completamente atascado justo al
-   llegar al borde de un snap point (verificado: decenas de intentos de
-   scroll sin ningún avance, solo un salto brusco lograba destrabarlo) —
-   además del bug ya conocido de romper el ancla #contacto con "mandatory".
-   Se retira del todo: el scroll queda 100% libre y fluido, y la sensación
-   de "llegada" a cada sección la dan las cortinas/ceremonias de entrada
-   (ver 5b) y el pin+scroll de #heroCine (14c), no el forzado del navegador. */
+/* El scroll-snap NO va aquí (ver "2b. IMÁN DE SCROLL" justo debajo): en el
+   documento entero y a cualquier ancho volvía a aparecer el atasco que ya
+   se documentó una vez -rueda de mouse sin avanzar hasta que un salto
+   brusco destrababa la página- y rompía el ancla #contacto. La regla nueva
+   es distinta en tres cosas: solo escritorio con puntero fino, solo bloques
+   MÁS ALTOS que la pantalla, y ni un solo punto de anclaje suelto dentro de
+   ellos. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /* compensa navbar fija */
+
+
+/* ===== 2b. IMÁN DE SCROLL (CSS Scroll Snap) — SOLO ESCRITORIO ===========
+   Qué hace: al soltar la rueda, la página termina de encuadrar la sección a
+   la que uno venía llegando en vez de dejarla a medias. Lo resuelve el
+   navegador, no un temporizador de JS, así que llega en el mismo cuadro en
+   que el scroll se detiene y no se pelea con el gesto.
+
+   POR QUÉ ESTA VEZ NO SE ATASCA (el intento anterior sí lo hacía)
+   La regla del spec que lo salva: si el área de anclaje es MÁS ALTA que el
+   viewport, el viewport tiene que poder colocarse en cualquier punto dentro
+   de ella. O sea que declarar #heroCine (460vh) o #testimonios (520vh) como
+   puntos de anclaje NO congela su interior: el scrub del pin sigue siendo
+   libre cuadro a cuadro, exactamente igual que hasta ahora, y el imán solo
+   muerde en las COSTURAS entre un bloque y el siguiente. De ahí las tres
+   condiciones:
+
+     · TODOS los hijos del flujo llevan scroll-snap-align, no solo los cuatro
+       del encargo. Al que se quede sin él, "mandatory" lo salta entero: eso
+       era exactamente el bug del ancla #contacto -el footer no figuraba como
+       destino válido y el navegador rebotaba de vuelta.
+     · NINGÚN anclaje suelto (sentinela de altura cero) dentro de las
+       secciones con pin. Un anclaje de altura 0 sí es más pequeño que el
+       viewport, y ahí "mandatory" vuelve a congelar el scrub — que es el
+       atasco documentado. Las paradas interiores (la meseta de "Sonrisas que
+       transforman vidas" dentro del hero, y la de cada testimonio) las sigue
+       poniendo el imán de JS: script.js 14d y testimonios-esfera.js. Ese
+       trabaja en posiciones que para el navegador ya son válidas, así que
+       ninguno de los dos deshace lo del otro.
+     · Nada de esto en táctil ni con "menos movimiento". En un teléfono el
+       scroll es inercial y "mandatory" le pelea el final a cada gesto; ahí
+       manda el imán de JS, que se aborta con tocar la pantalla.
+
+   scroll-margin-top: -90px en los bloques a sangre: html declara
+   scroll-padding-top:90px para que las anclas (#contacto y compañía) no
+   queden debajo de la navbar fija, pero una sección a pantalla completa
+   tiene que encuadrar en el 0 exacto, no 90px más abajo. El margen negativo
+   cancela ese relleno solo para ellas. #nosotros NO lo lleva: ahí los 90px
+   son justo lo que hace falta para que el titular no nazca tapado.
+   ======================================================================== */
+@media (min-width: 992px) and (hover: hover) and (pointer: fine)
+   and (prefers-reduced-motion: no-preference) {
+
+  /* .portada la lleva escrita el <html> de index.html, y SOLO ese: esta hoja
+     la comparten las cuatro subpáginas, donde el único bloque de la lista de
+     abajo que existe es el footer. Sin el candado, en nosotros.html o
+     tratamientos.html el navegador se encontraba con un contenedor
+     "mandatory" cuyo único destino válido era el pie de página, y todo lo de
+     arriba -que es la página entera- se volvía inalcanzable. */
+  html.portada { scroll-snap-type: y mandatory; }
+
+  .portada #heroCine,
+  .portada #nosotros,
+  .portada #especialidades,
+  .portada #testimonios,
+  .portada #cierreCine {
+    scroll-snap-align: start;
+    /* "normal", no "always": un gesto largo puede cruzar varias secciones de
+       una vez en lugar de frenar obligatoriamente en cada una. */
+    scroll-snap-stop: normal;
+  }
+
+  /* El footer ancla por el FINAL, no por el principio, y es a propósito: en
+     una pantalla alta el pie de página cabe entero y su borde superior queda
+     por encima del máximo de scroll del documento, o sea que como punto de
+     anclaje sería inalcanzable — con "mandatory" eso deja el final de la
+     página en tierra de nadie. Anclando por el final, el destino es siempre
+     "pie abajo del todo", que por definición existe. De paso el ancla
+     #contacto (la tercera columna del footer) queda a la vista igual. */
+  .portada .footer {
+    scroll-snap-align: end;
+    scroll-snap-stop: normal;
+  }
+
+  /* Bloques a sangre (se pintan por debajo de la navbar): encuadran en 0. */
+  .portada #heroCine,
+  .portada #especialidades,
+  .portada #testimonios,
+  .portada #cierreCine { scroll-margin-top: -90px; }
+}
 
 body {
   font-family: var(--fuente-cuerpo);
@@ -785,16 +863,40 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    multiplicado por la escala) se mueve siempre dentro de la imagen y nunca
    descubre un borde. */
 @media (max-width: 767.98px) {
+  /* Los slides que NO están al frente se quedan quietos, con el mismo
+     encuadre de salida del paneo. Antes heredaban el ken-burns de arriba:
+     tres fotos a pantalla completa escalando a la vez desde el primer cuadro
+     de la portada, o sea tres capas de composición vivas para ver una. */
+  .hero-slide-img {
+    animation: none;
+    transform: scale(1.28) translate3d(6%, 0, 0);
+  }
   .carousel-item.active .hero-slide-img {
     animation: panorama-movil 4.2s ease-in-out forwards;
+    /* Solo el slide del frente pide capa propia, y la suelta al perder la
+       clase: un will-change permanente sobre las tres fotos deja tres
+       texturas a pantalla completa reservadas en la GPU todo el rato. */
+    will-change: transform;
+    /* Evita que el navegador rasterice la foto en baja resolución al
+       componerla y luego la vuelva a subir a mitad del recorrido. */
+    backface-visibility: hidden;
   }
 }
+/* translate3d y no translateX: el porcentaje se resuelve igual (sobre la
+   caja propia, ya multiplicado por la escala), pero la coordenada Z fuerza
+   la promoción a capa de composición en los WebView antiguos de Android,
+   que con translateX 2D todavía repintan la foto en el hilo principal. */
 @keyframes panorama-movil {
-  from { transform: scale(1.28) translateX(6%); }
-  to   { transform: scale(1.34) translateX(-6%); }
+  from { transform: scale(1.28) translate3d(6%, 0, 0); }
+  to   { transform: scale(1.34) translate3d(-6%, 0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .carousel-item.active .hero-slide-img { animation: none; }
+  /* transform además de la animación: en el bloque de móvil de aquí arriba
+     el encuadre de reposo ya viene desplazado (es el punto de partida del
+     paneo), y sin este reset la foto se quedaba recortada y descentrada
+     para siempre en quien pide menos movimiento. */
+  .hero-slide-img,
+  .carousel-item.active .hero-slide-img { animation: none; transform: none; }
 }
 
 /* Capa de "destellos dorados": degradado diagonal en modo de mezcla que tiñe
@@ -3795,7 +3897,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   width: 100%;
   height: 50.6%;
   background: var(--onix);
-  will-change: transform;
+  /* El will-change lo pide y lo suelta testimonios-esfera.js cuando la
+     sección entra y sale de cuadro (mismo criterio que .revelar, sección 13):
+     declarado aquí, estas dos hojas a media pantalla cada una se reservaban
+     en la GPU desde el primer pintado y durante toda la visita, para moverse
+     únicamente en el último 10% de una sección que está al final de la
+     página. */
 }
 .tc-hoja--arriba { top: 0;    transform: translate3d(0, -100%, 0); }
 .tc-hoja--abajo  { bottom: 0; transform: translate3d(0,  100%, 0); }
@@ -3818,7 +3925,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     var(--gold-100) 50%,
     rgba(210, 172, 71, .5) 72%,
     transparent 100%);
-  opacity: .7;
+  /* --filo lo baja de 1 a 0 testimonios-esfera.js en el último tramo del
+     cierre. Las dos hojas miden 50.6% cada una, o sea que sus filos acaban
+     a 49.4% y 50.6% de alto: NO quedan uno encima del otro como se pensó al
+     escribirlas, sino a un 1.2% de distancia. Ese pelo de separación dejaba
+     una costura clara cruzando la pantalla justo durante los ~21vh en que la
+     sección ya está en negro y le pasa el relevo a la banda de cierre —
+     precisamente el momento que tiene que ser negro liso. Apagando el filo
+     al final, el trazo dorado sigue acompañando a las hojas mientras se
+     mueven (que es para lo que está) y desaparece al juntarse. */
+  opacity: calc(.7 * var(--filo, 1));
 }
 .tc-hoja--arriba::after { bottom: 0; }
 .tc-hoja--abajo::after  { top: 0; }
@@ -3977,7 +4093,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   flex: 0 1 34ch;
   min-width: 0;
   opacity: 0;                      /* el JS lo sube según el scroll */
-  will-change: opacity, transform;
+  /* will-change: lo mismo que .tc-hoja, lo gestiona el JS por visibilidad. */
 }
 .tst-comillas {
   display: block;
@@ -4028,6 +4144,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   padding: 0;
   display: flex;
   gap: .5rem;
+  /* Las marcas crecen de 26px a 44px con una transición de "width", que es
+     una propiedad de layout: durante esos 400 ms el navegador rehace la caja
+     en cada cuadro. La animación se conserva tal cual -es la que dice en qué
+     testimonio va uno- pero con altura fija y contención el recálculo se
+     queda encerrado en esta lista: no sube al panel, ni al pin, ni a la
+     sección. Es la diferencia entre repintar cinco barritas y volver a medir
+     media portada cada vez que la esfera cambia de testimonio.
+     "size" necesita la altura explícita; es la misma de .tst-pasos li. */
+  height: 2px;
+  contain: layout size;
 }
 .tst-pasos li {
   width: 26px;
@@ -4114,6 +4240,20 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .72rem;
   color: var(--texto-suave);
 }
+/* En táctil, sin desenfoque de fondo. Un backdrop-filter obliga a releer y
+   volver a difuminar lo que hay debajo en cada cuadro, y debajo de este chip
+   está justo el lienzo WebGL de la esfera, que cambia entero mientras gira:
+   o sea el peor caso posible, un re-desenfoque por cuadro durante todo el
+   giro. Con el chip ya opaco no se distingue del original, y en teléfono es
+   además donde la pista de texto está oculta y el chip es más pequeño. */
+@media (hover: none) and (pointer: coarse) {
+  .testimonios-revelar__chip {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(20, 18, 15, .9);
+  }
+}
+
 /* Ya revelado, la pista sobra: el chip se queda solo con "Después". */
 .mostrando-despues .testimonios-revelar__chip {
   background: rgba(210, 172, 71, .92);
@@ -4156,7 +4296,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   }
   .testimonios-texto {
     flex: 0 0 auto;
-    max-width: 40ch;
+    /* min(), no 40ch a secas: 40ch de la fuente de cuerpo son ~356px, y
+       sumados al relleno lateral de .testimonios-escena se pasaban del ancho
+       de un teléfono de 390px. El pin recorta lo que sobra, así que la firma
+       ("CAMILA ORDÓÑEZ — Rehabilitación oral", la más larga de las cinco)
+       salía cortada por el borde derecho en vez de repartirse en dos
+       líneas, que es lo que ya pide el flex-wrap de .tst-firma. */
+    max-width: min(40ch, 100%);
     text-align: center;
   }
   .tst-comillas { font-size: clamp(2.4rem, 9vw, 3.4rem); }
@@ -4180,6 +4326,26 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 @media (max-width: 767.98px) {
   .testimonios-pin { padding: 60px 0 50px; }
   .testimonios-lista { gap: 1.2rem; padding: 0 1.2rem; }
+
+  /* La firma se apila en teléfono. En una sola fila, la más larga de las
+     cinco -"CAMILA ORDÓÑEZ — Rehabilitación oral", 313px- llega hasta 5px
+     del borde derecho, que es justo donde están los dos botones flotantes
+     (el de volver arriba, z-index 1040, cae a la altura exacta de esta
+     línea). El texto no se cortaba: se lo estaba tapando el botón. Apilada
+     ocupa 152px de ancho como mucho, centrada, y no pasa por debajo de
+     ninguno de los dos. En escritorio y tablet se queda en fila. */
+  .tst-firma {
+    flex-direction: column;
+    gap: .45rem;
+  }
+  /* En columna, el "flex: 0 0 34px" del filete se aplicaría a la ALTURA y
+     dejaría un bloque dorado de 34px en vez de una raya. */
+  .tst-firma__linea {
+    flex: 0 0 1px;
+    width: 34px;
+    height: 1px;
+    align-self: center;
+  }
 }
 
 /* Con "menos movimiento" el JS ni arma la esfera (ver el final de

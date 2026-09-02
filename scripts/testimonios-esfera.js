@@ -937,6 +937,7 @@ void main() {
     var salidaNombre = seccion.querySelector('[data-nombre]');
     var salidaTratamiento = seccion.querySelector('[data-tratamiento]');
     var velo = seccion.querySelector('[data-velo-testimonios]');
+    var cierre = seccion.querySelector('[data-cierre-testimonios]');
     var hojas = Array.prototype.slice.call(seccion.querySelectorAll('.tc-hoja'));
     var pasos = Array.prototype.slice.call(seccion.querySelectorAll('[data-paso]'));
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
@@ -996,6 +997,11 @@ void main() {
     var ultimoIndice = -1;
     var ultimoCierre = null;   // última posición escrita en las hojas del cierre
     var progresoSeccion = 0;   // lo mide la fase de lectura del planificador
+    /* Últimos valores escritos en el panel y en el botón: ver "actualizar". */
+    var ultimaOpacidadVelo = -1;
+    var ultimaOpacidadPanel = -1;
+    var ultimaOpacidadBoton = -1;
+    var ultimoBotonActivo = null;
 
     function fijarRevelado(encendido) {
       if (revelando === encendido) return;
@@ -1007,10 +1013,46 @@ void main() {
     }
 
     /* ---- scroll -> posición --------------------------------------------
-       El 8% inicial y el 8% final del recorrido son "reposo": así el
-       primer y el último testimonio se quedan quietos un momento en vez de
-       aparecer justo en el borde del pin. */
-    var REPOSO = 0.08;
+       El recorrido arranca y termina con un tramo de "reposo" en el que la
+       esfera no gira, para que el primer y el último testimonio se queden
+       quietos un momento en vez de aparecer justo en el borde del pin.
+
+       LOS DOS TRAMOS YA NO SON IGUALES, y ese era el fallo del último
+       testimonio (Camila Ordóñez). Con 8% y 8%, la esfera llegaba a su
+       posición final en el 92% del recorrido... pero las hojas del cierre
+       empezaban a entrar en el 82%. O sea que Camila terminaba de asentarse
+       cuando el obturador ya la tapaba a más de la mitad: nunca se la veía
+       entera, y el imán tampoco la encuadraba nunca porque se apagaba en el
+       80% justo para no pelearse con esas hojas.
+
+       Con 6% al principio y 20% al final, la esfera queda quieta en el
+       último testimonio desde el 75% del recorrido y el cierre no arranca
+       hasta el 86%: son unos 57vh de scroll con Camila al frente, sin nada
+       encima, igual que cualquiera de los otros cuatro. El giro en sí pierde
+       un 12% de recorrido, que en 520vh son ~62vh repartidos entre cuatro
+       tramos — un 3% menos de distancia por giro, imperceptible. */
+    var REPOSO_INICIO = 0.06;
+    var REPOSO_FIN    = 0.20;
+    var TRAMO_GIRO    = 1 - REPOSO_INICIO - REPOSO_FIN;   // 0.74
+
+    /* ---- cierre en obturador --------------------------------------------
+       Arranca DESPUÉS de que el último testimonio haya tenido su pausa, y
+       -esto es lo otro que fallaba- termina de cerrarse en el 96%, no en el
+       100%.
+
+       Por qué el margen del 4%: el progreso llega a 1 justo en el cuadro en
+       que el pin se suelta y la sección entrega la pantalla a #cierreCine.
+       Terminando el cierre exactamente ahí, cualquier variación de un píxel
+       en la altura del viewport dejaba las hojas sin juntar en el momento
+       del relevo. Y en un teléfono eso no es "cualquier variación": es lo
+       que pasa CADA vez que la barra de direcciones se recoge o vuelve, que
+       cambia innerHeight -y con él el recorrido y el progreso- a media
+       bajada. De ahí el corte abrupto que se veía en móvil entre el último
+       testimonio y la banda de abajo. Con el 96%, quedan ~21vh de scroll ya
+       en negro absoluto antes del relevo, y el cambio de una sección a la
+       otra ocurre con la pantalla apagada: no hay costura que ver. */
+    var CIERRE_DESDE = 0.86;
+    var CIERRE_HASTA = 0.96;
 
     /* ---- meseta por testimonio ------------------------------------------
        Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
@@ -1045,7 +1087,7 @@ void main() {
     function actualizar() {
       var progreso = progresoSeccion;
 
-      var t = conParadas(acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * (items.length - 1));
+      var t = conParadas(acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * (items.length - 1));
       esfera.irA(t);
 
       /* APERTURA: el velo se disuelve en el primer tramo. Como es del mismo
@@ -1053,26 +1095,37 @@ void main() {
          se ve como un bloque negro de más: solo apaga la esfera y el texto
          hasta que el primer testimonio está en su sitio. */
       if (velo) {
-        velo.style.opacity = String(acotar((0.06 - progreso) / 0.06));
+        /* Igual que el panel: pasado el 6% esto vale 0 para el resto de la
+           sección, y se estaba reescribiendo el mismo "0" en cada cuadro. */
+        var opVelo = Number(acotar((0.06 - progreso) / 0.06).toFixed(3));
+        if (opVelo !== ultimaOpacidadVelo) {
+          ultimaOpacidadVelo = opVelo;
+          velo.style.opacity = String(opVelo);
+        }
       }
 
       /* CIERRE: dos hojas negras entran desde arriba y desde abajo hasta
          juntarse en el centro, como el obturador de una cámara. Antes esto
          era un fundido a negro del velo; en obturador el final de la
          sección se lee como un cierre deliberado y no como que se apagó la
-         luz. Empieza en el 82% -no en el 90%- para que el movimiento tenga
-         recorrido de sobra y no se sienta un portazo.
+         luz. El tramo exacto y por qué es ese, arriba en CIERRE_DESDE.
 
          Se escribe solo mientras las hojas se mueven: pasado el 100% ya
          están juntas y no hay nada que reescribir en cada cuadro. */
       if (hojas.length === 2) {
-        var c = acotar((progreso - 0.82) / 0.18);
+        var c = acotar((progreso - CIERRE_DESDE) / (CIERRE_HASTA - CIERRE_DESDE));
         var suave = c * c * (3 - 2 * c);
         var fuera = ((1 - suave) * 100).toFixed(2);
         if (fuera !== ultimoCierre) {
           ultimoCierre = fuera;
           hojas[0].style.transform = 'translate3d(0,-' + fuera + '%,0)';
           hojas[1].style.transform = 'translate3d(0,' + fuera + '%,0)';
+          /* El filo dorado acompaña el movimiento y se apaga en el último
+             15% del recorrido, para que las hojas ya juntas no dejen una
+             costura clara en medio del negro (ver .tc-hoja::after). */
+          if (cierre) {
+            cierre.style.setProperty('--filo', Math.min(1, (1 - suave) / 0.15).toFixed(3));
+          }
         }
       }
 
@@ -1094,17 +1147,33 @@ void main() {
         fijarRevelado(false);   // al cambiar de testimonio vuelve al "antes"
       }
 
-      if (panel) {
-        panel.style.opacity = String(suavizada);
-        panel.style.transform = 'translateY(' + ((1 - suavizada) * 26).toFixed(1) + 'px)';
+      /* Redondeado a dos decimales y escrito solo si cambió. Durante la
+         meseta -que es más de la mitad del recorrido de cada testimonio- la
+         opacidad vale 1 fija: sin este filtro se reescribían dos estilos por
+         cuadro para dejar el elemento exactamente como estaba. */
+      var op = Number(suavizada.toFixed(2));
+      if (panel && op !== ultimaOpacidadPanel) {
+        ultimaOpacidadPanel = op;
+        panel.style.opacity = String(op);
+        panel.style.transform = 'translateY(' + ((1 - op) * 26).toFixed(1) + 'px)';
       }
 
       /* Mientras rueda, el "después" se apaga: la comparación solo tiene
          sentido con la foto quieta al frente. */
       if (quietud < 0.5 && revelando) fijarRevelado(false);
       if (boton) {
-        boton.style.pointerEvents = quietud > 0.75 ? 'auto' : 'none';
-        boton.style.opacity = String(suavizada);
+        /* pointer-events no repinta nada, pero tocarlo invalida el estilo
+           calculado del botón y de su chip en cada cuadro. Solo en los dos
+           cuadros en que de verdad cambia. */
+        var pasa = quietud > 0.75;
+        if (pasa !== ultimoBotonActivo) {
+          ultimoBotonActivo = pasa;
+          boton.style.pointerEvents = pasa ? 'auto' : 'none';
+        }
+        if (op !== ultimaOpacidadBoton) {
+          ultimaOpacidadBoton = op;
+          boton.style.opacity = String(op);
+        }
       }
     }
 
@@ -1136,28 +1205,35 @@ void main() {
        la página cae ese centro.
 
        Los dos extremos quedan fuera a propósito: abajo del 4% manda la
-       apertura del velo y a partir del 80% ya están entrando las hojas del
-       cierre; un imán ahí pelearía con esas dos transiciones. */
+       apertura del velo, y a partir de CIERRE_DESDE ya están entrando las
+       hojas del obturador; un imán ahí pelearía con esas dos transiciones.
+
+       Ese tope era antes un 0.80 escrito a mano, y como el último testimonio
+       se asentaba recién en el 0.92, quedaba SIEMPRE fuera: era el único de
+       los cinco que la página no terminaba de encuadrar nunca. Ahora que el
+       reparto es asimétrico su meseta cae en el 0.80 y el tope está en el
+       0.86, así que entra como los demás. */
     if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
       window.SmilersScroll.alDetenerse(function () {
         var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
         if (recorrido <= 0) return null;
 
         var progreso = progresoSeccion;
-        if (progreso <= 0.04 || progreso >= 0.80) return null;
+        if (progreso <= 0.04 || progreso >= CIERRE_DESDE) return null;
 
         var tramos = items.length - 1;
         if (tramos <= 0) return null;
 
-        var lineal = acotar((progreso - REPOSO) / (1 - REPOSO * 2)) * tramos;
-        var objetivo = REPOSO + (Math.round(lineal) / tramos) * (1 - REPOSO * 2);
+        var lineal = acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * tramos;
+        var objetivo = REPOSO_INICIO + (Math.round(lineal) / tramos) * TRAMO_GIRO;
         var tope = seccion.getBoundingClientRect().top + window.scrollY;
 
         /* "maximo" en 0.62 de pantalla y no el tope común (0.55): entre el
-           centro de una meseta y el de la vecina hay medio tramo, que aquí
-           ronda el 0.45 de pantalla. Con el tope común quedaba tan al filo
-           que cualquier variación de alto lo descartaba y el imán no se
-           movía nunca. */
+           centro de una meseta y el de la vecina hay medio tramo, que con el
+           reparto de arriba son 0.0925 del recorrido — 0.48 de pantalla en
+           escritorio (520vh) y 0.43 en móvil (460vh). Con el tope común
+           quedaba tan al filo que cualquier variación de alto lo descartaba y
+           el imán no se movía nunca. */
         return { y: Math.round(tope + objetivo * recorrido), maximo: 0.62 };
       });
     }
@@ -1170,6 +1246,25 @@ void main() {
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
+      }, {
+        /* Guarda: esta sección vive en el último tercio del documento, y
+           hasta ahora medía su caja en CADA cuadro de scroll de toda la
+           portada para acabar escribiendo siempre el mismo progreso 0. Con
+           la guarda solo trabaja cuando falta menos de una pantalla para
+           llegar. El planificador le da un cuadro completo al entrar y otro
+           al salir, así que el velo de apertura y las hojas del cierre
+           quedan siempre en su estado final. */
+        guarda: seccion,
+        alCambiarVisibilidad: function (dentro) {
+          /* Las dos hojas del obturador solo necesitan capa propia mientras
+             la sección está en juego; fuera de ella son dos rectángulos
+             negros quietos y no hay por qué tenerlas reservadas en la GPU
+             durante toda la visita (el will-change permanente de .tc-hoja se
+             quitó de la hoja de estilos por esto mismo). */
+          var valor = dentro ? 'transform' : '';
+          for (var i = 0; i < hojas.length; i++) hojas[i].style.willChange = valor;
+          if (panel) panel.style.willChange = dentro ? 'opacity, transform' : '';
+        }
       });
     } else {
       var tickeando = false;
