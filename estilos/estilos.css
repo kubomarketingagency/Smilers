@@ -63,31 +63,38 @@
      era la otra mitad de "no tan grotesco": el anterior recorría tanto tono
      que la palabra se leía a dos colores. Las cuatro paradas, medidas sobre
      #F6F3EC: 5.27 · 3.04 · 4.32 · 3.19. */
-  /* POR QUÉ ESTE ORO SE VEÍA CAFÉ, Y CUÁL ERA EL ARREGLO.
-     La respuesta no era aclararlo. Sobre un lienzo claro no se puede: subir
-     la luminosidad de un dorado le quita contraste contra el fondo, y por
-     debajo de 3:1 deja de poder llevar texto. Lo que hacía que estas paradas
-     se leyeran marrones era la SATURACIÓN, que estaba en el 66-76%. Un
-     amarillo desaturado a media luminosidad no es un dorado apagado: es
-     directamente un marrón, porque el marrón ES eso.
+  /* TERCERA VUELTA, Y LA BUENA. LO QUE FALTABA ERA AMPLITUD.
+     Las dos correcciones anteriores fueron por el camino equivocado: primero
+     se intentó aclarar el oro, luego saturarlo. Ninguna de las dos arregló
+     que se siguiera leyendo café, y la razón es que el problema no estaba en
+     ninguna parada por separado sino en el RECORRIDO del degradado.
 
-     Las paradas de ahora tienen el mismo matiz de siempre -42-44 grados, el
-     del logo- y la saturación subida al 83-89%. La luminosidad casi no se
-     mueve, así que el contraste se mantiene, pero el tono deja de caer en el
-     café y vuelve al oro. Medido sobre el punto MÁS OSCURO del lienzo de la
-     sección 3 (#EFEAE0), que es el caso peor de todo el sitio:
+     Compárense los dos. El del banner va de #AE8625 a #F7EF8A: 62 puntos de
+     luminosidad de diferencia entre su parada más oscura y la más clara. El
+     de aquí iba de #8C6508 a #A87C10: 4 puntos. Un degradado de 4 puntos no
+     es un degradado, es un color plano — y un amarillo oscuro plano es,
+     literalmente, marrón. El brillo metálico no lo da el tono: lo da el
+     CONTRASTE ENTRE LAS PARADAS, que es lo que el ojo lee como un reflejo
+     recorriendo una superficie pulida. Sin ese recorrido no hay metal, por
+     muy bien elegido que esté el tono medio.
 
-       #8C6508  4.40:1   ·  saturación 89%
-       #96700A  3.80:1   ·  saturación 88%
-       #A87C10  3.15:1   ·  saturación 83%
+     Estas cuatro paradas son la MISMA FIGURA del degradado del banner
+     -oscura, destello, media, clara- bajada en bloque a la mitad de la escala
+     donde un lienzo claro deja ver algo. Recorrido: 34 puntos. No llega a los
+     62 del banner, y no puede: sobre blanco la parada del destello tiene un
+     techo. Pero es amplitud suficiente para que se lea como oro pulido y no
+     como pintura ocre. Medido sobre blanco puro:
 
-     Sobre blanco puro las tres suben (5.28 · 4.35 · 3.78). Todas por encima
-     del 3:1 que pide el texto grande, que es lo único que este degradado
-     viste. Es el mismo hallazgo que ya se había hecho una vez y que se
-     deshizo al intentar copiar también la saturación del logo (61%): sobre
-     blanco no se pueden tener las dos cosas, y la que hay que conservar es el
-     matiz. */
-  --gradiente-oro-profundo: linear-gradient(100deg, #8C6508 0%, #A87C10 34%, #96700A 66%, #A87C10 100%);
+       #7E5B05   5.99:1   parada oscura, la que ancla el trazo
+       #D9B44A   1.99:1   el destello
+       #A87C10   3.78:1   la media
+       #C89C22   2.55:1   la clara de cierre
+
+     Las claras van por debajo del 3:1 a propósito y eso está bien: son el
+     destello, ocupan un tercio del glifo y el ojo lee la letra por sus
+     paradas oscuras. Lo que no puede pasar es que un texto vaya ENTERO en
+     esas dos, y por eso el texto menudo tiene su propia rampa (abajo). */
+  --gradiente-oro-profundo: linear-gradient(100deg, #7E5B05 0%, #D9B44A 32%, #A87C10 64%, #C89C22 100%);
 
   /* SEGUNDA RAMPA, PARA EL TEXTO MENUDO. Los rotulos del sistema miden
      0.7rem = 11px, y a ese cuerpo WCAG deja de tratarlos como texto grande:
@@ -95,11 +102,21 @@
      entre 3.15 y 4.40 sobre el punto mas oscuro del lienzo claro, o sea que
      serviria para una palabra destacada de 24px pero no para una etiqueta.
 
-     Esta es la misma recta bajada un escalon: mismo matiz de 42 grados, la
-     saturacion incluso mas alta (91%), y todas sus paradas por encima de
-     5:1 sobre cualquier punto del lienzo. Sigue barriendo como metal -que es
-     lo que se pedia- solo que en la mitad de la escala donde un texto de
-     11px se puede leer.
+     Esta es la misma figura de arriba con el recorrido acortado por abajo:
+     el destello se queda en #C29418 (2.78:1) en vez de subir a #D9B44A, y la
+     parada oscura baja a #6B4D03 (7.5:1) para compensar. Sigue teniendo 25
+     puntos de recorrido -sigue leyendose como metal, que es lo que se pedia-
+     pero su promedio ronda el 4:1, no el 2.5:1 del degradado de acentos.
+
+     Nota honesta sobre esto: un rotulo de 11px recortado sobre un degradado
+     NO cumple el 4.5:1 de WCAG en todas sus paradas, y no hay forma de que
+     lo cumpla y a la vez parezca oro. A esa luminosidad el amarillo ES
+     marron; es fisica del color, no una decision de gusto. La decision que
+     se tomo aqui, a peticion expresa, es que estos rotulos son ornamento
+     -etiquetas de seccion que repiten lo que el titular de al lado ya dice-
+     y por tanto pueden vivir con el promedio de 4:1. El texto que hay que
+     leer de verdad (cuerpo, listas, respuestas del FAQ, navegacion) NUNCA va
+     en oro: va en #2E2E2E, que da 11.4:1.
 
      Sobre lienzo OSCURO esta variable no cambia nada: apunta al degradado
      del banner, donde el problema no existe. */
@@ -1291,8 +1308,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      teórico, así que ningún fondo claro lo arregla. Sigue reservado a las
      piezas oscuras de la sección (.nm-sello, .contador-lujo), que son justo
      donde el dorado del logo ya se ve tal cual es. */
-  --gold-500: #A87C10;   /* mismo matiz del logo, saturado para lienzo claro */
-  --gold-700: #8C6508;   /* misma recta, oscurecida · texto pequeño */
+  --gold-500: #C29418;   /* vinetas, iconos y trazos: piezas graficas */
+  --gold-700: #8C6508;   /* respaldo plano bajo el degradado · texto pequeño */
 
   /* Hilos decorativos. El dorado sube de .22 a .38 -el mismo valor que usa
      la página Nosotros- porque ahora ES el separador de la sección: los
@@ -1301,7 +1318,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      que solo tiene que separar sin llamar la atención. */
   --hairline-oro: rgba(210, 172, 71, .55);
   --gradiente-oro: var(--gradiente-oro-profundo);
-  --gradiente-oro-menudo: linear-gradient(100deg, #5E4304 0%, #7E5A06 40%, #6C4E05 70%, #7E5A06 100%);
+  --gradiente-oro-menudo: linear-gradient(100deg, #6B4D03 0%, #C29418 34%, #8A6407 66%, #B4880E 100%);
   --hairline-suave: rgba(122, 108, 82, .16);
 
   /* CUERPO DE TEXTO A UN SOLO TONO, como en la página Nosotros. Antes eran
@@ -5269,7 +5286,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --superficie-borde: rgba(10, 10, 10, .10);
   --sombra: none;
   --sombra-hover: none;
-  --gold-500: #A87C10;
+  --gold-500: #C29418;
   --gold-700: #8C6508;
   --silver-100: #2E2E2E;
   --silver-300: #4A4A4A;
@@ -5298,7 +5315,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      #F7EF8A, que sobre blanco da 1.2:1 — no es que se lea mal, es que no se
      ve. Mismo metal, mismo barrido, la luminosidad que el lienzo permite. */
   --gradiente-oro: var(--gradiente-oro-profundo);
-  --gradiente-oro-menudo: linear-gradient(100deg, #5E4304 0%, #7E5A06 40%, #6C4E05 70%, #7E5A06 100%);
+  --gradiente-oro-menudo: linear-gradient(100deg, #6B4D03 0%, #C29418 34%, #8A6407 66%, #B4880E 100%);
   /* El gris claro de la marca (el eslogan bajo el wordmark) sobre blanco daba
      1.9:1. Mismo papel, tono legible. */
   --neutral-300: #6F6F6F;
@@ -5660,39 +5677,85 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    el salto del blanco al negro se lee como que la página se corta. */
 .pagina-clara .footer { border-top: 1px solid rgba(10, 10, 10, .1); }
 
-/* EL FOOTER SIGUE SIENDO NEGRO, Y AQUÍ HAY QUE FRENAR DOS REGLAS DE ESTA
-   MISMA SECCIÓN. Todo lo de .pagina-clara está escrito para un lienzo blanco,
-   pero el footer es la excepción: es la única pieza oscura de estas páginas.
-   Sin esto, los rótulos de columna (que son <h3>) salían en negro sobre negro
-   por la regla de titulares de más arriba, y el botón del formulario salía
-   con trazo y texto negros, o sea invisible. */
+/* EL PIE Y EL MENÚ SIGUEN SIENDO NEGROS: AQUÍ SE LES DEVUELVEN SUS TOKENS.
+   --------------------------------------------------------------------------
+   Este era el fallo de "los footers se ven mal en las demás páginas", y no
+   era cosa del footer: era de .pagina-clara. Esa clase redefine las variables
+   semánticas del sitio para un lienzo blanco -el oro se oscurece, la plata se
+   vuelve gris de texto, los grises claros se vuelven oscuros- y lo hace en
+   el <body>, así que la redefinición baja por herencia a TODO, incluidas las
+   dos piezas de estas páginas que siguen siendo negras: el pie y el menú a
+   pantalla completa. Resultado medido, comparando el pie de la portada con el
+   de Tratamientos: el wordmark, los iconos de contacto, la pestaña activa del
+   mapa y el trazo del botón heredaban el oro profundo — que sobre negro no es
+   oro, es barro.
+
+   El arreglo no es perseguir esas cuatro reglas (mañana hay una quinta): es
+   volver a declarar los tokens del lienzo OSCURO en la frontera, de modo que
+   dentro del pie y del menú el sistema entero vuelva a ser el de la portada.
+   Una regla, y cualquier pieza que se añada mañana al pie ya nace bien.
+
+   Aquí --gradiente-oro se reescribe entero en vez de heredarse porque las
+   var() se resuelven en el elemento donde se USAN: al declarar --gold-700 y
+   compañía en este mismo bloque, el degradado que se arma aquí es ya el del
+   banner. */
+.pagina-clara .footer,
+.pagina-clara .navbar-collapse,
+.pagina-clara .menu-pantalla {
+  --gold-500: #D2AC47;
+  --gold-700: #AE8625;
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  --gradiente-oro-menudo: var(--gradiente-oro);
+  --silver-100: #ECECEC;
+  --silver-300: #D6D6D6;
+  --neutral-300: #B9B4AC;
+  --naranja: var(--plata);
+  --naranja-oscuro: var(--silver-700);
+  --naranja-accion: var(--silver-900);
+  --acento-legible: var(--plata);
+  --acento-legible-hover: var(--gold-200);
+  --texto: #D9D6D0;
+  --texto-suave: #A8A49D;
+  --blanco: var(--onix);
+  --gris-bg: #000000;
+  --superficie: #141414;
+  --superficie-borde: rgba(192, 192, 192, .22);
+  --turquesa: var(--neutral-700);
+  --turquesa-osc: var(--neutral-900);
+  --turquesa-claro: var(--gold-100);
+  --sombra: 0 10px 32px rgba(192, 192, 192, .14);
+  --sombra-hover: 0 24px 60px rgba(192, 192, 192, .22);
+}
+
+/* Lo que los tokens no arreglan, porque está escrito con colores literales y
+   no con variables: la regla de titulares de esta misma sección pinta los
+   <h2>/<h3> de negro, y los rótulos de columna del pie son <h3>. */
 .pagina-clara .footer h2,
 .pagina-clara .footer h3,
 .pagina-clara .footer h4,
 .pagina-clara .footer .footer-titulo { color: var(--marmol); }
-/* El menu a pantalla completa es oscuro en las cinco paginas (ver
-   .navbar-collapse), asi que su boton tampoco puede heredar el trazo negro
-   de .pagina-clara .btn. */
-.pagina-clara .navbar-collapse .btn {
-  color: var(--marmol);
-  border-color: var(--gold-500);
-  background: transparent;
-}
-.pagina-clara .navbar-collapse .btn:hover,
-.pagina-clara .navbar-collapse .btn:focus,
-.pagina-clara .navbar-collapse .btn:focus-visible {
-  background: var(--gold-500);
-  border-color: var(--gold-500);
+
+/* Y el botón: .pagina-clara .btn le había puesto etiqueta negra, que sobre el
+   pie negro es invisible. El trazo ya no hace falta tocarlo — con los tokens
+   de arriba, el border-image de la sección 30 se arma con el oro del banner. */
+/* LA BANDA DE CIERRE ES LA EXCEPCIÓN AL REVÉS. En la portada es negra -es lo
+   que aparece cuando se levanta el telón- y por eso la sección 30 le pone la
+   etiqueta en mármol. En estas páginas no hay telón: .pagina-clara la pinta
+   de blanco como al resto de secciones, y esa etiqueta en mármol quedaba
+   blanca sobre blanco, o sea un botón con trazo dorado y sin texto dentro.
+   Aquí el lienzo manda y la etiqueta vuelve al negro. */
+.pagina-clara .banda-cta .btn { color: var(--nos-negro); }
+.pagina-clara .banda-cta .btn:hover,
+.pagina-clara .banda-cta .btn:focus,
+.pagina-clara .banda-cta .btn:focus-visible { color: var(--onix); }
+
+.pagina-clara .footer .btn,
+.pagina-clara .navbar-collapse .btn { color: var(--marmol); background: transparent; }
+.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus, .pagina-clara .footer .btn:focus-visible,
+.pagina-clara .navbar-collapse .btn:hover, .pagina-clara .navbar-collapse .btn:focus, .pagina-clara .navbar-collapse .btn:focus-visible {
+  background: var(--gradiente-oro);
   color: var(--onix);
 }
-
-/* El boton del footer ya no necesita parche: se define una sola vez en la
-   seccion 11, para las cinco paginas. Lo unico que hay que devolver aqui es
-   el color, porque .pagina-clara .btn lo habia pintado de negro. */
-.pagina-clara .footer .btn { color: #FFFFFF; border-color: rgba(255, 255, 255, .45); }
-.pagina-clara .footer .btn:hover,
-.pagina-clara .footer .btn:focus,
-.pagina-clara .footer .btn:focus-visible { background: #FFFFFF; color: var(--nos-negro); border-color: #FFFFFF; }
 
 
 /* ==========================================================================
@@ -6317,7 +6380,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ---- 30e. DETALLES DEL FOOTER -----------------------------------------
    El footer ya era la pieza más dorada del sitio; lo que quedaba plateado o
    en blanco translúcido pasa al oro de marca. */
-.redes-sociales a { border-color: rgba(210, 172, 71, .38); }
+/* Los aros de redes a .38 sobre negro daban un gris apagado: el aro se
+   perdia y los cuatro iconos flotaban sueltos. A .55, con el glifo tambien
+   en oro claro, el bloque se lee como un grupo. */
+.redes-sociales a { border-color: rgba(210, 172, 71, .55); color: var(--gold-200); }
 .redes-sociales a:hover { border-color: transparent; }
 .marca-footer .marca-slogan { color: var(--gold-200); }
 .footer-bottom { border-top-color: rgba(210, 172, 71, .22); }
