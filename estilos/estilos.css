@@ -63,14 +63,47 @@
      era la otra mitad de "no tan grotesco": el anterior recorría tanto tono
      que la palabra se leía a dos colores. Las cuatro paradas, medidas sobre
      #F6F3EC: 5.27 · 3.04 · 4.32 · 3.19. */
-  /* Recalibrado una vez más, y esta vez por una razón medible: con las
-     paradas anteriores la MISMA palabra cumplía o no según en qué punto del
-     lienzo cayera (3.04:1 arriba, 2.99:1 abajo). Las dos paradas claras bajan
-     a #A17A16 -mismo matiz de 43 grados, misma familia- y así el degradado
-     entero se mueve entre 3.30 y 5.27:1 sobre cualquier punto del marfil y
-     del blanco. Sigue siendo el mismo metal, sigue barriendo de oscuro a
-     claro; lo que ya no hace es depender de dónde caiga. */
-  --gradiente-oro-profundo: linear-gradient(100deg, #7E5F12 0%, #A17A16 34%, #8E6C18 66%, #A17A16 100%);
+  /* POR QUÉ ESTE ORO SE VEÍA CAFÉ, Y CUÁL ERA EL ARREGLO.
+     La respuesta no era aclararlo. Sobre un lienzo claro no se puede: subir
+     la luminosidad de un dorado le quita contraste contra el fondo, y por
+     debajo de 3:1 deja de poder llevar texto. Lo que hacía que estas paradas
+     se leyeran marrones era la SATURACIÓN, que estaba en el 66-76%. Un
+     amarillo desaturado a media luminosidad no es un dorado apagado: es
+     directamente un marrón, porque el marrón ES eso.
+
+     Las paradas de ahora tienen el mismo matiz de siempre -42-44 grados, el
+     del logo- y la saturación subida al 83-89%. La luminosidad casi no se
+     mueve, así que el contraste se mantiene, pero el tono deja de caer en el
+     café y vuelve al oro. Medido sobre el punto MÁS OSCURO del lienzo de la
+     sección 3 (#EFEAE0), que es el caso peor de todo el sitio:
+
+       #8C6508  4.40:1   ·  saturación 89%
+       #96700A  3.80:1   ·  saturación 88%
+       #A87C10  3.15:1   ·  saturación 83%
+
+     Sobre blanco puro las tres suben (5.28 · 4.35 · 3.78). Todas por encima
+     del 3:1 que pide el texto grande, que es lo único que este degradado
+     viste. Es el mismo hallazgo que ya se había hecho una vez y que se
+     deshizo al intentar copiar también la saturación del logo (61%): sobre
+     blanco no se pueden tener las dos cosas, y la que hay que conservar es el
+     matiz. */
+  --gradiente-oro-profundo: linear-gradient(100deg, #8C6508 0%, #A87C10 34%, #96700A 66%, #A87C10 100%);
+
+  /* SEGUNDA RAMPA, PARA EL TEXTO MENUDO. Los rotulos del sistema miden
+     0.7rem = 11px, y a ese cuerpo WCAG deja de tratarlos como texto grande:
+     pasan de necesitar 3:1 a necesitar 4.5:1. La rampa de arriba se mueve
+     entre 3.15 y 4.40 sobre el punto mas oscuro del lienzo claro, o sea que
+     serviria para una palabra destacada de 24px pero no para una etiqueta.
+
+     Esta es la misma recta bajada un escalon: mismo matiz de 42 grados, la
+     saturacion incluso mas alta (91%), y todas sus paradas por encima de
+     5:1 sobre cualquier punto del lienzo. Sigue barriendo como metal -que es
+     lo que se pedia- solo que en la mitad de la escala donde un texto de
+     11px se puede leer.
+
+     Sobre lienzo OSCURO esta variable no cambia nada: apunta al degradado
+     del banner, donde el problema no existe. */
+  --gradiente-oro-menudo: var(--gradiente-oro);
 
   /* Escala de plata (100→900) — Brushed Sterling Silver, ahora acento principal */
   --silver-100: #ECECEC;
@@ -1258,8 +1291,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      teórico, así que ningún fondo claro lo arregla. Sigue reservado a las
      piezas oscuras de la sección (.nm-sello, .contador-lujo), que son justo
      donde el dorado del logo ya se ve tal cual es. */
-  --gold-500: #AE8625;   /* parada 4 del swatch de marca · acentos y trazos */
-  --gold-700: #7E5F12;   /* misma recta, oscurecida · texto pequeño */
+  --gold-500: #A87C10;   /* mismo matiz del logo, saturado para lienzo claro */
+  --gold-700: #8C6508;   /* misma recta, oscurecida · texto pequeño */
 
   /* Hilos decorativos. El dorado sube de .22 a .38 -el mismo valor que usa
      la página Nosotros- porque ahora ES el separador de la sección: los
@@ -1267,6 +1300,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      y a .22 sobre el marfil desaparecía. El neutro cálido se queda para lo
      que solo tiene que separar sin llamar la atención. */
   --hairline-oro: rgba(210, 172, 71, .55);
+  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gradiente-oro-menudo: linear-gradient(100deg, #5E4304 0%, #7E5A06 40%, #6C4E05 70%, #7E5A06 100%);
   --hairline-suave: rgba(122, 108, 82, .16);
 
   /* CUERPO DE TEXTO A UN SOLO TONO, como en la página Nosotros. Antes eran
@@ -1314,12 +1349,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   -webkit-text-fill-color: currentColor;
   color: var(--neutral-900);
 }
-/* Oro PLANO, no degradado. La página Nosotros marca la palabra destacada de
-   la entradilla con un solo tono y un peso más (.nos-lead em), y esa es la
-   regla que se trae aquí: un degradado dentro de una palabra la lee a dos
-   colores, y al lado del peso 200 del resto del titular se notaba el doble.
-   #AE8625 es la parada oscura del swatch del logo y da 3.04:1 sobre este
-   marfil, por encima del 3:1 que pide un texto de este cuerpo. */
+/* La palabra destacada lleva el degradado de marca, igual que el resto de
+   detalles dorados del sitio (ver sección 30): es el barrido metálico del
+   wordmark del banner, que es de donde sale la identidad. */
 .seccion-clara.fondo-perla .titulo-seccion [class*="texto-"] {
   /* DEGRADADO, no color plano: la palabra destacada recibe el mismo barrido
      metálico que el wordmark del banner, que es de donde viene la identidad.
@@ -1329,7 +1361,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #A17A16;   /* respaldo si background-clip:text no aplica */
+  color: #A87C10;   /* respaldo si background-clip:text no aplica */
   font-weight: 500;
 }
 
@@ -5028,9 +5060,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nos-lead em {
   font-style: normal;
   font-weight: 500;
-  /* El dorado del logo da 3.37:1 sobre blanco: suficiente para texto grande
-     (el mínimo son 3:1) y por eso solo se usa aquí, en la palabra destacada
-     de una frase de 2rem, nunca en el cuerpo. */
+  /* Degradado, no color plano: el mismo barrido del wordmark. Solo aquí, en
+     la palabra destacada de una frase de 2rem — nunca en el cuerpo, donde el
+     oro no llegaría al 4.5:1 que pide un texto pequeño. */
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: var(--nos-dorado);
 }
 
@@ -5211,9 +5247,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --nos-blanco: #FFFFFF;
   --nos-negro: #0A0A0A;
   --nos-texto: #2E2E2E;
-  --nos-dorado: #AE8625;
+  --nos-dorado: #A87C10;
   --nos-dorado-claro: #D2AC47;
-  --nos-dorado-texto: #7E5F12;
+  --nos-dorado-texto: #8C6508;
   /* LOS HILOS, EN EL CHAMPÁN DEL BANNER. Un hilo de 1px no lleva texto
      encima, así que no le aplica ningún mínimo de contraste: puede permitirse
      la parada brillante del logo, #D2AC47, que es literalmente el oro de la
@@ -5233,8 +5269,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --superficie-borde: rgba(10, 10, 10, .10);
   --sombra: none;
   --sombra-hover: none;
-  --gold-500: #AE8625;
-  --gold-700: #7E5F12;
+  --gold-500: #A87C10;
+  --gold-700: #8C6508;
   --silver-100: #2E2E2E;
   --silver-300: #4A4A4A;
   /* Los alias de acento del sitio oscuro (plata sobre negro) pasan al oro del
@@ -5244,15 +5280,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      El caso más visible era la barra del comparador de antes/después, que
      heredaba el amarillo claro de --turquesa-claro y sobre el lienzo blanco
      se veía fosforescente. */
-  --naranja: #AE8625;
-  --naranja-oscuro: #7E5F12;
-  --naranja-accion: #7E5F12;
+  --naranja: #A87C10;
+  --naranja-oscuro: #8C6508;
+  --naranja-accion: #8C6508;
   --turquesa: #0A0A0A;
   --turquesa-osc: #0A0A0A;
   --turquesa-accion: #0A0A0A;
   --turquesa-profundo: #0A0A0A;
   --turquesa-claro: rgba(10, 10, 10, .12);
-  --acento-legible: #7E5F12;
+  --acento-legible: #8C6508;
   --acento-legible-hover: #0A0A0A;
   /* EL DEGRADADO DE MARCA, EN SU CALIBRACIÓN PARA BLANCO. Todo lo que en el
      sitio oscuro está escrito contra --gradiente-oro (el wordmark de la
@@ -5262,6 +5298,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      #F7EF8A, que sobre blanco da 1.2:1 — no es que se lea mal, es que no se
      ve. Mismo metal, mismo barrido, la luminosidad que el lienzo permite. */
   --gradiente-oro: var(--gradiente-oro-profundo);
+  --gradiente-oro-menudo: linear-gradient(100deg, #5E4304 0%, #7E5A06 40%, #6C4E05 70%, #7E5A06 100%);
   /* El gris claro de la marca (el eslogan bajo el wordmark) sobre blanco daba
      1.9:1. Mismo papel, tono legible. */
   --neutral-300: #6F6F6F;
@@ -5433,7 +5470,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #A17A16;   /* respaldo si background-clip:text no aplica */
+  color: #A87C10;   /* respaldo si background-clip:text no aplica */
   font-weight: 500;
 }
 /* El subtítulo de sección era una línea de mayúsculas trackeadas en plata:
@@ -6091,3 +6128,201 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    una retícula editorial se lee como un parpadeo. */
 .pagina-clara .item-galeria-grande { transform: none; }
 .pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
+
+
+/* ==========================================================================
+   30. EL EFECTO ORO, Y DÓNDE VA
+   --------------------------------------------------------------------------
+   La identidad de la marca no es "un dorado": es un DEGRADADO recortado sobre
+   el texto — el mismo barrido metálico de la palabra "Smilers" del banner.
+   Un color plano, por bien elegido que esté, se lee como pintura; el
+   degradado se lee como metal. Esta sección lo lleva a todos los detalles
+   dorados del sitio, en las cinco páginas, con una sola lista de selectores
+   en vez de repetir cuatro líneas en cada uno.
+
+   QUÉ DEGRADADO SE USA EN CADA SITIO. Siempre var(--gradiente-oro), que no es
+   un valor sino un puntero: sobre lienzo oscuro apunta a las cuatro paradas
+   del logo tal cual (#F7EF8A → #EDC967 → #D2AC47 → #AE8625) y sobre lienzo
+   claro, a la misma rampa en su calibración profunda. No es una decisión de
+   gusto: la parada clara del banner sobre blanco da 1.2:1, o sea que no se
+   ve. Ver .pagina-clara en la sección 29a.
+
+   DÓNDE NO VA: en el texto pequeño que hay que leer y en las etiquetas de los
+   botones. Un degradado recortado sobre un cuerpo de 11px se rompe (el
+   navegador tiene que rasterizar la máscara del glifo, y a ese tamaño los
+   trazos de una didone son de un píxel), y además el oro sobre blanco no
+   llega al 4.5:1 que pide el texto pequeño. En los botones, por tanto, el oro
+   va en el TRAZO y en el relleno del hover; la etiqueta se queda en su color
+   legible.
+   ========================================================================== */
+
+/* ---- 30a. LOS DETALLES DORADOS ----------------------------------------- */
+.hero-etapa2-tagline strong,
+.ag-panel__titulo,
+.ag-panel__ir,
+.tst-comillas,
+.tst-firma__nombre {
+  /* Estos viven todos sobre lienzo OSCURO o son texto grande, asi que pueden
+     llevar el degradado del banner tal cual. */
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Respaldo para navegadores sin background-clip:text (y para el modo de
+     alto contraste de Windows, que ignora los fondos): el tono medio de la
+     rampa que corresponda al lienzo. */
+  color: var(--gold-700);
+}
+
+/* Los rotulos de 11px van con la rampa menuda: mismo barrido, en la mitad de
+   la escala donde un texto de ese cuerpo cumple el 4.5:1. Ver
+   --gradiente-oro-menudo. */
+.etiqueta-editorial,
+.pilar__num,
+.nos-rotulo,
+.pagina-clara .bloque-tratamiento-numero,
+.pagina-clara .proceso-numero,
+.pagina-clara .enlace-card,
+.pagina-faq .faq-categoria-titulo h2 {
+  background: var(--gradiente-oro-menudo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-700);
+}
+/* El hilo que sale de un rótulo es un elemento aparte con su propio fondo, así
+   que el background-clip del padre no lo toca; lo que sí hay que devolverle es
+   el relleno de texto, o hereda el "transparent" de arriba. */
+.etiqueta-editorial::after,
+.nos-rotulo::after,
+.pagina-faq .faq-categoria-titulo::after {
+  -webkit-text-fill-color: initial;
+}
+
+/* Piezas dibujadas, no escritas: aquí no hay glifo que recortar, así que el
+   degradado va de fondo a secas. */
+.tst-firma__linea,
+.nos-regla,
+.pagina-clara .banner-pagina h1::after {
+  background: var(--gradiente-oro);
+}
+
+/* ---- 30b. LA HAMBURGUESA Y EL MENÚ, EN PLATA --------------------------
+   El dúo metálico de la marca es plata + oro, y el reparto tiene una lógica:
+   el oro viste los detalles y los acentos, la plata la navegación. Las tres
+   barras llevan su propio degradado -claro arriba, oscuro abajo- para que se
+   lean como metal cepillado y no como tres rayas grises.
+
+   Sobre lienzo claro la plata de marca (#C0C0C0) da 1.5:1, o sea nada, así
+   que ahí la rampa se desplaza a la mitad oscura de la MISMA escala de plata
+   del sistema. Sigue siendo plata; es la única luminosidad que se ve sobre
+   blanco. */
+.navbar-toggler { color: var(--plata); }
+.hamburguesa-icono span {
+  background: linear-gradient(100deg, var(--silver-100) 0%, var(--silver-500) 45%, var(--silver-700) 100%);
+}
+.pagina-clara .navbar-toggler { color: var(--silver-900); }
+.pagina-clara .hamburguesa-icono span {
+  background: linear-gradient(100deg, #9A9A9A 0%, #6F6F6F 45%, #4F4F4F 100%);
+}
+
+/* Los enlaces del menú, también en plata y en las cinco páginas. Estaban
+   escritos contra --naranja, que en el sitio oscuro ES la plata pero que
+   .pagina-clara redefine como oro: por eso el menú salía dorado en las
+   páginas claras y plateado en la portada. Apuntando a --plata, que ninguna
+   página redefine, el menú es el mismo en todas. El velo del overlay es
+   oscuro siempre (ver .navbar-collapse), así que la plata clara se lee. */
+.navbar-collapse .nav-link { color: var(--plata); }
+/* El subrayado del enlace activo sí es un detalle dorado, y por tanto lleva
+   el degradado de marca. */
+.navbar-collapse .nav-link::after { background: var(--gradiente-oro); }
+
+/* ---- 30c. LOS BOTONES -------------------------------------------------
+   Todos los botones del sitio pasan al mismo gesto: ángulo recto, trazo con
+   el degradado de marca, y al pasar el cursor el degradado pasa del borde al
+   relleno y la etiqueta se vuelve ónix. El trazo se dibuja con border-image,
+   que es la única forma de poner un degradado en un borde; a cambio anula el
+   border-radius, cosa que aquí da igual porque todos son rectos.
+
+   La ETIQUETA no lleva degradado: a 11.5px se rompería, y sobre blanco el oro
+   no llega al 4.5:1 que necesita un texto de ese cuerpo. Va en el color de
+   máximo contraste de cada lienzo. */
+.nos-boton,
+.nosotros-acciones .btn,
+.pagina-clara .btn,
+.footer .btn,
+.btn-sm-nav,
+.banda-cta .btn {
+  /* La forma completa del sistema, tipografia incluida: hasta ahora el boton
+     del menu y el de la banda de cierre seguian en Lato y en caja mixta,
+     mientras los demas ya iban en mayusculas trackeadas. */
+  padding: 1.05rem 2.1rem;
+  border: 1px solid transparent;
+  border-image: var(--gradiente-oro) 1;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.nos-boton:hover, .nos-boton:focus-visible,
+.nosotros-acciones .btn:hover, .nosotros-acciones .btn:focus, .nosotros-acciones .btn:focus-visible,
+.pagina-clara .btn:hover, .pagina-clara .btn:focus, .pagina-clara .btn:focus-visible,
+.footer .btn:hover, .footer .btn:focus, .footer .btn:focus-visible,
+.btn-sm-nav:hover, .btn-sm-nav:focus,
+.banda-cta .btn:hover, .banda-cta .btn:focus {
+  background: var(--gradiente-oro);
+  border-image: var(--gradiente-oro) 1;
+  color: var(--onix);
+  box-shadow: none;
+  transform: none;
+}
+/* Sobre lienzo claro la etiqueta va en negro; sobre oscuro, en mármol. */
+.pagina-clara .btn,
+.nos-boton,
+.nosotros-acciones .btn { color: var(--nos-negro, #0A0A0A); }
+.footer .btn,
+.btn-sm-nav,
+.banda-cta .btn { color: var(--marmol); }
+.pagina-clara .footer .btn,
+.pagina-clara .navbar-collapse .btn { color: var(--marmol); }
+/* El marco interior que crece desde dentro (.btn::before) se queda, pero en
+   oro: sobre el relleno dorado del hover, un marco plateado no se distinguía. */
+.pagina-clara .btn::before,
+.footer .btn::before,
+.btn-sm-nav::before,
+.banda-cta .btn::before { border-color: rgba(10, 10, 10, .35); }
+
+/* ---- 30d. LA BANDA DE CIERRE ------------------------------------------
+   El bloque que se revela cuando se levanta el telón negro, justo antes del
+   footer. Su titular ya estaba en Bodoni por herencia; lo que le faltaba era
+   el aire del sistema -tracking y peso fino- y que el cuerpo dejara de ir en
+   el tamaño por defecto. */
+.banda-cta h2 {
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  letter-spacing: .04em;
+  line-height: 1.3;
+}
+.banda-cta p {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  line-height: 1.95;
+}
+
+/* ---- 30e. DETALLES DEL FOOTER -----------------------------------------
+   El footer ya era la pieza más dorada del sitio; lo que quedaba plateado o
+   en blanco translúcido pasa al oro de marca. */
+.redes-sociales a { border-color: rgba(210, 172, 71, .38); }
+.redes-sociales a:hover { border-color: transparent; }
+.marca-footer .marca-slogan { color: var(--gold-200); }
+.footer-bottom { border-top-color: rgba(210, 172, 71, .22); }
+.footer-bottom a { color: var(--gold-200); }
+.mapa-tab { border-color: rgba(210, 172, 71, .3); }
+.mapa-contenedor { border-color: rgba(210, 172, 71, .28); }
+.form-footer .form-control { border-color: rgba(210, 172, 71, .28); }
+.form-footer .form-label { color: var(--gold-200); }
