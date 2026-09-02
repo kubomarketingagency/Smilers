@@ -226,6 +226,7 @@ var SmilersScroll = (function () {
   var quietos = [];
   var idle = null;
   var direccion = 'down';
+  var ultimaDireccionArriba = false;
   var yPrevia = window.scrollY;
 
   /* Tope común, en fracción de pantalla. Sube de .55 a .9 para que el imán
@@ -284,6 +285,15 @@ var SmilersScroll = (function () {
     if (y > yPrevia + 1) direccion = 'down';
     else if (y < yPrevia - 1) direccion = 'up';
     yPrevia = y;
+    /* El scroll-snap de Tratamientos solo puede tirar BAJANDO, y el navegador
+       no tiene forma de saber el sentido del gesto. Se lo decimos nosotros:
+       mientras se sube, esta clase apaga el snap desde la hoja. Se escribe
+       solo cuando cambia, para no tocar el DOM en cada cuadro de scroll. */
+    var arriba = (direccion === 'up');
+    if (arriba !== ultimaDireccionArriba) {
+      ultimaDireccionArriba = arriba;
+      document.documentElement.classList.toggle('smilers-arriba', arriba);
+    }
     pedir();
     if (idle) clearTimeout(idle);
     idle = setTimeout(alDetenerse, 220);
@@ -1144,27 +1154,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 14. CARRUSEL DEL HERO: destello dorado al cambiar de foto =======
-     Sin puntos/flechas visibles (el fondo es puramente el video/fotos en
-     blanco y negro): lo único que sincronizamos aquí es el "destello" que
-     se dispara justo al intercambiar de foto.
+  /* ===== 14. CARRUSEL DEL HERO =============================================
+     Sin puntos ni flechas visibles: el fondo es puramente el video/las fotos
+     en blanco y negro. Aquí solo queda la preferencia de movimiento.
+
+     AQUÍ HABÍA un "destello" dorado que barría el hero en cada cambio de
+     foto. Retirado por encargo junto con las partículas de 14b: el banner
+     pasa a una estética sobria, sin efectos de luz.
      ======================================================================== */
   const heroCarrusel = document.getElementById('heroCarrusel');
-  var heroFlash = document.getElementById('heroFlash');
-  var sinMovimientoFlash = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (heroCarrusel) {
-    heroCarrusel.addEventListener('slide.bs.carousel', function () {
-      // Destello dorado justo al intercambiar de foto (el "flash" que pide
-      // el look tipo depaudental.com): se relanza la animación quitando y
-      // volviendo a poner la clase en el siguiente frame.
-      if (heroFlash && !sinMovimientoFlash) {
-        heroFlash.classList.remove('destello');
-        void heroFlash.offsetWidth; // fuerza reflow para poder reiniciar la animación
-        heroFlash.classList.add('destello');
-      }
-    });
-
     /* WCAG 2.2.2 (Pausar, detener, ocultar): el carrusel se auto-avanza cada
        5,5 s. Quien ha pedido menos movimiento en su sistema no debe recibir
        contenido que cambia solo; el carrusel se detiene en el primer slide y
@@ -1186,241 +1186,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 14b. HERO: destellos dorados alrededor del wordmark ============
-     Motas de luz dorada que nacen junto a la palabra "Smilers", flotan
-     despacio hacia arriba y se van apagando — polvo suspendido bajo un foco.
-     Puramente decorativo (aria-hidden): si prefers-reduced-motion está
-     activo, o el navegador no soporta canvas, el hero se ve completo igual.
+  /* ===== 14b. (RETIRADO) HERO: partículas doradas ========================
+     Aquí vivía un <canvas> que dibujaba motas de luz dorada alrededor del
+     wordmark: nacían junto a la palabra, subían despacio y se apagaban. Se
+     retira por encargo -"los destellos se ven muy exagerados"- y con él se
+     va lo más caro que tenía la portada en el arranque: un lienzo que se
+     borraba y se repintaba en cada cuadro mientras el carrusel hacía
+     crossfade y el ken-burns escalaba la foto.
 
-     AHORA TAMBIÉN EN TÁCTIL, y esto había que ganárselo. El bloque estaba
-     apagado en teléfono por una razón buena: un lienzo del tamaño del hero
-     que se borra y se repinta 60 veces por segundo, encima con
-     mix-blend-mode:screen, obliga a remezclar toda esa superficie contra el
-     carrusel en cada cuadro. Las dos causas se atacan por separado:
-
-       · el blend desaparece en táctil (lo hace la hoja, igual que ya se hizo
-         con .hero-duotone);
-       · y el borrado deja de ser de pantalla completa. Como las motas ahora
-         viven en un óvalo alrededor del titular, se calcula UNA VEZ la caja
-         que pueden llegar a ocupar -el óvalo más lo que sube una mota en
-         toda su vida- y solo se limpia esa. En un teléfono son unos 320x260
-         px en vez de 390x844: menos de la sexta parte de píxeles por cuadro.
+     Si algún día se quiere recuperar, está entero en el historial de git
+     (commit 456ec7f, "destellos contenidos y toque instantaneo").
      ======================================================================== */
-  (function () {
-    var canvas = document.getElementById('heroSparkles');
-    var heroEl = document.querySelector('.hero');
-    if (!canvas || !heroEl || !canvas.getContext) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    /* En táctil sí se dibuja, pero con menos motas: la superficie que se
-       repinta ya es pequeña (ver la cabecera del bloque), y con esta
-       densidad el coste por cuadro se queda en el mismo orden que el resto
-       de efectos del hero. */
-    var esTactil = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-
-    var ctx = canvas.getContext('2d');
-    var particulas = [];
-    var ancho, alto, animando = false, cuadro;
-
-    /* Centro y radio de emisión: las motas ya no nacen repartidas por todo el
-       hero sino ALREDEDOR DEL WORDMARK, que es donde tienen que estar para
-       que se lean como el polvo de luz que levanta la palabra y no como una
-       textura de fondo. El foco se mide sobre la caja real del <h1>, así que
-       sigue al titular cuando cambia de tamaño con el viewport. */
-    var foco = { x: 0, y: 0, radio: 300 };
-    var caja = { x: 0, y: 0, w: 0, h: 0 };
-
-    /* Posición del titular DENTRO del hero, sin contar transformaciones.
-       No se puede usar getBoundingClientRect aquí: el hero cine le escribe un
-       translateY al wordmark según el scroll (hasta 150px de caída, ver 14c),
-       y como este bloque se reinicia cada vez que el hero vuelve a entrar en
-       pantalla, acababa midiendo el titular YA desplazado y emitiendo las
-       motas 150px por debajo de donde está la palabra. offsetTop/offsetLeft
-       ignoran transform, que es justo lo que hace falta; se acumulan por la
-       cadena de offsetParent porque .hero-contenido es position:relative y
-       corta esa cadena antes de llegar al hero. */
-    function cajaEnHero(el) {
-      var x = 0, y = 0, n = el;
-      while (n && n !== heroEl) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-      return { x: x, y: y, w: el.offsetWidth, h: el.offsetHeight };
-    }
-
-    function medirFoco() {
-      var titulo = heroEl.querySelector('.hero-titulo');
-      if (!titulo) {
-        foco.x = ancho / 2; foco.y = alto / 2; foco.radio = Math.min(ancho, alto) * .4;
-        calcularCaja();
-        return;
-      }
-      var cajaT = cajaEnHero(titulo);
-      foco.x = cajaT.x + cajaT.w / 2;
-      foco.y = cajaT.y + cajaT.h / 2;
-      /* Radio con la forma de la palabra, no un círculo: el wordmark es muy
-         ancho y poco alto, así que un radio único dejaba media nube fuera
-         por los lados y demasiada por arriba y por abajo. */
-      foco.radioX = cajaT.w * .78;
-      /* Suelo del 16% del alto del hero: en un teléfono el wordmark mide
-         apenas 72px de alto, y 1.5 veces eso deja una franja tan estrecha
-         que las motas se leen como una línea y no como una nube. */
-      foco.radioY = Math.max(cajaT.h * 1.5, alto * .16);
-      foco.radio = Math.max(foco.radioX, foco.radioY);
-      calcularCaja();
-    }
-
-    /* La única zona del lienzo que puede llegar a tener pintura: el óvalo de
-       emisión más el margen que da el movimiento de una mota durante toda su
-       vida (sube como mucho ~.26 px por cuadro y vive como mucho 600, o sea
-       unos 160 px; de lado apenas se desplaza). Se recorta al lienzo para no
-       pedirle a clearRect coordenadas fuera de él. */
-    function calcularCaja() {
-      var margenX = (foco.radioX || foco.radio) + 40;
-      var margenArriba = (foco.radioY || foco.radio) + 180;
-      var margenAbajo = (foco.radioY || foco.radio) + 40;
-      caja.x = Math.max(0, foco.x - margenX);
-      caja.y = Math.max(0, foco.y - margenArriba);
-      caja.w = Math.min(ancho, foco.x + margenX) - caja.x;
-      caja.h = Math.min(alto, foco.y + margenAbajo) - caja.y;
-    }
-
-    function redimensionar() {
-      ancho = canvas.width = heroEl.offsetWidth;
-      alto = canvas.height = heroEl.offsetHeight;
-      medirFoco();
-      /* Más densidad que antes (una mota cada 22000 px² -> cada 9000) porque
-         ahora están concentradas en un óvalo alrededor de la palabra en vez
-         de repartidas por toda la pantalla: con la cantidad vieja, agrupadas
-         ahí, se contaban con los dedos. Con tope, para que un monitor
-         ultrapanorámico no acabe dibujando cientos. */
-      /* Bajada deliberada respecto a la primera versión de este efecto: eran
-         150 motas en escritorio y se veían exageradas -más purpurina que
-         polvo suspendido-. Con 70 y el brillo de abajo, la palabra queda
-         rodeada de destellos que se notan al mirarla pero que no compiten
-         con ella. */
-      var cantidad = Math.min(esTactil ? 28 : 70,
-                              Math.round((ancho * alto) / (esTactil ? 26000 : 19000)));
-      particulas = [];
-      for (var i = 0; i < cantidad; i++) {
-        var p = crearParticula();
-        /* Al arrancar, cada mota entra con la vida ya empezada en un punto
-           distinto: si todas nacieran en cero, el hero abriría con un
-           parpadeo colectivo y luego otro, y otro. */
-        p.vida = Math.random() * p.vidaMax;
-        particulas.push(p);
-      }
-    }
-
-    function crearParticula() {
-      /* Reparto alrededor del foco con sesgo hacia el centro: la raíz de un
-         aleatorio uniforme concentra los puntos cerca del wordmark y deja
-         unas pocas sueltas más lejos, que es como se ve el polvo en
-         suspensión bajo un foco. Un aleatorio plano daba un óvalo de densidad
-         uniforme, que se lee como una forma dibujada. */
-      var angulo = Math.random() * Math.PI * 2;
-      var distancia = Math.sqrt(Math.random());
-      var vidaMax = 260 + Math.random() * 340;   // en cuadros: ~4.5 a 10 s
-      return {
-        x: foco.x + Math.cos(angulo) * distancia * (foco.radioX || foco.radio),
-        y: foco.y + Math.sin(angulo) * distancia * (foco.radioY || foco.radio),
-        r: Math.random() * 1.15 + .35,
-        velY: Math.random() * -.22 - .04,
-        velX: (Math.random() - .5) * .14,
-        fase: Math.random() * Math.PI * 2,
-        velFase: Math.random() * .015 + .005,
-        vida: 0,
-        vidaMax: vidaMax
-      };
-    }
-
-    function dibujar() {
-      ctx.clearRect(caja.x, caja.y, caja.w, caja.h);
-      for (var i = 0; i < particulas.length; i++) {
-        var p = particulas[i];
-        p.fase += p.velFase;
-        p.x += p.velX;
-        p.y += p.velY;
-        p.vida++;
-
-        /* CICLO DE VIDA. Antes las motas no se apagaban nunca: subían hasta
-           salirse por arriba y reaparecían de golpe por abajo, siempre con
-           el mismo brillo. Ahora cada una entra desde cero, se sostiene y se
-           apaga; al agotarse vuelve a nacer junto a la palabra. Eso es lo que
-           hace que "se vayan desvaneciendo conforme transcurren" en vez de
-           dar vueltas indefinidamente.
-           El 18% inicial es la entrada y el último 45% la salida: la salida
-           es más larga a propósito, porque un desvanecido lento se lee como
-           que la mota se aleja, y uno rápido como que se apaga un foco. */
-        var t = p.vida / p.vidaMax;
-        if (t >= 1) { particulas[i] = crearParticula(); continue; }
-        var ciclo = t < .18 ? t / .18
-                  : t > .55 ? 1 - (t - .55) / .45
-                  : 1;
-
-        var brillo = (Math.sin(p.fase) + 1) / 2;   // parpadeo suave, como antes
-        /* Techo en .55 y no en 1: una mota a opacidad plena sobre el velo del
-           hero se lee como un punto de luz duro. A poco más de la mitad
-           siguen viéndose sobre las fotos claras del consultorio -para eso
-           está el halo- sin el aire de purpurina. */
-        var alfa = ciclo * (.16 + brillo * .39);
-        if (alfa <= .01) continue;
-
-        /* Dos círculos por mota: un halo ancho y casi transparente, y encima
-           el núcleo. Un punto de 1.5px de radio se pierde sobre las fotos
-           claras del consultorio por muy dorado que sea; con el halo cada
-           mota tiene un borde suave que se lee igual sobre lo claro y sobre
-           lo oscuro. Se hace así y no con ctx.shadowBlur porque el desenfoque
-           de canvas se recalcula por figura y sale carísimo con cien motas:
-           dos arcos planos cuestan lo que cuesta rellenar dos círculos. */
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 2.8, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(224, 175, 61, ' + (alfa * .18).toFixed(3) + ')';
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(238, 214, 150, ' + alfa.toFixed(3) + ')';
-        ctx.fill();
-      }
-      cuadro = requestAnimationFrame(dibujar);
-    }
-
-    function iniciar() {
-      if (animando) return;
-      animando = true;
-      redimensionar();
-      cuadro = requestAnimationFrame(dibujar);
-    }
-    function detener() {
-      animando = false;
-      if (cuadro) cancelAnimationFrame(cuadro);
-    }
-
-    // Solo anima mientras el hero está en pantalla (ahorra batería al bajar)
-    if ('IntersectionObserver' in window) {
-      var obsHero = new IntersectionObserver(function (entradas) {
-        entradas[0].isIntersecting ? iniciar() : detener();
-      }, { threshold: 0 });
-      obsHero.observe(heroEl);
-    } else {
-      iniciar();
-    }
-
-    var redimensionarPendiente;
-    window.addEventListener('resize', function () {
-      clearTimeout(redimensionarPendiente);
-      redimensionarPendiente = setTimeout(redimensionar, 200);
-    });
-
-    /* Volver a medir cuando llegue la tipografía. El foco se calcula sobre la
-       caja del <h1>, y en el primer cuadro ese <h1> todavía está pintado con
-       la fuente de reserva: al entrar Bodoni Moda el titular cambia de alto y
-       de posición, y las motas se quedaban emitiendo donde estaba ANTES. En
-       teléfono el desfase era de 140px, o sea toda la nube por debajo de la
-       palabra en vez de alrededor.
-       Se llama a medirFoco y no a redimensionar a propósito: recolocar el
-       foco no debe borrar las motas que ya están en el aire. */
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () { if (ancho) medirFoco(); });
-    }
-  })();
 
 
   /* ===== 14c. HERO CINE: pin + fundido controlado por scroll ============
@@ -1588,33 +1364,36 @@ document.addEventListener('DOMContentLoaded', function () {
     SmilersScroll.pedir();
 
 
-    /* ===== 14d. IMÁN DE SECCIONES ======================================
-       Al detenerse el scroll BAJANDO, la página termina de encuadrar la
-       sección a la que el visitante venía llegando, en vez de dejarla a
-       medias. No es scroll-snap de CSS (ver por qué en estilos.css, "2b"):
-       es un ajuste puntual que corre solo cuando el scroll ya paró de
-       verdad, que cualquier gesto aborta en el acto, y que sabe hacia dónde
-       iba el visitante — lo que el snap del navegador no puede saber.
+    /* ===== 14d. IMÁN DE TRATAMIENTOS, SEGUNDO TRAMO ====================
+       El anclaje de Tratamientos lo hace ahora el navegador con scroll-snap
+       (ver estilos.css, "2b"), que es lo que pedía el encargo y además es
+       mejor: se resuelve en el compositor, no aquí.
+
+       PERO NO LLEGA SOLO, y esto hay que medirlo para saberlo. Con
+       "proximity" Chromium solo ancla si la posición de snap está a menos de
+       0.3 pantallas — unos 270px en una ventana de 900. Medido: parando la
+       sección a 380px de encuadrarla, el snap no mueve nada. O sea que cubre
+       el último tercio del gesto y nada más.
+
+       Así que este bloque se queda para el tramo largo: cuando el scroll para
+       de verdad (220ms) con la sección ya entrando pero lejos de encuadrar,
+       termina el encuadre él. Los dos no se pisan: para cuando esto corre, el
+       snap ya actuó si le tocaba, y si dejó la sección encuadrada la salida
+       temprana de "rect.top <= 4" hace que aquí no se haga nada.
+
+         · CSS  (scroll-snap)  -> últimos ~270px, en el compositor
+         · JS   (este bloque)  -> el resto, al detenerse el scroll
 
        QUÉ SECCIÓN LLEVA IMÁN, Y CUÁL NO
-         · Hero: NINGUNO. Tenía dos y se retiran los dos. El de bajada
-           apuntaba desde el 2-22% del recorrido hasta el 62%, o sea un salto
-           de más de dos pantallas: el tope lo descartaba SIEMPRE, así que en
-           la práctica nunca llegó a dispararse. Y el otro solo actuaba
-           subiendo, que es justo lo que ya no se quiere. El hero es un scrub
-           de 4.6 pantallas; dentro de una animación continua no hay "sección
-           siguiente" que encuadrar.
-         · Nosotros: NINGUNO, por encargo. Es la sección de leer, y ahí el
-           scroll tiene que ser completamente libre.
-         · Tratamientos: SÍ. Ocupa una pantalla exacta, que es el caso en el
-           que un imán se nota bien.
+         · Hero: NINGUNO. Es un scrub de 4.6 pantallas; dentro de una
+           animación continua no hay "sección siguiente" que encuadrar.
+         · Nosotros: NINGUNO, por encargo. Es la sección de leer.
+         · Tratamientos: SÍ. Ocupa una pantalla exacta.
          · Testimonios: SÍ, uno por meseta, en testimonios-esfera.js.
 
-       Cada función registrada devuelve la Y a la que le gustaría llevar la
-       página, o null si no le toca. Gana la primera que conteste.
-
-       Con "menos movimiento" no se registra nada: la página no se mueve
-       sola nunca. */
+       La dirección la comprueba el planificador antes de llamar aquí: solo
+       hacia abajo. Con "menos movimiento" no se registra nada.
+       ==================================================================== */
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var especialidades = document.getElementById('especialidades');
@@ -1624,13 +1403,11 @@ document.addEventListener('DOMContentLoaded', function () {
        salir de la sección por completo. */
     var hechoTratamientos = false;
 
-    /* --- Tratamientos a pantalla completa. Solo desde 768px: en móvil la
-       sección crece con su contenido y no hay una "pantalla exacta" que
-       encuadrar. La comprobación de dirección ya la hizo el planificador,
-       así que aquí solo queda decidir el destino. --- */
     SmilersScroll.alDetenerse(function () {
       if (!especialidades) return null;
-      if (!window.matchMedia('(min-width: 768px)').matches) return null;
+      /* Solo desde 992px, igual que el snap de la hoja: por debajo la sección
+         crece con su contenido y no hay una pantalla exacta que encuadrar. */
+      if (!window.matchMedia('(min-width: 992px)').matches) return null;
 
       var rect = especialidades.getBoundingClientRect();
       var alto = window.innerHeight;
@@ -1642,14 +1419,9 @@ document.addEventListener('DOMContentLoaded', function () {
         hechoTratamientos = false;
         return null;
       }
-      /* El umbral de abajo baja de .35 a .22: con un deslizón rápido se
-         entra en la sección con muy poco en pantalla, y con .35 el imán
-         decidía que "no era su caso" justo en el gesto para el que se pide.
-         El de arriba (.96) sigue igual: si ya está prácticamente encuadrada,
-         no hay nada que terminar. */
       if (proporcion <= .22 || proporcion >= .96) return null;
       if (hechoTratamientos) return null;
-      if (rect.top <= 4) return null;   // ya la pasamos: no se tira hacia atrás
+      if (rect.top <= 4) return null;   // ya la pasamos (o ya la encuadró el snap)
 
       hechoTratamientos = true;
       return rect.top + window.scrollY;

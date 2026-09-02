@@ -36,10 +36,10 @@
   <!-- ===== GOOGLE FONTS: Bodoni Moda (titulares) + Montserrat (menús/subtítulos) + Lato (cuerpo) ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@200;300;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=9990cebf13">
+  <link rel="stylesheet" href="estilos/estilos.css?v=55147cfed1">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
        paralelo con el CSS. Dos entradas con "media" porque el hero usa
@@ -286,11 +286,14 @@
       </div>
     </div>
 
-    <!-- Pátina dorada sobre el blanco y negro + barrido de luz al cambiar de
-         foto + lienzo de partículas doradas (ver script.js) -->
+    <!-- Pátina dorada sobre el blanco y negro. AQUÍ HABÍA DOS CAPAS MÁS que
+         se retiran por encargo ("los destellos se ven muy exagerados"): un
+         barrido de luz que cruzaba el hero cada vez que cambiaba la foto
+         (.hero-flash) y un lienzo de partículas doradas alrededor del
+         wordmark (canvas#heroSparkles). El lujo del banner lo tiene que
+         poner la foto y el tipo, no el brillo. De paso se va con ellos un
+         canvas que se repintaba 60 veces por segundo. -->
     <div class="hero-duotone" aria-hidden="true"></div>
-    <div class="hero-flash" id="heroFlash" aria-hidden="true"></div>
-    <canvas class="hero-sparkles" id="heroSparkles" aria-hidden="true"></canvas>
 
     <!-- Capa semitransparente oscura sobre el carrusel -->
     <div class="hero-overlay"></div>
@@ -1123,7 +1126,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=6feb548bd0"></script>
+  <script src="scripts/script.js?v=ff2fe1d3d7"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
   <script src="scripts/testimonios-esfera.js?v=9a2a394f60"></script>

@@ -197,27 +197,51 @@ html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /*
 html.smilers-deslizando { scroll-behavior: auto; }
 
 
-/* ===== 2b. POR QUÉ AQUÍ NO HAY scroll-snap DE CSS =======================
-   Lo hubo, y funcionaba: "mandatory" en la portada de escritorio, apoyado en
-   la regla del área grande para no congelar los scrubs del hero y de
-   Testimonios. Se retira porque el encargo pide dos cosas que esa mecánica
-   no puede dar, ninguna de las dos por falta de ajuste:
+/* ===== 2b. IMÁN DE TRATAMIENTOS CON scroll-snap =========================
+   El acordeón de Tratamientos mide exactamente una pantalla (100svh), así que
+   es el único bloque del sitio donde un anclaje tiene sentido literal: o se ve
+   entero, o se ve mal. Lo hace el navegador, en el compositor, sin que el hilo
+   principal calcule nada.
 
-     1. "Los imanes no deben funcionar al hacer scroll para arriba." El
-        scroll-snap de CSS no tiene noción de dirección: el navegador ancla
-        igual subiendo que bajando, y no hay propiedad que lo limite a un
-        sentido. El imán de JS sí sabe hacia dónde va el visitante (ver
-        "1b. PLANIFICADOR" en script.js), así que el trabajo vuelve ahí.
+   TRES DECISIONES QUE NO SON GRATUITAS, Y POR QUÉ:
 
-     2. "La sección 3 no necesita imán." Con "mandatory", a un bloque del
-        flujo o le pones scroll-snap-align o el navegador lo SALTA entero.
-        O sea que dejar #nosotros sin anclaje no lo libera: lo vuelve
-        inalcanzable. No hay término medio.
+   1) "proximity", NO "mandatory". Con mandatory el contenedor tiene que estar
+      SIEMPRE anclado a alguna posición de snap; como aquí solo hay un destino
+      (esta sección), el navegador tira hacia ella desde cualquier punto de la
+      página y deja el resto prácticamente inalcanzable. Ponerle un anclaje a
+      cada sección tampoco vale: los tres scrubs del sitio -hero, testimonios
+      y cierre- miden entre 1.35 y 4.6 pantallas, y anclarlos congelaría la
+      animación a la que están atados. Con proximity el navegador solo ancla
+      si el scroll se detiene CERCA, que es exactamente el gesto que se pidió.
 
-   Así que el imán es de nuevo solo de JS, y por tanto: solo hacia abajo,
-   solo en las secciones que lo piden, y abortable con cualquier gesto.
-   El html conserva scroll-padding-top para que las anclas (#contacto) no
-   queden debajo de la navbar fija. ======================================= */
+   2) Solo en escritorio con puntero fino. Por debajo de 992px la sección
+      crece con su contenido (ver .acordeon-seccion) y no hay "una pantalla
+      exacta" que encuadrar; y en táctil el snap pelea con el impulso del
+      dedo.
+
+   3) Nunca al subir. El snap de CSS no sabe en qué sentido va el visitante y
+      no existe propiedad que lo limite a un sentido, así que la dirección la
+      pone el JS: mientras se sube, script.js le cuelga a <html> la clase
+      "smilers-arriba" y aquí se apaga el anclaje. Lo mismo mientras corre un
+      recorrido programado (.smilers-deslizando), para que no se peleen.
+
+   El scroll-margin-top negativo compensa el scroll-padding-top de 90px que
+   lleva <html> para las anclas: sin él la sección se ancla 90px más abajo y
+   deja asomando una franja de la sección anterior. ====================== */
+@media (min-width: 992px) and (hover: hover) and (pointer: fine) {
+  html:not(.smilers-arriba):not(.smilers-deslizando) {
+    scroll-snap-type: y proximity;
+  }
+  .acordeon-seccion {
+    scroll-snap-align: start;
+    scroll-margin-top: -90px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Quien pidió menos movimiento no debe recibir desplazamientos que no ha
+     hecho él. */
+  html { scroll-snap-type: none !important; }
+}
 
 body {
   font-family: var(--fuente-cuerpo);
@@ -888,48 +912,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   opacity: .3;
 }
 
-/* Barrido de luz que recorre el hero cada pocos segundos (además del propio
-   crossfade), disparado por JS al cambiar de fotograma — el "destello"
-   literal al intercambiar cortos. */
-.hero-flash {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent 40%, rgba(243, 233, 211, .55) 50%, transparent 60%);
-  background-size: 250% 100%;
-  background-position: 120% 0;
-  opacity: 0;
-}
-.hero-flash.destello {
-  animation: destelloOro 1.1s ease-out;
-}
-@keyframes destelloOro {
-  0%   { background-position: 120% 0; opacity: 0; }
-  15%  { opacity: .9; }
-  60%  { opacity: .35; }
-  100% { background-position: -30% 0; opacity: 0; }
-}
+/* AQUÍ ESTABAN .hero-flash (el barrido de luz que cruzaba el hero en cada
+   cambio de foto) y .hero-sparkles (el lienzo de partículas doradas alrededor
+   del wordmark). Se retiran los dos por encargo: el banner pasa a una
+   estética sobria, donde el lujo lo ponen la foto en blanco y negro, la
+   pátina dorada y el tipo — no el brillo. Sus elementos ya no están en el
+   HTML y el JS que los movía tampoco (ver script.js, 14 y 14b). */
 
-/* Lienzo de partículas doradas (motas de luz), dibujado por script.js.
-   Puramente decorativo: si el navegador no ejecuta el script o el usuario
-   prefiere menos movimiento, el hero se ve igual de completo sin él. */
-.hero-sparkles {
-  position: absolute;
-  inset: 0;
-  /* z-index 0, no -1, y esto era LA razón de que casi no se vieran: en -1
-     el lienzo quedaba por debajo de .hero-overlay -el velo oscuro que hace
-     legible el wordmark- así que cada mota se pintaba y acto seguido se le
-     echaba encima un 60% de negro. Con las fotos claras del consultorio
-     desaparecían del todo. En 0 se pintan POR ENCIMA del velo; el titular
-     sigue por delante gracias al z-index de .hero-contenido. */
-  z-index: 0;
-  pointer-events: none;
-  opacity: .62;
-  mix-blend-mode: screen;
-}
 @media (prefers-reduced-motion: reduce) {
-  .hero-duotone, .hero-flash, .hero-sparkles { display: none; }
+  .hero-duotone { display: none; }
 }
 
 /* ----- El hero en táctil: se quitan las capas de MEZCLA -------------------
@@ -947,14 +938,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    subida para que el tono se siga notando. El look se mantiene; lo que se
    va es la remezcla por cuadro. */
 @media (hover: none) and (pointer: coarse) {
-  /* Las motas SÍ se ven en táctil (antes iban en display:none). Lo que se
-     va es el mix-blend-mode, que era la mitad cara del asunto: sin él el
-     lienzo se compone como una capa normal en vez de obligar a remezclar
-     todo lo que tiene debajo en cada cuadro. La otra mitad la resuelve el
-     JS repintando solo la caja del titular (ver script.js, 14b). Sin
-     "screen" el dorado pierde un punto de brillo, y por eso sube la
-     opacidad. */
-  .hero-sparkles { mix-blend-mode: normal; opacity: .7; }
+  /* Sin mix-blend-mode: con él, el navegador tiene que releer y remezclar
+     todo lo pintado debajo, y ese "debajo" cambia en cada cuadro mientras el
+     carrusel hace crossfade. Sin "screen" el dorado pierde un punto de
+     brillo, y por eso sube la opacidad. */
   .hero-duotone { mix-blend-mode: normal; opacity: .18; }
   /* Un drop-shadow de 40px sobre un titular de 16vw recortado con
      background-clip:text obliga a re-dibujar y desenfocar esa máscara
@@ -1220,9 +1207,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --gold-500: #AE8625;   /* parada 4 del swatch de marca · acentos y trazos */
   --gold-700: #7E5F12;   /* misma recta, oscurecida · texto pequeño */
 
-  /* Hilo neutro cálido en vez de dorado: ver .pilares-editorial. */
-  --hairline-oro: rgba(174, 134, 37, .22);
+  /* Hilos decorativos. El dorado sube de .22 a .38 -el mismo valor que usa
+     la página Nosotros- porque ahora ES el separador de la sección: los
+     rótulos, la lista de ventajas y la cabecera de cada pilar cuelgan de él,
+     y a .22 sobre el marfil desaparecía. El neutro cálido se queda para lo
+     que solo tiene que separar sin llamar la atención. */
+  --hairline-oro: rgba(174, 134, 37, .38);
   --hairline-suave: rgba(122, 108, 82, .16);
+
+  /* CUERPO DE TEXTO A UN SOLO TONO, como en la página Nosotros. Antes eran
+     dos (#525252 el cuerpo y #767676 los secundarios) y la jerarquía se
+     apoyaba en el color; en el lenguaje de Nosotros la marcan el tamaño y el
+     peso -Montserrat 200 grande para la entradilla, Lato 300 para todo lo
+     demás- y el color es siempre el mismo. #2E2E2E sobre este marfil da
+     11.4:1, así que no se pierde nada por el camino. */
+  --texto: #2E2E2E;
+  --texto-suave: #2E2E2E;
 
   /* EL BLANCO, MENOS BRILLANTE. Era #FFFFFF -> #F7F7F8 -> #ECEDEE: blanco
      puro arriba y, lo que más se notaba, FRÍO -esos dos últimos tonos tiran
@@ -1260,12 +1260,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   -webkit-text-fill-color: currentColor;
   color: var(--neutral-900);
 }
+/* Oro PLANO, no degradado. La página Nosotros marca la palabra destacada de
+   la entradilla con un solo tono y un peso más (.nos-lead em), y esa es la
+   regla que se trae aquí: un degradado dentro de una palabra la lee a dos
+   colores, y al lado del peso 200 del resto del titular se notaba el doble.
+   #AE8625 es la parada oscura del swatch del logo y da 3.04:1 sobre este
+   marfil, por encima del 3:1 que pide un texto de este cuerpo. */
 .seccion-clara.fondo-perla .titulo-seccion [class*="texto-"] {
-  background: var(--gradiente-oro-profundo);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);   /* respaldo si background-clip:text no aplica */
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  /* Un escalon por debajo del #AE8625 del resto de la seccion, y esto se
+     midio: la parada del logo da 3.04:1 sobre el marfil de arriba pero 2.99
+     sobre el de abajo, o sea que la MISMA palabra cumplia o no segun donde
+     cayera en el degradado. #A17A16 es el mismo matiz (43 grados) y da 3.30
+     en el punto mas oscuro del lienzo. El oro del logo sigue tal cual en
+     todo lo que no es texto: hilos, puntos, palomitas e iconos. */
+  color: #A17A16;
+  font-weight: 500;
 }
 
 .titulo-seccion {
@@ -1315,28 +1326,45 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    ahí mismo para que ni los titulares ni los números se apaguen contra el
    blanco.
 
+   LENGUAJE VISUAL: es el MISMO que el de la página Nosotros (sección 28),
+   traído entero a la portada para que las dos partes del sitio se lean como
+   una sola cosa. En resumen: rótulo en Montserrat 600 muy trackeado con un
+   hilo dorado que sale hacia la derecha y se desvanece, entradilla en
+   Montserrat 200 a cuerpo grande (aquí es el <h2>, que deja de ser serif),
+   cuerpo en Lato 300 con interlineado 1.95, listas separadas por hilos finos
+   en vez de por cajas, esquinas en ángulo recto y ni una sombra. Lo que NO
+   cambia es la maquinaria: el mosaico con paralaje, los sellos, los halos,
+   la cortina, la salida ligada al scroll y el contador siguen exactamente
+   donde estaban — lo único que se rehizo es cómo se ven.
+
    NOTA DE MANTENIMIENTO: .marco-imagen / .tarjeta-flotante /
    .lista-caracteristicas de más abajo ya no las usa NINGUNA página. Las usaba
    subpaginas/nosotros.html hasta que esa página se rehízo con los módulos
    minimalistas (ver sección 28). Se dejan por si se quiere recuperar alguno
    de esos bloques; si se decide no hacerlo, son borrables sin más. */
+/* Rótulo de módulo, calcado de .nos-rotulo. Dos cambios respecto a la
+   versión anterior: el hilo dorado pasa de ir DELANTE (32px fijos, como un
+   guion) a salir por DETRÁS y desvanecerse hasta el final de la columna, que
+   es lo que abre el bloque en vez de decorarlo; y el trackeado sube de .2 a
+   .28em. El color se queda en --gold-700 (#7E5F12, 5.27:1): a 0.7rem esto es
+   texto pequeño y el oro claro no llega al 4.5:1 que pide. */
 .etiqueta-editorial {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: .65rem;
+  gap: .9rem;
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: .78rem;
-  letter-spacing: .2em;
+  font-size: .7rem;
+  letter-spacing: .28em;
   text-transform: uppercase;
   color: var(--gold-700);
-  margin-bottom: .7rem;
+  margin: 0 0 clamp(1.1rem, 2vw, 1.7rem);
 }
-.etiqueta-editorial::before {
+.etiqueta-editorial::after {
   content: '';
-  width: 32px;
+  flex: 1 1 auto;
   height: 1px;
-  background: var(--gold-500);
+  background: linear-gradient(90deg, var(--hairline-oro), transparent);
 }
 
 /* ---- 7a. Split editorial a media pantalla ------------------------------
@@ -1353,7 +1381,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    aire por fuera se sumaba al de cada bloque y la sección se sentía
    estirada, sobre todo en el teléfono, donde había que hacer tres o cuatro
    gestos de scroll para pasar de un bloque al siguiente. */
-.seccion-nosotros { padding: clamp(36px, 4vw, 60px) 0 clamp(30px, 3.4vw, 50px); }
+/* Sube medio escalón respecto a la versión compacta anterior: el lenguaje de
+   Nosotros vive del aire, y con las cajas fuera (pilares y fotos ya no tienen
+   fondo ni sombra) el espacio en blanco es lo único que separa un bloque del
+   siguiente. Medio escalón y no uno entero porque el motivo por el que se
+   había comprimido -cuatro subsecciones apiladas que en el teléfono pedían
+   tres o cuatro gestos de scroll- sigue siendo cierto. */
+.seccion-nosotros { padding: clamp(48px, 5vw, 84px) 0 clamp(40px, 4.2vw, 70px); }
 
 .nosotros-split {
   position: relative;
@@ -1413,19 +1447,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      el alto intrínseco de la foto. Ver la nota de .nosotros-media. */
   min-height: 0;
   min-width: 0;
-  border-radius: 22px;
+  /* Ángulo recto y sin sombra, como las fotos de la página Nosotros. Las
+     esquinas de 22px y la sombra de 44px hacían que cada foto se leyera como
+     una tarjeta apoyada encima de la sección; en ángulo recto el mosaico es
+     una pieza impresa dentro del lienzo. Se va con ellas el hilo blanco
+     interior, que solo existía para despegar la foto del fondo. */
+  border-radius: 0;
   background: var(--neutral-100);
-  box-shadow: 0 18px 44px rgba(28, 28, 28, .16);
-}
-/* Hilo blanco interior: separa la foto del lienzo casi blanco sin dibujar un
-   borde duro alrededor. */
-.nm-figura::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, .28);
-  pointer-events: none;
+  box-shadow: none;
 }
 .nm-figura img {
   display: block;
@@ -1441,10 +1470,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nm-figura.visible:hover img { transform: scale(1.06); }
 
 .nm-figura--principal { grid-row: 1 / 3; }
-@media (min-width: 992px) {
-  /* Sangra al borde izquierdo de la pantalla: solo esquinas interiores. */
-  .nm-figura--principal { border-radius: 0 32px 32px 0; }
-}
+/* (La foto principal sigue sangrando al borde izquierdo de la pantalla; ya no
+   necesita redondear las esquinas interiores porque no hay ninguna redonda.) */
 
 /* Sello de trayectoria: vidrio ónix apoyado en la esquina del mosaico. Al
    estar sobre fondo oscuro recupera el oro brillante (la sección lo había
@@ -1460,8 +1487,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: flex;
   align-items: center;
   gap: .7rem;
-  padding: .72rem 1.05rem;
-  border-radius: 14px;
+  padding: .8rem 1.15rem;
+  border-radius: 0;
   /* Antes esto era vidrio esmerilado (backdrop-filter: blur(16px)). Con un
      fondo al 82% de opacidad el desenfoque casi no se veía, y en cambio
      costaba muchísimo: un backdrop-filter obliga a recomponer lo que queda
@@ -1469,17 +1496,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      opacidad — o sea, a recalcularlo en cada cuadro. Con el ónix sólido se
      ve igual y no cuesta nada. */
   background: #141414;
-  border: 1px solid rgba(210, 172, 71, .5);
-  box-shadow: 0 20px 44px rgba(28, 28, 28, .38);
+  border: 1px solid rgba(210, 172, 71, .42);
+  box-shadow: none;
 }
+/* El número, en la misma Montserrat ultraligera que el título de Nosotros. La
+   serif con degradado dorado era el gesto de la versión anterior; aquí un
+   trazo fino en champán sobre ónix dice lo mismo con la mitad de tinta. Este
+   sello vive sobre fondo oscuro, así que puede permitirse el oro brillante
+   del logo tal cual (#D2AC47), que sobre el lienzo claro sería ilegible. */
 .nm-sello__num {
-  font-family: var(--fuente-elegante);
+  font-family: var(--fuente-menu);
+  font-weight: 200;
   font-size: clamp(1.6rem, 2.2vw, 2.05rem);
   line-height: 1;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: .02em;
+  background: none;
+  -webkit-text-fill-color: currentColor;
   color: var(--gold-500);
 }
 /* "+" como superíndice de verdad: con vertical-align alto y cuerpo muy
@@ -1520,7 +1552,6 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .nosotros-split--invertido .nm-figura--principal {
     grid-column: 2;
     grid-row: 1 / 3;
-    border-radius: 32px 0 0 32px;
   }
   .nosotros-split--invertido .nm-figura--alta { grid-column: 1; grid-row: 1; }
   .nosotros-split--invertido .nm-figura--baja { grid-column: 1; grid-row: 2; }
@@ -1560,13 +1591,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    del body: al bajar la entradilla y dejar el cuerpo en 16px, el segundo
    párrafo acababa siendo MÁS grande que el primero — medido en móvil,
    15.7px la entradilla contra 16px el cuerpo, la jerarquía justo del revés. */
-.nosotros-cuerpo .parrafo { max-width: 62ch; margin-bottom: .85rem; }
-/* El :not() no es cosmético: sin él este selector (dos clases) le gana por
-   especificidad a .parrafo-lead (una clase) y dejaba la entradilla del mismo
-   tamaño que el cuerpo, anulando la jerarquía que se acaba de arreglar. */
-.nosotros-cuerpo .parrafo:not(.parrafo-lead) {
-  font-size: clamp(.95rem, .1vw + .92rem, 1rem);
+/* Cuerpo de texto: Lato 300 con interlineado 1.95, igual que .nos-parrafo.
+   TODOS los párrafos al mismo tamaño, incluido el que llevaba .parrafo-lead:
+   ahora la entradilla es el <h2> de arriba (Montserrat 200 a 2rem), así que
+   un segundo escalón intermedio solo emborronaba la jerarquía. El
+   interlineado es la mitad del aire de este diseño; a 1.5 el mismo texto se
+   lee apretado por mucho blanco que tenga alrededor. */
+.nosotros-cuerpo .parrafo {
+  max-width: 62ch;
+  margin-bottom: 1.35rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, .35vw + .87rem, 1.05rem);
+  line-height: 1.95;
+  color: var(--texto);
 }
+.nosotros-cuerpo .parrafo:last-of-type { margin-bottom: 0; }
 
 /* Titular de las dos bandas. El .titulo-seccion genérico (hasta 3.2rem) está
    pensado para titulares CENTRADOS a ancho completo; aquí vive alineado a la
@@ -1575,9 +1615,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    deja el titular en dos líneas y el conjunto (etiqueta + titular +
    entradilla) cabe de una sola mirada. */
 #nosotros .titulo-seccion {
-  font-size: clamp(1.55rem, 1.4vw + 1.02rem, 2.3rem);
-  line-height: 1.12;
-  margin-bottom: .6rem;
+  /* Deja de ser un titular serif dorado y pasa a ser la ENTRADILLA de
+     Nosotros (.nos-lead): Montserrat en peso 200, en negro, con interlineado
+     amplio. El contraste de la sección lo daba el oro; ahora lo da el peso —
+     una línea de 2rem casi sin trazo al lado de un cuerpo de Lato 300, con
+     una sola palabra en oro y medio peso más. De paso el titular gana
+     contraste real (16:1 en vez de 3.8:1). */
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  /* El minimo es 1.5rem = 24px y no es cosmetico: la palabra destacada de
+     este titular va en oro, y por debajo de 24px WCAG deja de considerarlo
+     "texto grande" y le exige 4.5:1 en vez de 3:1 — que el oro sobre marfil
+     no da. A 1.35rem el titulo se quedaba en 21.6px en el telefono. */
+  font-size: clamp(1.5rem, 1.3vw + 1.02rem, 2.1rem);
+  line-height: 1.45;
+  letter-spacing: .01em;
+  margin-bottom: clamp(1.1rem, 1.8vw, 1.5rem);
 }
 
 /* Primer párrafo: un punto más grande y con más aire, hace de entradilla.
@@ -1589,94 +1642,156 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--texto);
 }
 
+/* Lista de ventajas, con la misma mecánica que .nos-porque: un hilo dorado
+   arriba y palomitas DIBUJADAS con dos bordes girados. El circle-check macizo
+   del sprite sigue en el HTML (no se toca ningún elemento), pero se oculta y
+   el <span> que lo envolvía pasa a ser la palomita: dos líneas finas de
+   1.5px. Un icono relleno del tamaño de una moneda pesa más que la frase a la
+   que acompaña — el mismo problema que ya se corrigió en los pilares. */
 .nosotros-checks {
   list-style: none;
-  padding: 0;
-  margin: 1.35rem 0 1.55rem;
-  display: grid;
-  gap: .6rem;
+  margin: clamp(1.6rem, 2.6vw, 2.2rem) 0 clamp(1.6rem, 2.6vw, 2.2rem);
+  padding: clamp(1.3rem, 2.2vw, 1.8rem) 0 0;
+  border-top: 1px solid var(--hairline-oro);
+  display: block;
 }
 .nosotros-checks li {
-  display: flex;
-  align-items: flex-start;
-  gap: .7rem;
-  font-size: .9rem;
-  line-height: 1.55;
-  color: var(--texto-suave);
+  position: relative;
+  display: block;
+  padding: .58rem 0 .58rem 1.9rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .93rem;
+  line-height: 1.75;
+  color: var(--texto);
 }
-.nosotros-checks strong { color: var(--texto); font-weight: 700; }
+.nosotros-checks strong { color: var(--neutral-900); font-weight: 700; }
 .nc-icono {
-  /* El icono es un circle-check MACIZO: en oro plano quedaban tres manchas
-     mostaza del tamaño de una moneda bajando por la columna, que pesaban
-     más que el texto al que acompañan. A 0.92rem y con el oro claro de la
-     sección son una viñeta, que es su papel. */
-  flex: 0 0 18px;
-  display: grid;
-  place-items: center;
-  margin-top: .26rem;
-  font-size: .92rem;
-  color: var(--gold-500);
+  position: absolute;
+  left: 2px;
+  /* En rem, no en em: este <span> lleva font-size 0 para tragarse el icono
+     que envuelve, asi que 1em aqui vale 0 y la palomita se iba al borde de
+     arriba de la linea. 1.4rem es el centro de la primera linea de texto
+     (padding .58rem + media interlinea de 1.75). */
+  top: 1.4rem;
+  width: 9px;
+  height: 5px;
+  margin: 0;
+  font-size: 0;
+  border-left: 1.5px solid var(--gold-500);
+  border-bottom: 1.5px solid var(--gold-500);
+  transform: translateY(-50%) rotate(-45deg);
 }
+.nc-icono .icono { display: none; }
 
-.nosotros-acciones { display: flex; flex-wrap: wrap; gap: .9rem; }
+/* Botones con la forma de .nos-boton: ángulo recto, solo trazo, Montserrat
+   en mayúsculas trackeadas, y se rellenan de negro al pasar el cursor. Los
+   dos efectos del botón del sitio -el destello diagonal y el marco que crece
+   desde dentro- se conservan tal cual; lo único que cambia es que el marco
+   interior pasa a blanco, porque sobre el relleno negro del hover un marco
+   plateado no se distingue. */
+.nosotros-acciones { display: flex; flex-wrap: wrap; gap: 1rem; }
+.nosotros-acciones .btn {
+  padding: 1.05rem 2.1rem;
+  border: 1px solid var(--neutral-900);
+  border-radius: 0;
+  background: transparent;
+  color: var(--neutral-900);
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: background .45s cubic-bezier(.22, 1, .36, 1),
+              color .45s cubic-bezier(.22, 1, .36, 1);
+}
+.nosotros-acciones .btn::before { inset: 4px; border-radius: 0; border-color: rgba(255, 255, 255, .38); }
+.nosotros-acciones .btn:hover,
+.nosotros-acciones .btn:focus,
+.nosotros-acciones .btn:focus-visible {
+  background: var(--neutral-900);
+  border-color: var(--neutral-900);
+  color: #FFFFFF;
+  box-shadow: none;
+  transform: none;
+}
 
 /* Ficha de sedes y horario: dos columnas (etiqueta / dato) separadas por un
    hilo dorado, en vez de una lista con viñetas — se lee como el pie de una
    ficha técnica y no como relleno. */
+/* Ficha de sedes, ahora con la estructura de .nos-valores: la clave ENCIMA
+   del dato en vez de al lado. En dos columnas la clave se quedaba un tercio
+   del ancho y el dato caía a tres líneas estrechas; apilada, cada entrada se
+   lee de corrido y el punto dorado hace de viñeta mínima. La clave pasa de
+   oro a negro porque ahora el oro ya lo pone el punto: en el lenguaje de
+   Nosotros el color se gasta una vez por bloque, no en cada línea. */
 .nosotros-sedes {
   list-style: none;
   padding: 0;
-  margin: 1.35rem 0 1.55rem;
-  /* Mismo criterio que la rejilla de pilares: las reglas de una ficha
-     técnica separan filas, no subrayan en dorado. En oro, cuatro líneas
-     seguidas competían con las claves -que sí van en oro- y el bloque
-     entero se veía amarillo. */
-  border-top: 1px solid var(--hairline-suave, rgba(122, 108, 82, .18));
+  margin: clamp(1.6rem, 2.6vw, 2.2rem) 0 clamp(1.6rem, 2.6vw, 2.2rem);
+  border-top: 0;
 }
 .nosotros-sedes li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .2rem 1.2rem;
-  padding: .62rem 0;
-  border-bottom: 1px solid var(--hairline-suave, rgba(122, 108, 82, .18));
+  display: block;
+  padding: clamp(1rem, 1.6vw, 1.35rem) 0;
+  border-top: 1px solid rgba(10, 10, 10, .1);
+  border-bottom: 0;
 }
+.nosotros-sedes li:first-child { border-top: 0; padding-top: 0; }
 .ns-clave {
-  flex: 0 0 6.5rem;
+  display: block;
+  flex: none;
+  margin-bottom: .45rem;
+  padding-top: 0;
   font-family: var(--fuente-menu);
-  font-size: .68rem;
+  font-size: .78rem;
   font-weight: 600;
-  letter-spacing: .18em;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--gold-700);
-  padding-top: .12rem;
+  color: var(--neutral-900);
+}
+.ns-clave::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: .8rem;
+  border-radius: 50%;
+  background: var(--gold-500);
+  vertical-align: middle;
+  transform: translateY(-1px);
 }
 .ns-valor {
-  flex: 1 1 14rem;
-  font-size: .88rem;
-  line-height: 1.5;
-  color: var(--texto-suave);
+  display: block;
+  flex: none;
+  padding-left: calc(5px + .8rem);
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .95rem;
+  line-height: 1.75;
+  color: var(--texto);
 }
 
 /* ---- 7c. Pilares: rejilla sin huecos, separada solo por hilo dorado -----
    El truco de "gap: 1px + fondo del contenedor" da los divisores en todos
    los breakpoints sin tener que apagar bordes por posición en la fila. */
 .pilares-editorial {
-  margin-top: clamp(1.4rem, 2.4vw, 2.1rem);
+  margin-top: clamp(2.2rem, 4vw, 3.4rem);
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1px;
-  /* Hilo NEUTRO cálido, no dorado, y sin borde exterior. Con las dos cosas
-     en oro, las cuatro tarjetas se leían como una tabla: un marco mostaza
-     cerrado con una cruz mostaza dentro, que es de donde venía lo de
-     "grotesco". Los divisores tienen que separar, no dibujar una caja — el
-     oro se guarda para los acentos de dentro, que es donde se ve. */
-  background: var(--hairline-suave, rgba(122, 108, 82, .16));
+  /* AIRE DE VERDAD entre columnas, en vez del truco de "gap: 1px + fondo del
+     contenedor". Ese truco daba los divisores gratis, pero también convertía
+     las cuatro tarjetas en una sola caja con cuadrícula dentro — y una caja
+     es justo lo que este lenguaje no usa. Ahora el separador es el hilo
+     dorado superior de cada .pilar, que es como se abre un bloque en la
+     página Nosotros. */
+  gap: clamp(1.6rem, 3vw, 2.6rem) clamp(1.4rem, 3.5vw, 3rem);
+  background: none;
   border: 0;
-  border-radius: 18px;
-  overflow: hidden;
-  /* Sombra más baja y más difusa: la de 16/40 despegaba el bloque del
-     lienzo como si flotara aparte de la sección. */
-  box-shadow: 0 10px 30px rgba(28, 28, 28, .05);
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
   perspective: 1200px;
 }
 /* Dos columnas desde 360 px, no desde 576: apiladas de una en una, las
@@ -1685,60 +1800,83 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 @media (min-width: 360px) { .pilares-editorial { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 992px) { .pilares-editorial { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 575.98px) {
-  .pilar { padding: 1rem .85rem; }
-  .pilar__icono { width: 28px; height: 28px; margin: .55rem 0 .45rem; font-size: .88rem; }
-  .pilar h3 { font-size: .9rem; }
-  .pilar p { font-size: .8rem; line-height: 1.5; }
+  .pilar { padding: .9rem 0 0; }
+  .pilar__icono { margin: .6rem 0 .45rem; font-size: 1rem; }
+  .pilar h3 { font-size: .72rem; letter-spacing: .18em; }
+  .pilar p { font-size: .82rem; line-height: 1.75; }
 }
 
 .pilar {
   position: relative;
-  padding: clamp(1.25rem, 1.8vw, 1.7rem) clamp(1.1rem, 1.6vw, 1.5rem);
-  /* Blanco a media opacidad: deja pasar el marfil del lienzo, así que las
-     tarjetas se apoyan en la sección en vez de ser cuatro rectángulos
-     blancos pegados encima. */
-  background: rgba(255, 255, 255, .55);
-  transition: background .5s ease;
+  /* Sin caja: un hilo dorado arriba y aire debajo. El fondo blanco a media
+     opacidad era lo que hacía que la rejilla se leyera como una tabla pegada
+     sobre la sección. */
+  padding: clamp(1.1rem, 1.8vw, 1.5rem) 0 0;
+  background: none;
+  border-top: 1px solid var(--hairline-oro);
+  transition: none;
 }
-.pilar:hover { background: rgba(255, 255, 255, .92); }
-/* Regla dorada que baja por el borde izquierdo al pasar el cursor. */
+.pilar:hover { background: none; }
+/* La regla dorada del hover ya no baja por el borde izquierdo (no hay borde
+   por el que bajar): ahora se dibuja SOBRE el hilo superior, de izquierda a
+   derecha. Mismo efecto y misma duración, en el sitio donde ahora significa
+   algo. */
 .pilar::before {
   content: '';
   position: absolute;
-  left: 0; top: 0;
-  width: 2px;
-  height: 0;
-  background: linear-gradient(180deg, var(--gold-500), transparent);
-  transition: height .55s cubic-bezier(.16, 1, .3, 1);
+  left: 0; top: -1px;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-500), transparent);
+  transition: width .55s cubic-bezier(.16, 1, .3, 1);
 }
-.pilar:hover::before { height: 100%; }
+.pilar:hover::before { width: 100%; height: 1px; }
 .pilar__num {
+  display: block;
   font-family: var(--fuente-menu);
   font-size: .7rem;
   font-weight: 700;
   letter-spacing: .22em;
   color: var(--gold-700);
 }
+/* La ficha redonda con velo dorado era la respuesta correcta MIENTRAS hubo
+   tarjeta: un glifo suelto sobre un rectángulo blanco no tenía forma propia.
+   Sin tarjeta, ese disco vuelve a ser una caja pequeña — y este lenguaje no
+   encajona nada. El icono queda como un trazo dorado del tamaño del texto,
+   que es todo el peso que necesita entre un hilo y un número. */
 .pilar__icono {
-  /* Ficha redonda en vez de un glifo dorado suelto. Un icono a 1.3rem
-     colgando en medio del texto no tiene forma propia y se leía como un
-     borrón mostaza; dentro de un disco con un velo del mismo oro al 10% se
-     lee como una pieza pensada, y de paso el color puede bajar de tamaño
-     sin perder presencia. */
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  margin: .75rem 0 .65rem;
-  border-radius: 50%;
-  background: rgba(174, 134, 37, .12);
-  box-shadow: inset 0 0 0 1px rgba(174, 134, 37, .20);
-  font-size: 1rem;
+  display: block;
+  width: auto;
+  height: auto;
+  margin: .85rem 0 .6rem;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 1.15rem;
   line-height: 1;
-  color: var(--gold-700);
+  color: var(--gold-500);
 }
-.pilar h3 { font-size: .98rem; margin-bottom: .35rem; color: var(--texto); }
-.pilar p { font-size: .88rem; line-height: 1.58; color: var(--texto-suave); margin: 0; }
+/* El título del pilar toma la forma del nombre de un valor en Nosotros
+   (.nos-valor__nombre): mayúsculas, trackeadas y en negro. Es lo que empareja
+   los cuatro pilares con los cuatro valores de la otra página. */
+.pilar h3 {
+  margin-bottom: .5rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--neutral-900);
+}
+.pilar p {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .9rem;
+  line-height: 1.8;
+  color: var(--texto);
+}
 
 /* ---- 7d. Salida ligada al scroll ---------------------------------------
    La ENTRADA ya la hacen .revelar / .revelar--velo pieza por pieza. Lo que
@@ -1766,17 +1904,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   }
 }
 
-/* Sombras mucho más cortas en táctil. Una sombra con 44 o 62px de
-   desenfoque obliga a pintar y difuminar una banda enorme alrededor de cada
-   caja, y en esta sección hay nueve (seis fotos, dos sellos, la rejilla de
-   pilares y la losa del contador). Con 14-18px se sigue leyendo la
-   elevación y el área a difuminar baja a menos de la sexta parte. */
-@media (hover: none) and (pointer: coarse) {
-  .nm-figura { box-shadow: 0 6px 16px rgba(28, 28, 28, .16); }
-  .nm-sello { box-shadow: 0 8px 18px rgba(28, 28, 28, .38); }
-  .pilares-editorial { box-shadow: 0 6px 16px rgba(28, 28, 28, .07); }
-  .contador-lujo { box-shadow: 0 10px 22px rgba(28, 28, 28, .3); }
-}
+/* AQUÍ HABÍA sombras acortadas para táctil: nueve cajas de la sección con un
+   desenfoque de 44-62px obligaban a pintar y difuminar una banda enorme
+   alrededor de cada una, y se bajaban a 14-18px en el teléfono. Ya no hace
+   falta: al adoptar el lenguaje de Nosotros no queda ni una sola sombra en la
+   sección, ni en escritorio ni en el móvil, así que el ahorro es total en vez
+   de parcial. */
 
 /* ---- 7f. La sección en pantallas chicas --------------------------------
    Los clamp() de arriba ya bajan tipografías y aire de forma continua, pero
@@ -1787,18 +1920,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    subsecciones -las dos bandas, los pilares y el contador- entra en pantalla
    como una unidad legible en vez de repartirse en tres gestos de scroll. */
 @media (max-width: 767.98px) {
-  .seccion-nosotros { padding: 28px 0 24px; }
+  .seccion-nosotros { padding: 34px 0 30px; }
   /* "height", no "min-height": la propiedad que manda aquí es la que fija
      .nosotros-media más arriba, y un min-height no la baja. */
   .nosotros-media { height: min(34vh, 265px); gap: 6px; }
-  .nm-figura { border-radius: 16px; }
 
   .nm-sello {
     left: .7rem;
     bottom: .7rem;
     gap: .55rem;
     padding: .5rem .8rem;
-    border-radius: 12px;
   }
   .nm-sello--der { left: auto; right: .7rem; }
   .nm-sello__num { font-size: 1.45rem; }
@@ -1809,10 +1940,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .nosotros-acciones { gap: .6rem; }
   .nosotros-acciones .btn { width: 100%; text-align: center; }
 
-  /* La ficha de sedes en una sola columna: con "flex: 0 0 6.5rem" la clave
-     se quedaba con un tercio del ancho y el valor caía a tres líneas
-     estrechas al lado. */
-  .ns-clave { flex: 1 1 100%; }
+  /* (La ficha de sedes ya va apilada en todos los anchos: ver .nosotros-sedes.) */
 }
 
 /* ---- 7e. Entrada más discreta dentro de Nosotros -----------------------
@@ -1824,9 +1952,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    desenfoca y dura menos, así la cascada se lee como un orden y no como un
    golpe. Las fotos siguen con su velo (.revelar--velo), que ya era discreto. */
 #nosotros .revelar:not(.revelar--velo) {
-  transform: translateY(26px);
+  transform: translateY(22px);
   filter: none;
-  transition-duration: .5s;
+  transition-duration: .9s;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
 }
 #nosotros .revelar.visible { transform: none; }
 
@@ -2015,16 +2144,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   position: relative;
   overflow: hidden;
   margin-top: clamp(2rem, 3.2vw, 2.9rem);
-  padding: clamp(1.4rem, 2.3vw, 2.1rem) clamp(1rem, 2.5vw, 2rem);
-  border-radius: 22px;
-  border: 1px solid rgba(210, 172, 71, .26);
+  padding: clamp(1.6rem, 2.6vw, 2.4rem) clamp(1rem, 2.5vw, 2rem);
+  border-radius: 0;
+  border: 1px solid rgba(210, 172, 71, .22);
   background:
     radial-gradient(ellipse 75% 130% at 14% 0%, rgba(210, 172, 71, .16) 0%, transparent 62%),
     /* Era #1C1C1C -> #242424 -> #161616: sobre la sección clara esa losa se
        leía plomo. En negro con un solo punto de luz diagonal sigue teniendo
        volumen, pero ya es negra. */
     linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
-  box-shadow: 0 26px 62px rgba(28, 28, 28, .3);
+  box-shadow: none;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: clamp(1.1rem, 2.2vw, 1.7rem) 0;
@@ -2059,19 +2188,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .cl-item + .cl-item { border-left: 1px solid rgba(210, 172, 71, .2); }
 }
 
+/* Cifras en Montserrat 200, la misma ultraligera del título de Nosotros, y
+   en oro plano. El degradado de cuatro paradas recorría tanto tono que un
+   número de dos dígitos salía a dos colores; sobre el ónix de la losa, el
+   champán del logo se lee entero sin ayuda. */
 .cl-num {
   display: inline-flex;
   align-items: baseline;
   justify-content: center;
-  font-family: var(--fuente-elegante);
+  font-family: var(--fuente-menu);
+  font-weight: 200;
   font-size: clamp(1.95rem, 3.1vw, 2.7rem);
   line-height: 1;
+  letter-spacing: .02em;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-text-fill-color: currentColor;
   color: var(--gold-500);
 }
 /* +/% como superíndice: alineados a la línea base (y con un cuerpo mucho
@@ -2088,18 +2221,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 .cl-etiqueta {
   display: block;
-  margin-top: .75rem;
+  margin-top: .8rem;
   font-family: var(--fuente-menu);
-  font-size: .68rem;
-  font-weight: 500;
-  letter-spacing: .18em;
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--silver-300);
 }
 .cl-linea {
   position: absolute;
   left: 50%; bottom: 0;
-  height: 2px;
+  height: 1px;
   width: 0;
   transform: translateX(-50%);
   background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
@@ -3004,6 +3137,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    .revelar pieza por pieza, como #nosotros) en vez de estar dentro de una
    columna revelada. */
 .titulo-seccion.revelar.visible::after { width: 90px; }
+/* ...y NO se dibuja en ninguna de las páginas que ya hablan el lenguaje de
+   Nosotros. Allí un bloque se abre con un rótulo y un hilo dorado ARRIBA; el
+   subrayado de debajo del titular sumaba una segunda línea a dos centímetros
+   de la primera y las dos juntas se leían como un error de maquetación. Con
+   esto la regla se queda sin usar en todo el sitio: se conserva por si alguna
+   sección futura vuelve al lenguaje oscuro. */
+.pagina-clara .titulo-seccion::after,
+.seccion-clara.fondo-perla .titulo-seccion::after { display: none; }
 
 
 /* ===== 13b. TRANSICIONES ENTRE SECCIONES ================================
@@ -4272,6 +4413,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  /* Sin los 300 ms de espera del navegador. "manipulation" le dice que en
+     este control no hay doble toque para hacer zoom, así que no tiene por
+     qué esperar a ver si llega un segundo toque antes de disparar el click.
+     Es el cinturón: el JS ya responde en pointerdown (ver
+     testimonios-esfera.js), pero esto cubre el camino del click y evita que
+     el navegador retenga el gesto. */
+  touch-action: manipulation;
   transition: width .4s ease;
 }
 .tst-pasos [data-paso]::after {
@@ -4587,56 +4735,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    su head son los pesos ligeros de Montserrat (200 y 300), que es lo que
    da el aire de la referencia.
    ========================================================================== */
-.pagina-nosotros {
-  --nos-blanco: #FFFFFF;
-  --nos-negro: #0A0A0A;
-  /* Cuerpo de texto un punto por encima del negro absoluto. Un párrafo
-     largo a #0A0A0A con interlineado 1.9 se lee pesado y "impreso"; a
-     #2E2E2E mantiene el aire del conjunto sin perder contraste (12.6:1
-     sobre blanco, muy por encima del 4.5 que pide AA). Los titulares y los
-     nombres de los valores sí van al negro profundo. */
-  --nos-texto: #2E2E2E;
-  --nos-dorado: #B79250;
-  --nos-dorado-claro: #D4B98C;
-  /* Hilos decorativos: el mismo dorado, muy diluido. */
-  --nos-linea: rgba(183, 146, 80, .38);
-  background: var(--nos-blanco);
-  color: var(--nos-texto);
-}
-
-/* La navbar del sitio es transparente y va escrita en plata y oro claro,
-   que sobre el lienzo negro se ve y sobre blanco desaparece. Encima del
-   encabezado (una foto oscura) sigue funcionando tal cual; en cuanto se
-   pasa de largo, script.js le pone .con-scroll y ahí sí hay que cambiarla.
-   Se hace solo con .con-scroll para no tocar el tramo en que va sobre la
-   foto, que es donde el diseño original acierta. */
-.pagina-nosotros .navbar-principal.con-scroll {
-  background: rgba(255, 255, 255, .92);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(10, 10, 10, .08);
-}
-.pagina-nosotros .navbar-principal.con-scroll .marca-nombre {
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  color: var(--nos-negro);
-}
-.pagina-nosotros .navbar-principal.con-scroll .marca-slogan { color: #6B6B6B; }
-.pagina-nosotros .navbar-principal.con-scroll .navbar-toggler { color: var(--nos-negro); }
-
-/* Entrada al hacer scroll: se reutiliza el observer que ya tiene el sitio
-   (script.js, sección 5) pero con un movimiento mucho más contenido. El
-   .revelar por defecto entra con 70px de recorrido, escala, rotación en X y
-   9px de desenfoque: es la entrada del sitio en negro, y aquí se sentiría
-   fuera de lugar. El encargo pide "aparición suave", así que se queda solo
-   con opacidad y 22px de subida. */
-.pagina-nosotros .revelar {
-  transform: translateY(22px);
-  filter: none;
-  transition: opacity .9s cubic-bezier(.22, 1, .36, 1),
-              transform .9s cubic-bezier(.22, 1, .36, 1);
-}
-.pagina-nosotros .revelar.visible { transform: translateY(0); }
+/* Los tokens de esta página (blanco, negro, oro del logo), el cambio de
+   navbar sobre lienzo claro y la entrada contenida al hacer scroll YA NO
+   VIVEN AQUÍ: se comparten con Tratamientos, FAQ y Galería desde la sección
+   29a, y nosotros.html lleva por eso las dos clases en su <body>
+   (pagina-clara pagina-nosotros). Lo que queda en esta sección 28 es solo lo
+   que es propio de esta página: el encabezado de retratos y los módulos. */
 
 
 /* ---- 28a. MÓDULO 1: ENCABEZADO VISUAL ---------------------------------
@@ -4758,9 +4862,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .62rem;
   letter-spacing: .24em;
   text-transform: uppercase;
-  color: #8A8A8A;
+  color: #6F6F6F;
 }
-.nos-ruta a { color: #8A8A8A; }
+.nos-ruta a { color: #6F6F6F; }
 .nos-ruta a:hover { color: var(--nos-dorado); }
 .nos-ruta span { color: var(--nos-negro); }
 
@@ -4791,7 +4895,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .7rem;
   letter-spacing: .28em;
   text-transform: uppercase;
-  color: var(--nos-dorado);
+  color: var(--nos-dorado-texto);
 }
 /* Hilo dorado que sale del rótulo hacia la derecha y se desvanece: marca el
    principio de cada módulo sin necesidad de encajonarlo en una tarjeta. */
@@ -4820,7 +4924,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   margin: 0 0 1.5rem;
   font-family: var(--fuente-menu);
   font-weight: 200;
-  font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+  /* Minimo 1.5rem = 24px: por debajo de ese cuerpo, la palabra en oro de
+     .nos-lead em deja de contar como texto grande y pasaria a necesitar
+     4.5:1. Ver la nota de ahi abajo. */
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
   line-height: 1.45;
   letter-spacing: .01em;
   color: var(--nos-negro);
@@ -4828,7 +4935,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nos-lead em {
   font-style: normal;
   font-weight: 500;
-  /* El dorado #B79250 da 3.4:1 sobre blanco: suficiente para texto grande
+  /* El dorado del logo da 3.37:1 sobre blanco: suficiente para texto grande
      (el mínimo son 3:1) y por eso solo se usa aquí, en la palabra destacada
      de una frase de 2rem, nunca en el cuerpo. */
   color: var(--nos-dorado);
@@ -4905,7 +5012,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   content: '';
   position: absolute;
   left: 2px;
-  top: 1.05em;
+  /* Centro de la primera linea: padding .58rem + media interlinea (1.6). A
+     1.05em la palomita quedaba 5px por encima del texto. */
+  top: 1.42em;
   width: 9px;
   height: 5px;
   border-left: 1.5px solid var(--nos-dorado);
@@ -4968,9 +5077,874 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    El footer del sitio es negro y aquí hace de cierre, pero necesita una
    frontera: sin ella, el salto del blanco al negro se lee como que la
    página se corta. */
-.pagina-nosotros .footer { border-top: 1px solid rgba(183, 146, 80, .3); }
+/* (La frontera con el footer la pone .pagina-clara .footer, sección 29d.) */
 
 
 @media (prefers-reduced-motion: reduce) {
-  .pagina-nosotros .revelar { transform: none; transition: none; }
+  .pagina-clara .revelar { transform: none; transition: none; }
 }
+
+
+/* ==========================================================================
+   29. PÁGINAS INTERIORES SOBRE LIENZO CLARO
+   --------------------------------------------------------------------------
+   Tratamientos, FAQ y Galería adoptan el lenguaje que estrenó la página
+   Nosotros: lienzo blanco, negro profundo, oro del logo solo en hilos y
+   detalles, Montserrat con mucho espaciado para los títulos, Lato con
+   interlineado generoso para el cuerpo, módulos repartidos de forma
+   asimétrica y ni una caja pesada.
+
+   CÓMO ESTÁ MONTADO, Y POR QUÉ ASÍ. Ni una línea de estructura cambia en el
+   HTML de estas tres páginas: siguen usando el .container/.row de Bootstrap,
+   sus acordeones, su comparador, su lightbox y sus filtros, con los mismos
+   nombres de clase y el mismo JS. Lo único que se añade en cada una es la
+   clase .pagina-clara en el <body>, y todo lo de aquí abajo cuelga de ella.
+
+   La razón no es pereza: estas páginas tienen interacciones que funcionan
+   -el deslizador de antes/después, el acordeón de móvil, los filtros de la
+   galería, el modal de la lightbox- y reescribir su marcado para cambiar
+   colores y tipos es la forma más segura de romperlas. El encargo pedía
+   cambiar cómo se ven, no cómo funcionan, y eso se hace desde la hoja.
+
+   Consecuencia práctica: si mañana se quiere volver atrás, se quita la clase
+   del <body> y la página vuelve exactamente a como estaba.
+   ========================================================================== */
+
+/* ---- 29a. TOKENS Y LIENZO ---------------------------------------------- */
+/* Los mismos tokens que estrenó Nosotros. El selector pasa de
+   .pagina-nosotros a .pagina-clara para que las cuatro páginas claras beban
+   de un único sitio; nosotros.html lleva ahora las dos clases. */
+.pagina-clara {
+  --nos-blanco: #FFFFFF;
+  --nos-negro: #0A0A0A;
+  --nos-texto: #2E2E2E;
+  --nos-dorado: #AE8625;
+  --nos-dorado-claro: #D2AC47;
+  --nos-dorado-texto: #7E5F12;
+  --nos-linea: rgba(174, 134, 37, .38);
+  /* Y de paso se redefinen las variables SEMÁNTICAS del sitio, que es lo que
+     hace que cientos de reglas escritas para el lienzo negro (párrafos,
+     tarjetas, bordes, sombras) se adapten solas sin tener que perseguirlas
+     una por una. */
+  --texto: #2E2E2E;
+  --texto-suave: #2E2E2E;
+  --blanco: #FFFFFF;
+  --gris-bg: #FFFFFF;
+  --superficie: #FFFFFF;
+  --superficie-borde: rgba(10, 10, 10, .10);
+  --sombra: none;
+  --sombra-hover: none;
+  --gold-500: #AE8625;
+  --gold-700: #7E5F12;
+  --silver-100: #2E2E2E;
+  --silver-300: #4A4A4A;
+  /* Los alias de acento del sitio oscuro (plata sobre negro) pasan al oro del
+     logo sobre blanco. Redefinirlos aquí, en un solo sitio, arregla de golpe
+     decenas de piezas menores -enlaces de tarjeta, thumbs de deslizadores,
+     rellenos de icono, subrayados- sin tener que perseguirlas una por una.
+     El caso más visible era la barra del comparador de antes/después, que
+     heredaba el amarillo claro de --turquesa-claro y sobre el lienzo blanco
+     se veía fosforescente. */
+  --naranja: #AE8625;
+  --naranja-oscuro: #7E5F12;
+  --naranja-accion: #7E5F12;
+  --turquesa: #0A0A0A;
+  --turquesa-osc: #0A0A0A;
+  --turquesa-accion: #0A0A0A;
+  --turquesa-profundo: #0A0A0A;
+  --turquesa-claro: rgba(10, 10, 10, .12);
+  --acento-legible: #7E5F12;
+  --acento-legible-hover: #0A0A0A;
+  background: var(--nos-blanco);
+  color: var(--nos-texto);
+}
+
+/* Aire lateral generoso, el mismo de .nos-lienzo. El .container de Bootstrap
+   trae 0.75rem de canal, que a 1480px de ancho deja el texto pegado al borde
+   de la pantalla — lo contrario del "abundante espacio en blanco" que pide
+   este lenguaje. */
+.pagina-clara .container { padding-inline: clamp(1.5rem, 6vw, 6rem); }
+/* ...menos la navbar y el pie, que son chrome del sitio y tienen que quedar
+   alineados con los de la portada, no con el contenido de la pagina. */
+.pagina-clara .navbar-principal > .container,
+.pagina-clara .footer .container,
+.pagina-clara .menu-pantalla .container {
+  padding-inline: calc(var(--bs-gutter-x, 1.5rem) * .5);
+}
+.pagina-clara .seccion { padding: clamp(3rem, 7vw, 7rem) 0; }
+
+/* Bootstrap centra con utilidades que llevan !important, así que hay que
+   responderle con otro. En una retícula asimétrica no hay nada centrado: el
+   texto arranca siempre por la izquierda. */
+.pagina-clara .text-center { text-align: left !important; }
+
+/* Fondos heredados del lienzo oscuro: todos a blanco. .fondo-suave y
+   .seccion-clara pintaban el ritmo alterno claro/oscuro del sitio; en estas
+   páginas el ritmo lo marca el espacio en blanco, no el color. */
+.pagina-clara .seccion,
+.pagina-clara .fondo-suave,
+.pagina-clara .seccion-clara,
+.pagina-clara .bloque-tratamiento,
+.pagina-clara .bloque-tratamiento:nth-child(odd) {
+  background: var(--nos-blanco);
+  background-image: none;
+}
+
+/* Decoración del constructor visual: fuera. Blobs de color, racimos de
+   puntos, anillos punteados, signos "+" y marcos de esquina eran justo lo
+   contrario de "sin bordes recargados". Se ocultan en vez de borrarse del
+   HTML: son decorativos (aria-hidden, pointer-events:none), no estorban, y
+   así el cambio se deshace quitando una clase del <body>. */
+.pagina-clara .forma,
+.pagina-clara .acento-puntos,
+.pagina-clara .acento-mas,
+.pagina-clara .acento-anillo,
+.pagina-clara .acento-badge,
+.pagina-clara .marco-esquina,
+.pagina-clara .textura-puntos { display: none !important; }
+
+/* Entrada al hacer scroll: el gesto contenido de Nosotros -solo opacidad y
+   22px de subida- en vez del recorrido con escala, giro y desenfoque que usa
+   el sitio oscuro. */
+.pagina-clara .revelar {
+  transform: translateY(22px);
+  filter: none;
+  transition: opacity .9s cubic-bezier(.22, 1, .36, 1),
+              transform .9s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .revelar.visible { transform: translateY(0); }
+
+/* ---- 29b. NAVBAR SOBRE BLANCO ------------------------------------------
+   La navbar del sitio va escrita en plata y oro claro: sobre el lienzo negro
+   se ve, sobre blanco desaparece. En Nosotros el encabezado es una foto
+   oscura, así que allí solo hay que cambiarla DESPUÉS de pasarla de largo
+   (.con-scroll). En las otras tres el encabezado ya es blanco desde el
+   primer píxel, y por eso ahí el cambio es desde el principio. */
+.pagina-clara .navbar-principal.con-scroll {
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(10, 10, 10, .08);
+}
+.pagina-clara .navbar-principal.con-scroll .marca-nombre,
+.pagina-clara:not(.pagina-nosotros) .navbar-principal .marca-nombre {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--nos-negro);
+}
+.pagina-clara .navbar-principal.con-scroll .marca-slogan,
+.pagina-clara:not(.pagina-nosotros) .navbar-principal .marca-slogan { color: #6B6B6B; }
+.pagina-clara .navbar-principal.con-scroll .navbar-toggler,
+.pagina-clara:not(.pagina-nosotros) .navbar-principal .navbar-toggler { color: var(--nos-negro); }
+
+/* ---- 29c. ENCABEZADO DE PÁGINA ----------------------------------------
+   .banner-pagina era una banda negra a sangre con el título centrado y
+   sombra de texto. Pasa a ser el encabezado editorial de Nosotros sin tocar
+   su HTML: el <h1> se parte en dos pesos (el texto normal en 200 y el
+   <span> destacado en 600, que es el gesto de "NOS/OTROS"), alineado a la
+   izquierda, con un hilo dorado debajo. */
+.pagina-clara .banner-pagina {
+  padding: clamp(140px, 16vw, 200px) 0 clamp(3rem, 6vw, 5.5rem);
+  background: var(--nos-blanco);
+  border-bottom: 0;
+  color: var(--nos-texto);
+  text-align: left;
+}
+.pagina-clara .banner-pagina .container { max-width: 1480px; }
+.pagina-clara .banner-pagina h1 {
+  margin: clamp(1.4rem, 3vw, 2.4rem) 0 0;
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  /* Un escalón menos que el "NOSOTROS" de la otra página: allí el titular es
+     UNA palabra y puede permitirse 8.5rem; aquí son frases de cuatro o cinco,
+     y a ese cuerpo ocupaban tres líneas y se comían la pantalla entera. */
+  font-size: clamp(1.8rem, 3.8vw, 3.4rem);
+  line-height: 1.18;
+  letter-spacing: .1em;
+  /* El espaciado abre un hueco también DESPUÉS de la última letra y descuadra
+     el bloque; el margen negativo lo compensa. */
+  margin-right: -.1em;
+  color: var(--nos-negro);
+  text-shadow: none;
+  text-transform: uppercase;
+}
+.pagina-clara .banner-pagina h1 [class*="texto-"] {
+  color: var(--nos-negro);
+  font-weight: 600;
+}
+/* Hilo dorado bajo el título: el "elemento decorativo sutil". */
+.pagina-clara .banner-pagina h1::after {
+  content: '';
+  display: block;
+  width: clamp(56px, 8vw, 96px);
+  height: 1px;
+  margin: clamp(1.4rem, 2.6vw, 2.2rem) 0 0;
+  background: var(--nos-dorado);
+}
+.pagina-clara .banner-subtitulo {
+  max-width: 56ch;
+  margin: clamp(1.1rem, 2vw, 1.6rem) 0 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  line-height: 1.95;
+  color: var(--nos-texto);
+}
+/* Miga de pan: la fila de mayúsculas trackeadas de .nos-ruta. */
+.pagina-clara .breadcrumb-personalizado {
+  justify-content: flex-start;
+  /* El "margin: 0 auto" de la versión centrada mandaba más que el
+     justify-content, porque el elemento es width:fit-content. */
+  margin: 0 0 .2rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: .62rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #6F6F6F;
+}
+.pagina-clara .breadcrumb-personalizado a {
+  color: #6F6F6F;
+  text-decoration: none;
+}
+.pagina-clara .breadcrumb-personalizado a:hover { color: var(--nos-dorado-texto); }
+.pagina-clara .breadcrumb-personalizado span { color: var(--nos-negro); font-weight: 500; }
+.pagina-clara .breadcrumb-personalizado i,
+.pagina-clara .breadcrumb-personalizado i.fa-house { color: #B4B4B4; font-size: .6rem; }
+
+/* ---- 29d. TÍTULOS Y CUERPO DE TEXTO ------------------------------------ */
+.pagina-clara .titulo-seccion {
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  line-height: 1.45;
+  letter-spacing: .01em;
+  margin-bottom: clamp(1.1rem, 1.8vw, 1.6rem);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--nos-negro);
+}
+.pagina-clara .titulo-seccion [class*="texto-"] {
+  -webkit-text-fill-color: currentColor;
+  color: var(--nos-dorado);
+  font-weight: 500;
+}
+/* El subtítulo de sección era una línea de mayúsculas trackeadas en plata:
+   funciona como etiqueta de dos palabras, no como la frase de dos líneas que
+   lleva dentro en estas páginas. Pasa a cuerpo de texto. */
+.pagina-clara .subtitulo-seccion {
+  max-width: 62ch;
+  /* El "margin: 0 auto" de la version centrada dejaba este parrafo sangrado
+     respecto al titulo que va justo encima. */
+  margin-left: 0;
+  margin-right: auto;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  line-height: 1.95;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--nos-texto);
+}
+.pagina-clara .parrafo,
+.pagina-clara .parrafo-lead {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  line-height: 1.95;
+  color: var(--nos-texto);
+  margin-bottom: 1.35rem;
+}
+.pagina-clara h2, .pagina-clara h3, .pagina-clara h4 { color: var(--nos-negro); }
+
+/* Botones: la forma de .nos-boton (ángulo recto, solo trazo, mayúsculas
+   trackeadas, se rellena de negro al pasar el cursor). Los dos efectos del
+   botón del sitio -destello diagonal y marco que crece desde dentro- se
+   conservan; el marco interior pasa a blanco para que se vea sobre el
+   relleno negro del hover. */
+.pagina-clara .btn {
+  padding: 1.05rem 2.1rem;
+  border: 1px solid var(--nos-negro);
+  border-radius: 0;
+  background: transparent;
+  color: var(--nos-negro);
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: background .45s cubic-bezier(.22, 1, .36, 1),
+              color .45s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .btn::before { inset: 4px; border-radius: 0; border-color: rgba(255, 255, 255, .38); }
+.pagina-clara .btn:hover,
+.pagina-clara .btn:focus,
+.pagina-clara .btn:focus-visible {
+  background: var(--nos-negro);
+  border-color: var(--nos-negro);
+  color: #FFFFFF;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---- 29d-bis. LAS CAJAS QUE QUEDABAN ----------------------------------
+   Tres piezas de estas páginas seguían siendo tarjetas con fondo, sombra y
+   esquinas redondeadas: las dos "tarjetas compactas" de Tratamientos (que
+   además eran bloques oscuros a todo color con el texto en blanco), las
+   cards de especialidad y las etiquetas del comparador. Pasan al mismo
+   patrón que el resto: hilo dorado arriba, título en mayúsculas trackeadas,
+   cuerpo en Lato y nada de relleno. */
+.pagina-clara .tarjeta-tratamiento-compacta,
+.pagina-clara .tarjeta-tratamiento-compacta.fondo-naranja,
+.pagina-clara .tarjeta-tratamiento-compacta.fondo-turquesa,
+.pagina-clara .card-especialidad {
+  padding: clamp(1.2rem, 2vw, 1.6rem) 0 0;
+  border: 0;
+  border-top: 1px solid var(--nos-linea);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--nos-texto);
+}
+.pagina-clara .tarjeta-tratamiento-compacta::after,
+.pagina-clara .card-especialidad::before { display: none; }
+.pagina-clara .card-especialidad:hover { transform: none; box-shadow: none; }
+.pagina-clara .card-especialidad .card-body { padding: 0; }
+/* El icono, de disco relleno a trazo dorado suelto: el mismo cambio que se
+   hizo en los pilares de la portada. */
+.pagina-clara .icono-especialidad,
+.pagina-clara .tarjeta-tratamiento-compacta .icono-especialidad {
+  width: auto;
+  height: auto;
+  margin: .8rem 0 .6rem;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--nos-dorado);
+  transform: none;
+}
+.pagina-clara .card-especialidad:hover .icono-especialidad {
+  background: none;
+  color: var(--nos-dorado);
+  transform: none;
+}
+.pagina-clara .tarjeta-tratamiento-compacta h3,
+.pagina-clara .card-especialidad .card-title {
+  margin-bottom: .55rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--nos-negro);
+}
+.pagina-clara .tarjeta-tratamiento-compacta p,
+.pagina-clara .card-especialidad .card-text {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .93rem;
+  line-height: 1.85;
+  color: var(--nos-texto);
+}
+.pagina-clara .enlace-card,
+.pagina-clara .tarjeta-tratamiento-compacta .enlace-card {
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--nos-dorado-texto);
+}
+.pagina-clara .enlace-card:hover,
+.pagina-clara .tarjeta-tratamiento-compacta .enlace-card:hover { color: var(--nos-negro); }
+
+/* Comparador de antes/después: se conserva entero -el deslizador, el arrastre
+   y la manija son de las pocas cosas con las que se juega en el sitio-, solo
+   pierde las esquinas redondeadas de sus etiquetas. */
+.pagina-clara .comparador-tag { border-radius: 0; }
+.pagina-clara .comparador-nota {
+  text-align: left;
+  font-style: normal;
+  font-size: .74rem;
+  letter-spacing: .04em;
+  color: #6F6F6F;
+}
+
+/* Cierre de página: la banda CTA era un bloque negro a sangre justo antes
+   del footer, que también es negro — dos bloques oscuros seguidos que
+   partían el lienzo en la última pantalla. Pasa al cierre de Nosotros: una
+   línea de texto, un hilo arriba y un botón de contorno. */
+.pagina-clara .banda-cta {
+  /* La banda oscura reservaba 64vh de alto minimo para que la foto de fondo
+     tuviera sitio; ya no hay foto, y ese minimo dejaba media pantalla en
+     blanco debajo del texto. */
+  min-height: 0;
+  border-bottom: 0;
+  padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(3.5rem, 7vw, 6.5rem);
+  background: var(--nos-blanco);
+  color: var(--nos-texto);
+  border-top: 1px solid rgba(10, 10, 10, .1);
+}
+.pagina-clara .banda-cta::before,
+.pagina-clara .banda-cta::after,
+.pagina-clara .banda-cta-masonry,
+.pagina-clara .banda-cta-overlay { display: none; }
+.pagina-clara .banda-cta h2 {
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1.45;
+  color: var(--nos-negro);
+}
+.pagina-clara .banda-cta p {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  line-height: 1.95;
+  color: var(--nos-texto);
+}
+
+/* Frontera con el footer, que sigue siendo negro y hace de cierre: sin ella
+   el salto del blanco al negro se lee como que la página se corta. */
+.pagina-clara .footer { border-top: 1px solid rgba(10, 10, 10, .1); }
+
+
+/* ==========================================================================
+   29e. TRATAMIENTOS — MÓDULOS DESPLAZADOS
+   --------------------------------------------------------------------------
+   Los cuatro bloques dejan de ser bandas de ancho completo alternando fondo
+   y pasan a ser módulos que se desplazan entre sí, como los de Nosotros. La
+   asimetría se consigue moviendo el .container de cada bloque dentro de un
+   lienzo más ancho (1480px): el primero pegado a la izquierda, el segundo
+   corrido a la derecha, el tercero a la izquierda pero menos, el cuarto a la
+   derecha pero menos. Ningún bloque empieza donde acabó el anterior, que es
+   lo que rompe la cuadrícula sin recurrir a posiciones absolutas.
+   ========================================================================== */
+.pagina-tratamientos .bloque-tratamiento {
+  padding: clamp(3.5rem, 8vw, 8rem) 0;
+  border-bottom: 0;
+}
+.pagina-tratamientos .bloque-tratamiento > .container,
+.pagina-tratamientos .seccion > .container {
+  max-width: 1480px;
+}
+@media (min-width: 992px) {
+  /* La entradilla ("Todo bajo un mismo techo") tampoco va centrada: abre la
+     página por la izquierda, como el primer módulo de Nosotros. */
+  .pagina-tratamientos .seccion .row.justify-content-center { justify-content: flex-start !important; }
+  .pagina-tratamientos .seccion .col-lg-8 { width: 58%; }
+
+  .pagina-tratamientos #estetica-dental  > .container { max-width: 1120px; margin-left: clamp(2rem, 6vw, 7rem);  margin-right: auto; }
+  .pagina-tratamientos #ortodoncia       > .container { max-width: 1080px; margin-left: auto; margin-right: clamp(2rem, 5vw, 6rem); }
+  .pagina-tratamientos #implantologia    > .container { max-width: 1160px; margin-left: clamp(4rem, 11vw, 13rem); margin-right: auto; }
+  .pagina-tratamientos #cirugia-oral     > .container { max-width: 1040px; margin-left: auto; margin-right: clamp(4rem, 10vw, 12rem); }
+  /* Hilo dorado que abre cada módulo: el separador del lenguaje, en vez del
+     borde inferior de banda que había antes. */
+  .pagina-tratamientos .bloque-tratamiento > .container::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    background: linear-gradient(90deg, var(--nos-linea), transparent);
+  }
+}
+
+/* La numeración pasa de un 5rem en serif negra -que competía con el título-
+   al rótulo dorado y trackeado del lenguaje. */
+.pagina-tratamientos .bloque-tratamiento-numero {
+  display: block;
+  font-family: var(--fuente-menu);
+  font-weight: 700;
+  font-size: .7rem;
+  letter-spacing: .28em;
+  line-height: 1;
+  color: var(--nos-dorado-texto);
+  margin-bottom: .9rem;
+}
+.pagina-tratamientos .bloque-tratamiento .titulo-seccion {
+  font-size: clamp(1.7rem, 3.2vw, 2.9rem);
+  letter-spacing: .04em;
+}
+/* Fotos: ángulo recto y sin sombra, como el mosaico de la portada. */
+.pagina-clara .bloque-tratamiento-foto,
+.pagina-clara .comparador-marco {
+  border-radius: 0;
+  box-shadow: none;
+}
+/* Lista de lo que incluye cada tratamiento: la mecánica de .nos-porque —
+   hilo dorado arriba y palomitas dibujadas con dos bordes girados. El icono
+   macizo del sprite se oculta y su <i> pasa a ser la palomita. */
+.pagina-clara .lista-incluye {
+  margin: clamp(1.6rem, 2.6vw, 2.2rem) 0;
+  padding: clamp(1.3rem, 2.2vw, 1.8rem) 0 0;
+  border-top: 1px solid var(--nos-linea);
+}
+.pagina-clara .lista-incluye li {
+  position: relative;
+  display: block;
+  padding: .58rem 0 .58rem 1.9rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .93rem;
+  line-height: 1.75;
+  color: var(--nos-texto);
+  border: 0;
+  /* El margen de .7rem de la versión anterior separaba tarjetas; aquí las
+     entradas ya van separadas por su propio padding. */
+  margin: 0;
+}
+.pagina-clara .lista-incluye i {
+  position: absolute;
+  left: 2px;
+  top: 1.4rem;
+  width: 9px;
+  height: 5px;
+  margin: 0;
+  font-size: 0;
+  border-left: 1.5px solid var(--nos-dorado);
+  border-bottom: 1.5px solid var(--nos-dorado);
+  transform: translateY(-50%) rotate(-45deg);
+}
+.pagina-clara .lista-incluye i .icono { display: none; }
+
+/* Acordeón de móvil de esta página (solo por debajo de 768px): mismo
+   lenguaje, hilo dorado en vez de caja. */
+@media (max-width: 767.98px) {
+  .pagina-tratamientos .bloque-tratamiento { padding: 0; }
+  .pagina-tratamientos .acordeon-tratamiento-boton {
+    padding: 1.35rem 0;
+    border-top: 1px solid var(--nos-linea);
+  }
+  .pagina-tratamientos .acordeon-tratamiento-numero {
+    font-family: var(--fuente-menu);
+    font-weight: 700;
+    font-size: .7rem;
+    letter-spacing: .22em;
+    color: var(--nos-dorado-texto);
+    opacity: 1;
+  }
+  .pagina-tratamientos .acordeon-tratamiento-nombre {
+    font-family: var(--fuente-menu);
+    font-weight: 600;
+    font-size: .78rem;
+    letter-spacing: .22em;
+    color: var(--nos-negro);
+  }
+  .pagina-tratamientos .acordeon-tratamiento-icono { color: var(--nos-dorado); }
+  .pagina-tratamientos .bloque-tratamiento:last-of-type .acordeon-tratamiento-panel {
+    border-bottom: 1px solid var(--nos-linea);
+  }
+}
+
+/* Proceso ("de tu primera visita al resultado final"): fuera el disco de
+   color y la línea de unión; queda el número en oro sobre un hilo. */
+.pagina-clara .proceso-numero {
+  /* El original es un disco de 70px centrado con "margin: 0 auto" y
+     "display: grid": sin apagar las dos cosas, el numero seguia centrado
+     sobre una columna cuyo texto ya va a la izquierda. */
+  display: block;
+  width: auto;
+  height: auto;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  border: 0;
+  color: var(--nos-dorado-texto);
+  font-family: var(--fuente-menu);
+  font-weight: 700;
+  font-size: .7rem;
+  letter-spacing: .28em;
+  margin: 0 0 .9rem;
+}
+.pagina-clara .proceso-item:hover .proceso-numero { background: none; transform: none; color: var(--nos-dorado-texto); }
+.pagina-clara .proceso-linea { display: none; }
+.pagina-clara .proceso-item {
+  text-align: left;
+  padding-top: clamp(1.1rem, 1.8vw, 1.5rem);
+  border-top: 1px solid var(--nos-linea);
+}
+.pagina-clara .proceso-item h3 {
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  margin-bottom: .5rem;
+  color: var(--nos-negro);
+}
+.pagina-clara .proceso-item p {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .9rem;
+  line-height: 1.8;
+  color: var(--nos-texto);
+}
+
+
+/* ==========================================================================
+   29f. FAQ — ACORDEÓN SIN CAJAS
+   --------------------------------------------------------------------------
+   Cada pregunta era una tarjeta con fondo, borde y esquinas redondeadas.
+   Ahora no hay caja: solo un hilo dorado finísimo bajo cada pregunta, el
+   texto en Montserrat y la respuesta en Lato con interlineado amplio. La
+   mecánica de Bootstrap (collapse, data-bs-parent, aria-expanded) no se
+   toca — sigue siendo el mismo acordeón.
+   ========================================================================== */
+.pagina-faq .container { max-width: 1480px; }
+/* Asimetría: el bloque de preguntas no va centrado a 9 columnas de 12, sino
+   corrido hacia la izquierda dentro del lienzo ancho. */
+@media (min-width: 992px) {
+  .pagina-faq .seccion .row.justify-content-center { justify-content: flex-start !important; }
+  .pagina-faq .seccion .col-lg-9 {
+    flex: 0 0 auto;
+    width: 66%;
+    margin-left: clamp(2rem, 7vw, 8rem);
+  }
+}
+.pagina-faq .faq-categoria-titulo {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  margin: clamp(3rem, 6vw, 5.5rem) 0 clamp(1.2rem, 2vw, 1.8rem);
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.pagina-faq .faq-categoria-titulo:first-of-type { margin-top: 0; }
+/* El icono de categoría sobraba: en este lenguaje un bloque se abre con un
+   rótulo y un hilo, no con un glifo. */
+.pagina-faq .faq-categoria-titulo i { display: none; }
+.pagina-faq .faq-categoria-titulo h2 {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .7rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--nos-dorado-texto);
+}
+.pagina-faq .faq-categoria-titulo::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--nos-linea), transparent);
+}
+
+.pagina-clara .acordeon-faq .accordion-item {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+}
+.pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.pagina-clara .acordeon-faq .accordion-button,
+.pagina-clara .acordeon-faq .accordion-button:not(.collapsed) {
+  padding: clamp(1.1rem, 1.8vw, 1.5rem) 2.4rem clamp(1.1rem, 1.8vw, 1.5rem) 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(174, 134, 37, .3);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: clamp(.95rem, 1.2vw, 1.1rem);
+  line-height: 1.55;
+  letter-spacing: .02em;
+  color: var(--nos-negro);
+}
+.pagina-clara .acordeon-faq .accordion-button:not(.collapsed) { color: var(--nos-dorado-texto); }
+.pagina-clara .acordeon-faq .accordion-button::before { display: none; }
+/* La flecha de Bootstrap es una imagen de fondo en SVG con su propio color;
+   se cambia por un trazo dibujado, para que siga el oro del sistema. */
+.pagina-clara .acordeon-faq .accordion-button::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  background-image: none;
+  border-right: 1px solid var(--nos-dorado);
+  border-bottom: 1px solid var(--nos-dorado);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .acordeon-faq .accordion-button:not(.collapsed)::after {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+.pagina-clara .acordeon-faq .accordion-body {
+  padding: clamp(1.1rem, 1.8vw, 1.5rem) 2.4rem clamp(1.4rem, 2.4vw, 2rem) 0;
+  background: none;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .95rem;
+  line-height: 1.95;
+  color: var(--nos-texto);
+}
+
+
+/* ==========================================================================
+   29g. GALERÍA — RETÍCULA EDITORIAL ASIMÉTRICA
+   --------------------------------------------------------------------------
+   El .row de Bootstrap (cuatro columnas iguales, todas cuadradas) pasa a ser
+   una rejilla de 6 columnas donde cada pieza ocupa un tamaño distinto: hay
+   dos verticales grandes, una apaisada ancha y el resto pequeñas. El reparto
+   se hace por posición (:nth-child) sobre un flujo "dense", que es la parte
+   importante: al filtrar por categoría, las piezas ocultas dejan huecos, y
+   "dense" hace que las siguientes los rellenen en vez de dejar la retícula
+   agujereada.
+
+   Las fotos van en blanco y negro y recuperan el color al pasar el cursor o
+   al enfocarlas con el teclado — que es el "blanco y negro con detalles a
+   color" del encargo, y de paso convierte el color en la recompensa de
+   interactuar. En táctil no hay hover, así que ahí se quedan a color: un
+   teléfono mostraría la galería entera en gris sin forma de sacarla de ahí.
+   ========================================================================== */
+.pagina-galeria .seccion > .container { max-width: 1480px; }
+
+/* FLUJO EN COLUMNAS, NO REJILLA. El primer intento fue una rejilla de 6
+   columnas con piezas de tamaños distintos y "grid-auto-flow: dense". Se ve
+   bien sobre el papel y mal en pantalla: mezclar piezas de 2 y de 3 filas en
+   la misma rejilla deja huecos que el empaquetado denso no siempre puede
+   rellenar, y en una galería un hueco no se lee como aire sino como una foto
+   que no cargó.
+
+   Con columnas el problema no existe: cada pieza cae en la columna más corta
+   y el borde inferior queda irregular por sí solo, que es exactamente el
+   remate de una galería editorial. La asimetría se consigue variando la
+   PROPORCIÓN de cada foto (vertical, cuadrada, apaisada) y descolgando
+   algunas unos centímetros, en vez de variando su ancho.
+
+   Y aguanta el filtrado: las piezas ocultas salen del flujo y las columnas se
+   recomponen solas, sin huecos y sin que el JS tenga que enterarse. */
+@media (min-width: 768px) {
+  .pagina-galeria .row.g-3 {
+    display: block;
+    columns: 2;
+    column-gap: clamp(1rem, 2.2vw, 2.2rem);
+    margin: 0;
+  }
+  .pagina-galeria .row.g-3 > [class*="col-"] {
+    width: auto;
+    max-width: none;
+    flex: none;
+    padding: 0;
+    margin: 0 0 clamp(1rem, 2.2vw, 2.2rem);
+    /* Sin esto una foto puede partirse entre el pie de una columna y la
+       cabeza de la siguiente. */
+    break-inside: avoid;
+  }
+  /* Cada cuarta pieza baja un poco: rompe la línea de arranque de las
+     columnas, que si no se leen como tres bloques paralelos. */
+  .pagina-galeria .item-galeria-grande:nth-child(4n + 2) { padding-top: clamp(1rem, 3.5vw, 3.5rem); }
+  .pagina-galeria .item-galeria-grande:nth-child(4n + 4) { padding-top: clamp(.6rem, 2vw, 2rem); }
+}
+@media (min-width: 992px) {
+  .pagina-galeria .row.g-3 { columns: 3; }
+}
+
+/* Proporciones alternas. Las fotos vienen todas declaradas 600x600 en el
+   HTML; el recorte lo hace object-fit, así que cambiar la proporción aquí no
+   deforma ninguna. */
+.pagina-galeria .galeria-item { display: block; }
+.pagina-galeria .galeria-item img { aspect-ratio: 1 / 1; }
+.pagina-galeria .item-galeria-grande:nth-child(7n + 1) .galeria-item img { aspect-ratio: 3 / 4; }
+.pagina-galeria .item-galeria-grande:nth-child(7n + 2) .galeria-item img { aspect-ratio: 3 / 2; }
+.pagina-galeria .item-galeria-grande:nth-child(7n + 4) .galeria-item img { aspect-ratio: 5 / 7; }
+.pagina-galeria .item-galeria-grande:nth-child(7n + 5) .galeria-item img { aspect-ratio: 4 / 3; }
+.pagina-galeria .item-galeria-grande:nth-child(7n + 6) .galeria-item img { aspect-ratio: 3 / 4; }
+
+.pagina-clara .galeria-item {
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+.pagina-clara .galeria-item img {
+  width: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.06);
+  transition: filter .7s cubic-bezier(.22, 1, .36, 1),
+              transform 1.1s cubic-bezier(.22, 1, .36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pagina-clara .galeria-item:hover img,
+  .pagina-clara .galeria-item:focus-visible img {
+    filter: grayscale(0) contrast(1);
+    transform: scale(1.04);
+  }
+  /* El zoom con giro de la versión anterior (scale 1.16 + rotate 1deg) era
+     demasiado gesto para una página que se apoya en la quietud. */
+  .pagina-clara .galeria-item:hover img { transform: scale(1.04); }
+}
+/* En tactil no hay hover, pero SI hay lightbox: tocar una foto la abre a
+   pantalla completa y ahi va a color, porque el modal esta fuera de
+   .galeria-item. Asi que la reja se queda en blanco y negro en todas partes
+   -que es lo que pide el encargo- y el color sigue siendo la recompensa de
+   interactuar, con el dedo igual que con el cursor. */
+/* La lupa sobre velo oscuro se cambia por un velo blanco muy leve: el
+   overlay negro sobre una foto en blanco y negro la apagaba del todo. */
+.pagina-clara .galeria-overlay {
+  background: rgba(255, 255, 255, .16);
+  color: var(--nos-negro);
+  font-size: 1rem;
+}
+
+/* Filtros: fila de mayúsculas trackeadas con un hilo dorado bajo la activa,
+   en vez de píldoras con borde. */
+.pagina-clara .filtros-galeria {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: clamp(1.2rem, 3vw, 2.6rem);
+  padding-bottom: clamp(1.2rem, 2vw, 1.8rem);
+  border-bottom: 1px solid rgba(10, 10, 10, .1);
+}
+.pagina-clara .filtro-btn {
+  position: relative;
+  padding: .35rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .68rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #6F6F6F;
+  transition: color .35s ease;
+}
+.pagina-clara .filtro-btn::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--nos-dorado);
+  transition: width .45s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .filtro-btn:hover { color: var(--nos-negro); background: none; border: 0; }
+.pagina-clara .filtro-btn.activo {
+  background: none;
+  border: 0;
+  /* La versión anterior era una píldora rellena con sombra proyectada; sin
+     apagarla quedaba un rectángulo claro flotando detrás de la palabra. */
+  box-shadow: none;
+  color: var(--nos-negro);
+}
+.pagina-clara .filtro-btn.activo::after { width: 100%; }
+
+/* La aparición de cada pieza al filtrar: sin el "salto" de escala, que en
+   una retícula editorial se lee como un parpadeo. */
+.pagina-clara .item-galeria-grande { transform: none; }
+.pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
