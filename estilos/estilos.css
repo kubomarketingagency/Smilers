@@ -2716,12 +2716,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      negro y había que bajar 6vh antes de que empezara a aparecer nada, y
      esos 6vh se sumaban a los ~14 de negro con que Testimonios entrega la
      pantalla: veinte vh seguidos sin que pase nada, con la sensación de que
-     la sección de abajo no llega nunca. Ahora la espera inicial es CERO —el
+     la sección de abajo no llega nunca. La espera inicial pasó a ser CERO: el
      revelado arranca en el primer píxel del pin, enlazando directamente con
-     el obturador que acaba de cerrarse— y la banda está nítida a los 19vh.
-     Antes, en el diseño original, tardaba 57. */
+     el obturador que acaba de cerrarse.
+
+     Tercera pasada: 122vh, o sea 22vh de recorrido repartidos 0 + 10 + 12.
+     El obturador de Testimonios se cerró más despacio a propósito (ver
+     CIERRE_HASTA en testimonios-esfera.js) y esto es la otra mitad del mismo
+     gesto: cuanto más se demora el telón en bajar, más impaciente se vuelve
+     lo que hay detrás. El revelado baja de 19vh a 10 y la banda de contacto
+     aparece de una vez, en un solo movimiento, en cuanto se sale del negro.
+     En el diseño original tardaba 57. */
   position: relative;
-  height: 135vh;
+  height: 122vh;
 }
 .cierre-cine-pin {
   position: sticky;
@@ -2755,8 +2762,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    body y el revelado empezaba con un halo claro alrededor. */
 .cierre-cine-pin { background: var(--onix); }
 @media (max-width: 767.98px) {
-  /* 120vh = 20vh de recorrido: 0 de espera + 11 de revelado + 9 de sostén. */
-  .cierre-cine { height: 120vh; }
+  /* 115vh = 15vh de recorrido: 0 de espera + 7 de revelado + 8 de sostén. */
+  .cierre-cine { height: 115vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cierre-cine { height: auto; }
@@ -3114,24 +3121,48 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
+/* Volver arriba: un aro fino de plata, y nada más.
+   Es el botón menos importante de la pantalla -flota encima de todo, siempre,
+   y solo repite algo que el visitante ya puede hacer con la rueda-, así que
+   lo que le sobraba era presencia. Fuera el degradado del aro, el reflejo de
+   dentro, la sombra y el relleno macizo al pasar el cursor: quedan tres
+   cosas, un círculo de un píxel, el ángulo y el disco ónix que los sostiene.
+
+   El disco negro no es decoración, es lo que lo hace funcionar en las cinco
+   páginas: sobre el lienzo blanco de las interiores un aro de plata suelto da
+   1.9:1 y no se ve. Sobre la portada, en cambio, el disco desaparece contra
+   el fondo y queda literalmente el aro flotando, que es la lectura más
+   discreta de las dos.
+
+   Los tonos van en hexadecimal y no en --silver-100: esa variable la redefine
+   .pagina-clara al gris oscuro para el texto sobre blanco, y aquí el glifo se
+   lee siempre contra negro.
+   Al pasar el cursor no se rellena: solo se cierra el aro y se aclara el
+   ángulo. Un botón así de secundario no necesita un cambio de estado tan
+   grande como los CTA de la página. */
 .btn-subir {
   position: fixed;
   bottom: 103px; right: 35px;
-  width: 46px; height: 46px;
-  border: 0;
+  width: 42px; height: 42px;
+  border: 1px solid rgba(192, 192, 192, .4);
   border-radius: 50%;
-  background: var(--turquesa-accion);
-  color: #fff;
+  background: var(--onix);
+  color: var(--plata);
+  font-size: .82rem;
   opacity: 0;
   visibility: hidden;
+  box-shadow: none;
   transition: var(--transicion);
   z-index: 1040;
 }
 .btn-subir.visible { opacity: 1; visibility: visible; }
-.btn-subir:hover { background: var(--naranja); transform: translateY(-3px); }
+.btn-subir:hover,
+.btn-subir:focus-visible {
+  border-color: rgba(192, 192, 192, .85);
+  color: #ECECEC;
+  transform: translateY(-3px);
+}
 .btn-subir:active {
-  background: var(--gold-500);
-  color: var(--onix);
   transform: translateY(0) scale(.94);
 }
 
@@ -4002,27 +4033,76 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .95rem;
 }
 
+/* ===== LA TARJETA DE CIERRE DE FAQ ("¿No encontraste tu respuesta?") =====
+   POR QUÉ SE VEÍA ROTA. La tarjeta es una isla NEGRA dentro de una página
+   blanca, igual que el pie y que el menú a pantalla completa — y esas dos sí
+   estaban en la lista que recupera los tokens del lienzo oscuro (ver "EL PIE
+   Y EL MENÚ SIGUEN SIENDO NEGROS"), pero esta no. Con las variables de
+   .pagina-clara heredadas dentro, salían tres cosas a la vez:
+
+     · el titular, porque .pagina-clara pinta todo h2 de --nos-negro: negro
+       sobre negro, o sea que no había titular, solo un hueco;
+     · el botón, porque .pagina-clara .btn le pone etiqueta negra y fondo
+       transparente: quedaba un rectángulo con trazo dorado y NADA dentro
+       -que es exactamente lo que se veía-;
+     · el chip del icono, que se armaba con --naranja-accion, y ese alias en
+       página clara es el oro profundo calibrado contra BLANCO: sobre el negro
+       de la tarjeta no se lee como oro, se lee como barro.
+
+   El arreglo son las tres líneas añadidas allá arriba (la tarjeta entra en
+   los tres grupos del pie) más lo de aquí: la pieza se reescribe en el
+   lenguaje del sitio en vez de en el azulado que le quedaba del diseño
+   anterior. Ángulo recto y hilo dorado en el filo de arriba, como el remate
+   del pie que viene justo debajo; titular en la didone del sistema; cuerpo en
+   gris perla; y el chip del icono con el degradado del wordmark y el glifo en
+   ónix, que es el único sitio de la tarjeta donde el oro va macizo. */
 .tarjeta-ayuda {
   position: relative;
-  background: var(--turquesa-accion);
-  color: #fff;
-  border-radius: var(--radio);
-  padding: 3rem 2rem;
+  background: var(--onix);
+  color: var(--marmol);
+  border: 1px solid rgba(210, 172, 71, .3);
+  border-radius: 0;
+  padding: clamp(2.6rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3.4rem);
   text-align: center;
-  box-shadow: var(--sombra);
+  box-shadow: none;
 }
-.tarjeta-ayuda h2 { color: #fff; }
-.tarjeta-ayuda p { color: rgba(255, 255, 255, .88); }
+/* Hairline metálico en el filo superior: el mismo de .footer::before. Las dos
+   piezas se leen como un solo cierre de página. */
+.tarjeta-ayuda::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(192, 192, 192, .5) 20%, var(--gold-500) 50%, rgba(192, 192, 192, .5) 80%, transparent);
+}
+.tarjeta-ayuda h2 {
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 3vw, 2.05rem);
+  letter-spacing: .04em;
+  line-height: 1.3;
+  color: var(--marmol);
+}
+.tarjeta-ayuda p {
+  max-width: 46ch;
+  margin-inline: auto;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  line-height: 1.95;
+  color: rgba(255, 255, 255, .78);
+}
 .tarjeta-ayuda-icono {
   display: inline-grid;
   place-items: center;
-  width: 56px; height: 56px;
-  margin-bottom: 1.2rem;
-  border-radius: 16px 6px 16px 6px;
-  background: linear-gradient(135deg, var(--naranja-accion), var(--naranja-oscuro));
-  color: #fff;
-  font-size: 1.6rem;
-  box-shadow: var(--sombra-hover);
+  width: 54px; height: 54px;
+  margin-bottom: 1.3rem;
+  /* El recorte asimétrico del icono de la marca (.marca-icono), en su medida. */
+  border-radius: 14px 4px 14px 4px;
+  background: var(--gradiente-oro);
+  color: var(--onix);
+  font-size: 1.45rem;
+  box-shadow: none;
 }
 
 
@@ -4402,21 +4482,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* ===== b) VARIANTE REALZADA: pin + esfera ============================== */
 
-/* 5 testimonios = 4 giros. El reparto ya no es lineal: el JS le da a cada
-   testimonio una MESETA (más de la mitad de su tramo) en la que la esfera se
-   queda quieta, y hace el giro en el tramo del medio — antes el disco pasaba
-   de largo justo cuando uno quería detenerse a comparar el antes/después.
-   Esa meseta se come recorrido, así que la sección crece de 520vh a 640vh
-   para que el giro en sí no quede acelerado. El 8% de reposo en cada punta
-   lo sigue poniendo el JS (constante REPOSO). */
+/* 5 testimonios = 4 giros. El reparto no es lineal: el JS le da a cada
+   testimonio una MESETA (casi dos tercios de su tramo) en la que la esfera se
+   queda quieta, y hace el giro en el tramo del medio — si no, el disco pasa
+   de largo justo cuando uno quiere detenerse a comparar el antes/después.
+   El reparto exacto de esta altura entre apertura, mesetas, giros y obturador
+   está en scripts/testimonios-esfera.js, en el bloque "scroll -> posición":
+   es una sola tabla de números que hay que leer junto con este alto. */
 .testimonios-cine.esfera-activa {
-  /* 520vh, no 640: con cinco testimonios eran 128vh de scroll por cada uno
-     y más de la mitad de cada tramo es meseta (ver MESETA en el JS), o sea
-     que se pasaban pantallas enteras sin que se moviera nada. A 520vh cada
-     testimonio tiene ~88vh, sigue habiendo pausa de sobra para leer la cita
-     y comparar el antes/después, y el imán que encuadra al detenerse tiene
-     que recorrer bastante menos. */
-  height: 520vh;
+  /* 650vh (o sea 550vh de recorrido real, que es el alto menos la pantalla
+     del pin). Venía de 520 y sube porque la sección iba demasiado deprisa
+     para lo que se le pide: leer una cita, mirar el antes, pasar al después
+     y recién entonces seguir. Con el reparto del JS, esos 550vh dejan ~58vh
+     de scroll con cada testimonio COMPLETAMENTE quieto al frente —antes eran
+     ~43, y el primero se quedaba en la mitad de eso— y ~38vh para cada giro.
+     No es tiempo muerto: es el único tramo en que el botón de antes/después
+     responde y la cita se lee al 100% de opacidad. */
+  height: 650vh;
 }
 
 .esfera-activa .testimonios-pin {
@@ -4473,7 +4555,20 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: block;
   font-family: var(--fuente-titulo);
   font-size: clamp(3rem, 7vw, 5rem);
-  line-height: .5;
+  /* line-height 1, NO .5 -- y aqui estaba el fallo de las comillas.
+     Este glifo se pinta con background-clip:text (ver 30a): el degradado de
+     oro se recorta contra la forma de la letra, pero SOLO dentro de la caja
+     del elemento. Con line-height:.5 esa caja medía media línea, o sea la
+     mitad de alto que la eme del tipo, y el volado de una comilla de apertura
+     vive justo en la parte alta: todo lo que sobresalía de la caja se quedaba
+     sin pintar. De las dos comillas solo llegaban las puntas de abajo — los
+     dos puntitos dorados que se veían.
+     Con line-height:1 la caja pinta el glifo entero. El aire que ahorraba
+     aquel medio interlineado se recupera con el margen negativo, que mueve la
+     caja pero no la recorta: el resultado ocupa exactamente lo mismo que
+     antes, con las comillas completas. */
+  line-height: 1;
+  margin-bottom: -.5em;
   color: var(--gold-500);
   opacity: .55;
 }
@@ -4749,7 +4844,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ===== Pantallas medianas y móviles ==================================== */
 
 @media (max-width: 991.98px) {
-  .testimonios-cine.esfera-activa { height: 460vh; }
+  /* 570vh = 470vh de recorrido. Misma proporción que en escritorio (las
+     constantes del JS son fracciones, no vh), un poco más corta porque en
+     móvil cada pantalla de scroll cuesta más gesto: ~50vh de meseta por
+     testimonio en vez de los ~37 de antes. */
+  .testimonios-cine.esfera-activa { height: 570vh; }
 
   /* La etiqueta caía a 34px del borde, o sea DEBAJO de la navbar fija: en el
      móvil el logo se le montaba encima y la palabra quedaba pegada al techo.
@@ -4996,19 +5095,31 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
            clamp(4rem, 9vw, 9rem);
 }
 
+/* La miga de Nosotros. Sube al mismo cuerpo y al mismo gris que la de las
+   otras tres páginas (ver .pagina-clara .breadcrumb-personalizado, que se
+   escribió calcando ESTA): a .62rem con .24em de tracking se leía como un
+   adorno sobre el título en vez de como la única pista de dónde está uno. */
 .nos-ruta {
   grid-column: 1 / -1;
   margin: 0;
   font-family: var(--fuente-menu);
-  font-weight: 500;
-  font-size: .62rem;
-  letter-spacing: .24em;
+  font-weight: 600;
+  font-size: clamp(.72rem, .85vw, .78rem);
+  letter-spacing: .2em;
   text-transform: uppercase;
-  color: #6F6F6F;
+  color: #4A4A4A;
 }
-.nos-ruta a { color: #6F6F6F; }
-.nos-ruta a:hover { color: var(--nos-dorado); }
-.nos-ruta span { color: var(--nos-negro); }
+.nos-ruta a {
+  color: #4A4A4A;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+.nos-ruta a:hover,
+.nos-ruta a:focus-visible {
+  color: var(--nos-dorado-texto);
+  border-bottom-color: var(--nos-linea);
+}
+.nos-ruta span { color: var(--nos-negro); font-weight: 700; }
 
 .nos-m-historia  { grid-column: 1 / span 6; }
 .nos-m-filosofia { grid-column: 8 / span 5; margin-top: clamp(2rem, 7vw, 7rem); }
@@ -5445,30 +5556,49 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   line-height: 1.95;
   color: var(--nos-texto);
 }
-/* Miga de pan: la fila de mayúsculas trackeadas de .nos-ruta. */
+/* Miga de pan: la fila de mayúsculas trackeadas de .nos-ruta.
+
+   CRECE. Estaba en .62rem -unos 10px- con .24em de tracking, y a ese cuerpo
+   unas mayúsculas tan separadas dejan de leerse como una palabra: se leen
+   como un adorno gráfico encima del título, y la miga es lo único que dice
+   dónde está uno dentro del sitio. Sube a ~12px, se le baja un punto el
+   tracking (a más cuerpo hace falta menos aire entre letras para el mismo
+   efecto) y se le sube el contraste del gris, de #6F6F6F a #4A4A4A: 9.1:1
+   sobre blanco, o sea que se lee de lejos y sigue siendo secundaria frente al
+   negro del título. El separador va en el oro de marca, no en gris, porque es
+   justo la pieza que marca la jerarquía entre un nivel y el siguiente. */
 .pagina-clara .breadcrumb-personalizado {
   justify-content: flex-start;
   /* El "margin: 0 auto" de la versión centrada mandaba más que el
      justify-content, porque el elemento es width:fit-content. */
-  margin: 0 0 .2rem;
+  margin: 0 0 .7rem;
   background: none;
   border: 0;
   padding: 0;
+  gap: .7rem;
   font-family: var(--fuente-menu);
-  font-weight: 500;
-  font-size: .62rem;
-  letter-spacing: .24em;
+  font-weight: 600;
+  font-size: clamp(.72rem, .85vw, .78rem);
+  letter-spacing: .2em;
   text-transform: uppercase;
-  color: #6F6F6F;
+  color: #4A4A4A;
 }
 .pagina-clara .breadcrumb-personalizado a {
-  color: #6F6F6F;
+  color: #4A4A4A;
   text-decoration: none;
+  /* Subrayado que nace del oro y solo aparece al pasar el cursor: el mismo
+     gesto que los enlaces del menú, en pequeño. */
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
 }
-.pagina-clara .breadcrumb-personalizado a:hover { color: var(--nos-dorado-texto); }
-.pagina-clara .breadcrumb-personalizado span { color: var(--nos-negro); font-weight: 500; }
-.pagina-clara .breadcrumb-personalizado i,
-.pagina-clara .breadcrumb-personalizado i.fa-house { color: #B4B4B4; font-size: .6rem; }
+.pagina-clara .breadcrumb-personalizado a:hover,
+.pagina-clara .breadcrumb-personalizado a:focus-visible {
+  color: var(--nos-dorado-texto);
+  border-bottom-color: var(--nos-linea);
+}
+.pagina-clara .breadcrumb-personalizado span { color: var(--nos-negro); font-weight: 700; }
+.pagina-clara .breadcrumb-personalizado i { color: var(--nos-dorado-claro); font-size: .75em; }
+.pagina-clara .breadcrumb-personalizado i.fa-house { color: #4A4A4A; font-size: 1em; }
 
 /* ---- 29d. TÍTULOS Y CUERPO DE TEXTO ------------------------------------ */
 .pagina-clara .titulo-seccion {
@@ -5699,9 +5829,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    var() se resuelven en el elemento donde se USAN: al declarar --gold-700 y
    compañía en este mismo bloque, el degradado que se arma aquí es ya el del
    banner. */
+/* La tarjeta de cierre de FAQ es la TERCERA isla negra de estas páginas, y
+   entraba aquí por derecho propio: es el mismo caso exacto que el pie. Ver
+   .tarjeta-ayuda, más abajo, para lo que le pasaba por no estar en esta
+   lista. */
 .pagina-clara .footer,
 .pagina-clara .navbar-collapse,
-.pagina-clara .menu-pantalla {
+.pagina-clara .menu-pantalla,
+.pagina-clara .tarjeta-ayuda {
   --gold-500: #D2AC47;
   --gold-700: #AE8625;
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
@@ -5733,6 +5868,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pagina-clara .footer h2,
 .pagina-clara .footer h3,
 .pagina-clara .footer h4,
+.pagina-clara .tarjeta-ayuda h2,
 .pagina-clara .footer .footer-titulo { color: var(--marmol); }
 
 /* Y el botón: .pagina-clara .btn le había puesto etiqueta negra, que sobre el
@@ -5750,8 +5886,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .pagina-clara .banda-cta .btn:focus-visible { color: var(--onix); }
 
 .pagina-clara .footer .btn,
+.pagina-clara .tarjeta-ayuda .btn,
 .pagina-clara .navbar-collapse .btn { color: var(--marmol); background: transparent; }
 .pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus, .pagina-clara .footer .btn:focus-visible,
+.pagina-clara .tarjeta-ayuda .btn:hover, .pagina-clara .tarjeta-ayuda .btn:focus, .pagina-clara .tarjeta-ayuda .btn:focus-visible,
 .pagina-clara .navbar-collapse .btn:hover, .pagina-clara .navbar-collapse .btn:focus, .pagina-clara .navbar-collapse .btn:focus-visible {
   background: var(--gradiente-oro);
   color: var(--onix);
@@ -5783,10 +5921,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .pagina-tratamientos .seccion .row.justify-content-center { justify-content: flex-start !important; }
   .pagina-tratamientos .seccion .col-lg-8 { width: 58%; }
 
-  .pagina-tratamientos #estetica-dental  > .container { max-width: 1120px; margin-left: clamp(2rem, 6vw, 7rem);  margin-right: auto; }
-  .pagina-tratamientos #ortodoncia       > .container { max-width: 1080px; margin-left: auto; margin-right: clamp(2rem, 5vw, 6rem); }
-  .pagina-tratamientos #implantologia    > .container { max-width: 1160px; margin-left: clamp(4rem, 11vw, 13rem); margin-right: auto; }
-  .pagina-tratamientos #cirugia-oral     > .container { max-width: 1040px; margin-left: auto; margin-right: clamp(4rem, 10vw, 12rem); }
+  /* Los NUEVE módulos, cada uno con su ancho y su sangría. Ninguno repite el
+     par (ancho, margen) del anterior ni del que va dos más arriba: es lo que
+     hace que la columna de lectura se mueva por la página en vez de caer
+     siempre en el mismo sitio. */
+  .pagina-tratamientos #estetica-dental        > .container { max-width: 1120px; margin-left: clamp(2rem, 6vw, 7rem);   margin-right: auto; }
+  .pagina-tratamientos #ortodoncia             > .container { max-width: 1080px; margin-left: auto; margin-right: clamp(2rem, 5vw, 6rem); }
+  .pagina-tratamientos #implantologia          > .container { max-width: 1160px; margin-left: clamp(4rem, 11vw, 13rem); margin-right: auto; }
+  .pagina-tratamientos #cirugia-oral           > .container { max-width: 1040px; margin-left: auto; margin-right: clamp(4rem, 10vw, 12rem); }
+  .pagina-tratamientos #rehabilitacion-oral    > .container { max-width: 1100px; margin-left: clamp(3rem, 8vw, 9rem);   margin-right: auto; }
+  .pagina-tratamientos #endodoncia             > .container { max-width: 1140px; margin-left: auto; margin-right: clamp(2rem, 6vw, 7rem); }
+  .pagina-tratamientos #periodoncia            > .container { max-width: 1060px; margin-left: clamp(5rem, 12vw, 14rem); margin-right: auto; }
+  .pagina-tratamientos #odontopediatria        > .container { max-width: 1180px; margin-left: auto; margin-right: clamp(3rem, 7vw, 8rem); }
+  .pagina-tratamientos #armonizacion-orofacial > .container { max-width: 1100px; margin-left: clamp(2rem, 5vw, 6rem);   margin-right: auto; }
   /* Hilo dorado que abre cada módulo: el separador del lenguaje, en vez del
      borde inferior de banda que había antes. */
   .pagina-tratamientos .bloque-tratamiento > .container::before {
@@ -5881,7 +6028,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     color: var(--nos-negro);
   }
   .pagina-tratamientos .acordeon-tratamiento-icono { color: var(--nos-dorado); }
-  .pagina-tratamientos .bloque-tratamiento:last-of-type .acordeon-tratamiento-panel {
+  /* El hilo que CIERRA la lista: cada fila del acordeón lleva el suyo arriba,
+     así que la última necesita uno debajo o la lista termina en el aire.
+     Iba por :last-of-type, que aquí nunca ha llegado a coincidir con nada:
+     ese selector pide el último <section> de sus hermanos, y después de los
+     módulos de tratamiento vienen las secciones de Proceso y de CTA. Con
+     cuatro filas apenas se notaba; con nueve, la lista es media pantalla y el
+     borde que falta al final se ve. Se nombra el módulo directamente, que es
+     como ya se nombran todos aquí arriba para la sangría de escritorio. */
+  .pagina-tratamientos #armonizacion-orofacial .acordeon-tratamiento-panel {
     border-bottom: 1px solid var(--nos-linea);
   }
 }
@@ -6380,12 +6535,22 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ---- 30e. DETALLES DEL FOOTER -----------------------------------------
    El footer ya era la pieza más dorada del sitio; lo que quedaba plateado o
    en blanco translúcido pasa al oro de marca. */
-/* Los aros de redes a .38 sobre negro daban un gris apagado: el aro se
-   perdia y los cuatro iconos flotaban sueltos. A .55, con el glifo tambien
-   en oro claro, el bloque se lee como un grupo. */
-.redes-sociales a { border-color: rgba(210, 172, 71, .55); color: var(--gold-200); }
+/* DOS PIEZAS QUE VUELVEN A LA PLATA, Y NO ES UN PASO ATRÁS.
+   El duo metálico de la marca reparte papeles: el oro es para la MARCA -el
+   wordmark "Smilers", los hilos, los rótulos- y la plata para lo que la
+   acompaña. Poniendo el eslogan "Dental Clinique" en el mismo oro que
+   "Smilers" se perdía justo esa jerarquía: las dos líneas del logo pesaban
+   igual y el bloque dejaba de leerse como un nombre con su bajada. En plata,
+   el ojo vuelve a ir primero al nombre.
+   Los aros de redes, lo mismo: cuatro discos dorados en la esquina del pie
+   competían con el logo que tienen encima, siendo lo secundario de la
+   columna. Vuelven a la plata, pero a la plata DE VERDAD -#C0C0C0 al 55%, no
+   el blanco translúcido al 22% que había en el origen, que sobre negro era un
+   gris sucio-, así que se leen como un grupo sin gritar. El relleno dorado al
+   pasar el cursor se queda: ese es el gesto de todos los botones del sitio. */
+.redes-sociales a { border-color: rgba(192, 192, 192, .55); color: var(--plata); }
 .redes-sociales a:hover { border-color: transparent; }
-.marca-footer .marca-slogan { color: var(--gold-200); }
+.marca-footer .marca-slogan { color: var(--plata); }
 .footer-bottom { border-top-color: rgba(210, 172, 71, .22); }
 .footer-bottom a { color: var(--gold-200); }
 .mapa-tab { border-color: rgba(210, 172, 71, .3); }

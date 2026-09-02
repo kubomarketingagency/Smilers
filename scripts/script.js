@@ -944,6 +944,18 @@ document.addEventListener('DOMContentLoaded', function () {
       var abierto = panel.classList.toggle('abierta');
       boton.setAttribute('aria-expanded', String(abierto));
     });
+
+    /* SI SE LLEGA ENLAZADO A ESTE TRATAMIENTO, SE ABRE SOLO.
+       El acordeón de la portada manda a #periodoncia, #endodoncia y los otros
+       siete. En escritorio da igual -el panel está siempre abierto y el botón
+       ni se ve-, pero en móvil el visitante aterrizaba en la fila cerrada del
+       tratamiento que acababa de elegir y tenía que volver a tocarla: dos
+       gestos para una cosa que ya había pedido. Mismo criterio que la pregunta
+       enlazada de FAQ, en la sección 13. */
+    if (window.location.hash && window.location.hash.slice(1) === panel.id.replace(/^panel-/, '')) {
+      panel.classList.add('abierta');
+      boton.setAttribute('aria-expanded', 'true');
+    }
   });
 
 
@@ -1553,8 +1565,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (progreso === ultimoProgresoCierre) return;
       ultimoProgresoCierre = progreso;
 
-      // 0%-55%: la cortina negra se desvanece, descubriendo la banda CTA.
-      // 55%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
+      // 0%-46%: la cortina negra se desvanece, descubriendo la banda CTA.
+      // 46%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
       //
       // Ya no hay tramo de espera en negro al principio, y es a propósito.
       // Este pin recibe la pantalla YA en negro: el obturador de Testimonios
@@ -1566,9 +1578,12 @@ document.addEventListener('DOMContentLoaded', function () {
       // contacto pareciera no llegar nunca.
       //
       // El reparto ha ido 30/60 sobre 90vh -> 12/72 sobre 50vh -> 0/55 sobre
-      // 35vh. El revelado en vh reales: 27 -> 30 -> 19. Menos distancia, sí,
-      // pero empezando en el píxel cero en vez de a 27vh de haber entrado.
-      var revelado = acotar(progreso / .55);
+      // 35vh -> 0/46 sobre 22vh. El revelado en vh reales: 27 -> 30 -> 19 ->
+      // 10. Menos distancia, sí, y a propósito: es la contrapartida de que el
+      // obturador de Testimonios ahora tarde MÁS en cerrarse. Cerrar despacio
+      // se lee como un gesto; abrir despacio, como una espera. Así que el
+      // telón baja con calma y lo de detrás aparece de golpe.
+      var revelado = acotar(progreso / .46);
       negro.style.opacity = String(1 - revelado);
 
       /* La banda sale del desenfoque a la vez que el negro se levanta: las

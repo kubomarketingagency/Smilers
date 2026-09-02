@@ -1045,47 +1045,74 @@ void main() {
        esfera no gira, para que el primer y el último testimonio se queden
        quietos un momento en vez de aparecer justo en el borde del pin.
 
-       LOS DOS TRAMOS YA NO SON IGUALES, y ese era el fallo del último
-       testimonio (Camila Ordóñez). Con 8% y 8%, la esfera llegaba a su
-       posición final en el 92% del recorrido... pero las hojas del cierre
-       empezaban a entrar en el 82%. O sea que Camila terminaba de asentarse
-       cuando el obturador ya la tapaba a más de la mitad: nunca se la veía
-       entera, y el imán tampoco la encuadraba nunca porque se apagaba en el
-       80% justo para no pelearse con esas hojas.
+       LOS DOS TRAMOS NO SON IGUALES, y no es un descuido: el recorrido no
+       empieza donde empieza el primer testimonio (antes hay que levantar el
+       velo) ni termina donde termina el quinto (después entra el obturador),
+       así que para que los cinco duren LO MISMO las dos puntas tienen que
+       compensar esas dos transiciones.
 
-       Con 6% al principio y 20% al final, la esfera queda quieta en el
-       último testimonio desde el 75% del recorrido y el cierre no arranca
-       hasta el 86%: son unos 57vh de scroll con Camila al frente, sin nada
-       encima, igual que cualquiera de los otros cuatro. El giro en sí pierde
-       un 12% de recorrido, que en 520vh son ~62vh repartidos entre cuatro
-       tramos — un 3% menos de distancia por giro, imperceptible. */
-    var REPOSO_INICIO = 0.06;
-    var REPOSO_FIN    = 0.20;
-    var TRAMO_GIRO    = 1 - REPOSO_INICIO - REPOSO_FIN;   // 0.74
+       EL REPARTO, EN CLARO. Todo el recorrido de la sección se divide en
+       piezas, y de ahí salen las cinco constantes de más abajo:
+
+         apertura   A = 24     el velo se disuelve
+         meseta     D = 58     x5, un testimonio quieto al frente
+         giro       G = 38     x4, la esfera rueda al siguiente
+         obturador  C = 68     las dos hojas se juntan
+         cola       T = 12     negro antes de soltar el pin
+         ---------------------------------------------------
+         total        = 546    unidades (24 + 5·58 + 4·38 + 68 + 12)
+
+       Las mesetas de los cinco miden 58 EXACTAS, que era lo que se pedía: hasta
+       ahora la del primero valía la mitad que las demás (arrancaba pegada al
+       velo) y la del último dependía de dónde cayera el obturador. Y son 58
+       sobre 546 en vez de las ~43 sobre 420 de antes: un 37% más de scroll
+       parado en cada testimonio, para poder leer la cita y comparar el
+       antes/después sin carreras.
+
+       De ahí salen los números, sin magia:
+         MESETA        = D / (D+G)        = 58/96   = 0.604
+         REPOSO_INICIO = (A + D/2) / 546  = 53/546  = 0.097
+         TRAMO_GIRO    = 4·(D+G) / 546    = 384/546 = 0.703
+         CIERRE_DESDE  = (A + 5D + 4G)/546 = 466/546 = 0.853
+         CIERRE_HASTA  = CIERRE_DESDE + C/546        = 534/546 = 0.978
+       y el velo tiene que apagarse justo en A/546 = 0.044, no antes ni
+       después: si se apagara más tarde se comería meseta del primero, y si se
+       apagara antes el primero duraría de más. */
+    var REPOSO_INICIO = 0.097;
+    var TRAMO_GIRO    = 0.703;
+    // El reposo final -el 0.20 que queda hasta 1- no hace falta declararlo:
+    // es lo que sobra, y se reparte entre la media meseta del quinto
+    // testimonio, el obturador y la cola en negro.
+
+    /* Dónde termina de disolverse el velo de apertura. Va atado al reparto de
+       arriba (A/546): no es un número suelto que se pueda tocar por su cuenta
+       sin desigualar la primera meseta. */
+    var APERTURA = 0.044;
 
     /* ---- cierre en obturador --------------------------------------------
-       Arranca DESPUÉS de que el último testimonio haya tenido su pausa, y
-       -esto es lo otro que fallaba- termina de cerrarse en el 96%, no en el
-       100%.
+       Arranca DESPUÉS de que el quinto testimonio haya tenido su meseta
+       entera, y ocupa 68 de las 546 unidades del reparto: sobre los 550vh de
+       recorrido del escritorio son ~69vh de scroll cerrándose, frente a los
+       ~55 de antes. Las hojas tardan más en juntarse a propósito — así el
+       final se lee como un gesto y no como un telón que cae de golpe. Su
+       contrapartida está en el pin de abajo, que ahora revela la banda de
+       contacto en la mitad de distancia (ver script.js, 14e): cerrar despacio
+       se lee como una decisión; abrir despacio, como una espera.
 
-       Por qué el margen del 4%: el progreso llega a 1 justo en el cuadro en
-       que el pin se suelta y la sección entrega la pantalla a #cierreCine.
-       Terminando el cierre exactamente ahí, cualquier variación de un píxel
-       en la altura del viewport dejaba las hojas sin juntar en el momento
-       del relevo. Y en un teléfono eso no es "cualquier variación": es lo
-       que pasa CADA vez que la barra de direcciones se recoge o vuelve, que
-       cambia innerHeight -y con él el recorrido y el progreso- a media
-       bajada. De ahí el corte abrupto que se veía en móvil entre el último
-       testimonio y la banda de abajo. Con el 96%, quedan ~21vh de scroll ya
-       en negro absoluto antes del relevo, y el cambio de una sección a la
-       otra ocurre con la pantalla apagada: no hay costura que ver. */
-    var CIERRE_DESDE = 0.845;
-    /* 0.975 y no 0.965: el margen de negro que queda antes de soltar el pin
-       baja de 18vh a 12vh. Sigue sobrando para absorber el cambio de
-       innerHeight cuando la barra de direcciones de un móvil se recoge -que
-       es para lo que está- pero deja de sumar espera al pin de abajo, que
-       ahora revela desde su primer píxel (ver script.js, 14e). */
-    var CIERRE_HASTA = 0.975;
+       Y NO TERMINA EN EL 100%, sino en el 97.8. Los 12 puntos de cola son
+       scroll ya en negro absoluto antes de soltar el pin, y hacen falta
+       porque el progreso llega a 1 justo en el cuadro en que la sección
+       entrega la pantalla a #cierreCine: cerrando exactamente ahí, cualquier
+       variación de un píxel en el alto del viewport dejaba las hojas sin
+       juntar en el momento del relevo. Y en un teléfono eso no es "cualquier
+       variación": pasa CADA vez que la barra de direcciones se recoge o
+       vuelve, que cambia innerHeight -y con él el recorrido y el progreso- a
+       media bajada. De ahí el corte abrupto que se veía en móvil entre el
+       último testimonio y la banda de abajo. Con la cola, el cambio de una
+       sección a la otra ocurre con la pantalla apagada: no hay costura que
+       ver. */
+    var CIERRE_DESDE = 0.853;
+    var CIERRE_HASTA = 0.978;
 
     /* ---- meseta por testimonio ------------------------------------------
        Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
@@ -1094,8 +1121,9 @@ void main() {
        fracción de cada tramo en la que la posición NO avanza (repartida
        mitad al principio y mitad al final del tramo); el giro se hace en el
        resto, con suavizado en las dos puntas para que no arranque de golpe.
-       Con 0.55, más de la mitad del scroll de cada testimonio es pausa. */
-    var MESETA = 0.55;
+       0.604 = 58/96, o sea D/(D+G) del reparto de arriba: casi dos tercios
+       del scroll de cada testimonio son pausa. */
+    var MESETA = 0.604;
 
     function conParadas(t) {
       var ultimo = items.length - 1;
@@ -1128,9 +1156,9 @@ void main() {
          se ve como un bloque negro de más: solo apaga la esfera y el texto
          hasta que el primer testimonio está en su sitio. */
       if (velo) {
-        /* Igual que el panel: pasado el 6% esto vale 0 para el resto de la
-           sección, y se estaba reescribiendo el mismo "0" en cada cuadro. */
-        var opVelo = Number(acotar((0.06 - progreso) / 0.06).toFixed(3));
+        /* Igual que el panel: pasada la apertura esto vale 0 para el resto de
+           la sección, y se estaba reescribiendo el mismo "0" en cada cuadro. */
+        var opVelo = Number(acotar((APERTURA - progreso) / APERTURA).toFixed(3));
         if (opVelo !== ultimaOpacidadVelo) {
           ultimaOpacidadVelo = opVelo;
           velo.style.opacity = String(opVelo);
@@ -1251,15 +1279,16 @@ void main() {
        basta con deshacer el mapeo progreso -> t para saber a qué altura de
        la página cae ese centro.
 
-       Los dos extremos quedan fuera a propósito: abajo del 4% manda la
-       apertura del velo, y a partir de CIERRE_DESDE ya están entrando las
-       hojas del obturador; un imán ahí pelearía con esas dos transiciones.
+       Los dos extremos quedan fuera a propósito: por debajo de APERTURA manda
+       el velo, y a partir de CIERRE_DESDE ya están entrando las hojas del
+       obturador; un imán ahí pelearía con esas dos transiciones.
 
-       Ese tope era antes un 0.80 escrito a mano, y como el último testimonio
-       se asentaba recién en el 0.92, quedaba SIEMPRE fuera: era el único de
-       los cinco que la página no terminaba de encuadrar nunca. Ahora que el
-       reparto es asimétrico su meseta cae en el 0.80 y el tope está en el
-       0.86, así que entra como los demás. */
+       Los dos topes van atados a esas dos constantes y no escritos a mano,
+       que es como el último testimonio se quedaba fuera: con un 0.80 fijo y
+       una meseta que caía en el 0.92, era el único de los cinco que la página
+       no terminaba de encuadrar nunca. Ahora el tope ES el arranque del
+       obturador, así que la quinta meseta -que termina justo ahí- entra
+       entera, y cualquier retoque del reparto la sigue llevando con él. */
     /* ---- IR A UN TESTIMONIO ---------------------------------------------
        La Y de documento en la que el testimonio i se queda quieto al frente:
        el centro de su meseta, deshaciendo el mapeo progreso -> t. La usan
@@ -1341,7 +1370,7 @@ void main() {
     if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
       window.SmilersScroll.alDetenerse(function () {
         var progreso = progresoSeccion;
-        if (progreso <= 0.04 || progreso >= CIERRE_DESDE) return null;
+        if (progreso <= APERTURA || progreso >= CIERRE_DESDE) return null;
 
         var tramos = items.length - 1;
         if (tramos <= 0) return null;
@@ -1350,10 +1379,11 @@ void main() {
         var destino = yDeTestimonio(Math.round(lineal));
         if (destino === null) return null;
 
-        /* "maximo" en 0.62 de pantalla y no el tope común (0.55): entre el
-           centro de una meseta y el de la vecina hay medio tramo, que con el
-           reparto de arriba son 0.0925 del recorrido — 0.48 de pantalla en
-           escritorio (520vh) y 0.43 en móvil (460vh). Con el tope común
+        /* "maximo" en 0.62 de pantalla y no el tope común (0.55): el salto más
+           largo que este imán puede necesitar es medio tramo -la mitad del
+           camino entre el centro de una meseta y el de la vecina-, que con el
+           reparto de arriba son 0.088 del recorrido: 0.48 de pantalla en
+           escritorio (650vh) y 0.41 en móvil (570vh). Con el tope común
            quedaba tan al filo que cualquier variación de alto lo descartaba y
            el imán no se movía nunca. */
         return { y: destino, maximo: 0.62 };
