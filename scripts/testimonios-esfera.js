@@ -1080,7 +1080,12 @@ void main() {
        en negro absoluto antes del relevo, y el cambio de una sección a la
        otra ocurre con la pantalla apagada: no hay costura que ver. */
     var CIERRE_DESDE = 0.845;
-    var CIERRE_HASTA = 0.965;
+    /* 0.975 y no 0.965: el margen de negro que queda antes de soltar el pin
+       baja de 18vh a 12vh. Sigue sobrando para absorber el cambio de
+       innerHeight cuando la barra de direcciones de un móvil se recoge -que
+       es para lo que está- pero deja de sumar espera al pin de abajo, que
+       ahora revela desde su primer píxel (ver script.js, 14e). */
+    var CIERRE_HASTA = 0.975;
 
     /* ---- meseta por testimonio ------------------------------------------
        Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
@@ -1299,6 +1304,10 @@ void main() {
       });
     });
 
+    /* El planificador ya filtró la dirección: estos imanes solo se consultan
+       cuando el visitante viene BAJANDO (ver "alDetenerse" en script.js).
+       Subiendo, volver a encuadrar el testimonio se sentía como que la
+       página no te deja retroceder a releer una cita. */
     if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
       window.SmilersScroll.alDetenerse(function () {
         var progreso = progresoSeccion;

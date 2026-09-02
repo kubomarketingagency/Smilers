@@ -77,8 +77,8 @@
   --neutral-200: #968F83; /* Warm Beige Taupe */
   --neutral-300: #B9B4AC;
   --neutral-500: #6E6A64;
-  --neutral-700: #2F2F2F; /* Gris pizarra oscuro */
-  --neutral-900: #1C1C1C; /* Deep Obsidian Black */
+  --neutral-700: #2F2F2F; /* Gris pizarra — ya NO se usa como fondo, ver abajo */
+  --neutral-900: #000000; /* Negro puro: el lienzo de todo el sitio */
 
   /* Alias de marca */
   --onix:          var(--neutral-900);
@@ -109,13 +109,25 @@
      Grey más abajo. --marmol y --onix NO cambian de significado — siguen
      siendo "claro" y "oscuro" literalmente. */
   --blanco:  var(--onix);
-  --gris-bg: var(--neutral-700);
+  /* Antes esto era el gris pizarra #2F2F2F y servía para alternar secciones
+     oscuras sobre el lienzo ónix. Ahora el lienzo ES negro puro y este
+     alias también: ya no hay ninguna sección de fondo plomo en el sitio.
+     La variable se conserva porque .fondo-suave y los bloques impares de
+     tratamientos.html siguen apuntando a ella; simplemente ya no se
+     distinguen del fondo, que es justo lo que se pidió.
+     --neutral-700 sigue existiendo, pero SOLO para piezas decorativas
+     (formas, anillos, badges) donde hace falta un gris que se vea. */
+  --gris-bg: #000000;
   --texto:   #D9D6D0;
   --texto-suave: #A8A49D;
 
-  /* Tarjetas/superficies elevadas sobre el lienzo oscuro: un carbón un
-     punto más claro que el fondo, con hairline dorado. */
-  --superficie: #3A3A3A;
+  /* Tarjetas/superficies elevadas sobre el lienzo oscuro. Baja de #3A3A3A a
+     #141414: contra un fondo de #1C1C1C ese carbón se leía como una tarjeta
+     apenas levantada, pero contra negro puro se convertía en un rectángulo
+     PLOMO recortado sobre el fondo — exactamente lo que había que quitar. A
+     #141414 la tarjeta se sigue distinguiendo (su hairline plateado hace el
+     resto) sin que aparezca un bloque gris. */
+  --superficie: #141414;
   --superficie-borde: rgba(192, 192, 192, .22);
 
   /* Variantes de ACCION: cumplen WCAG AA (>=4.5:1) con texto blanco encima.
@@ -124,7 +136,7 @@
      iconos y titulos display, donde basta 3:1. */
   --naranja-accion:   var(--silver-900);  /* 7.9:1 blanco */
   --turquesa-accion:  var(--neutral-900); /* ónix — contraste maximo sobre blanco */
-  --turquesa-profundo:#0F0F0F;            /* aun mas oscuro, para degradados */
+  --turquesa-profundo:#000000;            /* negro puro (fondo de la banda CTA) */
 
   /* Enlaces/textos pequeños con el acento de marca: --naranja brilla mejor
      claro sobre fondo oscuro, pero ese mismo tono claro se lee mal como
@@ -169,94 +181,30 @@
    lo que convierte a html/body en su propio contenedor de scroll y rompe
    el position:sticky del hero cine (sección 5b) — clip evita el
    desbordamiento horizontal sin ese efecto secundario. */
-/* El scroll-snap NO va aquí (ver "2b. IMÁN DE SCROLL" justo debajo): en el
-   documento entero y a cualquier ancho volvía a aparecer el atasco que ya
-   se documentó una vez -rueda de mouse sin avanzar hasta que un salto
-   brusco destrababa la página- y rompía el ancla #contacto. La regla nueva
-   es distinta en tres cosas: solo escritorio con puntero fino, solo bloques
-   MÁS ALTOS que la pantalla, y ni un solo punto de anclaje suelto dentro de
-   ellos. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /* compensa navbar fija */
 
 
-/* ===== 2b. IMÁN DE SCROLL (CSS Scroll Snap) — SOLO ESCRITORIO ===========
-   Qué hace: al soltar la rueda, la página termina de encuadrar la sección a
-   la que uno venía llegando en vez de dejarla a medias. Lo resuelve el
-   navegador, no un temporizador de JS, así que llega en el mismo cuadro en
-   que el scroll se detiene y no se pelea con el gesto.
+/* ===== 2b. POR QUÉ AQUÍ NO HAY scroll-snap DE CSS =======================
+   Lo hubo, y funcionaba: "mandatory" en la portada de escritorio, apoyado en
+   la regla del área grande para no congelar los scrubs del hero y de
+   Testimonios. Se retira porque el encargo pide dos cosas que esa mecánica
+   no puede dar, ninguna de las dos por falta de ajuste:
 
-   POR QUÉ ESTA VEZ NO SE ATASCA (el intento anterior sí lo hacía)
-   La regla del spec que lo salva: si el área de anclaje es MÁS ALTA que el
-   viewport, el viewport tiene que poder colocarse en cualquier punto dentro
-   de ella. O sea que declarar #heroCine (460vh) o #testimonios (520vh) como
-   puntos de anclaje NO congela su interior: el scrub del pin sigue siendo
-   libre cuadro a cuadro, exactamente igual que hasta ahora, y el imán solo
-   muerde en las COSTURAS entre un bloque y el siguiente. De ahí las tres
-   condiciones:
+     1. "Los imanes no deben funcionar al hacer scroll para arriba." El
+        scroll-snap de CSS no tiene noción de dirección: el navegador ancla
+        igual subiendo que bajando, y no hay propiedad que lo limite a un
+        sentido. El imán de JS sí sabe hacia dónde va el visitante (ver
+        "1b. PLANIFICADOR" en script.js), así que el trabajo vuelve ahí.
 
-     · TODOS los hijos del flujo llevan scroll-snap-align, no solo los cuatro
-       del encargo. Al que se quede sin él, "mandatory" lo salta entero: eso
-       era exactamente el bug del ancla #contacto -el footer no figuraba como
-       destino válido y el navegador rebotaba de vuelta.
-     · NINGÚN anclaje suelto (sentinela de altura cero) dentro de las
-       secciones con pin. Un anclaje de altura 0 sí es más pequeño que el
-       viewport, y ahí "mandatory" vuelve a congelar el scrub — que es el
-       atasco documentado. Las paradas interiores (la meseta de "Sonrisas que
-       transforman vidas" dentro del hero, y la de cada testimonio) las sigue
-       poniendo el imán de JS: script.js 14d y testimonios-esfera.js. Ese
-       trabaja en posiciones que para el navegador ya son válidas, así que
-       ninguno de los dos deshace lo del otro.
-     · Nada de esto en táctil ni con "menos movimiento". En un teléfono el
-       scroll es inercial y "mandatory" le pelea el final a cada gesto; ahí
-       manda el imán de JS, que se aborta con tocar la pantalla.
+     2. "La sección 3 no necesita imán." Con "mandatory", a un bloque del
+        flujo o le pones scroll-snap-align o el navegador lo SALTA entero.
+        O sea que dejar #nosotros sin anclaje no lo libera: lo vuelve
+        inalcanzable. No hay término medio.
 
-   scroll-margin-top: -90px en los bloques a sangre: html declara
-   scroll-padding-top:90px para que las anclas (#contacto y compañía) no
-   queden debajo de la navbar fija, pero una sección a pantalla completa
-   tiene que encuadrar en el 0 exacto, no 90px más abajo. El margen negativo
-   cancela ese relleno solo para ellas. #nosotros NO lo lleva: ahí los 90px
-   son justo lo que hace falta para que el titular no nazca tapado.
-   ======================================================================== */
-@media (min-width: 992px) and (hover: hover) and (pointer: fine)
-   and (prefers-reduced-motion: no-preference) {
-
-  /* .portada la lleva escrita el <html> de index.html, y SOLO ese: esta hoja
-     la comparten las cuatro subpáginas, donde el único bloque de la lista de
-     abajo que existe es el footer. Sin el candado, en nosotros.html o
-     tratamientos.html el navegador se encontraba con un contenedor
-     "mandatory" cuyo único destino válido era el pie de página, y todo lo de
-     arriba -que es la página entera- se volvía inalcanzable. */
-  html.portada { scroll-snap-type: y mandatory; }
-
-  .portada #heroCine,
-  .portada #nosotros,
-  .portada #especialidades,
-  .portada #testimonios,
-  .portada #cierreCine {
-    scroll-snap-align: start;
-    /* "normal", no "always": un gesto largo puede cruzar varias secciones de
-       una vez en lugar de frenar obligatoriamente en cada una. */
-    scroll-snap-stop: normal;
-  }
-
-  /* El footer ancla por el FINAL, no por el principio, y es a propósito: en
-     una pantalla alta el pie de página cabe entero y su borde superior queda
-     por encima del máximo de scroll del documento, o sea que como punto de
-     anclaje sería inalcanzable — con "mandatory" eso deja el final de la
-     página en tierra de nadie. Anclando por el final, el destino es siempre
-     "pie abajo del todo", que por definición existe. De paso el ancla
-     #contacto (la tercera columna del footer) queda a la vista igual. */
-  .portada .footer {
-    scroll-snap-align: end;
-    scroll-snap-stop: normal;
-  }
-
-  /* Bloques a sangre (se pintan por debajo de la navbar): encuadran en 0. */
-  .portada #heroCine,
-  .portada #especialidades,
-  .portada #testimonios,
-  .portada #cierreCine { scroll-margin-top: -90px; }
-}
+   Así que el imán es de nuevo solo de JS, y por tanto: solo hacia abajo,
+   solo en las secciones que lo piden, y abortable con cualquier gesto.
+   El html conserva scroll-padding-top para que las anclas (#contacto) no
+   queden debajo de la navbar fija. ======================================= */
 
 body {
   font-family: var(--fuente-cuerpo);
@@ -956,9 +904,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .hero-sparkles {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  /* z-index 0, no -1, y esto era LA razón de que casi no se vieran: en -1
+     el lienzo quedaba por debajo de .hero-overlay -el velo oscuro que hace
+     legible el wordmark- así que cada mota se pintaba y acto seguido se le
+     echaba encima un 60% de negro. Con las fotos claras del consultorio
+     desaparecían del todo. En 0 se pintan POR ENCIMA del velo; el titular
+     sigue por delante gracias al z-index de .hero-contenido. */
+  z-index: 0;
   pointer-events: none;
-  opacity: .8;
+  opacity: .9;
   mix-blend-mode: screen;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -980,7 +934,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    subida para que el tono se siga notando. El look se mantiene; lo que se
    va es la remezcla por cuadro. */
 @media (hover: none) and (pointer: coarse) {
-  .hero-sparkles { display: none; }
+  /* Las motas SÍ se ven en táctil (antes iban en display:none). Lo que se
+     va es el mix-blend-mode, que era la mitad cara del asunto: sin él el
+     lienzo se compone como una capa normal en vez de obligar a remezclar
+     todo lo que tiene debajo en cada cuadro. La otra mitad la resuelve el
+     JS repintando solo la caja del titular (ver script.js, 14b). Sin
+     "screen" el dorado pierde un punto de brillo, y por eso sube la
+     opacidad. */
+  .hero-sparkles { mix-blend-mode: normal; opacity: .95; }
   .hero-duotone { mix-blend-mode: normal; opacity: .18; }
   /* Un drop-shadow de 40px sobre un titular de 16vw recortado con
      background-clip:text obliga a re-dibujar y desenfocar esa máscara
@@ -1002,7 +963,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   z-index: -1;
 }
 
-.hero-contenido { padding: 140px 0 100px; }
+/* Por delante de las motas doradas (que ahora van en z-index 0): el
+   wordmark tiene que quedar limpio, con el polvo de luz alrededor y no
+   encima. */
+.hero-contenido { position: relative; z-index: 1; padding: 140px 0 100px; }
 
 /* Solo la marca sobre el fondo dinámico: nada de etiqueta, subtítulo ni
    botones — el video/fotos en blanco y negro es el protagonista. Mismo
@@ -2037,7 +2001,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   border: 1px solid rgba(210, 172, 71, .26);
   background:
     radial-gradient(ellipse 75% 130% at 14% 0%, rgba(210, 172, 71, .16) 0%, transparent 62%),
-    linear-gradient(135deg, #1C1C1C 0%, #242424 48%, #161616 100%);
+    /* Era #1C1C1C -> #242424 -> #161616: sobre la sección clara esa losa se
+       leía plomo. En negro con un solo punto de luz diagonal sigue teniendo
+       volumen, pero ya es negra. */
+    linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
   box-shadow: 0 26px 62px rgba(28, 28, 28, .3);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2488,12 +2455,17 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      hacía nada, y el difuminado -que es lo único que hay que ver aquí-
      quedaba encajonado en el tercio de en medio.
 
-     Con 150vh el recorrido baja a 50vh y se reparte 6 + 30 + 14 (ver el
-     reparto en script.js, 14e): el revelado empieza casi nada más entrar,
-     ocupa MÁS recorrido que antes en proporción y el bloque entero dura 40vh
-     menos. Más visto y menos prolongado, que era el encargo. */
+     Segunda pasada: 135vh, o sea 35vh de recorrido repartidos 0 + 19 + 16
+     (ver el reparto en script.js, 14e). Con 150vh todavía se entraba en
+     negro y había que bajar 6vh antes de que empezara a aparecer nada, y
+     esos 6vh se sumaban a los ~14 de negro con que Testimonios entrega la
+     pantalla: veinte vh seguidos sin que pase nada, con la sensación de que
+     la sección de abajo no llega nunca. Ahora la espera inicial es CERO —el
+     revelado arranca en el primer píxel del pin, enlazando directamente con
+     el obturador que acaba de cerrarse— y la banda está nítida a los 19vh.
+     Antes, en el diseño original, tardaba 57. */
   position: relative;
-  height: 150vh;
+  height: 135vh;
 }
 .cierre-cine-pin {
   position: sticky;
@@ -2527,8 +2499,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    body y el revelado empezaba con un halo claro alrededor. */
 .cierre-cine-pin { background: var(--onix); }
 @media (max-width: 767.98px) {
-  /* 130vh = 30vh de recorrido, repartidos 3.6 + 18 + 8.4. */
-  .cierre-cine { height: 130vh; }
+  /* 120vh = 20vh de recorrido: 0 de espera + 11 de revelado + 9 de sostén. */
+  .cierre-cine { height: 120vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cierre-cine { height: auto; }

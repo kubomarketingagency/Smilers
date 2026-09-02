@@ -192,12 +192,29 @@ var SmilersScroll = (function () {
   var idle = null;
   var direccion = 'down';
   var yPrevia = window.scrollY;
-  var SALTO_MAXIMO = .55;   // fracción de pantalla: más allá, el imán no toca nada
+
+  /* Tope común, en fracción de pantalla. Sube de .55 a .9 para que el imán
+     sirva de verdad en el gesto para el que se pide: el deslizón rápido que
+     va pasando de sección en sección. Con .55, entrar en Tratamientos con un
+     flick te dejaba a dos tercios de pantalla del encuadre y el ajuste que
+     faltaba se descartaba por pasarse del tope — o sea que el imán solo
+     funcionaba si ya habías parado casi encima. Sigue habiendo tope, y sigue
+     siendo lo que distingue "terminar de encuadrar" de "llevarte a otro
+     sitio": por encima de una pantalla, el imán no toca nada. */
+  var SALTO_MAXIMO = .9;
 
   function alDetenerse() {
     idle = null;
     if (deslizamiento) return;
     if (Date.now() < bloqueadoHasta) return;
+    /* SOLO HACIA ABAJO. Subiendo, el visitante está volviendo sobre algo que
+       ya vio -a releer una cita, a mirar otra vez una foto- y que la página
+       le complete el encuadre ahí se siente como que le quita el mando en el
+       momento en que más control quiere. Bajando es al revés: viene
+       descubriendo, y terminar de encuadrar la sección a la que llegaba es
+       ayuda. Esta única línea cubre todos los imanes del sitio, incluido el
+       de testimonios, que vive en otro archivo. */
+    if (direccion !== 'down') return;
     for (var i = 0; i < quietos.length; i++) {
       var respuesta = quietos[i](direccion);
       if (respuesta === null || respuesta === undefined) continue;
@@ -242,26 +259,7 @@ var SmilersScroll = (function () {
     window.addEventListener(evt, abortar, { passive: true });
   });
 
-  /* ---- ¿manda el imán de CSS? ------------------------------------------
-     Misma consulta que la @media de "2b. IMÁN DE SCROLL" en estilos.css. Si
-     coincide, el navegador ya encuadra por su cuenta las COSTURAS entre
-     secciones, y los imanes de JS que apuntan a esas mismas costuras tienen
-     que callarse: un scrollTo cuadro a cuadro sobre un contenedor
-     "mandatory" se pelea con el anclaje del navegador y se nota como un
-     temblor al final del recorrido.
-
-     Los que apuntan a puntos INTERIORES de una sección más alta que la
-     pantalla (las mesetas del hero y las de cada testimonio) sí siguen
-     trabajando en escritorio: para el navegador esas posiciones ya son
-     válidas -regla del área grande- así que no las vuelve a anclar. */
-  var mqSnapCss = window.matchMedia(
-    '(min-width: 992px) and (hover: hover) and (pointer: fine)' +
-    ' and (prefers-reduced-motion: no-preference)'
-  );
-
   return {
-    /* true cuando el scroll-snap de CSS está activo (ver arriba). */
-    imanCssActivo: function () { return mqSnapCss.matches; },
     /* leer/escribir pueden ser null si un efecto solo hace una de las dos
        cosas (el botón "volver arriba", por ejemplo, no mide nada).
 
@@ -1147,68 +1145,188 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  /* ===== 14b. HERO: destellos dorados flotando (canvas) =================
-     Pequeñas motas de luz dorada que flotan despacio sobre el blanco y
-     negro del hero, como polvo suspendido bajo un foco de luz — el toque
-     "cine" que pide el brief, sin depender de un archivo de video real.
+  /* ===== 14b. HERO: destellos dorados alrededor del wordmark ============
+     Motas de luz dorada que nacen junto a la palabra "Smilers", flotan
+     despacio hacia arriba y se van apagando — polvo suspendido bajo un foco.
      Puramente decorativo (aria-hidden): si prefers-reduced-motion está
      activo, o el navegador no soporta canvas, el hero se ve completo igual.
+
+     AHORA TAMBIÉN EN TÁCTIL, y esto había que ganárselo. El bloque estaba
+     apagado en teléfono por una razón buena: un lienzo del tamaño del hero
+     que se borra y se repinta 60 veces por segundo, encima con
+     mix-blend-mode:screen, obliga a remezclar toda esa superficie contra el
+     carrusel en cada cuadro. Las dos causas se atacan por separado:
+
+       · el blend desaparece en táctil (lo hace la hoja, igual que ya se hizo
+         con .hero-duotone);
+       · y el borrado deja de ser de pantalla completa. Como las motas ahora
+         viven en un óvalo alrededor del titular, se calcula UNA VEZ la caja
+         que pueden llegar a ocupar -el óvalo más lo que sube una mota en
+         toda su vida- y solo se limpia esa. En un teléfono son unos 320x260
+         px en vez de 390x844: menos de la sexta parte de píxeles por cuadro.
      ======================================================================== */
   (function () {
     var canvas = document.getElementById('heroSparkles');
     var heroEl = document.querySelector('.hero');
     if (!canvas || !heroEl || !canvas.getContext) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    /* En táctil no se arranca. El lienzo ocupa el hero entero, se redibuja
-       60 veces por segundo y encima se compone con mix-blend-mode: screen,
-       o sea que cada cuadro obliga a remezclar toda esa superficie contra el
-       carrusel que hay debajo. La hoja de estilos ya lo oculta en táctil
-       (ver .hero-sparkles); esto evita además gastar la CPU en dibujar algo
-       que nadie va a ver. */
-    if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+    /* En táctil sí se dibuja, pero con menos motas: la superficie que se
+       repinta ya es pequeña (ver la cabecera del bloque), y con esta
+       densidad el coste por cuadro se queda en el mismo orden que el resto
+       de efectos del hero. */
+    var esTactil = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
     var ctx = canvas.getContext('2d');
     var particulas = [];
     var ancho, alto, animando = false, cuadro;
 
+    /* Centro y radio de emisión: las motas ya no nacen repartidas por todo el
+       hero sino ALREDEDOR DEL WORDMARK, que es donde tienen que estar para
+       que se lean como el polvo de luz que levanta la palabra y no como una
+       textura de fondo. El foco se mide sobre la caja real del <h1>, así que
+       sigue al titular cuando cambia de tamaño con el viewport. */
+    var foco = { x: 0, y: 0, radio: 300 };
+    var caja = { x: 0, y: 0, w: 0, h: 0 };
+
+    /* Posición del titular DENTRO del hero, sin contar transformaciones.
+       No se puede usar getBoundingClientRect aquí: el hero cine le escribe un
+       translateY al wordmark según el scroll (hasta 150px de caída, ver 14c),
+       y como este bloque se reinicia cada vez que el hero vuelve a entrar en
+       pantalla, acababa midiendo el titular YA desplazado y emitiendo las
+       motas 150px por debajo de donde está la palabra. offsetTop/offsetLeft
+       ignoran transform, que es justo lo que hace falta; se acumulan por la
+       cadena de offsetParent porque .hero-contenido es position:relative y
+       corta esa cadena antes de llegar al hero. */
+    function cajaEnHero(el) {
+      var x = 0, y = 0, n = el;
+      while (n && n !== heroEl) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+      return { x: x, y: y, w: el.offsetWidth, h: el.offsetHeight };
+    }
+
+    function medirFoco() {
+      var titulo = heroEl.querySelector('.hero-titulo');
+      if (!titulo) {
+        foco.x = ancho / 2; foco.y = alto / 2; foco.radio = Math.min(ancho, alto) * .4;
+        calcularCaja();
+        return;
+      }
+      var cajaT = cajaEnHero(titulo);
+      foco.x = cajaT.x + cajaT.w / 2;
+      foco.y = cajaT.y + cajaT.h / 2;
+      /* Radio con la forma de la palabra, no un círculo: el wordmark es muy
+         ancho y poco alto, así que un radio único dejaba media nube fuera
+         por los lados y demasiada por arriba y por abajo. */
+      foco.radioX = cajaT.w * .78;
+      /* Suelo del 16% del alto del hero: en un teléfono el wordmark mide
+         apenas 72px de alto, y 1.5 veces eso deja una franja tan estrecha
+         que las motas se leen como una línea y no como una nube. */
+      foco.radioY = Math.max(cajaT.h * 1.5, alto * .16);
+      foco.radio = Math.max(foco.radioX, foco.radioY);
+      calcularCaja();
+    }
+
+    /* La única zona del lienzo que puede llegar a tener pintura: el óvalo de
+       emisión más el margen que da el movimiento de una mota durante toda su
+       vida (sube como mucho ~.26 px por cuadro y vive como mucho 600, o sea
+       unos 160 px; de lado apenas se desplaza). Se recorta al lienzo para no
+       pedirle a clearRect coordenadas fuera de él. */
+    function calcularCaja() {
+      var margenX = (foco.radioX || foco.radio) + 40;
+      var margenArriba = (foco.radioY || foco.radio) + 180;
+      var margenAbajo = (foco.radioY || foco.radio) + 40;
+      caja.x = Math.max(0, foco.x - margenX);
+      caja.y = Math.max(0, foco.y - margenArriba);
+      caja.w = Math.min(ancho, foco.x + margenX) - caja.x;
+      caja.h = Math.min(alto, foco.y + margenAbajo) - caja.y;
+    }
+
     function redimensionar() {
       ancho = canvas.width = heroEl.offsetWidth;
       alto = canvas.height = heroEl.offsetHeight;
-      var cantidad = Math.round((ancho * alto) / 22000); // densidad ~ tamaño del hero
+      medirFoco();
+      /* Más densidad que antes (una mota cada 22000 px² -> cada 9000) porque
+         ahora están concentradas en un óvalo alrededor de la palabra en vez
+         de repartidas por toda la pantalla: con la cantidad vieja, agrupadas
+         ahí, se contaban con los dedos. Con tope, para que un monitor
+         ultrapanorámico no acabe dibujando cientos. */
+      var cantidad = Math.min(esTactil ? 55 : 150,
+                              Math.round((ancho * alto) / (esTactil ? 14000 : 9000)));
       particulas = [];
       for (var i = 0; i < cantidad; i++) {
-        particulas.push(crearParticula());
+        var p = crearParticula();
+        /* Al arrancar, cada mota entra con la vida ya empezada en un punto
+           distinto: si todas nacieran en cero, el hero abriría con un
+           parpadeo colectivo y luego otro, y otro. */
+        p.vida = Math.random() * p.vidaMax;
+        particulas.push(p);
       }
     }
 
     function crearParticula() {
+      /* Reparto alrededor del foco con sesgo hacia el centro: la raíz de un
+         aleatorio uniforme concentra los puntos cerca del wordmark y deja
+         unas pocas sueltas más lejos, que es como se ve el polvo en
+         suspensión bajo un foco. Un aleatorio plano daba un óvalo de densidad
+         uniforme, que se lee como una forma dibujada. */
+      var angulo = Math.random() * Math.PI * 2;
+      var distancia = Math.sqrt(Math.random());
+      var vidaMax = 260 + Math.random() * 340;   // en cuadros: ~4.5 a 10 s
       return {
-        x: Math.random() * ancho,
-        y: Math.random() * alto,
-        r: Math.random() * 1.6 + .4,
-        velY: Math.random() * -.25 - .05,
-        velX: (Math.random() - .5) * .12,
+        x: foco.x + Math.cos(angulo) * distancia * (foco.radioX || foco.radio),
+        y: foco.y + Math.sin(angulo) * distancia * (foco.radioY || foco.radio),
+        r: Math.random() * 1.7 + .4,
+        velY: Math.random() * -.22 - .04,
+        velX: (Math.random() - .5) * .14,
         fase: Math.random() * Math.PI * 2,
-        velFase: Math.random() * .015 + .005
+        velFase: Math.random() * .015 + .005,
+        vida: 0,
+        vidaMax: vidaMax
       };
     }
 
     function dibujar() {
-      ctx.clearRect(0, 0, ancho, alto);
+      ctx.clearRect(caja.x, caja.y, caja.w, caja.h);
       for (var i = 0; i < particulas.length; i++) {
         var p = particulas[i];
         p.fase += p.velFase;
         p.x += p.velX;
         p.y += p.velY;
+        p.vida++;
 
-        if (p.y < -10) { p.y = alto + 10; p.x = Math.random() * ancho; }
-        if (p.x < -10) p.x = ancho + 10;
-        if (p.x > ancho + 10) p.x = -10;
+        /* CICLO DE VIDA. Antes las motas no se apagaban nunca: subían hasta
+           salirse por arriba y reaparecían de golpe por abajo, siempre con
+           el mismo brillo. Ahora cada una entra desde cero, se sostiene y se
+           apaga; al agotarse vuelve a nacer junto a la palabra. Eso es lo que
+           hace que "se vayan desvaneciendo conforme transcurren" en vez de
+           dar vueltas indefinidamente.
+           El 18% inicial es la entrada y el último 45% la salida: la salida
+           es más larga a propósito, porque un desvanecido lento se lee como
+           que la mota se aleja, y uno rápido como que se apaga un foco. */
+        var t = p.vida / p.vidaMax;
+        if (t >= 1) { particulas[i] = crearParticula(); continue; }
+        var ciclo = t < .18 ? t / .18
+                  : t > .55 ? 1 - (t - .55) / .45
+                  : 1;
 
-        var brillo = (Math.sin(p.fase) + 1) / 2; // 0..1, parpadeo suave
+        var brillo = (Math.sin(p.fase) + 1) / 2;   // parpadeo suave, como antes
+        var alfa = ciclo * (.4 + brillo * .6);
+        if (alfa <= .01) continue;
+
+        /* Dos círculos por mota: un halo ancho y casi transparente, y encima
+           el núcleo. Un punto de 1.5px de radio se pierde sobre las fotos
+           claras del consultorio por muy dorado que sea; con el halo cada
+           mota tiene un borde suave que se lee igual sobre lo claro y sobre
+           lo oscuro. Se hace así y no con ctx.shadowBlur porque el desenfoque
+           de canvas se recalcula por figura y sale carísimo con cien motas:
+           dos arcos planos cuestan lo que cuesta rellenar dos círculos. */
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(224, 175, 61, ' + (alfa * .16).toFixed(3) + ')';
+        ctx.fill();
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(224, 175, 61, ' + (brillo * .8) + ')';
+        ctx.fillStyle = 'rgba(247, 233, 179, ' + alfa.toFixed(3) + ')';
         ctx.fill();
       }
       cuadro = requestAnimationFrame(dibujar);
@@ -1240,6 +1358,18 @@ document.addEventListener('DOMContentLoaded', function () {
       clearTimeout(redimensionarPendiente);
       redimensionarPendiente = setTimeout(redimensionar, 200);
     });
+
+    /* Volver a medir cuando llegue la tipografía. El foco se calcula sobre la
+       caja del <h1>, y en el primer cuadro ese <h1> todavía está pintado con
+       la fuente de reserva: al entrar Bodoni Moda el titular cambia de alto y
+       de posición, y las motas se quedaban emitiendo donde estaba ANTES. En
+       teléfono el desfase era de 140px, o sea toda la nube por debajo de la
+       palabra en vez de alrededor.
+       Se llama a medirFoco y no a redimensionar a propósito: recolocar el
+       foco no debe borrar las motas que ya están en el aire. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { if (ancho) medirFoco(); });
+    }
   })();
 
 
@@ -1262,12 +1392,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var columnas = etapa2.querySelectorAll('.hero-etapa2-col');
     var tagline = etapa2.querySelector('.hero-etapa2-tagline');
     var ultimoProgresoCine = -1;
-    /* Lo que mide la fase de lectura y consume la de escritura. Se comparte
-       con el auto-scroll asistido (14d), que necesitaba exactamente la misma
-       medida y antes la volvía a tomar por su cuenta. */
+    /* Lo que mide la fase de lectura y consume la de escritura. */
     var progresoCine = 0;
     var alturaDesplazableCine = 0;
-    var topeCine = 0;   // borde superior del contenedor en coordenadas de documento
 
     /* Desenfoque más contenido en táctil: el de 20px se aplica sobre columnas
        de foto a pantalla completa y hay que re-dibujarlas en cada cuadro. */
@@ -1301,7 +1428,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function leerCine(ctx) {
       var rect = envoltorio.getBoundingClientRect();
       alturaDesplazableCine = envoltorio.offsetHeight - ctx.alto;
-      topeCine = rect.top + ctx.y;
       progresoCine = alturaDesplazableCine > 0
         ? acotar(-rect.top / alturaDesplazableCine)
         : 0;
@@ -1413,22 +1539,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ===== 14d. IMÁN DE SECCIONES ======================================
-       Al detenerse el scroll, la página termina de encuadrar la sección a
-       la que el visitante venía llegando, en vez de dejarla a medias. No es
-       scroll-snap de CSS -aquel se quitó porque peleaba con cada evento de
-       scroll y acababa trabando la página- sino un ajuste puntual que corre
-       SOLO cuando el scroll ya paró de verdad, y que cualquier gesto aborta
-       en el acto (ver "deslizarA" en el planificador, arriba).
+       Al detenerse el scroll BAJANDO, la página termina de encuadrar la
+       sección a la que el visitante venía llegando, en vez de dejarla a
+       medias. No es scroll-snap de CSS (ver por qué en estilos.css, "2b"):
+       es un ajuste puntual que corre solo cuando el scroll ya paró de
+       verdad, que cualquier gesto aborta en el acto, y que sabe hacia dónde
+       iba el visitante — lo que el snap del navegador no puede saber.
+
+       QUÉ SECCIÓN LLEVA IMÁN, Y CUÁL NO
+         · Hero: NINGUNO. Tenía dos y se retiran los dos. El de bajada
+           apuntaba desde el 2-22% del recorrido hasta el 62%, o sea un salto
+           de más de dos pantallas: el tope lo descartaba SIEMPRE, así que en
+           la práctica nunca llegó a dispararse. Y el otro solo actuaba
+           subiendo, que es justo lo que ya no se quiere. El hero es un scrub
+           de 4.6 pantallas; dentro de una animación continua no hay "sección
+           siguiente" que encuadrar.
+         · Nosotros: NINGUNO, por encargo. Es la sección de leer, y ahí el
+           scroll tiene que ser completamente libre.
+         · Tratamientos: SÍ. Ocupa una pantalla exacta, que es el caso en el
+           que un imán se nota bien.
+         · Testimonios: SÍ, uno por meseta, en testimonios-esfera.js.
 
        Cada función registrada devuelve la Y a la que le gustaría llevar la
-       página, o null si no le toca. El planificador se queda con la primera
-       que conteste y comprueba, antes de mover nada, que el ajuste sea
-       pequeño: un imán termina de encuadrar, no te lleva a otra parte.
-
-       Los testimonios tienen el suyo propio, en testimonios-esfera.js, que
-       es donde se sabe dónde está la meseta de cada testimonio. Se registra
-       después que estos, así que estos tienen prioridad — no se solapan de
-       todos modos, viven en tramos distintos de la página.
+       página, o null si no le toca. Gana la primera que conteste.
 
        Con "menos movimiento" no se registra nada: la página no se mueve
        sola nunca. */
@@ -1438,69 +1571,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* "Ya me ocupé de esta zona": evita que el imán vuelva a tirar en cuanto
        el visitante se detiene otra vez dentro del mismo tramo. Se rearma al
-       salir de la zona por el extremo contrario. */
-    var hechoHeroAbajo = false;
-    var hechoHeroArriba = false;
-    var hechoTratAbajo = false;
-    var hechoTratArriba = false;
+       salir de la sección por completo. */
+    var hechoTratamientos = false;
 
-    /* --- 1 y 2. Hero: completar la entrada al mosaico de profesionales, o
-       el regreso al wordmark. Reutiliza lo que 14c ya midió en el último
-       cuadro (progresoCine, alturaDesplazableCine, topeCine). --- */
-    SmilersScroll.alDetenerse(function (direccion) {
-      var progreso = progresoCine;
-      if (alturaDesplazableCine <= 0) return null;
-
-      if (progreso < .02) hechoHeroAbajo = false;
-      if (progreso > .98) hechoHeroArriba = false;
-
-      if (direccion === 'down' && progreso > .02 && progreso < .22 && !hechoHeroAbajo) {
-        hechoHeroAbajo = true;
-        return topeCine + alturaDesplazableCine * .62;
-      }
-      if (direccion === 'up' && progreso > .78 && progreso < .98 && !hechoHeroArriba) {
-        hechoHeroArriba = true;
-        return topeCine + alturaDesplazableCine * .76;
-      }
-      return null;
-    });
-
-    /* --- 3 y 4. Tratamientos a pantalla completa. Solo en escritorio y
-       tablet: en móvil la sección crece con su contenido y no hay una
-       "pantalla exacta" que encuadrar.
-
-       Y solo cuando el scroll-snap de CSS NO está activo. Este imán apunta
-       justo al borde superior (o inferior) de #especialidades, que es
-       exactamente el punto de anclaje que declara la @media "2b. IMÁN DE
-       SCROLL" de estilos.css: en escritorio con puntero fino el trabajo ya
-       lo hace el navegador y dejar los dos encendidos era pelearse por el
-       mismo destino. En tablet táctil (768-991px) sigue siendo este. --- */
-    SmilersScroll.alDetenerse(function (direccion) {
+    /* --- Tratamientos a pantalla completa. Solo desde 768px: en móvil la
+       sección crece con su contenido y no hay una "pantalla exacta" que
+       encuadrar. La comprobación de dirección ya la hizo el planificador,
+       así que aquí solo queda decidir el destino. --- */
+    SmilersScroll.alDetenerse(function () {
       if (!especialidades) return null;
       if (!window.matchMedia('(min-width: 768px)').matches) return null;
-      if (SmilersScroll.imanCssActivo()) return null;
 
       var rect = especialidades.getBoundingClientRect();
       var alto = window.innerHeight;
       var visible = Math.min(rect.bottom, alto) - Math.max(rect.top, 0);
       var proporcion = visible / rect.height;
 
+      /* Fuera de la sección: se rearma para la próxima pasada. */
       if (proporcion < .06) {
-        hechoTratAbajo = false;
-        hechoTratArriba = false;
+        hechoTratamientos = false;
         return null;
       }
-      if (proporcion <= .35 || proporcion >= .96) return null;
+      /* El umbral de abajo baja de .35 a .22: con un deslizón rápido se
+         entra en la sección con muy poco en pantalla, y con .35 el imán
+         decidía que "no era su caso" justo en el gesto para el que se pide.
+         El de arriba (.96) sigue igual: si ya está prácticamente encuadrada,
+         no hay nada que terminar. */
+      if (proporcion <= .22 || proporcion >= .96) return null;
+      if (hechoTratamientos) return null;
+      if (rect.top <= 4) return null;   // ya la pasamos: no se tira hacia atrás
 
-      if (direccion === 'down' && rect.top > 4 && !hechoTratAbajo) {
-        hechoTratAbajo = true;
-        return rect.top + window.scrollY;
-      }
-      if (direccion === 'up' && rect.bottom < alto - 4 && !hechoTratArriba) {
-        hechoTratArriba = true;
-        return rect.bottom + window.scrollY - alto;
-      }
-      return null;
+      hechoTratamientos = true;
+      return rect.top + window.scrollY;
     });
 
   })();
@@ -1629,22 +1731,22 @@ document.addEventListener('DOMContentLoaded', function () {
       if (progreso === ultimoProgresoCierre) return;
       ultimoProgresoCierre = progreso;
 
-      // 0%-12%: se queda en negro (el instante de "pausa" antes de revelar).
-      // 12%-72%: la cortina negra se desvanece, descubriendo la banda CTA.
-      // 72%-100%: ya revelada del todo, se sostiene así hasta soltar el pin.
+      // 0%-55%: la cortina negra se desvanece, descubriendo la banda CTA.
+      // 55%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
       //
-      // Antes era 30/60/100 sobre 90vh de recorrido: 27vh en negro antes de
-      // que empezara a aparecer nada -que, pegados a las hojas del cierre de
-      // Testimonios, se leían como una sola pantalla apagada larguísima- y
-      // 36vh más sosteniendo una banda ya nítida. El difuminado, que es lo
-      // único que hay que ver aquí, ocupaba el tercio de en medio y pasaba
-      // casi de largo.
+      // Ya no hay tramo de espera en negro al principio, y es a propósito.
+      // Este pin recibe la pantalla YA en negro: el obturador de Testimonios
+      // se cierra del todo un poco antes de soltar su propio pin, así que
+      // cuando este empieza no hay nada que "esperar" — el negro con el que
+      // arranca la cortina enlaza sin costura con el que acaba de dejar la
+      // sección anterior. Todo tramo de espera que se pusiera aquí se
+      // SUMARÍA a ese negro heredado, y era lo que hacía que la banda de
+      // contacto pareciera no llegar nunca.
       //
-      // Ahora son 50vh de recorrido (ver .cierre-cine en estilos.css)
-      // repartidos 6 + 30 + 14: el revelado arranca casi al entrar y se lleva
-      // el 60% del bloque en vez del 30%. En vh reales pasa de 27 a 30, o sea
-      // que el difuminado se ve MÁS aunque el bloque entero dure 40vh menos.
-      var revelado = acotar((progreso - .12) / .60);
+      // El reparto ha ido 30/60 sobre 90vh -> 12/72 sobre 50vh -> 0/55 sobre
+      // 35vh. El revelado en vh reales: 27 -> 30 -> 19. Menos distancia, sí,
+      // pero empezando en el píxel cero en vez de a 27vh de haber entrado.
+      var revelado = acotar(progreso / .55);
       negro.style.opacity = String(1 - revelado);
 
       /* La banda sale del desenfoque a la vez que el negro se levanta: las
