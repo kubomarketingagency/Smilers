@@ -39,7 +39,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Italiana&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=6c9844c7b4">
+  <link rel="stylesheet" href="estilos/estilos.css?v=9990cebf13">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
        paralelo con el CSS. Dos entradas con "media" porque el hero usa
@@ -792,12 +792,24 @@
                unica forma de volver a uno concreto sin recorrerla entera.
                El aria-label lo completa el JS con el nombre real de cada
                paciente en cuanto lee la lista de abajo. -->
+          <!-- tabindex=-1, igual que el boton de antes/despues de mas abajo y
+               por el mismo motivo: toda esta escena va dentro de un
+               aria-hidden, porque es un duplicado VISUAL de la lista de
+               testimonios que hay al final del bloque (esa es la que leen los
+               lectores de pantalla). Un elemento enfocable dentro de un
+               aria-hidden es un fallo de accesibilidad: se puede tabular
+               hasta el, pero la tecnologia de apoyo tiene orden de hacer como
+               si no existiera, asi que el foco desaparece en un punto ciego.
+               Quien navega con teclado no pierde nada: estos botones giran
+               una esfera que para el no existe, y el contenido completo -las
+               cinco citas con su nombre y tratamiento- lo tiene entero en esa
+               lista. Con el dedo y con el raton siguen funcionando igual. -->
           <ol class="tst-pasos">
-            <li><button type="button" class="es-activo" data-paso aria-label="Ir al testimonio 1"></button></li>
-            <li><button type="button" data-paso aria-label="Ir al testimonio 2"></button></li>
-            <li><button type="button" data-paso aria-label="Ir al testimonio 3"></button></li>
-            <li><button type="button" data-paso aria-label="Ir al testimonio 4"></button></li>
-            <li><button type="button" data-paso aria-label="Ir al testimonio 5"></button></li>
+            <li><button type="button" class="es-activo" data-paso tabindex="-1" aria-label="Ir al testimonio 1"></button></li>
+            <li><button type="button" data-paso tabindex="-1" aria-label="Ir al testimonio 2"></button></li>
+            <li><button type="button" data-paso tabindex="-1" aria-label="Ir al testimonio 3"></button></li>
+            <li><button type="button" data-paso tabindex="-1" aria-label="Ir al testimonio 4"></button></li>
+            <li><button type="button" data-paso tabindex="-1" aria-label="Ir al testimonio 5"></button></li>
           </ol>
         </div>
 
@@ -1111,9 +1123,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=d5632b0500"></script>
+  <script src="scripts/script.js?v=6feb548bd0"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=4497262c19"></script>
+  <script src="scripts/testimonios-esfera.js?v=9a2a394f60"></script>
 </body>
 </html>

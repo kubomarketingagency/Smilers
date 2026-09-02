@@ -15,12 +15,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Montserrat:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;600;700;800&family=Montserrat:wght@200;300;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/estilos.css?v=6c9844c7b4">
+  <link rel="stylesheet" href="../estilos/estilos.css?v=9990cebf13">
 </head>
 
-<body>
+<body class="pagina-nosotros">
 
   <!-- Sprite de iconos, incrustado (no como archivo externo): un <svg><use href="archivo.svg#id"> no funciona al abrir la pagina con doble clic
        (file://), Chrome lo bloquea por seguridad aunque en http(s):// funciona bien. Incrustado funciona siempre. -->
@@ -111,368 +111,130 @@
 
 
   <!-- ============================================================
-       BANNER DE PÁGINA
+       MÓDULO 1 — ENCABEZADO VISUAL
+       Banda de retratos del equipo en blanco y negro a sangre, con el
+       título encima. Cuando exista una foto de grupo real, se sustituyen
+       las cuatro <img> por una sola y se quita el grid de
+       .nos-portada__fotos en estilos.css (sección 28a).
        ============================================================ -->
-  <header class="banner-pagina">
-    <div class="forma forma-durazno forma-flotante" style="width:320px;height:320px;top:-80px;right:-60px;"></div>
-    <div class="forma forma-naranja forma-blob" style="width:220px;height:220px;bottom:-60px;left:8%;"></div>
-    <div class="acento-anillo blanco d-none d-lg-block" style="width:90px;height:90px;top:22%;left:7%;" aria-hidden="true"></div>
-    <div class="acento-puntos blanco d-none d-lg-grid" style="top:64%;right:9%;" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <span class="acento-mas blanco d-none d-md-block" style="top:16%;right:18%;" aria-hidden="true">+</span>
-    <div class="container">
-      <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
-        <i class="fa-solid fa-house"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-house"></use></svg></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-right"></use></svg></i> <span>Nosotros</span>
-      </nav>
-      <h1>Una clínica hecha para <span class="texto-naranja">transformar sonrisas</span></h1>
-      <p class="banner-subtitulo">
-        Más de 15 años combinando precisión clínica, calidez humana y tecnología de vanguardia
-        para que cada paciente viva una experiencia dental distinta.
-      </p>
+  <header class="nos-portada">
+    <!-- aria-hidden: es una imagen puramente atmosférica. Quien usa lector
+         de pantalla llega directamente al <h1> y a los módulos de texto,
+         que es donde está el contenido. -->
+    <div class="nos-portada__fotos" aria-hidden="true">
+      <img src="../imagenes/equipo-1.webp?v=7dadb1fd33"
+           srcset="../imagenes/equipo-1-480.webp?v=0109bd657d 480w, ../imagenes/equipo-1-720.webp?v=1a077e1d09 720w, ../imagenes/equipo-1.webp?v=7dadb1fd33 900w"
+           sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" fetchpriority="high" decoding="async">
+      <img src="../imagenes/equipo-2.webp?v=cd4a853990"
+           srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
+           sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="1350" alt="" decoding="async">
+      <img src="../imagenes/equipo-3.webp?v=af31db4954"
+           srcset="../imagenes/equipo-3-480.webp?v=2caa776cc3 480w, ../imagenes/equipo-3-720.webp?v=b62996f01b 720w, ../imagenes/equipo-3.webp?v=af31db4954 900w"
+           sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" decoding="async">
+      <img src="../imagenes/equipo-4.webp?v=53353e6f81"
+           srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
+           sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="1350" alt="" decoding="async">
     </div>
 
+    <div class="nos-portada__texto">
+      <h1 class="nos-titulo">
+        <span class="nos-titulo__ligero">NOS</span><span class="nos-titulo__fuerte">OTROS</span>
+      </h1>
+      <span class="nos-regla" aria-hidden="true"></span>
+      <p class="nos-portada__sub">Excelencia, cuidado y arte en cada sonrisa</p>
+    </div>
   </header>
 
 
   <!-- ============================================================
-       NUESTRA HISTORIA
+       MÓDULOS 2 A 5 — LIENZO ASIMÉTRICO
+       Rejilla de 12 columnas; cada módulo ocupa un tramo y una altura de
+       arranque distintos (ver estilos.css, sección 28b). Se apila entero
+       por debajo de 992px.
        ============================================================ -->
-  <section class="seccion seccion-decorada">
-    <div class="forma forma-turquesa" style="width:360px;height:360px;top:10%;left:-140px;"></div>
+  <main class="nos-lienzo">
 
-    <div class="container">
-      <div class="row align-items-center g-5">
+    <nav class="nos-ruta revelar" aria-label="Ruta de navegación">
+      <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Nosotros</span>
+    </nav>
 
-        <div class="col-lg-6 revelar">
-          <div class="marco-imagen">
-            <img src="../imagenes/nosotros.webp?v=50efd7060f" width="1000" height="750"
-                 alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
-                 class="img-fluid" loading="lazy">
-            <div class="tarjeta-flotante">
-              <span class="numero">+15</span>
-              <span class="texto">Años transformando<br>sonrisas</span>
-            </div>
-          </div>
-        </div>
+    <!-- ---- MÓDULO 2 — NUESTRA HISTORIA ---- -->
+    <section class="nos-m-historia revelar" style="--retraso:.05s" aria-labelledby="nosHistoria">
+      <h2 class="nos-rotulo" id="nosHistoria">Nuestra historia</h2>
+      <p class="nos-lead">
+        Nacimos para redefinir lo que significa <em>ir al dentista</em>.
+      </p>
+      <p class="nos-parrafo">
+        Smilers Dental Clinique nació con una visión clara: redefinir la experiencia
+        odontológica combinando excelencia médica, calidez humana y un entorno diseñado
+        para brindar tranquilidad y confianza.
+      </p>
+      <p class="nos-parrafo">
+        Nacimos con el propósito de ofrecer un servicio exclusivo y personalizado, donde
+        cada paciente recibe atención única, con tecnología de vanguardia y los más altos
+        estándares de calidad.
+      </p>
+    </section>
 
-        <div class="col-lg-6 revelar">
-          <h2 class="titulo-seccion text-start">
-            Nacimos para hacer diferente la <span class="texto-turquesa">odontología</span>
-          </h2>
-          <p class="parrafo">
-            Smilers Dental Clinique nació de una idea simple: la odontología de alto nivel no
-            debería sentirse fría ni intimidante. Desde el primer consultorio hasta las
-            instalaciones actuales, cada decisión —del diseño de los espacios al protocolo
-            clínico— se toma pensando en la comodidad y confianza del paciente.
-          </p>
-          <p class="parrafo">
-            Hoy somos un equipo interdisciplinario que combina diagnóstico digital, planificación
-            3D y materiales de alta gama para ofrecer resultados predecibles, duraderos y
-            estéticamente naturales.
-          </p>
-          <a href="#contacto" class="btn btn-turquesa mt-2">
-            Agenda una valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
-        </div>
+    <!-- ---- MÓDULO 3 — NUESTRA FILOSOFÍA ---- -->
+    <section class="nos-m-filosofia revelar" style="--retraso:.12s" aria-labelledby="nosFilosofia">
+      <h2 class="nos-rotulo" id="nosFilosofia">Nuestra filosofía</h2>
+      <ul class="nos-valores">
+        <li>
+          <span class="nos-valor__nombre">Excelencia</span>
+          <span class="nos-valor__texto">En cada detalle, sin compromisos.</span>
+        </li>
+        <li>
+          <span class="nos-valor__nombre">Confianza</span>
+          <span class="nos-valor__texto">Tratamientos transparentes y honestos.</span>
+        </li>
+        <li>
+          <span class="nos-valor__nombre">Exclusividad</span>
+          <span class="nos-valor__texto">Atención personalizada para cada paciente.</span>
+        </li>
+        <li>
+          <span class="nos-valor__nombre">Innovación</span>
+          <span class="nos-valor__texto">Tecnología y técnicas de última generación.</span>
+        </li>
+      </ul>
+    </section>
 
-      </div>
-    </div>
-  </section>
+    <!-- ---- MÓDULO 4 — EL EQUIPO ---- -->
+    <section class="nos-m-equipo revelar" style="--retraso:.05s" aria-labelledby="nosEquipo">
+      <h2 class="nos-rotulo" id="nosEquipo">El equipo</h2>
+      <p class="nos-parrafo">
+        Somos un grupo de especialistas comprometidos con tu salud y estética dental.
+        Profesionales certificados, en constante formación, unidos por la pasión por
+        cuidar lo más importante: tu sonrisa.
+      </p>
+      <p class="nos-parrafo">
+        <strong>Más que una clínica, somos un equipo que cuida de ti como te mereces.</strong>
+      </p>
+    </section>
 
+    <!-- ---- MÓDULO 5 — POR QUÉ SMILERS ---- -->
+    <aside class="nos-m-porque revelar" style="--retraso:.12s" aria-labelledby="nosPorque">
+      <h2 class="nos-rotulo" id="nosPorque">Por qué Smilers</h2>
+      <ul class="nos-porque">
+        <li>Instalaciones exclusivas</li>
+        <li>Tecnología de punta</li>
+        <li>Atención personalizada</li>
+        <li>Materiales de primera calidad</li>
+        <li>Resultados que perduran</li>
+      </ul>
+    </aside>
 
-  <!-- ============================================================
-       MISIÓN / VISIÓN / VALORES
-       ============================================================ -->
-  <section class="seccion fondo-suave seccion-decorada">
-    <div class="forma forma-naranja forma-blob" style="width:280px;height:280px;bottom:-100px;right:5%;"></div>
-
-    <div class="container">
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">Misión, visión y valores</h2>
-        <p class="subtitulo-seccion">
-          Los principios que guían cada tratamiento, cada consulta y cada sonrisa que
-          transformamos.
-        </p>
-      </div>
-
-      <div class="row g-4">
-        <div class="col-md-4 revelar">
-          <div class="tarjeta-valor">
-            <span class="tarjeta-valor-icono" style="background:linear-gradient(135deg, var(--turquesa), var(--turquesa-osc));">
-              <i class="fa-solid fa-bullseye"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-bullseye"></use></svg></i>
-            </span>
-            <h3>Misión</h3>
-            <p>
-              Brindar odontología de precisión con calidez humana, usando tecnología digital
-              para diagnósticos exactos y tratamientos predecibles que mejoren la salud y
-              confianza de cada paciente.
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4 revelar">
-          <div class="tarjeta-valor">
-            <span class="tarjeta-valor-icono" style="background:linear-gradient(135deg, var(--gold-300), var(--gold-700)); color:var(--onix);">
-              <i class="fa-solid fa-eye"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-eye"></use></svg></i>
-            </span>
-            <h3>Visión</h3>
-            <p>
-              Ser la clínica dental de referencia en la región por la excelencia clínica,
-              la innovación tecnológica y una experiencia de paciente incomparable.
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4 revelar">
-          <div class="tarjeta-valor">
-            <span class="tarjeta-valor-icono" style="background:linear-gradient(135deg, var(--turquesa), var(--turquesa-osc));">
-              <i class="fa-solid fa-heart"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-heart"></use></svg></i>
-            </span>
-            <h3>Valores</h3>
-            <p>
-              Ética, empatía, mejora continua y bioseguridad certificada: los pilares que
-              sostienen cada decisión clínica y administrativa dentro de la clínica.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       TRAYECTORIA (LÍNEA DE TIEMPO)
-       ============================================================ -->
-  <section class="seccion seccion-decorada">
-    <div class="forma forma-turquesa forma-parallax" data-intensidad="12" style="width:260px;height:260px;top:-80px;right:-90px;"></div>
-    <div class="forma forma-degradado-1 forma-blob" style="width:200px;height:200px;bottom:0;left:-80px;"></div>
-    <div class="acento-puntos naranja d-none d-lg-grid" style="top:8%;left:10%;" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="acento-anillo turquesa d-none d-lg-block" style="width:60px;height:60px;bottom:12%;left:16%;" aria-hidden="true"></div>
-    <div class="container">
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">15 años de crecimiento constante</h2>
-        <p class="subtitulo-seccion">Un recorrido enfocado siempre en un mismo objetivo: tu sonrisa.</p>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-item revelar">
-          <span class="timeline-punto">1</span>
-          <h3>2011 · Fundación</h3>
-          <p>Abrimos nuestro primer consultorio con dos sillones y un firme compromiso con la odontología conservadora.</p>
-        </div>
-        <div class="timeline-item revelar">
-          <span class="timeline-punto">2</span>
-          <h3>2015 · Certificación en bioseguridad</h3>
-          <p>Implementamos protocolos de esterilización certificados y ampliamos el equipo a cinco especialistas.</p>
-        </div>
-        <div class="timeline-item revelar">
-          <span class="timeline-punto">3</span>
-          <h3>2018 · Diagnóstico 3D</h3>
-          <p>Incorporamos escáner intraoral y tomografía digital para planificar tratamientos con precisión milimétrica.</p>
-        </div>
-        <div class="timeline-item revelar">
-          <span class="timeline-punto">4</span>
-          <h3>2022 · Nuevas instalaciones</h3>
-          <p>Inauguramos las instalaciones actuales: consultorios amplios, sala de espera premium y más especialidades.</p>
-        </div>
-        <div class="timeline-item revelar">
-          <span class="timeline-punto">5</span>
-          <h3>Hoy · +8,500 sonrisas</h3>
-          <p>Seguimos creciendo junto a un equipo interdisciplinario y pacientes que nos recomiendan con orgullo.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       FRANJA DE ESTADÍSTICAS
-       ============================================================ -->
-  <section class="franja-stats">
-    <div class="container">
-      <div class="row text-center g-4">
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="8500">0</span><span class="stat-numero">+</span>
-          <p class="stat-texto">Pacientes felices</p>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="12">0</span>
-          <p class="stat-texto">Especialistas</p>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="20">0</span><span class="stat-numero">+</span>
-          <p class="stat-texto">Tratamientos</p>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <span class="stat-numero" data-contador="98">0</span><span class="stat-numero">%</span>
-          <p class="stat-texto">Satisfacción</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       NUESTRO EQUIPO
-       ============================================================ -->
-  <section class="seccion fondo-suave seccion-decorada">
-    <div class="forma forma-turquesa" style="width:300px;height:300px;top:-60px;right:-100px;"></div>
-    <div class="acento-puntos naranja d-none d-lg-grid" style="top:6%;left:6%;" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="acento-anillo turquesa d-none d-lg-block" style="width:56px;height:56px;bottom:10%;left:10%;" aria-hidden="true"></div>
-
-    <div class="container">
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">Conoce a nuestro equipo</h2>
-        <p class="subtitulo-seccion">
-          Profesionales con posgrado en cada área, trabajando de forma interdisciplinaria
-          para tu tratamiento.
-        </p>
-      </div>
-
-      <div class="row g-4">
-        <div class="col-6 col-lg-3 revelar">
-          <div class="tarjeta-equipo">
-            <div class="tarjeta-equipo-foto">
-              <img src="../imagenes/equipo-1.webp?v=7dadb1fd33" width="900" height="600"
-                   alt="Dr. Mauricio Landa, director clínico e implantólogo en Smilers Dental Clinique" loading="lazy">
-              <div class="tarjeta-equipo-redes">
-                <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn de Dr. Mauricio Landa"><i class="fa-brands fa-linkedin-in"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-linkedin-in"></use></svg></i></a>
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Dr. Mauricio Landa"><i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i></a>
-              </div>
-            </div>
-            <h3>Dr. Mauricio Landa</h3>
-            <span class="tarjeta-equipo-rol">Director · Implantología</span>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <div class="tarjeta-equipo">
-            <div class="tarjeta-equipo-foto">
-              <img src="../imagenes/equipo-2.webp?v=cd4a853990" width="900" height="1350"
-                   alt="Dra. Camila Reyes, especialista en ortodoncia en Smilers Dental Clinique" loading="lazy">
-              <div class="tarjeta-equipo-redes">
-                <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn de Dra. Camila Reyes"><i class="fa-brands fa-linkedin-in"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-linkedin-in"></use></svg></i></a>
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Dra. Camila Reyes"><i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i></a>
-              </div>
-            </div>
-            <h3>Dra. Camila Reyes</h3>
-            <span class="tarjeta-equipo-rol">Ortodoncia</span>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <div class="tarjeta-equipo">
-            <div class="tarjeta-equipo-foto">
-              <img src="../imagenes/equipo-3.webp?v=af31db4954" width="900" height="600"
-                   alt="Dra. Fernanda Ortiz, especialista en estética dental en Smilers Dental Clinique" loading="lazy">
-              <div class="tarjeta-equipo-redes">
-                <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn de Dra. Fernanda Ortiz"><i class="fa-brands fa-linkedin-in"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-linkedin-in"></use></svg></i></a>
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Dra. Fernanda Ortiz"><i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i></a>
-              </div>
-            </div>
-            <h3>Dra. Fernanda Ortiz</h3>
-            <span class="tarjeta-equipo-rol">Estética dental</span>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3 revelar">
-          <div class="tarjeta-equipo">
-            <div class="tarjeta-equipo-foto">
-              <img src="../imagenes/equipo-4.webp?v=53353e6f81" width="900" height="1350"
-                   alt="Dr. Kevin Tan, especialista en cirugía oral y periodoncia en Smilers Dental Clinique" loading="lazy">
-              <div class="tarjeta-equipo-redes">
-                <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn de Dr. Kevin Tan"><i class="fa-brands fa-linkedin-in"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-linkedin-in"></use></svg></i></a>
-                <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram de Dr. Kevin Tan"><i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i></a>
-              </div>
-            </div>
-            <h3>Dr. Kevin Tan</h3>
-            <span class="tarjeta-equipo-rol">Cirugía oral · Periodoncia</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       TECNOLOGÍA E INSTALACIONES
-       ============================================================ -->
-  <section class="seccion seccion-decorada">
-    <div class="forma forma-durazno" style="width:260px;height:260px;bottom:-40px;left:-80px;"></div>
-    <span class="acento-mas turquesa chico d-none d-lg-block" style="bottom:16%;right:8%;" aria-hidden="true">+</span>
-
-    <div class="container">
-      <div class="row align-items-center g-5">
-
-        <div class="col-lg-6 order-lg-2 revelar">
-          <div class="marco-imagen">
-            <span class="marco-esquina turquesa arriba-izq" aria-hidden="true"></span>
-            <img src="../imagenes/tecnologia.webp?v=641c0d4bb5" width="1200" height="800"
-                 alt="Equipo clínico de Smilers Dental Clinique revisando un diagnóstico digital"
-                 class="img-fluid" loading="lazy">
-          </div>
-        </div>
-
-        <div class="col-lg-6 order-lg-1 revelar">
-          <h2 class="titulo-seccion text-start">
-            Diagnóstico digital, decisiones <span class="texto-turquesa">más precisas</span>
-          </h2>
-          <p class="parrafo">
-            Cada plan de tratamiento comienza con un diagnóstico digital completo: escáner
-            intraoral 3D, radiografía panorámica y fotografía clínica. Así evitamos sorpresas
-            y te mostramos exactamente qué esperar antes de comenzar.
-          </p>
-          <ul class="lista-caracteristicas">
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-cube"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-cube"></use></svg></i></span>
-              <div>
-                <h3>Planificación 3D</h3>
-                <p>Simulamos el resultado de ortodoncia e implantes antes de iniciar el tratamiento.</p>
-              </div>
-            </li>
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-shield-virus"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-virus"></use></svg></i></span>
-              <div>
-                <h3>Bioseguridad certificada</h3>
-                <p>Esterilización validada por ciclos y trazabilidad de instrumental en cada consulta.</p>
-              </div>
-            </li>
-            <li class="revelar">
-              <span class="icono-cuadro"><i class="fa-solid fa-comments"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-comments"></use></svg></i></span>
-              <div>
-                <h3>Comunicación transparente</h3>
-                <p>Explicamos cada hallazgo con imágenes reales de tu boca, sin tecnicismos.</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================================
-       BANDA CTA
-       ============================================================ -->
-  <section class="banda-cta">
-    <div class="forma forma-blob" style="width:260px;height:260px;top:-90px;right:10%;background:#fff;opacity:.08;"></div>
-    <div class="container">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-8 text-center text-lg-start">
-          <h2 class="mb-2">¿Listo para conocernos en persona?</h2>
-          <p class="mb-0">Agenda tu primera valoración y descubre por qué nos recomiendan.</p>
-        </div>
-        <div class="col-lg-4 text-center text-lg-end">
-          <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
-             class="btn btn-blanco btn-lg">
-            <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Escríbenos ahora
-          </a>
-        </div>
-      </div>
+    <!-- ---- CIERRE ---- -->
+    <div class="nos-cierre revelar">
+      <p>¿Nos conocemos en persona?</p>
+      <a href="https://api.whatsapp.com/send?phone=593997556002&amp;text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental"
+         target="_blank" rel="noopener" class="nos-boton">
+        Agenda tu valoración
+        <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
+      </a>
     </div>
 
-  </section>
+  </main>
 
 
   <!-- ============================================================
@@ -564,6 +326,6 @@
 
 
   <script src="../vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="../scripts/script.js?v=d5632b0500"></script>
+  <script src="../scripts/script.js?v=6feb548bd0"></script>
 </body>
 </html>

@@ -183,6 +183,19 @@
    desbordamiento horizontal sin ese efecto secundario. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; } /* compensa navbar fija */
 
+/* Mientras el sitio anima un recorrido a mano (el imán de secciones, las
+   marcas de Testimonios: ver "deslizarA" en script.js), el scroll suave del
+   navegador tiene que estar APAGADO. Si no, cada window.scrollTo de cada
+   cuadro lanza su propia animación suave hacia el punto siguiente y lo que
+   se ve es un arrastre gomoso que tarda medio segundo en arrancar, en vez
+   del recorrido cuadro a cuadro que calcula el JS.
+
+   Esto no se arregla con behavior:'auto' en el scrollTo -que es lo que se
+   intentó- porque "auto" significa literalmente "usa el scroll-behavior del
+   elemento", y el de html es "smooth". La clase la pone y la quita
+   deslizarA(). */
+html.smilers-deslizando { scroll-behavior: auto; }
+
 
 /* ===== 2b. POR QUÉ AQUÍ NO HAY scroll-snap DE CSS =======================
    Lo hubo, y funcionaba: "mandatory" en la portada de escritorio, apoyado en
@@ -912,7 +925,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      sigue por delante gracias al z-index de .hero-contenido. */
   z-index: 0;
   pointer-events: none;
-  opacity: .9;
+  opacity: .62;
   mix-blend-mode: screen;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -941,7 +954,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      JS repintando solo la caja del titular (ver script.js, 14b). Sin
      "screen" el dorado pierde un punto de brillo, y por eso sube la
      opacidad. */
-  .hero-sparkles { mix-blend-mode: normal; opacity: .95; }
+  .hero-sparkles { mix-blend-mode: normal; opacity: .7; }
   .hero-duotone { mix-blend-mode: normal; opacity: .18; }
   /* Un drop-shadow de 40px sobre un titular de 16vw recortado con
      background-clip:text obliga a re-dibujar y desenfocar esa máscara
@@ -1300,9 +1313,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    cuatro pilares y la losa del contador (sección 8b). Sobre el lienzo
    .fondo-perla — blanco a plateado — con toda la familia dorada oscurecida
    ahí mismo para que ni los titulares ni los números se apaguen contra el
-   blanco. Las clases .marco-imagen / .tarjeta-flotante / .lista-caracteristicas
-   de más abajo ya no las usa index.html, pero siguen vivas porque
-   subpaginas/nosotros.html las mantiene. */
+   blanco.
+
+   NOTA DE MANTENIMIENTO: .marco-imagen / .tarjeta-flotante /
+   .lista-caracteristicas de más abajo ya no las usa NINGUNA página. Las usaba
+   subpaginas/nosotros.html hasta que esa página se rehízo con los módulos
+   minimalistas (ver sección 28). Se dejan por si se quiere recuperar alguno
+   de esos bloques; si se decide no hacerlo, son borrables sin más. */
 .etiqueta-editorial {
   display: inline-flex;
   align-items: center;
@@ -1923,6 +1940,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 8. FRANJA DE ESTADÍSTICAS =========================================
+   SIN USO desde que nosotros.html pasó a los módulos de la sección 28: era
+   la única página que la montaba. La portada tiene su propio contador (8b).
    .franja-stats es la franja oscura de ancho completo que sigue usando
    subpaginas/nosotros.html con .stat-numero/.stat-texto. El contador de la
    portada ya no vive aquí: se rehízo como .contador-lujo (sección 8b), con
@@ -3263,7 +3282,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 
-/* ===== 18. EQUIPO ======================================================= */
+/* ===== 18. EQUIPO =======================================================
+   SIN USO: lo montaba nosotros.html antes del rediseño (sección 28). ====== */
 .tarjeta-equipo { text-align: center; }
 .tarjeta-equipo-foto {
   position: relative;
@@ -3328,7 +3348,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 
-/* ===== 19. LÍNEA DE TIEMPO (HISTORIA) =================================== */
+/* ===== 19. LÍNEA DE TIEMPO (HISTORIA) ===================================
+   SIN USO: lo montaba nosotros.html antes del rediseño (sección 28). ====== */
 .timeline { position: relative; max-width: 780px; margin: 0 auto; }
 .timeline::before {
   content: '';
@@ -3365,7 +3386,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 }
 
 
-/* ===== 20. MISIÓN / VISIÓN / VALORES ==================================== */
+/* ===== 20. MISIÓN / VISIÓN / VALORES ====================================
+   SIN USO: lo montaba nosotros.html antes del rediseño (sección 28). Los
+   valores viven ahora en el módulo 3 de esa sección. ===================== */
 .tarjeta-valor {
   height: 100%;
   padding: 2.4rem 2rem;
@@ -4539,4 +4562,415 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     white-space: normal;
   }
   .tst-foto { transition: none; }
+}
+
+
+/* ==========================================================================
+   28. PÁGINA "NOSOTROS" — MÓDULOS MINIMALISTAS
+   --------------------------------------------------------------------------
+   La única página del sitio sobre lienzo BLANCO. Todo lo de aquí abajo va
+   colgado de .pagina-nosotros (una clase en el <body> de
+   subpaginas/nosotros.html) para que ni una sola regla se escape al resto
+   del sitio, que vive en negro.
+
+   El encargo: minimalista, de lujo, blanco / negro profundo / dorado, con
+   los bloques repartidos de forma asimétrica en vez de en columnas iguales.
+   Se resuelve con una rejilla de 12 columnas donde cada módulo ocupa un
+   tramo distinto y arranca a una altura distinta; por debajo de 992px todo
+   se apila, porque en un teléfono la asimetría no se lee -no hay ancho
+   suficiente para que dos módulos convivan- y solo produciría márgenes
+   raros.
+
+   Tipografías: Montserrat (títulos, con mucho espaciado entre letras) y
+   Lato (cuerpo, con interlineado generoso). Las dos YA las carga el sitio,
+   así que esta página no pide ni una fuente más; lo único que se añade en
+   su head son los pesos ligeros de Montserrat (200 y 300), que es lo que
+   da el aire de la referencia.
+   ========================================================================== */
+.pagina-nosotros {
+  --nos-blanco: #FFFFFF;
+  --nos-negro: #0A0A0A;
+  /* Cuerpo de texto un punto por encima del negro absoluto. Un párrafo
+     largo a #0A0A0A con interlineado 1.9 se lee pesado y "impreso"; a
+     #2E2E2E mantiene el aire del conjunto sin perder contraste (12.6:1
+     sobre blanco, muy por encima del 4.5 que pide AA). Los titulares y los
+     nombres de los valores sí van al negro profundo. */
+  --nos-texto: #2E2E2E;
+  --nos-dorado: #B79250;
+  --nos-dorado-claro: #D4B98C;
+  /* Hilos decorativos: el mismo dorado, muy diluido. */
+  --nos-linea: rgba(183, 146, 80, .38);
+  background: var(--nos-blanco);
+  color: var(--nos-texto);
+}
+
+/* La navbar del sitio es transparente y va escrita en plata y oro claro,
+   que sobre el lienzo negro se ve y sobre blanco desaparece. Encima del
+   encabezado (una foto oscura) sigue funcionando tal cual; en cuanto se
+   pasa de largo, script.js le pone .con-scroll y ahí sí hay que cambiarla.
+   Se hace solo con .con-scroll para no tocar el tramo en que va sobre la
+   foto, que es donde el diseño original acierta. */
+.pagina-nosotros .navbar-principal.con-scroll {
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(10, 10, 10, .08);
+}
+.pagina-nosotros .navbar-principal.con-scroll .marca-nombre {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--nos-negro);
+}
+.pagina-nosotros .navbar-principal.con-scroll .marca-slogan { color: #6B6B6B; }
+.pagina-nosotros .navbar-principal.con-scroll .navbar-toggler { color: var(--nos-negro); }
+
+/* Entrada al hacer scroll: se reutiliza el observer que ya tiene el sitio
+   (script.js, sección 5) pero con un movimiento mucho más contenido. El
+   .revelar por defecto entra con 70px de recorrido, escala, rotación en X y
+   9px de desenfoque: es la entrada del sitio en negro, y aquí se sentiría
+   fuera de lugar. El encargo pide "aparición suave", así que se queda solo
+   con opacidad y 22px de subida. */
+.pagina-nosotros .revelar {
+  transform: translateY(22px);
+  filter: none;
+  transition: opacity .9s cubic-bezier(.22, 1, .36, 1),
+              transform .9s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-nosotros .revelar.visible { transform: translateY(0); }
+
+
+/* ---- 28a. MÓDULO 1: ENCABEZADO VISUAL ---------------------------------
+   Banda de retratos del equipo en blanco y negro a sangre, con el título
+   encima. El encargo pedía "una fotografía del equipo": como no hay una
+   foto de grupo en el material del sitio, se compone la banda con los
+   cuatro retratos que ya existen, que dice lo mismo y además aguanta
+   cualquier proporción de pantalla. Cuando haya foto de grupo, basta
+   sustituir las cuatro img por una sola y quitar el grid de
+   .nos-portada__fotos. */
+.nos-portada {
+  position: relative;
+  min-height: 78vh;
+  min-height: 78svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--nos-negro);
+}
+.nos-portada__fotos {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.nos-portada__fotos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
+  /* Blanco y negro con un punto de contraste: el encargo pide "contraste
+     equilibrado", no una foto quemada. */
+  filter: grayscale(1) contrast(1.12) brightness(.86);
+}
+/* Velo inferior, no uniforme: el título tiene que leerse sin apagar la
+   mitad de arriba de las caras. */
+.nos-portada::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+              rgba(10, 10, 10, .34) 0%,
+              rgba(10, 10, 10, .12) 38%,
+              rgba(10, 10, 10, .82) 100%);
+}
+.nos-portada__texto {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 clamp(1.5rem, 6vw, 6rem) clamp(2.6rem, 6vw, 5.5rem);
+}
+/* "NOS" ligero + "OTROS" con peso: el contraste de grosor dentro de la
+   misma palabra es lo que la convierte en una pieza de diseño en vez de un
+   titular. El espaciado amplio es el que pide la referencia. */
+.nos-titulo {
+  font-family: var(--fuente-menu);
+  font-size: clamp(2.8rem, 11vw, 8.5rem);
+  line-height: 1;
+  margin: 0;
+  color: #FFFFFF;
+  letter-spacing: .16em;
+  /* El letter-spacing añade un hueco también DESPUÉS de la última letra y
+     descuadra el bloque respecto al resto de módulos; el margen negativo lo
+     compensa. */
+  margin-right: -.16em;
+}
+.nos-titulo__ligero { font-weight: 200; }
+.nos-titulo__fuerte { font-weight: 600; }
+
+/* Regla dorada fina bajo el título: el "elemento decorativo sutil". */
+.nos-regla {
+  display: block;
+  width: clamp(56px, 8vw, 96px);
+  height: 1px;
+  margin: clamp(1.1rem, 2vw, 1.6rem) 0 clamp(.9rem, 1.6vw, 1.3rem);
+  background: var(--nos-dorado);
+}
+.nos-portada__sub {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.9rem, 1.5vw, 1.05rem);
+  letter-spacing: .06em;
+  color: rgba(255, 255, 255, .86);
+}
+
+@media (max-width: 767.98px) {
+  /* Cuatro retratos en 390px son tiras de 97px: irreconocibles. En 2x2 cada
+     cara tiene área usable, igual que se resolvió el mosaico de la portada. */
+  .nos-portada { min-height: 88svh; }
+  .nos-portada__fotos {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+
+/* ---- 28b. LIENZO DE MÓDULOS (la asimetría) -----------------------------
+   Rejilla de 12 columnas. Cada módulo ocupa un tramo distinto y arranca a
+   una altura distinta: eso es toda la asimetría, y se consigue sin una sola
+   posición absoluta, así que el bloque sigue creciendo solo si mañana un
+   texto se alarga. */
+.nos-lienzo {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: clamp(1.5rem, 4vw, 4.5rem);
+  row-gap: clamp(3.5rem, 8vw, 8rem);
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: clamp(3.5rem, 8vw, 8.5rem) clamp(1.5rem, 6vw, 6rem)
+           clamp(4rem, 9vw, 9rem);
+}
+
+.nos-ruta {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: .62rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #8A8A8A;
+}
+.nos-ruta a { color: #8A8A8A; }
+.nos-ruta a:hover { color: var(--nos-dorado); }
+.nos-ruta span { color: var(--nos-negro); }
+
+.nos-m-historia  { grid-column: 1 / span 6; }
+.nos-m-filosofia { grid-column: 8 / span 5; margin-top: clamp(2rem, 7vw, 7rem); }
+.nos-m-equipo    { grid-column: 2 / span 6; }
+.nos-m-porque    { grid-column: 9 / span 4; margin-top: clamp(0rem, 3vw, 3.5rem); }
+
+@media (max-width: 991.98px) {
+  /* Apilado: por debajo de este ancho no hay sitio para que dos módulos
+     convivan, y mantener los tramos solo dejaría columnas de 120px. */
+  .nos-lienzo { row-gap: clamp(3rem, 11vw, 4.5rem); }
+  .nos-m-historia,
+  .nos-m-filosofia,
+  .nos-m-equipo,
+  .nos-m-porque { grid-column: 1 / -1; margin-top: 0; }
+}
+
+
+/* ---- 28c. PIEZAS COMUNES DE LOS MÓDULOS -------------------------------- */
+.nos-rotulo {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  margin: 0 0 clamp(1.1rem, 2vw, 1.7rem);
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .7rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--nos-dorado);
+}
+/* Hilo dorado que sale del rótulo hacia la derecha y se desvanece: marca el
+   principio de cada módulo sin necesidad de encajonarlo en una tarjeta. */
+.nos-rotulo::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--nos-linea), transparent);
+}
+
+.nos-parrafo {
+  margin: 0 0 1.35rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.95rem, 1.1vw, 1.05rem);
+  /* Interlineado generoso, que es la mitad del aire de este diseño. */
+  line-height: 1.95;
+  color: var(--nos-texto);
+}
+.nos-parrafo:last-child { margin-bottom: 0; }
+.nos-parrafo strong { font-weight: 700; color: var(--nos-negro); }
+
+/* Frase de arranque de un módulo, en negro y a mayor tamaño: da jerarquía
+   dentro del bloque sin recurrir a otro titular. */
+.nos-lead {
+  margin: 0 0 1.5rem;
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+  line-height: 1.45;
+  letter-spacing: .01em;
+  color: var(--nos-negro);
+}
+.nos-lead em {
+  font-style: normal;
+  font-weight: 500;
+  /* El dorado #B79250 da 3.4:1 sobre blanco: suficiente para texto grande
+     (el mínimo son 3:1) y por eso solo se usa aquí, en la palabra destacada
+     de una frase de 2rem, nunca en el cuerpo. */
+  color: var(--nos-dorado);
+}
+
+
+/* ---- 28d. MÓDULO 3: FILOSOFÍA / VALORES -------------------------------- */
+.nos-valores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nos-valores li {
+  padding: clamp(1.05rem, 1.8vw, 1.45rem) 0;
+  border-top: 1px solid rgba(10, 10, 10, .1);
+}
+.nos-valores li:first-child { border-top: 0; padding-top: 0; }
+.nos-valor__nombre {
+  display: block;
+  margin-bottom: .45rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--nos-negro);
+}
+/* Punto dorado delante de cada valor: la "viñeta" mínima que pide el
+   encargo, sin icono ni caja. */
+.nos-valor__nombre::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: .8rem;
+  border-radius: 50%;
+  background: var(--nos-dorado);
+  vertical-align: middle;
+  transform: translateY(-1px);
+}
+.nos-valor__texto {
+  display: block;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .95rem;
+  line-height: 1.75;
+  color: var(--nos-texto);
+  padding-left: calc(5px + .8rem);
+}
+
+
+/* ---- 28e. MÓDULO 5: POR QUÉ SMILERS ------------------------------------
+   El módulo pequeño del conjunto: mismo lenguaje, menos peso. */
+.nos-porque {
+  list-style: none;
+  margin: 0;
+  padding: clamp(1.4rem, 2.4vw, 2rem) 0 0;
+  border-top: 1px solid var(--nos-linea);
+}
+.nos-porque li {
+  position: relative;
+  padding: .58rem 0 .58rem 1.9rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: var(--nos-texto);
+}
+/* Palomita dibujada con dos bordes girados: dos líneas finas doradas en vez
+   de un glifo macizo. Sobre blanco, un icono relleno del tamaño de una
+   moneda pesa más que el texto al que acompaña — el mismo problema que se
+   corrigió en la portada. */
+.nos-porque li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1.05em;
+  width: 9px;
+  height: 5px;
+  border-left: 1.5px solid var(--nos-dorado);
+  border-bottom: 1.5px solid var(--nos-dorado);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+
+/* ---- 28f. CIERRE: LLAMADA A LA ACCIÓN ----------------------------------
+   La banda CTA oscura del resto del sitio rompería el lienzo blanco justo
+   en la última pantalla, así que aquí la llamada es una línea de texto y un
+   botón de contorno. El footer que viene después ya es negro y hace de
+   cierre. */
+.nos-cierre {
+  grid-column: 1 / -1;
+  margin-top: clamp(1rem, 4vw, 4rem);
+  padding-top: clamp(2.5rem, 5vw, 4.5rem);
+  border-top: 1px solid rgba(10, 10, 10, .1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1.2rem, 3vw, 2.5rem);
+}
+.nos-cierre p {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--fuente-menu);
+  font-weight: 200;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.5;
+  color: var(--nos-negro);
+}
+.nos-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  padding: 1.05rem 2.1rem;
+  border: 1px solid var(--nos-negro);
+  border-radius: 0;             /* el ángulo recto es parte del minimalismo */
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--nos-negro);
+  background: transparent;
+  transition: background .45s cubic-bezier(.22, 1, .36, 1),
+              color .45s cubic-bezier(.22, 1, .36, 1);
+}
+.nos-boton:hover,
+.nos-boton:focus-visible {
+  background: var(--nos-negro);
+  color: #FFFFFF;
+}
+.nos-boton .icono { width: 1em; height: 1em; }
+
+
+/* ---- 28g. FOOTER SOBRE LIENZO BLANCO -----------------------------------
+   El footer del sitio es negro y aquí hace de cierre, pero necesita una
+   frontera: sin ella, el salto del blanco al negro se lee como que la
+   página se corta. */
+.pagina-nosotros .footer { border-top: 1px solid rgba(183, 146, 80, .3); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .pagina-nosotros .revelar { transform: none; transition: none; }
 }

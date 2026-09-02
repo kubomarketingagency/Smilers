@@ -135,8 +135,21 @@ var SmilersScroll = (function () {
      quitarle nunca el mando a quien está leyendo. ---------------------- */
   var deslizamiento = null;
   var bloqueadoHasta = 0;
+  /* Ventana de gracia justo después de lanzar un recorrido a propósito. La
+     necesita cualquier control que navegue desde un evento de puntero -las
+     marcas de progreso de Testimonios son el caso- porque el orden real de
+     los eventos es: el listener del BOTÓN corre primero (está en el destino)
+     y solo después el de window (que está en la fase de burbuja). O sea que
+     el propio toque que pide el recorrido llegaría a abortar() un instante
+     después de haberlo lanzado, y lo mataría antes del primer cuadro.
+     90 ms cubren la ráfaga de un solo gesto -pointerdown, touchstart y el
+     mousedown de compatibilidad- sin llegar a ignorar un gesto de verdad:
+     un dedo no vuelve a tocar la pantalla tan rápido. */
+  var inmuneHasta = 0;
 
   function abortar() {
+    if (Date.now() < inmuneHasta) return;
+    document.documentElement.classList.remove('smilers-deslizando');
     if (deslizamiento) {
       deslizamiento.vivo = false;
       /* Y ADEMÁS el imán se aparta un rato. Sin esto, interrumpir un
@@ -151,11 +164,21 @@ var SmilersScroll = (function () {
     deslizamiento = null;
   }
 
-  function deslizarA(destino, duracion) {
+  /* "salida" cambia la curva. Sin ella se usa easeInOutCubic, que sale de
+     quieto y llega a quieto: es lo que quiere el imán, que actúa cuando el
+     visitante YA se ha detenido y no debe notar el empujón. Con ella se usa
+     easeOutCubic, que arranca a toda velocidad y frena al final: es lo que
+     quiere un control que se acaba de pulsar, donde el movimiento tiene que
+     empezar en el mismo instante del toque. Con la curva de entrada suave,
+     una pulsación tardaba ~100 ms en producir movimiento visible aunque el
+     recorrido hubiera arrancado en el primer cuadro. */
+  function deslizarA(destino, duracion, salida) {
     abortar();
+    inmuneHasta = Date.now() + 90;   // ver el comentario de "inmuneHasta"
     var inicio = window.scrollY;
     var salto = destino - inicio;
     if (Math.abs(salto) < 2) return;
+    document.documentElement.classList.add('smilers-deslizando');
     var d = duracion || 620;
     var t0 = 0;
     var mio = { vivo: true };
@@ -165,18 +188,30 @@ var SmilersScroll = (function () {
       if (!mio.vivo) return;
       if (!t0) t0 = ahora;
       var t = Math.min(1, (ahora - t0) / d);
-      /* easeInOutCubic: sale de quieto y llega a quieto, sin tirón en
-         ninguna de las dos puntas. */
-      var e = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      /* behavior:'auto' EXPLÍCITO, no scrollTo(x, y) a secas: la hoja
-         declara html{scroll-behavior:smooth}, y con eso un scrollTo pelado
-         lo anima el navegador. Cada cuadro de este recorrido lanzaría
-         entonces su propia animación suave hacia el punto siguiente — un
-         arrastre gomoso, imposible de abortar, en vez del deslizamiento
-         cuadro a cuadro que se busca aquí. */
-      window.scrollTo({ top: Math.round(inicio + salto * e), behavior: 'auto' });
+      var e = salida
+        /* easeOutCubic: todo el movimiento al principio. */
+        ? 1 - Math.pow(1 - t, 3)
+        /* easeInOutCubic: sale de quieto y llega a quieto, sin tirón en
+           ninguna de las dos puntas. */
+        : (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      /* Sin "behavior": la hoja tiene apagado el scroll suave mientras dura
+         el recorrido (ver html.smilers-deslizando en estilos.css), así que
+         cada scrollTo se aplica en el acto y lo que se ve es exactamente la
+         curva que calcula este bucle.
+
+         Aquí antes iba behavior:'auto' pensando que eso forzaba el salto
+         inmediato, y era al revés: "auto" significa "usa el scroll-behavior
+         del elemento", y el de html es "smooth". O sea que cada cuadro
+         lanzaba su propia animación del navegador hacia el punto siguiente y
+         lo que salía era un arrastre gomoso que tardaba ~700 ms en empezar a
+         moverse -medido-. Es lo que hacía que tocar una marca de Testimonios
+         en el teléfono se sintiera como que no había pasado nada. */
+      window.scrollTo(0, Math.round(inicio + salto * e));
       if (t < 1) requestAnimationFrame(paso);
-      else if (deslizamiento === mio) deslizamiento = null;
+      else if (deslizamiento === mio) {
+        deslizamiento = null;
+        document.documentElement.classList.remove('smilers-deslizando');
+      }
     }
     requestAnimationFrame(paso);
   }
@@ -232,7 +267,13 @@ var SmilersScroll = (function () {
          página. Si el ajuste que falta es mayor que su tope, es que el
          visitante quería estar donde está. */
       if (Math.abs(salto) > 4 && Math.abs(salto) < window.innerHeight * tope) {
-        deslizarA(destino, Math.min(820, 300 + Math.abs(salto) * .75));
+        /* Recorrido más largo y más plano que antes (era 300 + salto*.75 con
+           tope en 820 ms). Ahora que el tope de salto llega a 0.9 de pantalla,
+           un encuadre puede ser de 700-800 px, y a la velocidad vieja eso se
+           sentía como un tirón: la página salía disparada. Con 1150 ms de
+           techo el mismo recorrido se lee como que la sección "se acomoda
+           sola", que es lo que se pide — atraer suavemente, no arrastrar. */
+        deslizarA(destino, Math.min(1150, 420 + Math.abs(salto) * .95));
       }
       return;
     }
@@ -1249,8 +1290,13 @@ document.addEventListener('DOMContentLoaded', function () {
          de repartidas por toda la pantalla: con la cantidad vieja, agrupadas
          ahí, se contaban con los dedos. Con tope, para que un monitor
          ultrapanorámico no acabe dibujando cientos. */
-      var cantidad = Math.min(esTactil ? 55 : 150,
-                              Math.round((ancho * alto) / (esTactil ? 14000 : 9000)));
+      /* Bajada deliberada respecto a la primera versión de este efecto: eran
+         150 motas en escritorio y se veían exageradas -más purpurina que
+         polvo suspendido-. Con 70 y el brillo de abajo, la palabra queda
+         rodeada de destellos que se notan al mirarla pero que no compiten
+         con ella. */
+      var cantidad = Math.min(esTactil ? 28 : 70,
+                              Math.round((ancho * alto) / (esTactil ? 26000 : 19000)));
       particulas = [];
       for (var i = 0; i < cantidad; i++) {
         var p = crearParticula();
@@ -1274,7 +1320,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return {
         x: foco.x + Math.cos(angulo) * distancia * (foco.radioX || foco.radio),
         y: foco.y + Math.sin(angulo) * distancia * (foco.radioY || foco.radio),
-        r: Math.random() * 1.7 + .4,
+        r: Math.random() * 1.15 + .35,
         velY: Math.random() * -.22 - .04,
         velX: (Math.random() - .5) * .14,
         fase: Math.random() * Math.PI * 2,
@@ -1309,7 +1355,11 @@ document.addEventListener('DOMContentLoaded', function () {
                   : 1;
 
         var brillo = (Math.sin(p.fase) + 1) / 2;   // parpadeo suave, como antes
-        var alfa = ciclo * (.4 + brillo * .6);
+        /* Techo en .55 y no en 1: una mota a opacidad plena sobre el velo del
+           hero se lee como un punto de luz duro. A poco más de la mitad
+           siguen viéndose sobre las fotos claras del consultorio -para eso
+           está el halo- sin el aire de purpurina. */
+        var alfa = ciclo * (.16 + brillo * .39);
         if (alfa <= .01) continue;
 
         /* Dos círculos por mota: un halo ancho y casi transparente, y encima
@@ -1320,13 +1370,13 @@ document.addEventListener('DOMContentLoaded', function () {
            de canvas se recalcula por figura y sale carísimo con cien motas:
            dos arcos planos cuestan lo que cuesta rellenar dos círculos. */
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(224, 175, 61, ' + (alfa * .16).toFixed(3) + ')';
+        ctx.arc(p.x, p.y, p.r * 2.8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(224, 175, 61, ' + (alfa * .18).toFixed(3) + ')';
         ctx.fill();
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(247, 233, 179, ' + alfa.toFixed(3) + ')';
+        ctx.fillStyle = 'rgba(238, 214, 150, ' + alfa.toFixed(3) + ')';
         ctx.fill();
       }
       cuadro = requestAnimationFrame(dibujar);

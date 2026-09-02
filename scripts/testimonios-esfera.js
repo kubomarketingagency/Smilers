@@ -1291,16 +1291,46 @@ void main() {
       if (quien && quien.nombre) {
         paso.setAttribute('aria-label', 'Ir al testimonio de ' + quien.nombre);
       }
-      paso.addEventListener('click', function () {
+      /* RESPUESTA INMEDIATA AL DEDO. Con un 'click' a secas, en el teléfono
+         el recorrido no arrancaba hasta que el navegador daba por terminado
+         el gesto -levantar el dedo, descartar que fuera un doble toque o el
+         principio de un scroll-, y encima la animación empezaba con 380 ms
+         de rampa: entre una cosa y otra, al tocar la barra parecía que no
+         había pasado nada y había que esperar.
+
+         Ahora en táctil se sale en 'pointerdown', o sea en el instante en
+         que el dedo toca. Con ratón y con teclado se sigue usando 'click',
+         que es lo correcto: en escritorio actuar al apretar el botón impide
+         arrepentirse arrastrando fuera antes de soltar, y 'pointerdown' no
+         lo dispara la tecla Intro. La bandera evita que el toque cuente dos
+         veces cuando el navegador manda además el 'click' de compatibilidad. */
+      var yaAtendido = false;
+
+      function irAlTestimonio() {
         var destino = yDeTestimonio(indice);
         if (destino === null) return;
         apagarPista();
         var salto = Math.abs(destino - window.scrollY);
         if (window.SmilersScroll && window.SmilersScroll.deslizarA) {
-          window.SmilersScroll.deslizarA(destino, Math.min(900, 380 + salto * 0.35));
+          /* Arranque mucho más corto (120 ms de base en vez de 380) para que
+             el movimiento empiece dentro del mismo cuadro del toque. La
+             duración sigue creciendo con la distancia, que es lo que hace
+             que un salto largo no se sienta un teletransporte. */
+          window.SmilersScroll.deslizarA(destino, Math.min(760, 120 + salto * 0.32), true);
         } else {
           window.scrollTo({ top: destino, behavior: 'smooth' });
         }
+      }
+
+      paso.addEventListener('pointerdown', function (ev) {
+        if (ev.pointerType !== 'touch') return;
+        yaAtendido = true;
+        irAlTestimonio();
+      });
+
+      paso.addEventListener('click', function () {
+        if (yaAtendido) { yaAtendido = false; return; }
+        irAlTestimonio();
       });
     });
 
