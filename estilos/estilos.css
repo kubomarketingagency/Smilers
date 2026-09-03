@@ -238,6 +238,17 @@
   --fuente-menu:   'Bodoni Moda', serif;
   --fuente-cuerpo: 'Lato', sans-serif;
 
+  /* LA EXCEPCIÓN, Y ES UNA SOLA PALABRA: el wordmark del banner.
+     Bodoni Moda sigue siendo la voz del sitio, pero a 13rem y en peso 700
+     sus remates dejan de ser hairlines y se vuelven trazos con cuerpo — la
+     didone pierde justo lo que la hace didone en el único sitio donde el
+     tipo se ve a tamaño de cartel. Prata está dibujada para ese tamaño:
+     contraste extremo, serifas planas sin corchete y un ancho generoso, que
+     es la referencia que se pidió para el banner.
+     Solo la usa .hero-titulo. Cambiar aquí el nombre de la familia (y el
+     <link> de Google Fonts en index.html) cambia el banner entero. */
+  --fuente-banner: 'Prata', 'Bodoni Moda', serif;
+
   --radio:    18px;
   --radio-sm: 12px;
   --radio-btn: 14px;
@@ -647,28 +658,58 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 4. NAVBAR ========================================================= */
-/* Sin fondo ni desenfoque: solo flota el logo y el botón sobre el lienzo
-   ónix del resto de la página (que ya es oscuro en todas partes, así que
-   nunca compite con contenido claro debajo). Barra delgada a propósito. */
+/* SIEMPRE VISIBLE Y SIEMPRE CON FONDO. Antes la barra era transparente y se
+   escondía al bajar: sobre el lienzo ónix de la portada funcionaba, pero el
+   sitio pasa por un mosaico de fotos claras, una sección marfil y un
+   acordeón a pantalla completa, y ahí el logo se perdía contra la imagen. Y
+   esconderla al bajar dejaba el menú a dos gestos de distancia en la parte
+   de la página donde más se necesita.
+
+   El fondo es un degradado de negro que se apaga hacia abajo, no una banda
+   sólida: el borde inferior de la barra no se lee como una línea de corte
+   sobre la foto, sino como una sombra que se disuelve. En reposo llega al
+   88% de negro arriba; con scroll (.con-scroll) se cierra a negro casi
+   pleno, porque a partir de ahí siempre hay contenido pasando por debajo. */
 .navbar-principal {
   padding: .85rem 0;
-  background: transparent;
-  transition: transform .35s ease, padding .35s ease;
+  background: linear-gradient(180deg,
+              rgba(0, 0, 0, .88) 0%,
+              rgba(6, 5, 4, .72) 52%,
+              rgba(10, 8, 6, .28) 82%,
+              rgba(10, 8, 6, 0) 100%);
+  transition: padding .35s ease, background .35s ease;
   z-index: 1030;
 }
 
-/* Se oculta al bajar y reaparece al subir (clase añadida desde script.js).
-   transform es la única propiedad barata para animar esto: no dispara
-   layout ni repintado del resto de la página, solo mueve la capa. */
-.navbar-principal.navbar-oculto {
-  transform: translateY(-100%);
-}
-
-/* Estado con scroll (clase añadida desde script.js): solo encoge el logo,
-   sigue sin fondo. */
+/* Estado con scroll (clase añadida desde script.js): encoge el logo y
+   cierra el degradado, que ya no tiene que competir con el hero sino con
+   fotografía a pantalla completa. */
 .navbar-principal.con-scroll {
   padding: .4rem 0;
+  background: linear-gradient(180deg,
+              rgba(0, 0, 0, .96) 0%,
+              rgba(4, 3, 3, .9) 60%,
+              rgba(10, 8, 6, .5) 88%,
+              rgba(10, 8, 6, 0) 100%);
 }
+
+/* SIN HILO DORADO EN EL CANTO INFERIOR, y se probó: el degradado termina en
+   alfa 0, así que una línea puesta en bottom:0 queda flotando sobre el vacío
+   en vez de rematar nada. Un scrim no tiene borde; ese es justo el motivo
+   por el que se eligió un scrim y no una banda sólida. */
+
+/* Con la barra ya oscura en las cinco páginas, el wordmark recupera el oro
+   BRILLANTE del logo también en las páginas claras: .pagina-clara lo había
+   oscurecido para que se leyera sobre blanco, y aquí ya no hay blanco
+   debajo. Mismo motivo para el eslogan y para las tres barras del botón. */
+.pagina-clara .navbar-principal .marca-nombre {
+  background: linear-gradient(100deg, #AE8625 0%, #F7EF8A 32%, #D2AC47 64%, #EDC967 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #D2AC47;
+}
+.pagina-clara .navbar-principal .marca-slogan { color: var(--neutral-300); }
 
 /* Marca (logotipo tipográfico: icono + wordmark), inspirada en el isotipo
    real (diente en plata sobre ónix, wordmark en degradado dorado). */
@@ -881,8 +922,8 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* .navbar-principal ya es "fixed" por la clase fixed-top del HTML; antes
    había un "position: relative" aquí que la anulaba en silencio (el navbar
-   nunca quedaba pegado arriba). Ver .navbar-oculto más abajo para el
-   esconder/reaparecer según la dirección del scroll. */
+   nunca quedaba pegado arriba). Y ya no hay esconder/reaparecer: la barra
+   se queda arriba todo el recorrido (ver sección 4 y script.js, 2). */
 
 /* ===== 5. HERO CON VIDEO ================================================= */
 .hero {
@@ -1076,10 +1117,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    botones — el video/fotos en blanco y negro es el protagonista. Mismo
    degradado dorado que el wordmark del navbar, a escala de titular. */
 .hero-titulo {
-  font-family: var(--fuente-titulo);
+  /* Prata: la didone de display de la captura de referencia. Va en 400
+     porque es su único peso — y no le hace falta más: el grosor de los
+     trazos gruesos ya lo pone el diseño de la letra, y subirlo con un
+     font-weight sintético borraría los finos, que es todo el punto.
+     El tracking sube de .03 a .05em: los remates planos de Prata se tocan
+     entre letra y letra al tamaño de cartel. */
+  font-family: var(--fuente-banner);
   font-style: normal;
-  font-weight: 700;
-  letter-spacing: .03em;
+  font-weight: 400;
+  letter-spacing: .05em;
   font-size: clamp(4.5rem, 16vw, 13rem);
   line-height: 1;
   margin: 0;
@@ -1490,14 +1537,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    siguiente. Medio escalón y no uno entero porque el motivo por el que se
    había comprimido -cuatro subsecciones apiladas que en el teléfono pedían
    tres o cuatro gestos de scroll- sigue siendo cierto. */
-.seccion-nosotros { padding: clamp(48px, 5vw, 84px) 0 clamp(40px, 4.2vw, 70px); }
+/* Y el aire de la sección baja otro escalón. El párrafo de arriba explica
+   por qué había subido: con las cajas fuera, el espacio en blanco era lo
+   único que separaba un bloque del siguiente. Ya no: los pilares volvieron a
+   ser una losa oscura y los mosaicos crecieron hasta llenar su media
+   pantalla, así que el contraste entre bloques lo ponen ellos y el aire
+   puede volver a ser aire en vez de separador. */
+.seccion-nosotros { padding: clamp(30px, 3.2vw, 54px) 0 clamp(26px, 2.8vw, 46px); }
 
 .nosotros-split {
   position: relative;
   z-index: 1;
   display: grid;
   align-items: center;
-  gap: clamp(1.6rem, 3.4vw, 2.6rem);
+  /* Solo cuenta por debajo de 992px (arriba la rejilla va a gap:0): es el
+     aire entre el mosaico y el texto cuando el bloque se apila. Baja un
+     escalón con el resto de la sección. */
+  gap: clamp(1rem, 2.4vw, 1.7rem);
   padding-inline: clamp(1.1rem, 5vw, 2rem);
   perspective: 1200px;
 }
@@ -1518,7 +1574,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: clamp(8px, .9vw, 13px);
+  /* CASI SIN AIRE ENTRE PIEZAS. Trece píxeles de canal convertían el mosaico
+     en seis fotos sueltas apoyadas cerca; con cuatro o cinco es una sola
+     pieza impresa con líneas de corte, que es lo que se pidió. El canal no
+     baja a cero a propósito: sin ninguna separación, dos fotos con el mismo
+     tono en el borde se funden y el mosaico deja de leerse como varias
+     imágenes. */
+  gap: clamp(4px, .42vw, 6px);
   /* ALTURA, no min-height, y esta es la corrección de fondo del tamaño del
      mosaico. Con "min-height" + "grid-template-rows: 1fr 1fr", las filas se
      dimensionan por su contenido: 1fr es minmax(auto, 1fr), y ese "auto" es
@@ -1537,8 +1599,57 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   height: clamp(250px, 34vh, 330px);
   perspective: 1200px;
 }
+/* CUATRO FILAS Y SEIS FOTOS EN ESCRITORIO, no dos filas y tres fotos. El
+   mosaico estaba topado a ~490px de alto mientras la columna de texto de al
+   lado medía 600 y pico: entre el borde superior de la sección y la primera
+   foto, y otra vez bajo la última, quedaban dos franjas de marfil vacío del
+   ancho de media pantalla — exactamente las dos zonas señaladas en las
+   capturas.
+
+   La corrección no es estirar tres fotos (object-fit ya recorta lo que
+   puede) ni abrir más aire: es DAR MÁS MOSAICO. Un remate arriba a todo el
+   ancho, las tres de siempre en el cuerpo, y abajo otro remate partido en
+   dos piezas con la misma proporción de columnas que el cuerpo. Seis fotos
+   donde había tres, con el canal entre ellas reducido a cuatro o cinco
+   píxeles: el hueco se llena con imagen, que es lo que se pidió, y no
+   separando más lo que ya había.
+
+   Los remates van más bajos que las filas centrales (.78fr contra 1.12 y 1)
+   para que se lean como el principio y el final de un bloque y no como
+   cuatro fotos apiladas del mismo peso. */
 @media (min-width: 992px) {
-  .nosotros-media { height: clamp(380px, 48vh, 490px); }
+  .nosotros-media {
+    /* Más alto que antes (74vh -> 78vh, y el tope de 760 a 820) para que el
+       mosaico llegue por arriba y por abajo hasta donde llega la columna de
+       texto de al lado. Que se pase un poco es lo correcto: si sobra altura,
+       sobra del lado del TEXTO, donde el aire alrededor de un párrafo se lee
+       como composición; el marfil vacío al lado de una foto se lee como un
+       hueco. */
+    height: clamp(560px, 78vh, 820px);
+    grid-template-rows: .78fr 1.12fr 1fr .78fr;
+  }
+  /* SEIS PIEZAS, y la de abajo partida en dos. La banda inferior era una
+     sola tira de lado a lado, igual que la de arriba, y el mosaico quedaba
+     con dos remates gemelos: simétrico, y por eso plano. Partiendo la de
+     abajo en la misma proporción de columnas que el cuerpo (ancha + angosta)
+     el bloque se cierra con el mismo ritmo con el que se lee, y de paso
+     entra una sexta foto donde antes había fondo. */
+  .nm-figura--cima { grid-column: 1 / -1; grid-row: 1; }
+  .nm-figura--pie  { grid-column: 1; grid-row: 4; }
+  .nm-figura--pieb { grid-column: 2; grid-row: 4; }
+  /* Las tres de siempre ocupan el cuerpo del mosaico, entre los remates.
+     (En móvil siguen en 1/3 — ver la regla base — porque allí los remates no
+     existen y la rejilla vuelve a ser de dos filas.) */
+  .nm-figura--principal { grid-column: 1; grid-row: 2 / 4; }
+  .nm-figura--alta      { grid-column: 2; grid-row: 2; }
+  .nm-figura--baja      { grid-column: 2; grid-row: 3; }
+}
+/* Por debajo de 992px el mosaico ya cabe entero y no sobra marfil por
+   ninguna punta: el bloque se apila (foto y luego texto) y el hueco no
+   existe. Las dos bandas se retiran — con display:none ni siquiera se
+   descargan, que en un teléfono son dos fotos grandes de menos. */
+@media (max-width: 991.98px) {
+  .nm-figura--cima, .nm-figura--pie, .nm-figura--pieb { display: none; }
 }
 
 .nm-figura {
@@ -1572,7 +1683,52 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .nm-figura.visible img { transform: scale(1); }
 .nm-figura.visible:hover img { transform: scale(1.06); }
 
-.nm-figura--principal { grid-row: 1 / 3; }
+/* ACENTO DORADO EN UN SOLO CANTO, el de arriba. Va como ::after absoluto y
+   no como border-top por dos razones: un borde de verdad le robaría 2px de
+   alto a la foto dentro de una rejilla ya medida al píxel, y además quedaría
+   por DEBAJO del overflow:hidden que recorta la imagen ampliada.
+
+   El oro va escrito a mano (#D2AC47, el champán del logo) en vez de heredar
+   --gradiente-oro: la sección es .seccion-clara, que oscurece el dorado para
+   que se lea sobre marfil, pero este trazo no vive sobre marfil sino sobre
+   la fotografía. Ahí el oro de marca es el que se ve como oro.
+
+   Empieza opaco a la izquierda y se disuelve a la derecha: un filete macizo
+   de lado a lado convertía cada foto en una tarjeta con cabecera, que es
+   justo lo que este mosaico dejó de ser cuando se le quitaron las esquinas
+   redondeadas y la sombra. */
+.nm-figura::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #EDC967 0%, #D2AC47 34%, rgba(210, 172, 71, .35) 72%, rgba(210, 172, 71, 0) 100%);
+  /* Entra con la foto, no antes: sin esto el hilo dorado se dibujaba solo
+     sobre el hueco gris mientras el velo de .revelar--velo aún no había
+     abierto. */
+  opacity: 0;
+  transition: opacity .6s ease .25s;
+}
+.nm-figura.visible::after { opacity: 1; }
+/* En la banda espejada el mosaico se lee de derecha a izquierda, y el
+   acento con él. */
+.nosotros-split--invertido .nm-figura::after {
+  background: linear-gradient(270deg, #EDC967 0%, #D2AC47 34%, rgba(210, 172, 71, .35) 72%, rgba(210, 172, 71, 0) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nm-figura::after { opacity: 1; transition: none; }
+}
+
+/* La foto grande ocupa las DOS filas del mosaico de móvil. Va acotada a
+   <992px y no suelta: la colocación de escritorio (filas 2/4, entre las dos
+   bandas nuevas) está unas líneas más arriba, dentro de su media query, y
+   una regla suelta AQUÍ la pisaría — misma especificidad, y en un empate
+   gana la última escrita aunque la otra esté en un @media. */
+@media (max-width: 991.98px) {
+  .nm-figura--principal { grid-row: 1 / 3; }
+}
 /* (La foto principal sigue sangrando al borde izquierdo de la pantalla; ya no
    necesita redondear las esquinas interiores porque no hay ninguna redonda.) */
 
@@ -1645,7 +1801,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    mismo bloque. El mosaico se invierte de verdad — la foto grande pasa a la
    columna derecha y sangra hacia ESE borde — en vez de limitarse a mover el
    bloque entero, que dejaría la foto grande otra vez del lado interior. */
-.nosotros-split--invertido { margin-top: clamp(1.4rem, 2.4vw, 2.1rem); }
+/* Las dos bandas casi se tocan: el corte entre una y otra ya lo marca el
+   espejo de la composición (foto a la izquierda / foto a la derecha), no
+   hace falta además una franja de marfil de dos rem. */
+.nosotros-split--invertido { margin-top: clamp(.4rem, .9vw, .8rem); }
 
 @media (min-width: 992px) {
   .nosotros-split--invertido .nosotros-media {
@@ -1654,10 +1813,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   }
   .nosotros-split--invertido .nm-figura--principal {
     grid-column: 2;
-    grid-row: 1 / 3;
+    grid-row: 2 / 4;
   }
-  .nosotros-split--invertido .nm-figura--alta { grid-column: 1; grid-row: 1; }
-  .nosotros-split--invertido .nm-figura--baja { grid-column: 1; grid-row: 2; }
+  .nosotros-split--invertido .nm-figura--alta { grid-column: 1; grid-row: 2; }
+  .nosotros-split--invertido .nm-figura--baja { grid-column: 1; grid-row: 3; }
+  /* El remate inferior también se espeja: la pieza ancha va bajo la foto
+     grande, o sea en la columna 2 de esta banda. */
+  .nosotros-split--invertido .nm-figura--pie  { grid-column: 2; grid-row: 4; }
+  .nosotros-split--invertido .nm-figura--pieb { grid-column: 1; grid-row: 4; }
 
   .nosotros-split--invertido .nosotros-cuerpo {
     order: 1;
@@ -1877,71 +2040,112 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--texto);
 }
 
-/* ---- 7c. Pilares: rejilla sin huecos, separada solo por hilo dorado -----
-   El truco de "gap: 1px + fondo del contenedor" da los divisores en todos
-   los breakpoints sin tener que apagar bordes por posición en la fila. */
+/* ---- 7c. Pilares: una losa de obsidiana con cuatro columnas dentro -----
+   LA LOSA DE OBSIDIANA, LA MISMA DEL CONTADOR. Los cuatro pilares vivían
+   sueltos sobre el marfil, colgando de un hilo dorado cada uno: sobre ese
+   lienzo el número, el icono y el hilo son todos dorados oscurecidos para
+   pasar el contraste, y el bloque entero se leía apagado — que es lo que se
+   ve en la captura 4.
+
+   La solución no es subir el contraste del oro (sobre blanco no da más de
+   sí), es cambiar el lienzo: sobre negro el champán del logo se lee tal cual
+   es, sin oscurecerlo. Se reusa literalmente el fondo de .contador-lujo
+   -radial de luz en la esquina superior izquierda + degradado diagonal casi
+   negro, hilo dorado arriba- para que las dos piezas oscuras de la sección
+   se lean como el mismo material y no como dos inventos distintos.
+
+   Las divisiones vuelven, porque dentro de una losa un separador ya no se
+   lee como el borde de una tarjeta sino como una costura. Van como
+   border-left de cada columna y no con el viejo truco de "gap: 1px + fondo
+   del contenedor": con 1, 2 o 4 columnas según el ancho, el gap dibuja
+   también las costuras de los extremos de cada fila, y apagarlas cuesta los
+   mismos :nth-child que poner los bordes a mano. */
 .pilares-editorial {
-  margin-top: clamp(2.2rem, 4vw, 3.4rem);
+  --gold-500: #D2AC47;
+  /* (margin-top más abajo: baja de clamp(2.2rem,4vw,3.4rem) por lo mismo que
+     el padding de la sección — la losa ya se despega sola del marfil.) */
+  --gold-700: #AE8625;
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  /* Y la rampa MENUDA también, que es la que pinta el "01 02 03 04" (ver la
+     regla de .pilar__num en la sección 30a). .seccion-clara la baja a
+     #6B4D03-#B4880E para que un rótulo de 11px cumpla el 4.5:1 sobre marfil;
+     sobre esta losa negra esa misma rampa se apaga hasta desaparecer. Aquí
+     vuelve a ser la brillante, que es la que el lienzo pide. */
+  --gradiente-oro-menudo: var(--gradiente-oro);
+  position: relative;
+  margin-top: clamp(1.1rem, 2vw, 1.8rem);
   display: grid;
   grid-template-columns: 1fr;
-  /* AIRE DE VERDAD entre columnas, en vez del truco de "gap: 1px + fondo del
-     contenedor". Ese truco daba los divisores gratis, pero también convertía
-     las cuatro tarjetas en una sola caja con cuadrícula dentro — y una caja
-     es justo lo que este lenguaje no usa. Ahora el separador es el hilo
-     dorado superior de cada .pilar, que es como se abre un bloque en la
-     página Nosotros. */
-  gap: clamp(1.6rem, 3vw, 2.6rem) clamp(1.4rem, 3.5vw, 3rem);
-  background: none;
-  border: 0;
+  gap: 0;
+  padding: clamp(.4rem, 1vw, .9rem) clamp(.6rem, 1.6vw, 1.2rem) clamp(1rem, 1.8vw, 1.4rem);
+  border: 1px solid rgba(210, 172, 71, .22);
   border-radius: 0;
-  overflow: visible;
+  background:
+    radial-gradient(ellipse 75% 130% at 14% 0%, rgba(210, 172, 71, .16) 0%, transparent 62%),
+    linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
+  overflow: hidden;
   box-shadow: none;
   perspective: 1200px;
+}
+/* Hilo dorado superior, el mismo gesto de .contador-lujo y .franja-stats. */
+.pilares-editorial::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D2AC47, transparent);
+  opacity: .75;
 }
 /* Dos columnas desde 360 px, no desde 576: apiladas de una en una, las
    cuatro tarjetas se comían casi una pantalla entera del teléfono para
    decir cuatro frases cortas. En 2x2 el bloque se lee de un vistazo. */
 @media (min-width: 360px) { .pilares-editorial { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 992px) { .pilares-editorial { grid-template-columns: repeat(4, 1fr); } }
-@media (max-width: 575.98px) {
-  .pilar { padding: .9rem 0 0; }
-  .pilar__icono { margin: .6rem 0 .45rem; font-size: 1rem; }
-  .pilar h3 { font-size: .72rem; letter-spacing: .18em; }
-  .pilar p { font-size: .82rem; line-height: 1.75; }
-}
-
+/* Cada pilar es ahora una columna DENTRO de la losa: sin borde superior
+   propio (lo daba el hilo cuando estaban sueltos sobre el marfil) y separado
+   del vecino por la misma costura dorada tenue que usa .cl-item en el
+   contador. El hover sigue dibujando su regla dorada, pero ahora en el canto
+   inferior de la columna: arriba ya no hay hilo sobre el que dibujarla. */
 .pilar {
   position: relative;
-  /* Sin caja: un hilo dorado arriba y aire debajo. El fondo blanco a media
-     opacidad era lo que hacía que la rejilla se leyera como una tabla pegada
-     sobre la sección. */
-  padding: clamp(1.1rem, 1.8vw, 1.5rem) 0 0;
+  padding: clamp(1.2rem, 1.9vw, 1.6rem) clamp(.9rem, 1.8vw, 1.5rem) clamp(.6rem, 1.2vw, 1rem);
   background: none;
-  border-top: 1px solid var(--hairline-oro);
+  border-top: 0;
   transition: none;
 }
 .pilar:hover { background: none; }
-/* La regla dorada del hover ya no baja por el borde izquierdo (no hay borde
-   por el que bajar): ahora se dibuja SOBRE el hilo superior, de izquierda a
-   derecha. Mismo efecto y misma duración, en el sitio donde ahora significa
-   algo. */
+.pilar + .pilar { border-left: 1px solid rgba(210, 172, 71, .18); }
+/* Con una sola columna (móvil estrecho) la costura tiene que ser horizontal:
+   un borde izquierdo en una pila vertical no separa nada. */
+@media (max-width: 359.98px) {
+  .pilar + .pilar { border-left: 0; border-top: 1px solid rgba(210, 172, 71, .18); }
+}
+/* En 2x2 la costura vertical del tercero sobra: es el primero de su fila. */
+@media (min-width: 360px) and (max-width: 991.98px) {
+  .pilar:nth-child(odd) { border-left: 0; }
+  .pilar:nth-child(n+3) { border-top: 1px solid rgba(210, 172, 71, .18); }
+}
 .pilar::before {
   content: '';
   position: absolute;
-  left: 0; top: -1px;
+  left: 0; bottom: 0;
   width: 0;
   height: 1px;
   background: linear-gradient(90deg, var(--gold-500), transparent);
   transition: width .55s cubic-bezier(.16, 1, .3, 1);
 }
 .pilar:hover::before { width: 100%; height: 1px; }
+/* Sin "color" aquí a propósito: el numerador lo pinta la regla de rótulos
+   dorados de la sección 30a (background-clip:text con --gradiente-oro-menudo),
+   que va más abajo en el archivo y ganaría igual. Lo que hace falta para que
+   se lea sobre la losa es que esa rampa sea la brillante — de ahí el
+   --gradiente-oro-menudo local de .pilares-editorial. */
 .pilar__num {
   display: block;
   font-family: var(--fuente-menu);
   font-size: .7rem;
   font-weight: 700;
   letter-spacing: .22em;
-  color: var(--gold-700);
 }
 /* La ficha redonda con velo dorado era la respuesta correcta MIENTRAS hubo
    tarjeta: un glifo suelto sobre un rectángulo blanco no tenía forma propia.
@@ -1961,8 +2165,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--gold-500);
 }
 /* El título del pilar toma la forma del nombre de un valor en Nosotros
-   (.nos-valor__nombre): mayúsculas, trackeadas y en negro. Es lo que empareja
-   los cuatro pilares con los cuatro valores de la otra página. */
+   (.nos-valor__nombre): mayúsculas y trackeadas. Es lo que empareja los
+   cuatro pilares con los cuatro valores de la otra página.
+   Sobre la losa negra va en mármol, y el cuerpo en plata clara: los dos
+   colores que .seccion-clara había volteado a negro para el marfil. Se
+   escriben en hexadecimal por lo mismo que en .btn-subir — --marmol y
+   --silver-300 los redefine la sección clara, y aquí el texto se lee siempre
+   contra negro. */
 .pilar h3 {
   margin-bottom: .5rem;
   font-family: var(--fuente-menu);
@@ -1971,7 +2180,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   letter-spacing: .22em;
   text-transform: uppercase;
   line-height: 1.5;
-  color: var(--neutral-900);
+  color: #F5F2EC;
 }
 .pilar p {
   margin: 0;
@@ -1979,7 +2188,19 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-weight: 300;
   font-size: .9rem;
   line-height: 1.8;
-  color: var(--texto);
+  color: rgba(255, 255, 255, .74);
+}
+
+/* ESTE BLOQUE VIVÍA ARRIBA, ANTES de las reglas base de .pilar, y por eso no
+   hacía nada: mismas especificidades (0,1,0), y en un empate manda la última
+   escrita, media query o no. Las cuatro líneas quedaban pisadas por las de
+   abajo — o sea que en el teléfono los pilares nunca se compactaron como
+   decía la hoja. Movido aquí, ahora sí. */
+@media (max-width: 575.98px) {
+  .pilar { padding: 1rem .8rem .7rem; }
+  .pilar__icono { margin: .6rem 0 .45rem; font-size: 1rem; }
+  .pilar h3 { font-size: .72rem; letter-spacing: .18em; }
+  .pilar p { font-size: .82rem; line-height: 1.75; }
 }
 
 /* ---- 7d. Salida ligada al scroll ---------------------------------------
@@ -2024,10 +2245,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    subsecciones -las dos bandas, los pilares y el contador- entra en pantalla
    como una unidad legible en vez de repartirse en tres gestos de scroll. */
 @media (max-width: 767.98px) {
-  .seccion-nosotros { padding: 34px 0 30px; }
+  .seccion-nosotros { padding: 24px 0 22px; }
   /* "height", no "min-height": la propiedad que manda aquí es la que fija
      .nosotros-media más arriba, y un min-height no la baja. */
-  .nosotros-media { height: min(34vh, 265px); gap: 6px; }
+  .nosotros-media { height: min(34vh, 265px); gap: 4px; }
 
   .nm-sello {
     left: .7rem;
@@ -2247,7 +2468,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
   position: relative;
   overflow: hidden;
-  margin-top: clamp(2rem, 3.2vw, 2.9rem);
+  margin-top: clamp(1.1rem, 2vw, 1.8rem);
   padding: clamp(1.6rem, 2.6vw, 2.4rem) clamp(1rem, 2.5vw, 2rem);
   border-radius: 0;
   border: 1px solid rgba(210, 172, 71, .22);
@@ -2640,10 +2861,45 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      visible siempre, aun colapsado, para que se sepa qué es cada foto
      antes de tocarla. Solo la descripción y el "Ir" se reservan para el
      panel ya abierto (primer tap: revela; segundo tap: navega). */
-  .ag-panel__texto { opacity: 1; transform: none; }
+  /* isolation: el velo de aquí abajo va en z-index:-1 y sin un contexto de
+     apilamiento propio se colaría por DEBAJO del fondo ónix del panel — o
+     sea, invisible. Aislado, el -1 solo lo pone detrás del texto de esta
+     misma caja y encima de la foto, que es donde tiene que estar. */
+  .ag-panel__texto { opacity: 1; transform: none; isolation: isolate; }
+
+  /* VELO PROPIO BAJO EL TEXTO, y no basta con el de .ag-panel__overlay.
+     Ese está calculado para el panel ABIERTO -empieza a oscurecer al 40% de
+     la altura- y en móvil el panel colapsado mide 76px: el 40% cae a 30px
+     del techo, así que el nombre del tratamiento se apoya en la parte del
+     degradado que todavía es casi transparente. Encima las fotos van en
+     escala de grises al 75% de brillo, o sea que debajo del texto puede
+     haber literalmente un diente blanco.
+
+     Este segundo velo va pegado al bloque de texto y no al panel, así que
+     mide lo mismo esté colapsado o abierto. Se desborda por los cuatro
+     lados (los inset negativos) para que el degradado empiece ARRIBA del
+     texto y llegue al canto inferior del panel: si terminara justo donde
+     termina la caja, se vería el corte. */
+  .ag-panel__texto::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -2.2rem -1.3rem -1.3rem;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+                rgba(6, 5, 4, 0) 0%,
+                rgba(6, 5, 4, .55) 42%,
+                rgba(6, 5, 4, .88) 100%);
+  }
   .ag-panel__titulo {
     color: var(--gold-200);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, .7);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .8);
+  }
+  /* Y el velo del panel arranca antes: con 9 paneles en columna, la mitad
+     de arriba de cada foto sigue viéndose limpia y la de abajo sostiene el
+     texto. */
+  .ag-panel__overlay {
+    background: linear-gradient(180deg, transparent 18%, rgba(10, 8, 6, .55) 62%, rgba(10, 8, 6, .92) 100%);
   }
   .ag-panel__desc,
   .ag-panel__ir {
@@ -2726,9 +2982,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      gesto: cuanto más se demora el telón en bajar, más impaciente se vuelve
      lo que hay detrás. El revelado baja de 19vh a 10 y la banda de contacto
      aparece de una vez, en un solo movimiento, en cuanto se sale del negro.
-     En el diseño original tardaba 57. */
+     En el diseño original tardaba 57.
+
+     Cuarta pasada: 106vh, o sea 6vh de recorrido repartidos 0 + 3.7 + 2.3.
+     Encargo explícito: en cuanto el obturador de Testimonios se cierra, la
+     banda de abajo tiene que aparecer YA — rápido, pero con el difuminado
+     suave, no de golpe. Lo primero es esta altura; lo segundo es la curva
+     del revelado, que pasó de lineal a smootherstep (ver script.js, 14e):
+     sin tirón al arrancar ni al llegar, aunque el tramo sea corto.
+
+     El otro lado del mismo encargo es la cola de Testimonios, que bajó de 12
+     unidades a 2 (ver UNIDADES en testimonios-esfera.js): entre las dos, lo
+     que hay entre "pantalla en negro" y "banda nítida" pasa de ~22vh a ~5.7.
+     Los 2.3 de sostén son lo que evita que el pin se suelte en el mismo
+     píxel en que la banda termina de aparecer, que en móvil es donde la
+     barra de direcciones hace de las suyas. */
   position: relative;
-  height: 122vh;
+  height: 106vh;
 }
 .cierre-cine-pin {
   position: sticky;
@@ -2762,8 +3032,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    body y el revelado empezaba con un halo claro alrededor. */
 .cierre-cine-pin { background: var(--onix); }
 @media (max-width: 767.98px) {
-  /* 115vh = 15vh de recorrido: 0 de espera + 7 de revelado + 8 de sostén. */
-  .cierre-cine { height: 115vh; }
+  /* 104vh = 4vh de recorrido: 0 de espera + 2.5 de revelado + 1.5 de sostén.
+     Más corto todavía que en escritorio porque en el teléfono cada vh cuesta
+     un gesto de dedo, y este tramo no tiene nada que contar. No baja de 4:
+     por debajo de eso el pin deja de existir en la práctica y la banda entra
+     ya nítida, sin el difuminado que es justo lo que se quiere ver. */
+  .cierre-cine { height: 104vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cierre-cine { height: auto; }
@@ -2991,7 +3265,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* Redes sociales: aro fino en vez de disco relleno, más ligero y acorde al
    resto de botones "outline -> relleno" del sitio. */
-.redes-sociales { display: flex; gap: .7rem; }
+/* flex-wrap y no un gap más chico: son SEIS aros (Instagram, Facebook,
+   TikTok, YouTube, WhatsApp y correo) y a 42px con .7rem de separación miden
+   308px, justo por encima de los ~296 que deja la columna del pie en 992px.
+   Encogerlos para que quepan en una línea los dejaría por debajo del objetivo
+   táctil mínimo; que salten de línea no cuesta nada. */
+.redes-sociales { display: flex; flex-wrap: wrap; gap: .6rem; }
 .redes-sociales a {
   width: 42px; height: 42px;
   border-radius: 50%;
@@ -3099,26 +3378,54 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 
 /* ===== 12. BOTONES FLOTANTES =========================================== */
+/* EL MISMO ARO QUE LOS DE REDES DEL PIE, y a propósito: es el mismo botón,
+   la misma marca y el mismo gesto, solo que flotando. Antes era un disco
+   verde de WhatsApp con un latido propio — el único elemento del sitio que no
+   pertenecía a la marca, y encima el más ruidoso de la pantalla porque estaba
+   siempre encima de todo. La versión intermedia (ónix con canto dorado y el
+   latido en oro) seguía siendo una pieza inventada solo para este botón.
+
+   Ahora hereda literalmente .redes-sociales a: aro de plata de un píxel,
+   glifo en plata, y al pasar el cursor el aro se rellena con el degradado de
+   marca, el glifo pasa a ónix y el botón sube 4px. Sin latido: lo que había
+   que comunicar -"esto se toca"- ya lo dice el aro, y una animación en bucle
+   a pantalla completa durante toda la visita es justo lo que hacía que se
+   leyera como un anuncio pegado encima del sitio.
+
+   LA ÚNICA DIFERENCIA CON LOS DEL PIE es el disco ónix de fondo, y es la
+   misma razón que en .btn-subir: los del pie viven sobre el negro del pie,
+   pero este pasa por encima de la sección marfil, del mosaico de fotos y del
+   acordeón. Un aro de plata suelto sobre marfil da 1.9:1 y desaparece. Sobre
+   fondo oscuro el disco no se distingue del fondo y queda el aro solo, que es
+   la lectura discreta de las dos. */
 .wsp-flotante {
   position: fixed;
   bottom: 25px; right: 25px;
-  width: 66px; height: 66px;
-  background: #25d366;
-  color: #fff;
+  width: 56px; height: 56px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 2.1rem;
-  box-shadow: 0 8px 24px rgba(37, 211, 102, .45);
+  background: var(--onix);
+  border: 1px solid rgba(192, 192, 192, .55);
+  color: var(--plata);
+  font-size: 1.35rem;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
   z-index: 1040;
-  animation: pulso 2.2s infinite;
+  transition: var(--transicion);
 }
-.wsp-flotante:hover { color: #fff; transform: scale(1.08); }
-
-@keyframes pulso {
-  0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
-  70%  { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+/* El degradado va en hexadecimal y no en --gradiente-oro, por lo mismo que
+   los tonos de .btn-subir: .pagina-clara redefine esa variable a la rampa
+   PROFUNDA -oro oscurecido para que se lea sobre blanco- y este botón flota
+   sobre las cinco páginas. Con la variable, el relleno del hover salía oro
+   brillante en la portada y oro apagado en las interiores, con la etiqueta
+   en ónix encima en los dos casos. Aquí el relleno siempre se ve contra su
+   propio glifo negro, así que la rampa correcta es siempre la brillante. */
+.wsp-flotante:hover,
+.wsp-flotante:focus-visible {
+  background: linear-gradient(100deg, #AE8625 0%, #F7EF8A 32%, #D2AC47 64%, #EDC967 100%);
+  border-color: transparent;
+  color: #0A0806;
+  transform: translateY(-4px);
 }
 
 /* Volver arriba: un aro fino de plata, y nada más.
@@ -3140,9 +3447,13 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    Al pasar el cursor no se rellena: solo se cierra el aro y se aclara el
    ángulo. Un botón así de secundario no necesita un cambio de estado tan
    grande como los CTA de la página. */
+/* Apilado sobre el de WhatsApp y centrado con él: 25 (separación del borde)
+   + 56 (el disco de WhatsApp) + 12 de aire = 93 desde abajo; y de lado,
+   25 + 28 - 21 = 32, que alinea los dos centros. Si cambia el tamaño del
+   flotante de WhatsApp, estos dos números cambian con él. */
 .btn-subir {
   position: fixed;
-  bottom: 103px; right: 35px;
+  bottom: 93px; right: 32px;
   width: 42px; height: 42px;
   border: 1px solid rgba(192, 192, 192, .4);
   border-radius: 50%;
@@ -3371,7 +3682,6 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .titulo-seccion::after { transition: none; }
   .cortina { display: none; }
   html { scroll-behavior: auto; }
-  .wsp-flotante { animation: none; }
   .hero-slide-img { animation: none; }
 }
 
@@ -3388,12 +3698,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .seccion { padding: 72px 0; }
   .footer { padding-top: 60px; }
   /* padding-bottom generoso: en móvil los botones flotantes (WhatsApp +
-     volver arriba) ocupan hasta ~150px desde el borde inferior, así que la
+     volver arriba) ocupan hasta ~131px desde el borde inferior, así que la
      línea de créditos se sube por encima de los dos para que se lea entera. */
-  .footer-bottom { justify-content: center; text-align: center; padding-right: 0; padding-bottom: 152px; }
+  .footer-bottom { justify-content: center; text-align: center; padding-right: 0; padding-bottom: 138px; }
   .marco-imagen::before { display: none; }
-  .wsp-flotante { width: 58px; height: 58px; font-size: 1.85rem; }
-  .btn-subir { right: 31px; bottom: 97px; }
+  .wsp-flotante { width: 52px; height: 52px; font-size: 1.25rem; }
+  /* Misma cuenta que en escritorio con el disco de 52: 25+52+12 = 89 de
+     alto, y 25+26-21 = 30 de lado. */
+  .btn-subir { right: 30px; bottom: 89px; }
 }
 
 /* ===== 15. OBJETOS DECORATIVOS DE FONDO ================================= */
@@ -4450,8 +4762,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   font-size: .62rem;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--onix);
-  background: var(--plata);
+  /* Blanco puro sobre la foto del antes, igual que el chip de la esfera: las
+     dos variantes de la sección -con WebGL y sin él- tienen que hablar igual.
+     --plata (#C0C0C0) dejaba una etiqueta gris encima de una foto ya
+     desaturada, o sea gris sobre gris. */
+  color: #0A0806;
+  background: #FFFFFF;
 }
 
 .tst-tarjeta blockquote {
@@ -4482,23 +4798,25 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* ===== b) VARIANTE REALZADA: pin + esfera ============================== */
 
-/* 5 testimonios = 4 giros. El reparto no es lineal: el JS le da a cada
-   testimonio una MESETA (casi dos tercios de su tramo) en la que la esfera se
-   queda quieta, y hace el giro en el tramo del medio — si no, el disco pasa
-   de largo justo cuando uno quiere detenerse a comparar el antes/después.
-   El reparto exacto de esta altura entre apertura, mesetas, giros y obturador
-   está en scripts/testimonios-esfera.js, en el bloque "scroll -> posición":
-   es una sola tabla de números que hay que leer junto con este alto. */
+/* EL ALTO LO ESCRIBE EL JS, no esta hoja: depende de cuántos testimonios
+   tenga la lista del HTML. testimonios-esfera.js pone --alto-cine en el
+   elemento a partir de la misma tabla de unidades con la que reparte el
+   scroll (ver "REPARTO DEL SCROLL" en ese archivo), así que agregar o quitar
+   un testimonio ajusta el alto solo. Con siete son ~830vh en escritorio.
+
+   El 650vh que queda aquí es el valor de reserva -el de cinco testimonios-
+   por si el JS no llegara a correr con la clase ya puesta. Cambiarlo a mano
+   no sirve de nada: el JS lo pisa en cuanto arranca. El número a mover es
+   `meseta` en la tabla del JS.
+
+   El reparto no es lineal: cada testimonio tiene una MESETA (casi dos
+   tercios de su tramo) en la que la esfera se queda quieta, y el giro se
+   hace en el tramo del medio — si no, el disco pasa de largo justo cuando
+   uno quiere detenerse a comparar el antes/después. Esa meseta no es tiempo
+   muerto: es el único tramo en que el botón de antes/después responde y la
+   cita se lee al 100% de opacidad. */
 .testimonios-cine.esfera-activa {
-  /* 650vh (o sea 550vh de recorrido real, que es el alto menos la pantalla
-     del pin). Venía de 520 y sube porque la sección iba demasiado deprisa
-     para lo que se le pide: leer una cita, mirar el antes, pasar al después
-     y recién entonces seguir. Con el reparto del JS, esos 550vh dejan ~58vh
-     de scroll con cada testimonio COMPLETAMENTE quieto al frente —antes eran
-     ~43, y el primero se quedaba en la mitad de eso— y ~38vh para cada giro.
-     No es tiempo muerto: es el único tramo en que el botón de antes/después
-     responde y la cita se lee al 100% de opacidad. */
-  height: 650vh;
+  height: var(--alto-cine, 650vh);
 }
 
 .esfera-activa .testimonios-pin {
@@ -4605,8 +4923,10 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   color: var(--texto-suave);
 }
 
-/* Cinco marcas que se van encendiendo: dicen en qué testimonio va uno y
-   cuántos faltan, que si no el pin se siente sin fondo. */
+/* Una marca por testimonio, encendiéndose por turnos: dicen en qué va uno y
+   cuántos faltan, que si no el pin se siente sin fondo. La lista vive en el
+   HTML (.tst-pasos) y hay que mantenerla igual de larga que la de
+   testimonios. */
 .tst-pasos {
   list-style: none;
   /* El margen baja de 2.2rem porque las marcas ya no miden 2px de alto sino
@@ -4622,7 +4942,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      en cada cuadro. La animación se conserva tal cual -es la que dice en qué
      testimonio va uno- pero con altura fija y contención el recálculo se
      queda encerrado en esta lista: no sube al panel, ni al pin, ni a la
-     sección. Es la diferencia entre repintar cinco barritas y volver a medir
+     sección. Es la diferencia entre repintar unas barritas y volver a medir
      media portada cada vez que la esfera cambia de testimonio.
      "size" necesita la altura explícita; es la del área de toque. */
   height: 30px;
@@ -4634,9 +4954,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    contiene mide 30px de alto: eso es el ÁREA DE TOQUE. Una raya de 2px es
    imposible de acertar con el dedo, y estos botones son justo lo que hace
    navegable la sección en un teléfono. Los 26x30 quedan por debajo de los
-   44x44 que recomienda Apple, pero son cinco objetivos en fila y agrandarlos
-   más obligaría a separarlos tanto que dejarían de leerse como una barra de
-   progreso; a cambio van con margen vertical de sobra y sin nada pulsable
+   44x44 que recomienda Apple, pero son varios objetivos en fila -uno por
+   testimonio- y agrandarlos más obligaría a separarlos tanto que dejarían de
+   leerse como una barra de progreso; a cambio van con margen vertical de sobra y sin nada pulsable
    alrededor con lo que confundirlos. */
 .tst-pasos [data-paso] {
   position: relative;
@@ -4728,6 +5048,17 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 
 /* El chip cuelga por DEBAJO del círculo: dentro taparía la cara, que es
    justo lo que se viene a comparar. */
+/* EL "ANTES", EN BLANCO Y NEGRO PUROS. Ha pasado por dos tonos que no eran:
+   primero un gris cálido turbio -rgba(28,28,28,.74) con el rótulo en mármol,
+   dos tonos casi iguales que se leían apagados- y después un grafito
+   azulado, que con el rótulo en blanco hielo daba un conjunto frío y
+   deslavado. Ninguno de los dos era un color: eran grises con opinión.
+
+   Ahora no hay tinte de ninguna clase. Negro puro de fondo, blanco puro en
+   el aro y en el rótulo. Es literalmente "el antes en blanco y negro", que
+   además es lo que la foto está haciendo debajo (el disco del frente se ve
+   desaturado hasta que se revela el después). Y deja el par completo del
+   control: blanco y negro el antes, oro el después. */
 .testimonios-revelar__chip {
   transform: translateY(150%);
   display: inline-flex;
@@ -4735,23 +5066,29 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   gap: .5rem;
   padding: .4rem .95rem;
   border-radius: 999px;
-  background: rgba(28, 28, 28, .74);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--superficie-borde);
-  transition: background .35s ease, border-color .35s ease;
+  background: rgba(0, 0, 0, .78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, .5);
+  transition: background .35s ease, border-color .35s ease, color .35s ease;
 }
 .testimonios-revelar__estado {
   font-family: var(--fuente-menu);
   font-size: .66rem;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--marmol);
+  /* #FFFFFF y no --marmol (#F5F2EC, blanco hueso): sobre negro puro, ese
+     medio grado de calidez es justo lo que hacía que el chip pareciera
+     viejo. 19.6:1 contra el fondo. */
+  color: #FFFFFF;
 }
 .testimonios-revelar__pista {
   font-family: var(--fuente-cuerpo);
   font-size: .72rem;
-  color: var(--texto-suave);
+  /* Blanco al 66%: la pista es secundaria frente a "Antes", pero sobre negro
+     puro --texto-suave se caía a un gris de lápida — el mismo problema que
+     se acaba de arreglar en el rótulo. */
+  color: rgba(255, 255, 255, .66);
 }
 /* ---- PISTA DE "ESTO SE TOCA", SOLO EN EL PRIMER TESTIMONIO -------------
    Un anillo dorado que sale del borde del disco y se abre hacia fuera, más
@@ -4828,13 +5165,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .testimonios-revelar__chip {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: rgba(20, 18, 15, .9);
+    /* El mismo negro, ya opaco. */
+    background: rgba(0, 0, 0, .9);
   }
 }
 
-/* Ya revelado, la pista sobra: el chip se queda solo con "Después". */
+/* Ya revelado, la pista sobra: el chip se queda solo con "Después" — y pasa
+   de la plata al oro, que es el otro medio del par (ver el comentario del
+   chip). */
 .mostrando-despues .testimonios-revelar__chip {
-  background: rgba(210, 172, 71, .92);
+  background: rgba(210, 172, 71, .94);
   border-color: transparent;
 }
 .mostrando-despues .testimonios-revelar__estado { color: var(--onix); }
@@ -4844,11 +5184,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 /* ===== Pantallas medianas y móviles ==================================== */
 
 @media (max-width: 991.98px) {
-  /* 570vh = 470vh de recorrido. Misma proporción que en escritorio (las
-     constantes del JS son fracciones, no vh), un poco más corta porque en
-     móvil cada pantalla de scroll cuesta más gesto: ~50vh de meseta por
-     testimonio en vez de los ~37 de antes. */
-  .testimonios-cine.esfera-activa { height: 570vh; }
+  /* Aquí también manda --alto-cine: el JS ya encoge la unidad un 14% por
+     debajo de 992px (vhPorUnidad), porque en móvil cada pantalla de scroll
+     cuesta más gesto. Los 570vh son el valor de reserva de cinco
+     testimonios, el equivalente móvil del 650vh de escritorio. */
+  .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
 
   /* La etiqueta caía a 34px del borde, o sea DEBAJO de la navbar fija: en el
      móvil el logo se le montaba encima y la palabra quedaba pegada al techo.
@@ -4881,7 +5221,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
     /* min(), no 40ch a secas: 40ch de la fuente de cuerpo son ~356px, y
        sumados al relleno lateral de .testimonios-escena se pasaban del ancho
        de un teléfono de 390px. El pin recorta lo que sobra, así que la firma
-       ("CAMILA ORDÓÑEZ — Rehabilitación oral", la más larga de las cinco)
+       ("CAMILA ORDÓÑEZ — Rehabilitación oral", la más larga de todas)
        salía cortada por el borde derecho en vez de repartirse en dos
        líneas, que es lo que ya pide el flex-wrap de .tst-firma. */
     max-width: min(40ch, 100%);
@@ -6439,9 +6779,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
 .hamburguesa-icono span {
   background: linear-gradient(100deg, var(--silver-100) 0%, var(--silver-500) 45%, var(--silver-700) 100%);
 }
-.pagina-clara .navbar-toggler { color: var(--silver-900); }
+/* La rampa oscura de estas dos reglas existia porque la barra de las paginas
+   claras era transparente sobre blanco. Ahora la barra lleva su propio
+   degradado negro en las cinco paginas (ver seccion 4), asi que las tres
+   barras vuelven a la plata clara: sobre ese fondo, el gris oscuro de antes
+   era invisible. */
+.pagina-clara .navbar-toggler { color: var(--plata); }
 .pagina-clara .hamburguesa-icono span {
-  background: linear-gradient(100deg, #9A9A9A 0%, #6F6F6F 45%, #4F4F4F 100%);
+  background: linear-gradient(100deg, #ECECEC 0%, #C0C0C0 45%, #8A8A8A 100%);
 }
 
 /* Los enlaces del menú, también en plata y en las cinco páginas. Estaban

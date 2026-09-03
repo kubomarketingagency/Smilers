@@ -1040,79 +1040,81 @@ void main() {
       seccion.classList.toggle('mostrando-despues', encendido);
     }
 
-    /* ---- scroll -> posición --------------------------------------------
+    /* ---- REPARTO DEL SCROLL: UNA TABLA, Y TODO SALE DE ELLA -------------
        El recorrido arranca y termina con un tramo de "reposo" en el que la
        esfera no gira, para que el primer y el último testimonio se queden
        quietos un momento en vez de aparecer justo en el borde del pin.
 
        LOS DOS TRAMOS NO SON IGUALES, y no es un descuido: el recorrido no
        empieza donde empieza el primer testimonio (antes hay que levantar el
-       velo) ni termina donde termina el quinto (después entra el obturador),
-       así que para que los cinco duren LO MISMO las dos puntas tienen que
+       velo) ni termina donde termina el último (después entra el obturador),
+       así que para que todos duren LO MISMO las dos puntas tienen que
        compensar esas dos transiciones.
 
-       EL REPARTO, EN CLARO. Todo el recorrido de la sección se divide en
-       piezas, y de ahí salen las cinco constantes de más abajo:
+       ANTES ESTO ERAN CINCO FRACCIONES ESCRITAS A MANO, calculadas para
+       exactamente cinco testimonios (0.097, 0.703, 0.044, 0.853, 0.978).
+       Agregar uno a la lista del HTML las dejaba todas mal a la vez: las
+       mesetas se desigualaban, el imán dejaba de encuadrar el último y el
+       obturador empezaba a cerrarse encima de un testimonio todavía vivo. Y
+       nada lo avisaba, porque son números sueltos que no saben cuántos
+       elementos hay. Ahora la tabla es esta, y las fracciones se derivan de
+       ella y de items.length: la lista del HTML manda de verdad, agregar o
+       quitar un testimonio no pide tocar nada aquí.
 
-         apertura   A = 24     el velo se disuelve
-         meseta     D = 58     x5, un testimonio quieto al frente
-         giro       G = 38     x4, la esfera rueda al siguiente
-         obturador  C = 68     las dos hojas se juntan
-         cola       T = 12     negro antes de soltar el pin
-         ---------------------------------------------------
-         total        = 546    unidades (24 + 5·58 + 4·38 + 68 + 12)
+       LAS UNIDADES SON, EN LA PRÁCTICA, VH DE SCROLL (ver fijarAlto() más
+       abajo: el alto de la sección se calcula desde este mismo total). Si
+       algún día se pide "que la sección dure menos", el número a mover es
+       `meseta`: es el que se multiplica por el número de testimonios. */
+    var UNIDADES = {
+      apertura:  24,   // el velo negro se disuelve y entra el primero
+      meseta:    58,   // x N · un testimonio COMPLETAMENTE quieto al frente
+      giro:      38,   // x (N-1) · la esfera rueda hasta el siguiente
+      obturador: 68,   // las dos hojas del cierre se juntan en el centro
+      cola:       2    // negro absoluto antes de soltar el pin
+    };
 
-       Las mesetas de los cinco miden 58 EXACTAS, que era lo que se pedía: hasta
-       ahora la del primero valía la mitad que las demás (arrancaba pegada al
-       velo) y la del último dependía de dónde cayera el obturador. Y son 58
-       sobre 546 en vez de las ~43 sobre 420 de antes: un 37% más de scroll
-       parado en cada testimonio, para poder leer la cita y comparar el
-       antes/después sin carreras.
+    var N = items.length;
+    var TRAMOS = Math.max(1, N - 1);
+    var TOTAL = UNIDADES.apertura + N * UNIDADES.meseta + TRAMOS * UNIDADES.giro
+              + UNIDADES.obturador + UNIDADES.cola;
 
-       De ahí salen los números, sin magia:
-         MESETA        = D / (D+G)        = 58/96   = 0.604
-         REPOSO_INICIO = (A + D/2) / 546  = 53/546  = 0.097
-         TRAMO_GIRO    = 4·(D+G) / 546    = 384/546 = 0.703
-         CIERRE_DESDE  = (A + 5D + 4G)/546 = 466/546 = 0.853
-         CIERRE_HASTA  = CIERRE_DESDE + C/546        = 534/546 = 0.978
-       y el velo tiene que apagarse justo en A/546 = 0.044, no antes ni
-       después: si se apagara más tarde se comería meseta del primero, y si se
-       apagara antes el primero duraría de más. */
-    var REPOSO_INICIO = 0.097;
-    var TRAMO_GIRO    = 0.703;
-    // El reposo final -el 0.20 que queda hasta 1- no hace falta declararlo:
-    // es lo que sobra, y se reparte entre la media meseta del quinto
-    // testimonio, el obturador y la cola en negro.
+    /* Las mesetas miden lo mismo TODAS, incluidas la primera y la última: la
+       primera arranca a media meseta del velo (de ahí el + meseta/2) y la
+       última termina justo donde empieza el obturador. */
+    var REPOSO_INICIO = (UNIDADES.apertura + UNIDADES.meseta / 2) / TOTAL;
+    var TRAMO_GIRO    = TRAMOS * (UNIDADES.meseta + UNIDADES.giro) / TOTAL;
 
-    /* Dónde termina de disolverse el velo de apertura. Va atado al reparto de
-       arriba (A/546): no es un número suelto que se pueda tocar por su cuenta
-       sin desigualar la primera meseta. */
-    var APERTURA = 0.044;
+    /* Dónde termina de disolverse el velo de apertura. Va atado a la tabla:
+       si se apagara más tarde se comería meseta del primero, y si se apagara
+       antes el primero duraría de más. */
+    var APERTURA = UNIDADES.apertura / TOTAL;
 
     /* ---- cierre en obturador --------------------------------------------
-       Arranca DESPUÉS de que el quinto testimonio haya tenido su meseta
-       entera, y ocupa 68 de las 546 unidades del reparto: sobre los 550vh de
-       recorrido del escritorio son ~69vh de scroll cerrándose, frente a los
-       ~55 de antes. Las hojas tardan más en juntarse a propósito — así el
-       final se lee como un gesto y no como un telón que cae de golpe. Su
-       contrapartida está en el pin de abajo, que ahora revela la banda de
-       contacto en la mitad de distancia (ver script.js, 14e): cerrar despacio
-       se lee como una decisión; abrir despacio, como una espera.
+       Arranca DESPUÉS de que el último testimonio haya tenido su meseta
+       entera. Las hojas tardan en juntarse a propósito — así el final se lee
+       como un gesto y no como un telón que cae de golpe. Su contrapartida
+       está en el pin de abajo, que revela la banda de contacto en cuanto
+       recibe la pantalla (ver script.js, 14e): cerrar despacio se lee como
+       una decisión; abrir despacio, como una espera.
 
-       Y NO TERMINA EN EL 100%, sino en el 97.8. Los 12 puntos de cola son
-       scroll ya en negro absoluto antes de soltar el pin, y hacen falta
-       porque el progreso llega a 1 justo en el cuadro en que la sección
-       entrega la pantalla a #cierreCine: cerrando exactamente ahí, cualquier
-       variación de un píxel en el alto del viewport dejaba las hojas sin
-       juntar en el momento del relevo. Y en un teléfono eso no es "cualquier
-       variación": pasa CADA vez que la barra de direcciones se recoge o
-       vuelve, que cambia innerHeight -y con él el recorrido y el progreso- a
-       media bajada. De ahí el corte abrupto que se veía en móvil entre el
-       último testimonio y la banda de abajo. Con la cola, el cambio de una
-       sección a la otra ocurre con la pantalla apagada: no hay costura que
-       ver. */
-    var CIERRE_DESDE = 0.853;
-    var CIERRE_HASTA = 0.978;
+       Y NO TERMINA EN EL 100%: la cola es scroll ya en negro absoluto antes
+       de soltar el pin, y hace falta porque el progreso llega a 1 justo en
+       el cuadro en que la sección entrega la pantalla a #cierreCine.
+       Cerrando exactamente ahí, cualquier variación de un píxel en el alto
+       del viewport dejaba las hojas sin juntar en el momento del relevo — y
+       en un teléfono eso pasa CADA vez que la barra de direcciones se recoge
+       o vuelve, que cambia innerHeight a media bajada.
+
+       LA COLA BAJÓ DE 12 UNIDADES A 2, y esa es la mitad del encargo de "que
+       la siguiente sección aparezca de inmediato en cuanto se cierre la
+       pantalla". Doce unidades eran ~12vh de negro absoluto en los que ya no
+       pasaba nada: el obturador cerrado, la sección de abajo sin empezar, y
+       había que seguir bajando a ciegas. Dos bastan para el seguro del
+       párrafo anterior — es un colchón contra la barra de direcciones, no un
+       tramo de la puesta en escena. La otra mitad del encargo está en
+       .cierre-cine (ver estilos.css y script.js, 14e). */
+    var CIERRE_DESDE = (UNIDADES.apertura + N * UNIDADES.meseta + TRAMOS * UNIDADES.giro) / TOTAL;
+    var CIERRE_HASTA = CIERRE_DESDE + UNIDADES.obturador / TOTAL;
 
     /* ---- meseta por testimonio ------------------------------------------
        Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
@@ -1121,9 +1123,25 @@ void main() {
        fracción de cada tramo en la que la posición NO avanza (repartida
        mitad al principio y mitad al final del tramo); el giro se hace en el
        resto, con suavizado en las dos puntas para que no arranque de golpe.
-       0.604 = 58/96, o sea D/(D+G) del reparto de arriba: casi dos tercios
-       del scroll de cada testimonio son pausa. */
-    var MESETA = 0.604;
+       58/96 = 0.604: casi dos tercios del scroll de cada testimonio son
+       pausa. */
+    var MESETA = UNIDADES.meseta / (UNIDADES.meseta + UNIDADES.giro);
+
+    /* ---- ALTO DE LA SECCIÓN ---------------------------------------------
+       Lo escribe el JS y no el CSS, por lo mismo que las fracciones de
+       arriba: depende de cuántos testimonios haya. El CSS solo pone el valor
+       de reserva de --alto-cine, por si este archivo no llegara a correr.
+
+       Recorrido real = alto - una pantalla, así que al total en unidades se
+       le suman 100vh. Y la unidad no vale lo mismo en las dos anchuras: en
+       móvil cada pantalla de scroll cuesta más gesto, así que se encoge un
+       14% — es la proporción que ya tenían los 570vh de móvil contra los 650
+       de escritorio del reparto anterior. */
+    function vhPorUnidad() { return window.innerWidth < 992 ? 0.861 : 1.007; }
+    function fijarAlto() {
+      seccion.style.setProperty('--alto-cine', (100 + Math.round(TOTAL * vhPorUnidad())) + 'vh');
+    }
+    fijarAlto();
 
     function conParadas(t) {
       var ultimo = items.length - 1;
@@ -1214,7 +1232,7 @@ void main() {
         pasos.forEach(function (paso, i) {
           paso.classList.toggle('es-activo', i === indice);
           /* aria-current, no solo la clase: un lector de pantalla tiene que
-             poder decir cuál de los cinco botones es el que está sonando. */
+             poder decir cuál de los botones es el que está sonando. */
           if (i === indice) paso.setAttribute('aria-current', 'true');
           else paso.removeAttribute('aria-current');
         });
@@ -1285,8 +1303,8 @@ void main() {
 
        Los dos topes van atados a esas dos constantes y no escritos a mano,
        que es como el último testimonio se quedaba fuera: con un 0.80 fijo y
-       una meseta que caía en el 0.92, era el único de los cinco que la página
-       no terminaba de encuadrar nunca. Ahora el tope ES el arranque del
+       una meseta que caía en el 0.92, era el único que la página no
+       terminaba de encuadrar nunca. Ahora el tope ES el arranque del
        obturador, así que la quinta meseta -que termina justo ahí- entra
        entera, y cualquier retoque del reparto la sigue llevando con él. */
     /* ---- IR A UN TESTIMONIO ---------------------------------------------
@@ -1381,11 +1399,14 @@ void main() {
 
         /* "maximo" en 0.62 de pantalla y no el tope común (0.55): el salto más
            largo que este imán puede necesitar es medio tramo -la mitad del
-           camino entre el centro de una meseta y el de la vecina-, que con el
-           reparto de arriba son 0.088 del recorrido: 0.48 de pantalla en
-           escritorio (650vh) y 0.41 en móvil (570vh). Con el tope común
-           quedaba tan al filo que cualquier variación de alto lo descartaba y
-           el imán no se movía nunca. */
+           camino entre el centro de una meseta y el de la vecina-, o sea
+           TRAMO_GIRO/(2·TRAMOS) del recorrido, que sale a media meseta + medio
+           giro = 48 unidades. Como la unidad vale ~1vh por construcción (ver
+           fijarAlto), eso es medio viewport largo. Con el tope común quedaba
+           tan al filo que cualquier variación de alto lo descartaba y el imán
+           no se movía nunca. El margen tampoco depende de cuántos testimonios
+           haya: al crecer la lista crece el recorrido en la misma proporción,
+           así que el salto en píxeles se queda igual. */
         return { y: destino, maximo: 0.62 };
       });
     }
@@ -1395,6 +1416,10 @@ void main() {
        cae a un listener propio con el mismo contrato lectura -> escritura. */
     if (window.SmilersScroll) {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
+        /* El alto depende del ancho (la unidad vale menos en móvil), así que
+           se recalcula al redimensionar: sin esto, girar el teléfono o cruzar
+           los 992px dejaba la sección con el reparto de la otra anchura. */
+        fijarAlto();
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
@@ -1435,6 +1460,7 @@ void main() {
       };
       window.addEventListener('scroll', pedirActualizacion, { passive: true });
       window.addEventListener('resize', function () {
+        fijarAlto();
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();

@@ -365,16 +365,17 @@ window.SmilersScroll = SmilersScroll;
 /* Ejecutamos todo cuando el DOM esté listo */
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ===== 2. NAVBAR: fija, compacta al bajar y se oculta/reaparece ========
-     segun la direccion del scroll ========================================= *
+  /* ===== 2. NAVBAR: fija SIEMPRE, y solo se compacta al bajar ============
      - Umbrales distintos para activar (80px) y desactivar (40px) el modo
        compacto: si usaramos uno solo, el scroll natural del mouse/dedo hace
        que la clase entre y salga varias veces por segundo justo en ese punto,
        y el logo (que cambia de tamaño con .con-scroll) tiembla.
-     - Al bajar se oculta (transform: translateY, solo compositor, no
-       dispara layout); al subir vuelve a aparecer de inmediato. Cerca del
-       tope (< 120px) se ignora la direccion para que no "parpadee" con el
-       primer scroll chiquito.
+     - YA NO SE ESCONDE AL BAJAR. Antes la barra se retiraba con la direccion
+       del scroll (.navbar-oculto) porque era transparente: escondida o no,
+       sobre el lienzo onix no cambiaba gran cosa. Con el degradado negro que
+       lleva ahora es una barra de verdad, y una barra de verdad que aparece
+       y desaparece sola es justo lo que hace que el menu se sienta a dos
+       gestos de distancia. Se queda clavada arriba en todo el recorrido.
      - rAF evita correr la lectura/escritura de estilos mas de una vez por
        frame; sin esto, cada evento "scroll" (docenas por segundo) fuerza
        su propio recalculo. */
@@ -385,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // X dentro) se queda congelado en su sitio, sin importar si algún scroll
   // residual se cuela pese al overflow:hidden del body.
   const menu = document.getElementById('menuPrincipal');
-  let ultimoScrollY = window.scrollY;
 
   /* Solo ESCRIBE (clases). La posición de scroll se la pasa el planificador
      ya medida, así que este bloque no consulta el layout ni una vez. */
@@ -399,16 +399,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (y < 40) {
       navbar.classList.remove('con-scroll');
     }
-
-    if (y < 120) {
-      navbar.classList.remove('navbar-oculto');
-    } else if (y > ultimoScrollY) {
-      navbar.classList.add('navbar-oculto');       // bajando -> se oculta
-    } else if (y < ultimoScrollY) {
-      navbar.classList.remove('navbar-oculto');    // subiendo -> reaparece
-    }
-
-    ultimoScrollY = y;
   }
 
   SmilersScroll.registrar(null, controlarNavbar);
@@ -432,9 +422,6 @@ document.addEventListener('DOMContentLoaded', function () {
     menu.classList.toggle('menu-abierto', nuevoEstado);
     botonMenu.setAttribute('aria-expanded', String(nuevoEstado));
     document.body.style.overflow = nuevoEstado ? 'hidden' : '';
-    // Al abrir, el navbar vuelve a su sitio de inmediato (por si ya estaba
-    // oculto por scroll) para que la X no aparezca a medio camino.
-    if (nuevoEstado) navbar.classList.remove('navbar-oculto');
   }
 
   if (botonMenu) {
@@ -1565,8 +1552,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (progreso === ultimoProgresoCierre) return;
       ultimoProgresoCierre = progreso;
 
-      // 0%-46%: la cortina negra se desvanece, descubriendo la banda CTA.
-      // 46%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
+      // 0%-62%: la cortina negra se desvanece, descubriendo la banda CTA.
+      // 62%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
       //
       // Ya no hay tramo de espera en negro al principio, y es a propósito.
       // Este pin recibe la pantalla YA en negro: el obturador de Testimonios
@@ -1578,12 +1565,25 @@ document.addEventListener('DOMContentLoaded', function () {
       // contacto pareciera no llegar nunca.
       //
       // El reparto ha ido 30/60 sobre 90vh -> 12/72 sobre 50vh -> 0/55 sobre
-      // 35vh -> 0/46 sobre 22vh. El revelado en vh reales: 27 -> 30 -> 19 ->
-      // 10. Menos distancia, sí, y a propósito: es la contrapartida de que el
-      // obturador de Testimonios ahora tarde MÁS en cerrarse. Cerrar despacio
-      // se lee como un gesto; abrir despacio, como una espera. Así que el
-      // telón baja con calma y lo de detrás aparece de golpe.
-      var revelado = acotar(progreso / .46);
+      // 35vh -> 0/46 sobre 22vh -> 0/62 sobre 6vh. El revelado en vh reales:
+      // 27 -> 30 -> 19 -> 10 -> 3.7. Menos distancia, sí, y a propósito: es
+      // la contrapartida de que el obturador de Testimonios tarde MÁS en
+      // cerrarse. Cerrar despacio se lee como un gesto; abrir despacio, como
+      // una espera. Así que el telón baja con calma y lo de detrás aparece de
+      // golpe. Su otra mitad es la cola de Testimonios (UNIDADES.cola en
+      // testimonios-esfera.js), que bajó de 12 unidades a 2.
+      //
+      // Y LA CURVA YA NO ES LINEAL. Con 3.7vh de recorrido, un fundido lineal
+      // arranca y termina en seco: el negro empieza a levantarse en el primer
+      // píxel de scroll con toda su velocidad y se planta de golpe al llegar
+      // al final. Smootherstep (6t^5-15t^4+10t^3) deja la primera Y LA
+      // SEGUNDA derivada en cero en las dos puntas, así que el difuminado
+      // sale de la nada y se posa, sin que se vea el instante en que empieza
+      // ni el que acaba. Es la misma curva con la que se cierran las hojas
+      // del obturador de arriba, que es lo que encadena los dos gestos.
+      // Rápido en distancia, suave en forma: eso es lo que se pidió.
+      var t = acotar(progreso / .62);
+      var revelado = t * t * t * (t * (t * 6 - 15) + 10);
       negro.style.opacity = String(1 - revelado);
 
       /* La banda sale del desenfoque a la vez que el negro se levanta: las
