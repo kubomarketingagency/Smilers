@@ -456,8 +456,14 @@ void main() {
     vec4 antes = texture(uTexAntes, st);
     vec4 despues = texture(uTexDespues, st);
 
+    // Blanco y negro NEUTRO. Aqui habia un vec3(1.05, 0.99, 0.87)
+    // multiplicando el gris: mas rojo, menos azul, o sea un viraje sepia de
+    // los de foto antigua. Sobre una cara sana lo que hacia era darle un
+    // tono amarillento y enfermizo al "antes" -y de paso exagerar el cambio
+    // al revelar el despues, que es justo lo que un antes/despues no debe
+    // hacer-. Ahora el gris se queda gris.
     float gris = dot(antes.rgb, vec3(0.299, 0.587, 0.114));
-    vec3 blancoYNegro = vec3(gris) * vec3(1.05, 0.99, 0.87);
+    vec3 blancoYNegro = vec3(gris);
 
     float revelado = (itemIndex == uActivo) ? uRevelado : 0.0;
     vec3 color = mix(blancoYNegro, despues.rgb, revelado);
@@ -1070,7 +1076,7 @@ void main() {
       meseta:    58,   // x N · un testimonio COMPLETAMENTE quieto al frente
       giro:      38,   // x (N-1) · la esfera rueda hasta el siguiente
       obturador: 68,   // las dos hojas del cierre se juntan en el centro
-      cola:       2    // negro absoluto antes de soltar el pin
+      cola:       1    // negro absoluto antes de soltar el pin
     };
 
     var N = items.length;
@@ -1105,14 +1111,15 @@ void main() {
        en un teléfono eso pasa CADA vez que la barra de direcciones se recoge
        o vuelve, que cambia innerHeight a media bajada.
 
-       LA COLA BAJÓ DE 12 UNIDADES A 2, y esa es la mitad del encargo de "que
+       LA COLA BAJÓ DE 12 UNIDADES A 1, y esa es la mitad del encargo de "que
        la siguiente sección aparezca de inmediato en cuanto se cierre la
        pantalla". Doce unidades eran ~12vh de negro absoluto en los que ya no
        pasaba nada: el obturador cerrado, la sección de abajo sin empezar, y
-       había que seguir bajando a ciegas. Dos bastan para el seguro del
+       había que seguir bajando a ciegas. Una basta para el seguro del
        párrafo anterior — es un colchón contra la barra de direcciones, no un
        tramo de la puesta en escena. La otra mitad del encargo está en
-       .cierre-cine (ver estilos.css y script.js, 14e). */
+       .cierre-cine, donde el revelado dejó de colgar del scroll y pasó a ser
+       una transición en el tiempo (ver estilos.css y script.js, 14e). */
     var CIERRE_DESDE = (UNIDADES.apertura + N * UNIDADES.meseta + TRAMOS * UNIDADES.giro) / TOTAL;
     var CIERRE_HASTA = CIERRE_DESDE + UNIDADES.obturador / TOTAL;
 

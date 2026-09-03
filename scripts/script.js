@@ -1516,105 +1516,98 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
 
-  /* ===== 14e. CIERRE CINE: la cortina negra se levanta con el scroll =====
+  /* ===== 14e. CIERRE CINE: el telón se levanta solo, no con el scroll =====
      Simétrico a 14c: en vez de fundir una foto hacia el negro, aquí el
-     negro se desvanece para revelar la banda CTA que ya está armada
-     debajo. Misma técnica (progreso 0-1 según cuánto se recorrió el pin),
-     nada más que aplicada a una sola capa en vez de varias etapas. */
+     negro se desvanece para revelar la banda CTA que ya está armada debajo.
+     La diferencia con 14c -y con las cuatro versiones anteriores de este
+     mismo bloque- es que aquí el scroll ya NO interpola nada: solo dispara.
+     Ver el comentario de actualizarCierre() más abajo.
+
+     Ya no se toma referencia de #bandaCta: su desenfoque lo pone y lo quita
+     el CSS con la clase .cc-velado, no un estilo en línea por cuadro. */
   (function () {
     var envoltorio = document.getElementById('cierreCine');
     var negro = document.getElementById('cierreCineNegro');
-    var banda = document.getElementById('bandaCta');
     var contenido = document.querySelector('#bandaCta .banda-cta-contenido');
     if (!envoltorio || !negro) return;
 
-    /* Desenfoque más contenido en táctil: es un filtro sobre una sección a
-       pantalla completa y hay que rehacerlo en cada cuadro del revelado. */
-    var BLUR_REVELADO = window.matchMedia('(hover: none) and (pointer: coarse)').matches ? 7 : 16;
+    /* El desenfoque del revelado vive ahora en la hoja de estilos
+       (.cc-velado .banda-cta), no aquí: ya no hay que rehacerlo en cada
+       cuadro porque no cuelga del scroll, así que tampoco hace falta bajarlo
+       en táctil — es una sola transición de medio segundo. */
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var ultimoProgresoCierre = -1;
-    var progresoCierre = 0;   // lo mide la fase de lectura
+    var ultimoDesplazado = -1;
+    var desplazado = 0;   // píxeles ya recorridos del pin; lo mide la lectura
 
-    function acotar(valor) { return Math.min(1, Math.max(0, valor)); }
-
-    function leerCierre(ctx) {
-      var rect = envoltorio.getBoundingClientRect();
-      var alturaDesplazable = envoltorio.offsetHeight - ctx.alto;
-      progresoCierre = alturaDesplazable > 0 ? acotar(-rect.top / alturaDesplazable) : 0;
+    /* EN PÍXELES Y NO EN PROGRESO 0-1, y es deliberado. El progreso se mide
+       contra el recorrido total del pin, así que un umbral escrito como
+       fracción significa distancias distintas según lo alto que sea la
+       sección: con el pin en 4vh, 0.05 eran 0.2vh; con el pin en 50vh, los
+       mismos 0.05 son 2.5vh, o sea que el telón tardaría en levantarse justo
+       por haber alargado la PAUSA de después, que no tiene nada que ver.
+       Contando píxeles crudos desde que el pin se pega, el disparo ocurre
+       siempre en el mismo sitio: nada más llegar. */
+    function leerCierre() {
+      desplazado = -envoltorio.getBoundingClientRect().top;
     }
+
+    /* EL REVELADO YA NO SE MIDE EN SCROLL, SE DISPARA. Durante cuatro
+       iteraciones esto fue un fundido atado a la posición de la rueda, y el
+       tramo se fue acortando (90 -> 50 -> 35 -> 22 -> 6vh) para que la banda
+       apareciera antes. Pero por corto que fuera el tramo, la banda seguía
+       apareciendo A MEDIDA que se bajaba: había que seguir haciendo scroll
+       para terminar de verla, que es exactamente lo que se pidió quitar.
+
+       Ahora este bloque no interpola nada. Solo mira si el pin ya empezó y
+       conmuta una clase; el fundido y el desenfoque los hacen dos
+       transiciones CSS de medio segundo (ver .cierre-cine-negro y
+       .cc-velado en estilos.css). El resultado es inmediato -no depende de
+       cuánto más se baje- y suave -lo hace una curva en el tiempo, no un
+       salto-.
+
+       DOS UMBRALES Y NO UNO. Con un solo umbral, el temblor natural del
+       scroll justo en ese punto haría entrar y salir la clase varias veces
+       por segundo, y cada cambio reinicia medio segundo de transición: la
+       banda parpadearía. Con la histéresis hace falta retroceder de verdad
+       (por debajo de SALE) para que el telón vuelva a bajar.
+
+       Ocho píxeles para entrar: literalmente el primer empujón de rueda
+       después de que el obturador de Testimonios terminó de cerrarse. */
+    var ENTRA = 8;   // px recorridos del pin
+    var SALE  = 2;
+    var revelado = false;
 
     function actualizarCierre() {
-      var progreso = progresoCierre;
+      if (desplazado === ultimoDesplazado) return;
+      ultimoDesplazado = desplazado;
 
-      /* Mientras el pin no se mueve -o ya quedó atrás, con el progreso
-         clavado en 1- no hay nada que escribir. */
-      if (progreso === ultimoProgresoCierre) return;
-      ultimoProgresoCierre = progreso;
+      var quiere = revelado ? (desplazado > SALE) : (desplazado >= ENTRA);
+      if (quiere === revelado) return;
 
-      // 0%-62%: la cortina negra se desvanece, descubriendo la banda CTA.
-      // 62%-100%: ya revelada del todo, se sostiene hasta soltar el pin.
-      //
-      // Ya no hay tramo de espera en negro al principio, y es a propósito.
-      // Este pin recibe la pantalla YA en negro: el obturador de Testimonios
-      // se cierra del todo un poco antes de soltar su propio pin, así que
-      // cuando este empieza no hay nada que "esperar" — el negro con el que
-      // arranca la cortina enlaza sin costura con el que acaba de dejar la
-      // sección anterior. Todo tramo de espera que se pusiera aquí se
-      // SUMARÍA a ese negro heredado, y era lo que hacía que la banda de
-      // contacto pareciera no llegar nunca.
-      //
-      // El reparto ha ido 30/60 sobre 90vh -> 12/72 sobre 50vh -> 0/55 sobre
-      // 35vh -> 0/46 sobre 22vh -> 0/62 sobre 6vh. El revelado en vh reales:
-      // 27 -> 30 -> 19 -> 10 -> 3.7. Menos distancia, sí, y a propósito: es
-      // la contrapartida de que el obturador de Testimonios tarde MÁS en
-      // cerrarse. Cerrar despacio se lee como un gesto; abrir despacio, como
-      // una espera. Así que el telón baja con calma y lo de detrás aparece de
-      // golpe. Su otra mitad es la cola de Testimonios (UNIDADES.cola en
-      // testimonios-esfera.js), que bajó de 12 unidades a 2.
-      //
-      // Y LA CURVA YA NO ES LINEAL. Con 3.7vh de recorrido, un fundido lineal
-      // arranca y termina en seco: el negro empieza a levantarse en el primer
-      // píxel de scroll con toda su velocidad y se planta de golpe al llegar
-      // al final. Smootherstep (6t^5-15t^4+10t^3) deja la primera Y LA
-      // SEGUNDA derivada en cero en las dos puntas, así que el difuminado
-      // sale de la nada y se posa, sin que se vea el instante en que empieza
-      // ni el que acaba. Es la misma curva con la que se cierran las hojas
-      // del obturador de arriba, que es lo que encadena los dos gestos.
-      // Rápido en distancia, suave en forma: eso es lo que se pidió.
-      var t = acotar(progreso / .62);
-      var revelado = t * t * t * (t * (t * 6 - 15) + 10);
-      negro.style.opacity = String(1 - revelado);
-
-      /* La banda sale del desenfoque a la vez que el negro se levanta: las
-         dos hojas de Testimonios entregan la pantalla en negro y de ese
-         negro la siguiente sección se va enfocando, en vez de aparecer ya
-         nítida detrás de un fundido. */
-      if (banda) {
-        var desenfoque = (1 - revelado) * BLUR_REVELADO;
-        banda.style.filter = desenfoque > .15 ? 'blur(' + desenfoque.toFixed(1) + 'px)' : '';
-      }
-
-      if (contenido) {
-        contenido.style.opacity = String(revelado);
-        contenido.style.transform = 'translateY(' + ((1 - revelado) * 30).toFixed(1) + 'px)';
-      }
+      revelado = quiere;
+      envoltorio.classList.toggle('cc-revelado', revelado);
+      envoltorio.classList.toggle('cc-velado', !revelado);
     }
+
+    /* El telón arranca echado: la clase se pone ya, antes del primer scroll,
+       para que la banda no se vea nítida un cuadro si la página carga con el
+       navegador restaurando una posición del final. */
+    envoltorio.classList.add('cc-velado');
 
     /* Guarda: mientras el cierre esté a más de una pantalla, este bloque
        no mide ni escribe nada. Es el efecto que más se notaba dormido de
        balde — vive al final del documento, o sea que durante TODO el
        recorrido de la portada estaba calculando un progreso que valía 0. */
     SmilersScroll.registrar(leerCierre, actualizarCierre, function () {
-      ultimoProgresoCierre = -1;
+      ultimoDesplazado = -1;
     }, {
       guarda: envoltorio,
       alCambiarVisibilidad: function (dentro) {
-        /* La capa negra y el contenido de la banda animan opacidad y
-           transform durante todo el revelado; se les da capa propia mientras
-           dura y se les quita al salir. Al .banda-cta NO se le pide nada: ya
-           lleva un blur() escrito cuadro a cuadro, que crea su propia capa,
-           y sumarle will-change solo duplicaría la reserva. */
+        /* Capa propia para las dos piezas que animan, y solo mientras la
+           sección está en juego. Al .banda-cta no se le pide nada: su blur
+           ya crea su propia capa mientras dura, y al quitarse la clase el
+           filter vuelve a "none" y la capa se libera sola. */
         var valor = dentro ? 'opacity' : '';
         negro.style.willChange = valor;
         if (contenido) contenido.style.willChange = dentro ? 'opacity, transform' : '';
