@@ -44,7 +44,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Prata&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=e4a82f3a88">
+  <link rel="stylesheet" href="estilos/estilos.css?v=2071949351">
 
   <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
        paralelo con el CSS. Dos entradas con "media" porque el hero usa
@@ -367,49 +367,57 @@
 
     <!-- ===== 3a. SPLIT EDITORIAL: mosaico a media pantalla | texto =====
          En escritorio el mosaico ocupa literalmente la mitad del viewport
-         (grid 1fr/1fr rompiendo el .container), tal como se pidió. Cada
-         pieza lleva data-parallax con velocidad propia: al hacer scroll el
-         mosaico se "desarma" unos píxeles y vuelve a alinearse, que es lo
-         que da la sensación de profundidad sin animar nada costoso
-         (solo translate3d — ver script.js, "5c. PARALAJE DE SCROLL"). -->
+         (grid 1fr/1fr rompiendo el .container), tal como se pidió.
+
+         EL PARALAJE VA EN EL MOSAICO ENTERO, NO PIEZA POR PIEZA. Antes cada
+         figura llevaba su propio data-parallax con velocidad distinta (de
+         -34 a +42), y al hacer scroll el mosaico se "desarmaba" unos píxeles
+         y volvía a alinearse: con las fotos separadas 13px eso se leía como
+         profundidad. Con seis piezas encajadas y canales de 8px se lee como
+         que la rejilla está rota — las separaciones dejan de ser iguales y
+         además cambian mientras uno baja. Ahora el que se desplaza es el
+         bloque completo, así que los canales son fijos SIEMPRE y el mosaico
+         sigue moviéndose a distinta velocidad que el texto de al lado, que
+         es de donde salía la profundidad de verdad.
+         (Solo translate3d — ver script.js, "5c. PARALAJE DE SCROLL".) -->
     <div class="nosotros-split">
 
-      <div class="nosotros-media">
-        <figure class="nm-figura nm-figura--cima revelar revelar--velo" data-parallax="-34">
+      <div class="nosotros-media" data-parallax="-16">
+        <figure class="nm-figura nm-figura--cima revelar revelar--velo">
           <img src="imagenes/equipo-1.webp?v=7dadb1fd33"
                srcset="imagenes/equipo-1-720.webp?v=1a077e1d09 720w, imagenes/equipo-1.webp?v=7dadb1fd33 900w"
                sizes="(min-width: 992px) 50vw, 92vw" width="900" height="600"
                alt="Equipo de Smilers Dental Clinique atendiendo en consulta"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-26">
+        <figure class="nm-figura nm-figura--principal revelar revelar--velo">
           <img src="imagenes/nosotros.webp?v=50efd7060f"
                srcset="imagenes/nosotros-720.webp?v=726b9e3483 720w, imagenes/nosotros.webp?v=50efd7060f 1000w"
                sizes="(min-width: 992px) 30vw, 52vw" width="1000" height="750"
                alt="Odontólogo de Smilers Dental Clinique explicando una radiografía digital a su paciente"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="18">
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s">
           <img src="imagenes/tecnologia.webp?v=641c0d4bb5"
                srcset="imagenes/tecnologia-720.webp?v=c5c8153e42 720w, imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Escáner intraoral 3D en uso durante un diagnóstico digital" loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="34">
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s">
           <img src="imagenes/equipo-2.webp?v=cd4a853990"
                srcset="imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, imagenes/equipo-2.webp?v=cd4a853990 900w"
                sizes="(min-width: 992px) 20vw, 34vw" width="900" height="1350"
                alt="Especialista del equipo de Smilers Dental Clinique en consulta" loading="lazy" decoding="async">
         </figure>
 
-        <figure class="nm-figura nm-figura--pie revelar revelar--velo" style="--retraso:.2s" data-parallax="42">
+        <figure class="nm-figura nm-figura--pie revelar revelar--velo" style="--retraso:.2s">
           <img src="imagenes/sonrisa.webp?v=24597df771"
                srcset="imagenes/sonrisa-720.webp?v=15ba844325 720w, imagenes/sonrisa.webp?v=24597df771 800w"
                sizes="(min-width: 992px) 30vw, 92vw" width="800" height="552"
                alt="Sonrisa terminada tras un tratamiento de estética dental"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--pieb revelar revelar--velo" style="--retraso:.26s" data-parallax="30">
+        <figure class="nm-figura nm-figura--pieb revelar revelar--velo" style="--retraso:.26s">
           <img src="imagenes/aligner.webp?v=1494f07af8"
                srcset="imagenes/aligner-720.webp?v=f7f0c1946e 720w, imagenes/aligner.webp?v=1494f07af8 800w"
                sizes="(min-width: 992px) 20vw, 92vw" width="800" height="533"
@@ -420,7 +428,7 @@
         <!-- Sello de trayectoria: mismo dato que la tarjeta flotante anterior,
              ahora como pieza de vidrio ónix apoyada sobre el mosaico. -->
         <div class="nm-sello revelar" style="--retraso:.24s">
-          <span class="nm-sello__num">15</span>
+          <span class="nm-sello__num">25</span>
           <span class="nm-sello__txt">años de<br>práctica clínica</span>
         </div>
       </div>
@@ -509,42 +517,42 @@
          en móvil las dos bandas se lean igual: foto y después texto. -->
     <div class="nosotros-split nosotros-split--invertido">
 
-      <div class="nosotros-media">
-        <figure class="nm-figura nm-figura--cima revelar revelar--velo" data-parallax="-30">
+      <div class="nosotros-media" data-parallax="-13">
+        <figure class="nm-figura nm-figura--cima revelar revelar--velo">
           <img src="imagenes/hero-1.webp?v=9bd092de88"
                srcset="imagenes/hero-1-720.webp?v=44baaaa35a 720w, imagenes/hero-1.webp?v=9bd092de88 1920w"
                sizes="(min-width: 992px) 50vw, 92vw" width="1920" height="1284"
                alt="Sala de consulta de Smilers Dental Clinique con equipamiento digital"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--principal revelar revelar--velo" data-parallax="-22">
+        <figure class="nm-figura nm-figura--principal revelar revelar--velo">
           <img src="imagenes/hero-2.webp?v=41a603a5d5"
                srcset="imagenes/hero-2-720.webp?v=4385b8c0f3 720w, imagenes/hero-2.webp?v=41a603a5d5 1920w"
                sizes="(min-width: 992px) 30vw, 52vw" width="1920" height="1280"
                alt="Consultorio de Smilers Dental Clinique con sillón odontológico y equipo digital"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s" data-parallax="16">
+        <figure class="nm-figura nm-figura--alta revelar revelar--velo" style="--retraso:.09s">
           <img src="imagenes/cirugia.webp?v=e3d3520635"
                srcset="imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, imagenes/cirugia.webp?v=e3d3520635 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="1800"
                alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s" data-parallax="30">
+        <figure class="nm-figura nm-figura--baja revelar revelar--velo" style="--retraso:.16s">
           <img src="imagenes/implantologia.webp?v=ab7b059165"
                srcset="imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, imagenes/implantologia.webp?v=ab7b059165 1200w"
                sizes="(min-width: 992px) 20vw, 34vw" width="1200" height="800"
                alt="Instrumental de implantología esterilizado y listo para una cirugía" loading="lazy" decoding="async">
         </figure>
 
-        <figure class="nm-figura nm-figura--pie revelar revelar--velo" style="--retraso:.2s" data-parallax="38">
+        <figure class="nm-figura nm-figura--pie revelar revelar--velo" style="--retraso:.2s">
           <img src="imagenes/hero-3.webp?v=79aeb82853"
                srcset="imagenes/hero-3-720.webp?v=b88f3de464 720w, imagenes/hero-3.webp?v=79aeb82853 1920w"
                sizes="(min-width: 992px) 30vw, 92vw" width="1920" height="1280"
                alt="Consultorio con luz natural en la sucursal de Smilers Dental Clinique"
                loading="lazy" decoding="async">
         </figure>
-        <figure class="nm-figura nm-figura--pieb revelar revelar--velo" style="--retraso:.26s" data-parallax="26">
+        <figure class="nm-figura nm-figura--pieb revelar revelar--velo" style="--retraso:.26s">
           <img src="imagenes/equipo-3.webp?v=af31db4954"
                srcset="imagenes/equipo-3-720.webp?v=b62996f01b 720w, imagenes/equipo-3.webp?v=af31db4954 900w"
                sizes="(min-width: 992px) 20vw, 92vw" width="900" height="600"
@@ -582,7 +590,7 @@
         <ul class="nosotros-sedes revelar" style="--retraso:.16s">
           <li>
             <span class="ns-clave">Matriz</span>
-            <span class="ns-valor">General Camilo Destruge y Francisco Salazar</span>
+            <span class="ns-valor">General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB</span>
           </li>
           <li>
             <span class="ns-clave">Sucursal</span>
@@ -1117,7 +1125,7 @@
           </p>
 
           <ul class="footer-contacto">
-            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Matriz: General Camilo Destruge y Francisco Salazar, Quito, Ecuador</li>
+            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Matriz: General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB, Quito, Ecuador</li>
             <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
             <li><i class="fa-solid fa-phone"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg></i> <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+5932909990">2909-990</a></li>
             <li><i class="fa-solid fa-envelope"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-envelope"></use></svg></i> <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;tf=1&amp;to=smilersdentalclinique@gmail.com&amp;su=Consulta%20desde%20la%20web%20de%20Smilers&amp;body=Hola%2C%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%3A%20" target="_blank" rel="noopener">smilersdentalclinique@gmail.com</a></li>
@@ -1248,9 +1256,9 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=846862693b"></script>
+  <script src="scripts/script.js?v=550f603240"></script>
   <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
        hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=db8851df8b"></script>
+  <script src="scripts/testimonios-esfera.js?v=58550a2ceb"></script>
 </body>
 </html>

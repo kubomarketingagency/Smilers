@@ -1009,17 +1009,30 @@ void main() {
     var ultimaOpacidadBoton = -1;
     var ultimoBotonActivo = null;
 
-    /* ---- PISTA DE "ESTO SE TOCA" -----------------------------------------
+    /* ---- PISTA DE "ESTO SE TOCA": EN TODOS, NO SOLO EN EL PRIMERO --------
        El disco del frente cambia del antes al despues, pero nada lo decia:
        con raton se descubre sin querer al pasar por encima, y en un telefono
        -donde no hay hover y la pista de texto va oculta por sitio- no se
-       descubria nunca. La pista solo sale en el PRIMER testimonio: una vez
-       aprendido el gesto, repetirla en los otros cuatro seria ruido.
+       descubria nunca.
 
-       Se apaga para siempre en cuanto el visitante revela una foto o toca
-       una marca de progreso; hasta entonces vuelve a salir cada vez que se
-       regresa al primero (el CSS la deja en unas pocas repeticiones, no
-       eternas, para que no se convierta en un parpadeo de fondo). */
+       ANTES SALIA SOLO EN EL PRIMER TESTIMONIO, con el argumento de que una
+       vez aprendido el gesto repetirlo seria ruido. En la practica no se
+       sostiene: la seccion son varias pantallas de scroll y a nadie se le
+       queda que el disco se toca porque hace ocho pantallas parpadeo un
+       anillo. Peor todavia, quien entraba por una marca de progreso o venia
+       de vuelta ni siquiera veia el primero. Ahora el anillo sale en cada
+       testimonio al llegar a su meseta.
+
+       Y "gastada" pasa a ser POR TESTIMONIO, no global. Antes, revelar una
+       sola foto apagaba la pista para el resto de la visita; ahora apagarla
+       significa "en este ya lo hizo", y al llegar al siguiente vuelve a
+       salir. Eso es lo que hace que el efecto sea el mismo en los siete sin
+       convertirse en un parpadeo perpetuo encima del que ya esta jugando con
+       el disco: en el testimonio que estas mirando, en cuanto lo tocas, se
+       calla.
+
+       El CSS la deja en unas pocas repeticiones (no eternas) por lo mismo:
+       una pista que parpadea sin fin deja de leerse como invitacion. */
     var pistaGastada = false;
 
     function apagarPista() {
@@ -1028,11 +1041,29 @@ void main() {
       seccion.classList.remove('tst-pista-toque');
     }
 
-    function ajustarPista(indice) {
-      if (pistaGastada) return;
-      /* Quitar y volver a poner la clase reinicia la animación del CSS, que
-         es justo lo que se quiere al regresar al primer testimonio. */
-      seccion.classList.toggle('tst-pista-toque', indice === 0);
+    function ajustarPista() {
+      /* Se llama al cambiar de testimonio: el contador de "ya lo toco" se
+         reinicia y el anillo vuelve a salir desde el principio en el disco
+         que acaba de llegar al frente.
+
+         EL RE-ENCENDIDO VA EN EL CUADRO SIGUIENTE, y no es un capricho.
+         Quitar y volver a poner una clase dentro del mismo cuadro no
+         reinicia la animacion: el navegador solo compara el estilo calculado
+         al final del cuadro, no ve ningun cambio y la animacion sigue con el
+         ciclo que le quedara del testimonio anterior. La forma habitual de
+         forzarlo es leer offsetWidth entre el remove y el add, pero eso es un
+         reflow forzado — y esta funcion corre dentro de la fase de ESCRITURA
+         del planificador de scroll, o sea que invalidaria el layout para
+         todos los efectos que escriben despues en ese mismo cuadro (ver "1b.
+         PLANIFICADOR UNICO DE SCROLL" en scripts/script.js). Separandolo un
+         cuadro se consigue el mismo reinicio sin medir nada. */
+      pistaGastada = false;
+      seccion.classList.remove('tst-pista-toque');
+      requestAnimationFrame(function () {
+        /* Puede haber revelado la foto en el cuadro intermedio: si ya lo
+           hizo, la pista no vuelve. */
+        if (!pistaGastada) seccion.classList.add('tst-pista-toque');
+      });
     }
 
     function fijarRevelado(encendido) {
@@ -1243,7 +1274,7 @@ void main() {
           if (i === indice) paso.setAttribute('aria-current', 'true');
           else paso.removeAttribute('aria-current');
         });
-        ajustarPista(indice);
+        ajustarPista();
         fijarRevelado(false);   // al cambiar de testimonio vuelve al "antes"
       }
 

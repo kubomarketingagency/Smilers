@@ -614,15 +614,24 @@ document.addEventListener('DOMContentLoaded', function () {
      estilos después, que es el orden que evita el layout thrashing.
 
      a) data-parallax="N" — la pieza se desplaza N píxeles en vertical a lo
-        largo de su recorrido por la pantalla. Con valores de distinto signo
-        y magnitud, las piezas del mosaico de "Nosotros" se separan unos
-        píxeles y se vuelven a alinear, que es lo que da la profundidad.
+        largo de su recorrido por la pantalla, a distinta velocidad que lo
+        que tiene al lado, que es de donde sale la profundidad.
         Solo en escritorio con puntero fino: en táctil el scroll no emite
         eventos de forma continua (iOS los agrupa), así que el paralaje se
         ve a saltos en vez de fluido — mejor no tenerlo que tenerlo mal.
-        Por eso esas piezas entran con .revelar--velo (clip-path) y no con
-        la variante normal: si usaran transform, el valor inline de aquí lo
-        pisaría a media animación.
+
+        EN EL MOSAICO DE "NOSOTROS" EL ATRIBUTO VA EN EL CONTENEDOR, no en
+        cada foto. Lo llevaron las seis figuras, con velocidades distintas
+        entre sí (-34 a +42): el mosaico se "desarmaba" unos píxeles al bajar
+        y se volvía a alinear. Con las fotos separadas 13px eso se leía como
+        profundidad; con canales de 8px se lee como una retícula rota, porque
+        las separaciones dejan de ser iguales y encima cambian mientras uno
+        baja. Moviendo el bloque entero, los canales son fijos siempre.
+
+        Quien lleve data-parallax NO puede entrar con la variante normal de
+        .revelar, que anima transform: el valor en línea de aquí la pisaría a
+        media animación. Por eso las figuras del mosaico usan .revelar--velo
+        (clip-path) — y hoy además ya no llevan paralaje propio.
 
      b) data-escena-salida — la ENTRADA de una sección ya la resuelve
         .revelar pieza por pieza; la salida no existía, la sección

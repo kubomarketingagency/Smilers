@@ -1174,14 +1174,55 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      le suma. Sin este tope, un cuerpo un punto más grande la sacaría de la
      pantalla. */
   max-width: 100%;
+  /* ESQUINA "SELLO": redonda arriba a la izquierda y abajo a la derecha,
+     recta en las otras dos. No es un adorno suelto — es la firma de forma que
+     el sitio ya usa en --radio-tag (28px 8px 28px 8px), aquí llevada al
+     extremo de dos esquinas y cero en las otras, que es lo que hace que la
+     placa se lea como un sello y no como una tarjeta.
+
+     En "em" y no en píxeles, como el resto del marco: a 13rem son 37px y a
+     4.5rem son 13, así que la curva guarda la misma proporción con la letra
+     en las dos puntas del clamp. Con un valor fijo, en el teléfono la esquina
+     se comería media "S". */
+  border-radius: .18em 0 .18em 0;
   border: 1px solid rgba(210, 172, 71, .45);
-  /* Velo ónix traslúcido, PLANO y sin backdrop-filter. Un desenfoque de
-     fondo aquí obligaría a releer y volver a difuminar el carrusel entero en
-     cada cuadro del crossfade y del hero cine — es el mismo motivo por el que
-     .nm-sello dejó de ser vidrio esmerilado. Al 26% el fondo se sigue viendo
-     y la palabra deja de depender de él. */
-  background: rgba(10, 8, 6, .26);
+  /* VIDRIO ESMERILADO. Aquí había un velo plano y una nota diciendo que un
+     backdrop-filter no valía la pena; se pidió el esmerilado y sí se puede,
+     pero con el radio medido. La nota no era paranoia: un desenfoque de
+     fondo obliga al navegador a releer lo que hay detrás y volver a
+     difuminarlo cada vez que ese fondo cambia, y detrás de esta caja hay un
+     carrusel haciendo crossfade cada 4.2s y el hero cine reescribiendo
+     opacidades en cada cuadro del scroll.
+
+     Lo que lo hace asumible es que ESTA caja no es la pantalla: son ~700x250
+     px en escritorio, no un velo a pantalla completa como los que se
+     descartaron en su día (.nm-sello, el chip de testimonios). Y el coste de
+     un blur crece con el RADIO, no con el efecto: diez píxeles esmerilan de
+     sobra a este tamaño y cuestan una fracción de los cuarenta de un
+     desenfoque de escena.
+
+     El velo baja de .26 a .20 porque el esmerilado ya separa la palabra del
+     fondo: manteniéndolo al 26% el vidrio se veía sucio en vez de esmerilado.
+     El saturate levanta un punto la pátina dorada del hero (.hero-duotone),
+     que si no el vidrio la lava junto con el resto. */
+  background: rgba(10, 8, 6, .20);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
   box-shadow: 0 18px 60px rgba(0, 0, 0, .38);
+}
+/* En táctil el radio baja a 6px. No es que el efecto sobre: es que el coste
+   de un blur va con el cuadrado del radio y en un teléfono el mismo trabajo
+   se paga tres veces (DPR 3). A 6px sigue leyéndose como vidrio. */
+@media (hover: none) and (pointer: coarse) {
+  .hero-titulo {
+    -webkit-backdrop-filter: blur(6px) saturate(1.15);
+    backdrop-filter: blur(6px) saturate(1.15);
+  }
+}
+/* Donde no haya backdrop-filter, el velo vuelve a subir: sin esmerilado, un
+   fondo al 20% deja la palabra otra vez a merced de la foto que toque. */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .hero-titulo { background: rgba(10, 8, 6, .42); }
 }
 /* El filete interior de un pelo, separado del borde: es lo que hace que el
    marco se lea como una placa y no como un rectángulo dibujado encima. */
@@ -1193,6 +1234,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
      clamp. Con un valor fijo, en el teléfono se comía el aire. */
   inset: .04em;
   pointer-events: none;
+  /* El radio del filete interior es el del marco MENOS su inset: dos curvas
+     concéntricas separadas .04em. Con el mismo radio que el borde exterior,
+     las dos curvas se cruzarían en las esquinas y el filete se vería
+     despegado justo ahí. */
+  border-radius: .14em 0 .14em 0;
   border: 1px solid rgba(210, 172, 71, .16);
 }
 
@@ -1664,14 +1710,30 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1fr 1fr;
-  /* UN HILO FINO, NI PEGADAS NI SUELTAS. Este canal ha ido de 13px (seis
-     fotos sueltas apoyadas cerca) a 4-6 (demasiado cerca: dos fotos con el
-     mismo tono en el borde se fundían y el mosaico dejaba de leerse como
-     varias imágenes). Siete u ocho es el punto: se ve la línea de corte
-     entre pieza y pieza, y el bloque sigue leyéndose como una sola cosa
-     impresa. Es marfil de la sección lo que se ve por el canal, no un
-     borde: por eso "fino" aquí significa un valor de gap y no un color. */
-  gap: clamp(6px, .62vw, 9px);
+  /* OCHO PÍXELES FIJOS, Y POR LOS CUATRO LADOS. Dos decisiones en una:
+
+     1) FIJO, no clamp(). Este canal ha ido de 13px (seis fotos sueltas
+        apoyadas cerca) a 4-6 (demasiado cerca: dos fotos con el mismo tono
+        en el borde se fundían) y de ahí a un clamp de 6-9. Pero un canal que
+        cambia de grosor con el ancho de la ventana es justo lo que no se
+        quiere de una retícula: la gracia de una retícula es que la medida se
+        repita. Ocho píxeles, los mismos en un portátil y en un monitor.
+
+     2) EL PADDING, para que el canal EXTERIOR mida lo mismo que el interior.
+        Sin él, entre foto y foto había 8px y entre la foto del borde y el
+        marfil de la sección, cero: el mosaico se leía con las separaciones
+        mal repartidas, que es exactamente el error que se reportó. Con
+        padding:8px el marco de marfil que rodea el bloque es del mismo grosor
+        que las canaletas de dentro, y la retícula se cierra.
+        Va en padding y no en margin porque box-sizing:border-box (global) lo
+        descuenta de la altura declarada: el mosaico sigue midiendo lo que
+        dice la línea de "height" de más abajo.
+
+     LA CONTRAPARTIDA, ASUMIDA: la foto grande ya no sangra hasta el borde
+     mismo de la pantalla, se queda a 8px. Es el precio de que las cuatro
+     separaciones sean iguales, y era lo que se pidió. */
+  gap: 8px;
+  padding: 8px;
   /* ALTURA, no min-height, y esta es la corrección de fondo del tamaño del
      mosaico. Con "min-height" + "grid-template-rows: 1fr 1fr", las filas se
      dimensionan por su contenido: 1fr es minmax(auto, 1fr), y ese "auto" es
@@ -2346,7 +2408,11 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   .seccion-nosotros { padding: 24px 0 22px; }
   /* "height", no "min-height": la propiedad que manda aquí es la que fija
      .nosotros-media más arriba, y un min-height no la baja. */
-  .nosotros-media { height: min(34vh, 265px); gap: 5px; }
+  /* El canal se queda en 8px también aquí: la medida es la misma en todas
+     las anchuras, que es de lo que se trata. Solo sube el alto lo justo para
+     que las fotos no pierdan los 16px que ahora se llevan el padding
+     superior e inferior. */
+  .nosotros-media { height: min(36vh, 282px); }
 
   .nm-sello {
     left: .7rem;
@@ -3583,7 +3649,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
   position: absolute;
   inset: -1px;
   border-radius: 50%;
-  border: 1px solid rgba(210, 172, 71, .7);
+  /* Dos píxeles y el oro CLARO del degradado (#EDC967), no el champán medio
+     al 70%: a un píxel y translúcido, un anillo que además está escalando y
+     desvaneciéndose se quedaba en una insinuación. El halo lo pone el
+     box-shadow, por fuera y por dentro del trazo, que es lo que hace que se
+     lea como oro con luz y no como una raya amarilla. */
+  border: 2px solid #EDC967;
+  box-shadow: 0 0 14px rgba(237, 201, 103, .55),
+              inset 0 0 10px rgba(237, 201, 103, .3);
   pointer-events: none;
   opacity: 0;
   animation: ondaOro 3s cubic-bezier(.16, 1, .3, 1) infinite;
@@ -3592,11 +3665,14 @@ html { scrollbar-width: thin; scrollbar-color: var(--naranja) transparent; }
    parpadeo, dos encadenadas se leen como algo que emite. */
 .wsp-flotante::after { animation-delay: 1.5s; }
 
+/* Sale a opacidad plena y llega más lejos (1.6 en vez de 1.5): con el botón
+   en 56px eso son 17px por fuera del canto, todavía dentro de los 25 que lo
+   separan del borde de la pantalla. */
 @keyframes ondaOro {
   0%   { transform: scale(1);    opacity: 0; }
-  12%  { transform: scale(1.06); opacity: .8; }
-  62%  { transform: scale(1.5);  opacity: 0; }
-  100% { transform: scale(1.5);  opacity: 0; }
+  10%  { transform: scale(1.06); opacity: 1; }
+  66%  { transform: scale(1.6);  opacity: 0; }
+  100% { transform: scale(1.6);  opacity: 0; }
 }
 /* Al pasar el cursor las ondas se apagan: el relleno dorado del hover ya es
    el gesto, y dos anillos saliendo de un disco ya dorado no dicen nada. */
