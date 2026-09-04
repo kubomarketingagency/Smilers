@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=7a46d435ad">
   <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=5bc888daf2">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=32db098629">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=7fca5d012e">
 </head>
 
 <body class="pagina-clara pagina-nosotros">
@@ -125,14 +125,21 @@
       <h1 class="nos-titulo">
         <span class="nos-titulo__ligero">NOS</span><span class="nos-titulo__fuerte">OTROS</span>
       </h1>
-      <figure class="nos-portada__retrato">
-        <img src="../imagenes/equipo-2.webp?v=cd4a853990"
-             srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
-             sizes="(max-width: 767.98px) 42vw, 24vw"
-             width="900" height="1350"
-             alt="Especialista de Smilers Dental Clinique en consulta"
-             fetchpriority="high" decoding="async">
-      </figure>
+
+      <div class="nos-portada__figuras" aria-hidden="true">
+        <figure class="nos-figura nos-figura--fondo">
+          <img src="../imagenes/equipo-4.webp?v=53353e6f81"
+               srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
+               sizes="(max-width: 767.98px) 40vw, 21vw"
+               width="900" height="1350" alt="" decoding="async">
+        </figure>
+        <figure class="nos-figura nos-figura--frente">
+          <img src="../imagenes/equipo-2.webp?v=cd4a853990"
+               srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
+               sizes="(max-width: 767.98px) 40vw, 21vw"
+               width="900" height="1350" alt="" fetchpriority="high" decoding="async">
+        </figure>
+      </div>
     </div>
 
     <div class="nos-portada__pie">
@@ -154,32 +161,66 @@
     </nav>
 
     <section class="nos-m-historia revelar" style="--retraso:.05s" aria-labelledby="nosHistoria">
-      <h2 class="nos-rotulo" id="nosHistoria">
-        <span class="nos-rotulo__indice">01</span><span class="nos-rotulo__nombre">Nuestra historia</span>
+      <div class="nos-duo">
+        <div class="nos-duo__texto">
+          <h2 class="nos-rotulo" id="nosHistoria">
+            <span class="nos-rotulo__indice">01</span><span class="nos-rotulo__nombre">Nuestra historia</span>
+          </h2>
+          <p class="nos-lead">
+            Nacimos para redefinir lo que significa <em>ir al dentista</em>.
+          </p>
+          <p class="nos-parrafo">
+            Smilers Dental Clinique empezó siendo un consultorio pequeño y una convicción
+            grande: que la odontología de excelencia no tiene por qué sentirse fría. Que un
+            paciente puede entender su diagnóstico, saber exactamente qué se le va a hacer
+            y por qué, y salir de la consulta con la sensación de haber sido
+            <strong>cuidado</strong>, no simplemente atendido.
+          </p>
+          <p class="nos-parrafo">
+            Con los años ese consultorio creció hasta convertirse en una clínica con
+            especialistas en cada área, pero la forma de trabajar no cambió: primero
+            escuchar, después explicar, y solo entonces tratar. Cada equipo que
+            incorporamos y cada técnica que aprendimos se midieron con la misma vara — si
+            no mejoraba la experiencia del paciente, no entraba.
+          </p>
+          <p class="nos-parrafo">
+            Hoy somos un equipo de especialistas en Quito, con veinticinco años de práctica
+            clínica a la espalda. Y seguimos siendo, en lo esencial, aquel primer
+            consultorio: el mismo cuidado por el detalle, ahora con más manos y mejores
+            herramientas.
+          </p>
+        </div>
+
+        <figure class="nos-duo__figura">
+          <img src="../imagenes/nosotros.webp?v=50efd7060f"
+             srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
+             sizes="(max-width: 991.98px) 100vw, 40vw"
+             width="1000" height="750"
+             alt="Sala de atención de Smilers Dental Clinique"
+             loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </section>
+
+    <section class="nos-banda revelar" aria-labelledby="nosPregunta">
+      <p class="nos-banda__rotulo">La pregunta de siempre</p>
+      <h2 class="nos-banda__pregunta" id="nosPregunta">
+        ¿Por qué a casi nadie le gusta <em>ir al dentista</em>?
       </h2>
-      <p class="nos-lead">
-        Nacimos para redefinir lo que significa <em>ir al dentista</em>.
-      </p>
-      <p class="nos-parrafo">
-        Smilers Dental Clinique empezó siendo un consultorio pequeño y una convicción
-        grande: que la odontología de excelencia no tiene por qué sentirse fría. Que un
-        paciente puede entender su diagnóstico, saber exactamente qué se le va a hacer y
-        por qué, y salir de la consulta con la sensación de haber sido <strong>cuidado</strong>,
-        no simplemente atendido.
-      </p>
-      <p class="nos-parrafo">
-        Con los años ese consultorio creció hasta convertirse en una clínica con
-        especialistas en cada área, pero la forma de trabajar no cambió: primero
-        escuchar, después explicar, y solo entonces tratar. Cada equipo que incorporamos
-        y cada técnica que aprendimos se midieron con la misma vara — si no mejoraba la
-        experiencia del paciente, no entraba.
-      </p>
-      <p class="nos-parrafo">
-        Hoy somos un equipo de especialistas en Quito, con veinticinco años de práctica
-        clínica a la espalda y miles de sonrisas atendidas. Y seguimos siendo, en lo
-        esencial, aquel primer consultorio: el mismo cuidado por el detalle, ahora con
-        más manos y mejores herramientas.
-      </p>
+      <div class="nos-banda__respuesta">
+        <p>
+          Porque durante mucho tiempo la consulta se pareció más a un trámite que a un
+          cuidado: sillones fríos, explicaciones a medias y la sensación de no saber muy
+          bien qué está pasando dentro de la propia boca.
+        </p>
+        <p>
+          Nosotros partimos de lo contrario. Un diagnóstico que se explica hasta que se
+          entiende. Un presupuesto sin letra pequeña. Un equipo que sabe que el miedo al
+          dentista no se quita con prisa, sino con confianza. Eso es todo lo que hay
+          detrás de Smilers, y es bastante más difícil de sostener que cualquier
+          tecnología.
+        </p>
+      </div>
     </section>
 
     <section class="nos-m-mvo revelar" style="--retraso:.05s" aria-labelledby="nosMvo">
@@ -193,7 +234,7 @@
           <p class="nos-mvo__texto">
             Acompañar a cada paciente hacia una salud bucal duradera, con diagnósticos
             precisos, tratamientos de la más alta calidad y un trato humano que convierta
-            la visita al odontólogo en una experiencia serena, transparente y de confianza.
+            la visita al odontólogo en una experiencia serena y de confianza.
           </p>
         </article>
         <article class="nos-mvo__bloque">
@@ -222,15 +263,19 @@
         </li>
         <li>
           <span class="nos-objetivo__nombre">Cuidar el largo plazo</span>
-          <span class="nos-objetivo__texto">Un trabajo bien hecho es el que sigue bien diez años después. Por eso el seguimiento no termina con el tratamiento.</span>
+          <span class="nos-objetivo__texto">Un trabajo bien hecho es el que sigue bien diez años después. El seguimiento no termina con el tratamiento.</span>
         </li>
         <li>
           <span class="nos-objetivo__nombre">Formarnos sin parar</span>
           <span class="nos-objetivo__texto">Actualización clínica continua de todo el equipo, porque la odontología de hace cinco años ya no alcanza.</span>
         </li>
       </ol>
+    </section>
 
-      <h3 class="nos-mvo__rotulo">Los valores que lo sostienen</h3>
+    <section class="nos-m-valores revelar" style="--retraso:.05s" aria-labelledby="nosValores">
+      <h2 class="nos-rotulo" id="nosValores">
+        <span class="nos-rotulo__indice">03</span><span class="nos-rotulo__nombre">Nuestros valores</span>
+      </h2>
       <ul class="nos-valores">
         <li>
           <span class="nos-valor__nombre">Excelencia</span>
@@ -251,105 +296,6 @@
       </ul>
     </section>
 
-    <section class="nos-m-tecno revelar" style="--retraso:.05s" aria-labelledby="nosTecno">
-      <h2 class="nos-rotulo" id="nosTecno">
-        <span class="nos-rotulo__indice">03</span><span class="nos-rotulo__nombre">Tecnología e infraestructura</span>
-      </h2>
-
-      <div class="nos-tecno">
-        <div class="nos-tecno__texto">
-          <p class="nos-lead">
-            La tecnología no está para lucirse. <em>Se nota en el resultado.</em>
-          </p>
-          <p class="nos-parrafo">
-            Trabajamos con equipamiento de diagnóstico digital que nos permite ver antes de
-            intervenir. El escaneado intraoral sustituye a las impresiones incómodas, y la
-            imagen tridimensional nos deja planificar una cirugía o un implante sobre la
-            anatomía real del paciente, con margen de milímetros, en lugar de sobre una
-            estimación.
-          </p>
-          <p class="nos-parrafo">
-            Cada consultorio está pensado para que el tiempo en el sillón sea el más breve
-            y el más cómodo posible: iluminación cálida, ambiente silencioso y espacios
-            amplios donde un acompañante puede quedarse. La esterilización sigue protocolos
-            con trazabilidad por instrumental: cada set que llega a la boca de un paciente
-            tiene su propio registro.
-          </p>
-          <p class="nos-parrafo">
-            Nada de esto es decorado. Un diagnóstico más nítido significa menos sorpresas a
-            mitad del tratamiento; una planificación digital significa menos sesiones; y un
-            entorno cuidado significa que quien le tiene miedo al dentista se siente, por
-            una vez, tranquilo.
-          </p>
-        </div>
-
-        <ul class="nos-tecno__pilares">
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">01</span>
-            <span class="nos-tecno__nombre">Diagnóstico digital</span>
-            <span class="nos-tecno__detalle">Escaneado intraoral y radiología digital de baja dosis.</span>
-          </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">02</span>
-            <span class="nos-tecno__nombre">Planificación 3D</span>
-            <span class="nos-tecno__detalle">Cirugía e implantes proyectados sobre la anatomía real.</span>
-          </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">03</span>
-            <span class="nos-tecno__nombre">Bioseguridad</span>
-            <span class="nos-tecno__detalle">Esterilización con trazabilidad por instrumental.</span>
-          </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">04</span>
-            <span class="nos-tecno__nombre">Confort</span>
-            <span class="nos-tecno__detalle">Consultorios amplios, luz cálida y ambiente silencioso.</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="nos-mosaico">
-
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--a">
-          <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
-               srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="1200" height="800" alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Tecnología</figcaption>
-        </figure>
-
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--b">
-          <img src="../imagenes/nosotros.webp?v=50efd7060f"
-               srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="1000" height="750" alt="Sala de atención de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Instalaciones</figcaption>
-        </figure>
-
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--c">
-          <img src="../imagenes/sonrisa.webp?v=24597df771"
-               srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="800" height="552" alt="Resultado de un tratamiento estético" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Resultados</figcaption>
-        </figure>
-
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--d">
-          <img src="../imagenes/implantologia.webp?v=ab7b059165"
-               srcset="../imagenes/implantologia-480.webp?v=4a2132544d 480w, ../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
-               sizes="(max-width: 767.98px) 25vw, 11vw"
-               width="1200" height="800" alt="Detalle de un procedimiento de implantología" loading="lazy" decoding="async">
-        </figure>
-
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--e">
-          <img src="../imagenes/hero-2.webp?v=41a603a5d5"
-               srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
-               sizes="(max-width: 767.98px) 25vw, 11vw"
-               width="1920" height="1280" alt="Interior de la clínica" loading="lazy" decoding="async">
-        </figure>
-
-      </div>
-    </section>
-
     <section class="nos-m-equipo revelar" style="--retraso:.05s" aria-labelledby="nosEquipo">
       <h2 class="nos-rotulo" id="nosEquipo">
         <span class="nos-rotulo__indice">04</span><span class="nos-rotulo__nombre">Nuestro equipo</span>
@@ -359,14 +305,10 @@
       </p>
       <p class="nos-parrafo">
         Cada área tiene su responsable, y ninguno trabaja solo: los casos que tocan dos
-        especialidades se planifican entre las dos antes de empezar. Detrás de cada
-        tratamiento hay una segunda opinión que ya se dio dentro de casa.
-      </p>
-      <p class="nos-parrafo">
-        Lo que compartimos no es solo el método. Es la idea de que detrás de cada boca hay
-        una persona que preferiría estar en otro sitio, y que buena parte de nuestro
-        trabajo consiste en que eso deje de ser verdad. Abre una lámina para ver de qué se
-        ocupa cada especialidad.
+        especialidades se planifican entre las dos antes de empezar. Lo que compartimos no
+        es solo el método — es la idea de que detrás de cada boca hay una persona que
+        preferiría estar en otro sitio, y que buena parte de nuestro trabajo consiste en
+        que eso deje de ser verdad.
       </p>
 
       <div class="eq-acordeon" data-eq-acordeon>
@@ -483,9 +425,110 @@
       </div>
     </section>
 
+    <section class="nos-m-tecno revelar" style="--retraso:.05s" aria-labelledby="nosTecno">
+      <h2 class="nos-rotulo" id="nosTecno">
+        <span class="nos-rotulo__indice">05</span><span class="nos-rotulo__nombre">Tecnología e infraestructura</span>
+      </h2>
+
+      <div class="nos-tecno">
+        <div class="nos-tecno__texto">
+          <p class="nos-lead">
+            La tecnología no está para lucirse. <em>Se nota en el resultado.</em>
+          </p>
+          <p class="nos-parrafo">
+            Trabajamos con equipamiento de diagnóstico digital que nos permite ver antes de
+            intervenir. El escaneado intraoral sustituye a las impresiones incómodas, y la
+            imagen tridimensional nos deja planificar una cirugía o un implante sobre la
+            anatomía real del paciente, con margen de milímetros, en lugar de sobre una
+            estimación.
+          </p>
+          <p class="nos-parrafo">
+            Cada consultorio está pensado para que el tiempo en el sillón sea el más breve
+            y el más cómodo posible: iluminación cálida, ambiente silencioso y espacios
+            amplios donde un acompañante puede quedarse. La esterilización sigue protocolos
+            con trazabilidad por instrumental: cada set que llega a la boca de un paciente
+            tiene su propio registro.
+          </p>
+        </div>
+
+        <ul class="nos-tecno__pilares">
+          <li>
+            <span class="nos-tecno__indice" aria-hidden="true">01</span>
+            <span class="nos-tecno__nombre">Diagnóstico digital</span>
+            <span class="nos-tecno__detalle">Escaneado intraoral y radiología digital de baja dosis.</span>
+          </li>
+          <li>
+            <span class="nos-tecno__indice" aria-hidden="true">02</span>
+            <span class="nos-tecno__nombre">Planificación 3D</span>
+            <span class="nos-tecno__detalle">Cirugía e implantes proyectados sobre la anatomía real.</span>
+          </li>
+          <li>
+            <span class="nos-tecno__indice" aria-hidden="true">03</span>
+            <span class="nos-tecno__nombre">Bioseguridad</span>
+            <span class="nos-tecno__detalle">Esterilización con trazabilidad por instrumental.</span>
+          </li>
+          <li>
+            <span class="nos-tecno__indice" aria-hidden="true">04</span>
+            <span class="nos-tecno__nombre">Confort</span>
+            <span class="nos-tecno__detalle">Consultorios amplios, luz cálida y ambiente silencioso.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nos-mosaico">
+
+        <figure class="nos-mosaico__pieza nos-mosaico__pieza--a">
+          <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
+               srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
+               sizes="(max-width: 767.98px) 50vw, 22vw"
+               width="1200" height="800" alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
+          <figcaption class="nos-mosaico__leyenda">Tecnología</figcaption>
+        </figure>
+
+        <figure class="nos-mosaico__pieza nos-mosaico__pieza--b">
+          <img src="../imagenes/nosotros.webp?v=50efd7060f"
+               srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
+               sizes="(max-width: 767.98px) 50vw, 22vw"
+               width="1000" height="750" alt="Sala de atención de Smilers Dental Clinique" loading="lazy" decoding="async">
+          <figcaption class="nos-mosaico__leyenda">Instalaciones</figcaption>
+        </figure>
+
+        <figure class="nos-mosaico__pieza nos-mosaico__pieza--c">
+          <img src="../imagenes/sonrisa.webp?v=24597df771"
+               srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
+               sizes="(max-width: 767.98px) 50vw, 22vw"
+               width="800" height="552" alt="Resultado de un tratamiento estético" loading="lazy" decoding="async">
+          <figcaption class="nos-mosaico__leyenda">Resultados</figcaption>
+        </figure>
+
+        <figure class="nos-mosaico__pieza nos-mosaico__pieza--d">
+          <img src="../imagenes/implantologia.webp?v=ab7b059165"
+               srcset="../imagenes/implantologia-480.webp?v=4a2132544d 480w, ../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
+               sizes="(max-width: 767.98px) 25vw, 11vw"
+               width="1200" height="800" alt="Detalle de un procedimiento de implantología" loading="lazy" decoding="async">
+        </figure>
+
+        <figure class="nos-mosaico__pieza nos-mosaico__pieza--e">
+          <img src="../imagenes/hero-2.webp?v=41a603a5d5"
+               srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
+               sizes="(max-width: 767.98px) 25vw, 11vw"
+               width="1920" height="1280" alt="Interior de la clínica" loading="lazy" decoding="async">
+        </figure>
+
+      </div>
+
+      <ul class="nos-porque">
+        <li>Instalaciones exclusivas</li>
+        <li>Tecnología de punta</li>
+        <li>Atención personalizada</li>
+        <li>Materiales de primera calidad</li>
+        <li>Resultados que perduran</li>
+      </ul>
+    </section>
+
     <section class="nos-m-cifras revelar" style="--retraso:.05s" aria-labelledby="nosCifras">
       <h2 class="nos-rotulo" id="nosCifras">
-        <span class="nos-rotulo__indice">05</span><span class="nos-rotulo__nombre">En cifras</span>
+        <span class="nos-rotulo__indice">06</span><span class="nos-rotulo__nombre">En cifras</span>
       </h2>
       <div class="contador-lujo revelar" aria-label="Cifras de la clínica">
         <div class="cl-item">
@@ -510,19 +553,6 @@
         </div>
       </div>
     </section>
-
-    <aside class="nos-m-porque revelar" style="--retraso:.12s" aria-labelledby="nosPorque">
-      <h2 class="nos-rotulo" id="nosPorque">
-        <span class="nos-rotulo__indice">06</span><span class="nos-rotulo__nombre">Por qué Smilers</span>
-      </h2>
-      <ul class="nos-porque">
-        <li>Instalaciones exclusivas</li>
-        <li>Tecnología de punta</li>
-        <li>Atención personalizada</li>
-        <li>Materiales de primera calidad</li>
-        <li>Resultados que perduran</li>
-      </ul>
-    </aside>
 
     <div class="nos-cierre revelar">
       <p>¿Nos conocemos en persona?</p>
