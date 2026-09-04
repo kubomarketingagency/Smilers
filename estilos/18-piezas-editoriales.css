@@ -1,0 +1,238 @@
+.pagina-tratamientos {
+  --pz-solape: clamp(2.6rem, 7vw, 7rem);
+  --pz-tinta: #0A0A0A;
+  --pz-borde: rgba(210, 172, 71, .32);
+  --pz-curva: cubic-bezier(.22, 1, .36, 1);
+}
+
+.pz-seccion {
+  position: relative;
+  z-index: 1;
+}
+.pagina-tratamientos .pz-seccion > .container { max-width: 1480px; }
+
+.pz-regla {
+  display: block;
+  width: clamp(46px, 5.5vw, 68px);
+  height: 1px;
+  margin: clamp(.7rem, 1.1vw, .95rem) 0;
+  background: var(--gradiente-oro);
+}
+
+.pz-triptico {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(.9rem, 1.6vw, 1.5rem);
+}
+
+.pz-solape { margin-top: calc(-1 * var(--pz-solape)); }
+
+.pz-tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid var(--pz-borde);
+  box-shadow: 0 24px 64px rgba(10, 10, 10, .12);
+}
+
+.pz-tarjeta__foto {
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 7;
+  background: #EDE9E1;
+}
+.pz-tarjeta__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter .8s var(--pz-curva), transform .9s var(--pz-curva);
+}
+
+.pz-tarjeta__cuerpo {
+  position: relative;
+  flex: 1 1 auto;
+  padding: clamp(1.9rem, 3vw, 2.6rem) clamp(1.3rem, 2.1vw, 1.9rem) clamp(1.5rem, 2.4vw, 2.1rem);
+}
+
+.pz-tarjeta__sello {
+  position: absolute;
+  top: 0;
+  left: clamp(1.3rem, 2.1vw, 1.9rem);
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: clamp(42px, 3.4vw, 52px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(210, 172, 71, .5);
+  background: var(--pz-tinta);
+  color: var(--gold-200);
+  font-size: clamp(.9rem, 1.1vw, 1.05rem);
+}
+.pz-tarjeta__sello .icono { width: 1em; height: 1em; }
+
+.pz-tarjeta__titulo {
+  margin: 0;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: clamp(.8rem, 1.05vw, .9rem);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--nos-negro);
+}
+.pz-tarjeta__titulo::after {
+  content: "";
+  display: block;
+  width: clamp(38px, 4vw, 52px);
+  height: 1px;
+  margin: clamp(.85rem, 1.5vw, 1.2rem) 0 0;
+  background: var(--gradiente-oro);
+}
+
+.pz-tarjeta__texto {
+  margin: clamp(.9rem, 1.6vw, 1.2rem) 0 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .92rem;
+  line-height: 1.85;
+  color: var(--nos-texto);
+}
+
+@media (max-width: 991.98px) {
+  .pz-triptico { grid-template-columns: 1fr; }
+  .pagina-tratamientos { --pz-solape: clamp(1.6rem, 5vw, 3rem); }
+  .pz-tarjeta__foto { aspect-ratio: 16 / 6; }
+}
+
+.pz-cita {
+  position: relative;
+  margin: 0;
+  padding: clamp(1.6rem, 2.9vw, 2.6rem);
+  border: 1px solid rgba(210, 172, 71, .34);
+}
+.pz-cita__marca {
+  display: block;
+  margin: 0 0 clamp(.4rem, 1vw, .8rem);
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 4.6vw, 3.8rem);
+  line-height: .62;
+  color: var(--gold-500);
+}
+.pz-cita__texto {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  line-height: 1.7;
+  color: #F4F1EA;
+}
+.pz-cita__regla {
+  display: block;
+  width: clamp(40px, 4.4vw, 58px);
+  height: 1px;
+  margin: clamp(1.1rem, 2vw, 1.6rem) 0 clamp(.8rem, 1.4vw, 1.1rem);
+  background: var(--gradiente-oro);
+}
+.pz-cita__firma {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .7rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, .6);
+}
+
+.pz-medallones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: clamp(1.6rem, 3vw, 2.6rem) clamp(1.2rem, 2.4vw, 2.2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pz-medallon__aro {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(62px, 5.8vw, 84px);
+  aspect-ratio: 1;
+  margin-bottom: clamp(.9rem, 1.6vw, 1.25rem);
+  border: 1px solid var(--nos-linea);
+  border-radius: 50%;
+  color: var(--nos-dorado);
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+}
+.pz-medallon__aro::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(210, 172, 71, .28);
+  border-radius: 50%;
+}
+.pz-medallon__aro .icono { width: 1em; height: 1em; }
+.pz-medallon__nombre {
+  display: block;
+  margin-bottom: .5rem;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--nos-negro);
+}
+.pz-medallon__texto {
+  display: block;
+  max-width: 26ch;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .88rem;
+  line-height: 1.75;
+  color: var(--nos-texto);
+}
+
+.pagina-tratamientos .nos-portada { position: relative; z-index: 1; }
+
+.pagina-tratamientos .nos-titulo { font-size: min(8.6vw, 8.4rem); }
+
+
+.pagina-tratamientos .pz-intro {
+  padding: clamp(2.6rem, 5vw, 5rem) 0 clamp(1.4rem, 2.6vw, 2.4rem);
+}
+.pagina-tratamientos .pz-intro .nos-ruta { margin-bottom: clamp(1.6rem, 3vw, 2.6rem); }
+.pagina-tratamientos .pz-intro .nos-lead { max-width: 22ch; }
+.pagina-tratamientos .pz-intro .nos-parrafo { max-width: 62ch; }
+
+.pagina-tratamientos .bloque-tratamiento .titulo-seccion { margin-bottom: 0; }
+.pagina-tratamientos .bloque-tratamiento .pz-regla { margin-bottom: clamp(.8rem, 1.2vw, 1.05rem); }
+
+.pz-seccion--cita { padding: clamp(2rem, 4vw, 4rem) 0; }
+.pz-seccion--cita .pz-cita {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .9fr);
+  gap: clamp(1.4rem, 3vw, 3rem);
+  align-items: end;
+  padding: clamp(2.2rem, 4.4vw, 3.8rem);
+}
+.pz-seccion--cita .pz-cita__nota {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.92rem, 1.1vw, 1rem);
+  line-height: 1.9;
+  color: rgba(244, 241, 234, .78);
+}
+@media (max-width: 767.98px) {
+  .pz-seccion--cita .pz-cita { grid-template-columns: 1fr; align-items: start; }
+}
+
+.pagina-tratamientos .proceso .pz-medallones { margin-top: clamp(1.8rem, 3.4vw, 3rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-tarjeta__foto img { transition: none; }
+}

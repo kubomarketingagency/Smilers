@@ -16,10 +16,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Prata&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/01-variables.css?v=a9755c5c13">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
   <link rel="stylesheet" href="../estilos/03-botones.css?v=0d84d5591e">
-  <link rel="stylesheet" href="../estilos/04-navbar.css?v=c044ea70bb">
+  <link rel="stylesheet" href="../estilos/04-navbar.css?v=3342d4eb11">
   <link rel="stylesheet" href="../estilos/05-hero.css?v=944559e9d9">
   <link rel="stylesheet" href="../estilos/06-secciones.css?v=59e062c1d6">
   <link rel="stylesheet" href="../estilos/07-nosotros.css?v=09327e14ce">
@@ -27,15 +27,19 @@
   <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=71eaaef346">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=2da93e44a8">
   <link rel="stylesheet" href="../estilos/11-animaciones.css?v=e2373190e3">
-  <link rel="stylesheet" href="../estilos/12-interiores.css?v=485cf2a523">
-  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=db3b13d642">
-  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2edc077961">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=5bc888daf2">
+  <link rel="stylesheet" href="../estilos/12-interiores.css?v=58ffdcc9ca">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=1dd97b2e08">
+  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=7b29690584">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=dd21d42f44">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=15ba043f0d">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=f054ad9538">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=2b99660299">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=6d617aea94">
+  <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=d39d0d0e8f">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=82fce3e7c2">
 </head>
 
-<body class="pagina-clara pagina-nosotros">
+<body class="pagina-clara pagina-cubierta pagina-nosotros">
 
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
@@ -80,6 +84,9 @@
   </svg>
 
   <nav class="navbar navbar-principal fixed-top" id="navbarPrincipal">
+    <span class="navbar-marmol" aria-hidden="true">
+      <img src="../imagenes/fondos/marmol-negro-barra.webp?v=971a283533" width="1920" height="130" alt="" decoding="async">
+    </span>
     <div class="container">
 
       <a class="navbar-brand marca" href="../index.html">
@@ -115,434 +122,483 @@
     </div>
   </div>
 
-  <header class="nos-portada">
+  <header class="ns-portada ns-pantalla" id="portada" data-pantalla="Portada">
+    <span class="ns-fondo ns-fondo--marmol" aria-hidden="true">
+      <img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8"
+           width="1920" height="800" alt="" fetchpriority="high" decoding="async">
+    </span>
+    <span class="ns-pantalla__velo" aria-hidden="true"></span>
+    <span class="ns-portada__marca" aria-hidden="true">NOSOTROS</span>
 
-    <p class="nos-portada__lema">Sonrisas<br>que cambian<br>vidas.</p>
+    <div class="ns-envoltura">
+      <div class="ns-portada__reja">
 
-    <div class="nos-portada__escena">
-      <h1 class="nos-titulo">NOSOTROS</h1>
+        <div class="ns-portada__texto">
+          <nav class="ns-ruta ns-ruta--claro" aria-label="Ruta de navegación">
+            <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Nosotros</span>
+          </nav>
+          <p class="ns-rotulo ns-rotulo--claro">Nosotros &middot; Smilers Dental Clinique</p>
+          <h1 class="ns-titular">
+            La excelencia clínica
+            <em>explicada desde el origen</em>
+          </h1>
+          <p class="ns-portada__sub">
+            Smilers Dental Clinique — Sonrisas que se planean contigo.
+          </p>
+          <a class="ns-boton" href="#historia">
+            Conoce más <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
+          </a>
+        </div>
+
+        <figure class="ns-portada__figura crsl" data-carrusel data-intervalo="5200"
+                aria-label="Instalaciones de Smilers Dental Clinique">
+          <div class="crsl__pista">
+
+            <div class="crsl__toma crsl__toma--activa">
+              <img src="../imagenes/hero-3.webp?v=79aeb82853"
+                   srcset="../imagenes/hero-3-480.webp?v=23df82beb8 480w, ../imagenes/hero-3-720.webp?v=b88f3de464 720w, ../imagenes/hero-3.webp?v=79aeb82853 1920w"
+                   sizes="(max-width: 991.98px) 100vw, 38vw"
+                   width="1920" height="1280"
+                   alt="Consultorio de Smilers Dental Clinique iluminado con luz natural"
+                   fetchpriority="high" decoding="async">
+              <span class="crsl__pie"><i>01</i> &nbsp;Consultorios con luz natural</span>
+            </div>
+
+            <div class="crsl__toma">
+              <img src="../imagenes/hero-2.webp?v=41a603a5d5"
+                   srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
+                   sizes="(max-width: 991.98px) 100vw, 38vw"
+                   width="1920" height="1280"
+                   alt="Sillón dental preparado para una consulta" loading="lazy" decoding="async">
+              <span class="crsl__pie"><i>02</i> &nbsp;Confort en el sillón</span>
+            </div>
+
+            <div class="crsl__toma">
+              <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
+                   srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
+                   sizes="(max-width: 991.98px) 100vw, 38vw"
+                   width="1200" height="800"
+                   alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
+              <span class="crsl__pie"><i>03</i> &nbsp;Diagnóstico en 3D</span>
+            </div>
+
+            <div class="crsl__toma">
+              <img src="../imagenes/nosotros.webp?v=50efd7060f"
+                   srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
+                   sizes="(max-width: 991.98px) 100vw, 38vw"
+                   width="1000" height="750"
+                   alt="Atención a un paciente en Smilers Dental Clinique" loading="lazy" decoding="async">
+              <span class="crsl__pie"><i>04</i> &nbsp;Atención cercana</span>
+            </div>
+
+          </div>
+
+          <div class="crsl__mandos">
+            <button type="button" class="crsl__flecha crsl__flecha--previa" aria-label="Imagen anterior">
+              <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
+            </button>
+            <div class="crsl__puntos"></div>
+            <button type="button" class="crsl__flecha crsl__flecha--siguiente" aria-label="Imagen siguiente">
+              <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
+            </button>
+          </div>
+        </figure>
+
+      </div>
     </div>
 
-    <div class="nos-portada__pie">
-      <div class="nos-portada__firma">
-        <span class="nos-regla" aria-hidden="true"></span>
-        <p class="nos-portada__sub">Excelencia, cuidado y arte en cada sonrisa</p>
-      </div>
-      <p class="nos-portada__sello">
+    <div class="ns-portada__pie">
+      <p class="ns-portada__lema">Excelencia, cuidado y arte en cada sonrisa</p>
+      <p class="ns-portada__sello">
         <span>Smilers Dental Clinique</span>
         Quito &middot; Ecuador
       </p>
     </div>
   </header>
 
-  <main class="nos-lienzo">
+  <main>
 
-    <nav class="nos-ruta revelar" aria-label="Ruta de navegación">
-      <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Nosotros</span>
-    </nav>
+    <section class="ns-seccion ns-pantalla ns-pantalla--clara" id="historia"
+             data-pantalla="Historia" aria-labelledby="nsHistoria">
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
-    <section class="nos-m-historia revelar" style="--retraso:.05s" aria-labelledby="nosHistoria">
-      <div class="nos-duo">
-        <div class="nos-duo__texto">
-          <h2 class="nos-rotulo" id="nosHistoria">
-            <span class="nos-rotulo__indice">01</span><span class="nos-rotulo__nombre">Nuestra historia</span>
+      <div class="ns-envoltura">
+        <div class="ns-duo">
+
+          <div class="ns-duo__medios revelar">
+            <div class="ns-bento">
+              <figure class="ns-bento__pieza ns-bento__pieza--a">
+                <img src="../imagenes/nosotros.webp?v=50efd7060f"
+                     srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
+                     sizes="(max-width: 991.98px) 66vw, 32vw"
+                     width="1000" height="750"
+                     alt="Atención a un paciente en Smilers Dental Clinique" loading="lazy" decoding="async">
+              </figure>
+              <figure class="ns-bento__pieza ns-bento__pieza--b">
+                <img src="../imagenes/aligner.webp?v=1494f07af8"
+                     srcset="../imagenes/aligner-480.webp?v=e92d34e4c4 480w, ../imagenes/aligner-720.webp?v=f7f0c1946e 720w, ../imagenes/aligner.webp?v=1494f07af8 800w"
+                     sizes="(max-width: 991.98px) 34vw, 16vw"
+                     width="800" height="533"
+                     alt="Alineador invisible, detalle de una herramienta de precisión" loading="lazy" decoding="async">
+              </figure>
+              <figure class="ns-bento__pieza ns-bento__pieza--c">
+                <img src="../imagenes/sonrisa.webp?v=24597df771"
+                     srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
+                     sizes="(max-width: 991.98px) 34vw, 16vw"
+                     width="800" height="552"
+                     alt="Resultado de un tratamiento estético" loading="lazy" decoding="async">
+              </figure>
+              <figure class="ns-bento__pieza ns-bento__pieza--d">
+                <img src="../imagenes/implantologia.webp?v=ab7b059165"
+                     srcset="../imagenes/implantologia-480.webp?v=4a2132544d 480w, ../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
+                     sizes="(max-width: 991.98px) 66vw, 32vw"
+                     width="1200" height="800"
+                     alt="Detalle de un procedimiento de implantología" loading="lazy" decoding="async">
+              </figure>
+            </div>
+          </div>
+
+          <div class="ns-duo__texto revelar" style="--retraso:.08s">
+            <p class="ns-rotulo"><i>01</i> Nuestra historia</p>
+            <h2 class="ns-titulo" id="nsHistoria">
+              Nacimos para redefinir lo que significa <em>ir al dentista</em>.
+            </h2>
+            <p class="ns-parrafo">
+              Smilers Dental Clinique empezó en Quito siendo un consultorio pequeño y una
+              convicción grande: que la odontología de excelencia no tiene por qué sentirse
+              fría. Que un paciente puede entender su diagnóstico, saber exactamente qué se
+              le va a hacer y por qué, y salir de la consulta con la sensación de haber sido
+              <strong>cuidado</strong>, no simplemente atendido.
+            </p>
+            <p class="ns-parrafo">
+              Con los años ese consultorio creció hasta convertirse en una clínica con
+              especialistas en cada área, pero la forma de trabajar no cambió: primero
+              escuchar, después explicar, y solo entonces tratar.
+            </p>
+            <p class="ns-parrafo">
+              Hoy somos dos sedes en Quito y veinticinco años de práctica clínica. Y
+              seguimos siendo, en lo esencial, aquel primer consultorio: el mismo cuidado
+              por el detalle, ahora con más manos y mejores herramientas.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="ns-bloque ns-pantalla" id="fundamentos"
+             data-pantalla="Fundamentos" aria-labelledby="nsFundamentos">
+      <span class="ns-fondo ns-fondo--jardin" aria-hidden="true">
+        <img src="../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115"
+             srcset="../imagenes/fondos/jardin-mosaico-720.webp?v=5f4f2c8cbd 720w, ../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115 1440w"
+             sizes="100vw" width="1440" height="600" alt="" loading="lazy" decoding="async">
+      </span>
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
+
+      <div class="ns-envoltura">
+        <div class="revelar">
+          <p class="ns-rotulo ns-rotulo--claro">Fundamentos</p>
+          <h2 class="ns-titulo ns-titulo--claro" id="nsFundamentos">
+            Lo que nos mueve, <em>puesto por escrito</em>.
           </h2>
-          <p class="nos-lead">
-            Nacimos para redefinir lo que significa <em>ir al dentista</em>.
-          </p>
-          <p class="nos-parrafo">
-            Smilers Dental Clinique empezó siendo un consultorio pequeño y una convicción
-            grande: que la odontología de excelencia no tiene por qué sentirse fría. Que un
-            paciente puede entender su diagnóstico, saber exactamente qué se le va a hacer
-            y por qué, y salir de la consulta con la sensación de haber sido
-            <strong>cuidado</strong>, no simplemente atendido.
-          </p>
-          <p class="nos-parrafo">
-            Con los años ese consultorio creció hasta convertirse en una clínica con
-            especialistas en cada área, pero la forma de trabajar no cambió: primero
-            escuchar, después explicar, y solo entonces tratar. Cada equipo que
-            incorporamos y cada técnica que aprendimos se midieron con la misma vara — si
-            no mejoraba la experiencia del paciente, no entraba.
-          </p>
-          <p class="nos-parrafo">
-            Hoy somos un equipo de especialistas en Quito, con veinticinco años de práctica
-            clínica a la espalda. Y seguimos siendo, en lo esencial, aquel primer
-            consultorio: el mismo cuidado por el detalle, ahora con más manos y mejores
-            herramientas.
+        </div>
+
+        <ul class="ns-mvo revelar" style="--retraso:.08s">
+
+          <li class="ns-mvo__ficha">
+            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-heart"></use></svg></span>
+            <span class="ns-mvo__num">01</span>
+            <h3 class="ns-mvo__nombre">Misión</h3>
+            <p class="ns-mvo__texto">
+              Acompañar a cada paciente con empatía, confort real en el sillón y un
+              diagnóstico transparente: tiempos, alternativas y costos por delante, para
+              que nadie firme un plan que no entiende.
+            </p>
+          </li>
+
+          <li class="ns-mvo__ficha">
+            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-eye"></use></svg></span>
+            <span class="ns-mvo__num">02</span>
+            <h3 class="ns-mvo__nombre">Visión</h3>
+            <p class="ns-mvo__texto">
+              Transformar la experiencia odontológica en Quito eliminando el miedo de la
+              ecuación y poniendo la salud estética a largo plazo por delante del arreglo
+              rápido.
+            </p>
+          </li>
+
+          <li class="ns-mvo__ficha">
+            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-bullseye"></use></svg></span>
+            <span class="ns-mvo__num">03</span>
+            <h3 class="ns-mvo__nombre">Objetivos</h3>
+            <ul class="ns-mvo__lista">
+              <li>Innovación tecnológica: diagnóstico y planificación 3D en cada caso.</li>
+              <li>Actualización científica continua de todo el equipo clínico.</li>
+              <li>Atención personalizada, con todas las especialidades bajo un mismo techo.</li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+    <section class="ns-seccion ns-pantalla ns-pantalla--clara" id="valores"
+             data-pantalla="Valores" aria-labelledby="nsValores">
+      <span class="ns-fondo ns-fondo--claro" aria-hidden="true">
+        <img src="../imagenes/hero-2.webp?v=41a603a5d5"
+             srcset="../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
+             sizes="100vw" width="1920" height="1280" alt="" loading="lazy" decoding="async">
+      </span>
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
+
+      <div class="ns-envoltura">
+        <div class="revelar">
+          <p class="ns-rotulo"><i>02</i> Nuestros valores</p>
+          <h2 class="ns-titulo" id="nsValores">
+            Cuatro compromisos que <em>no se negocian</em>.
+          </h2>
+          <p class="ns-parrafo">
+            No son un cartel en la pared. Son los criterios con los que decidimos cuánto
+            tiempo pide un caso, qué material entra en tu boca y qué atajo descartamos
+            cuando aparece.
           </p>
         </div>
 
-        <figure class="nos-duo__figura">
-          <img src="../imagenes/nosotros.webp?v=50efd7060f"
-             srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
-             sizes="(max-width: 991.98px) 100vw, 40vw"
-             width="1000" height="750"
-             alt="Sala de atención de Smilers Dental Clinique"
-             loading="lazy" decoding="async">
-        </figure>
-      </div>
-    </section>
-
-    <section class="nos-banda revelar" aria-labelledby="nosPregunta">
-      <p class="nos-banda__rotulo">La pregunta de siempre</p>
-      <h2 class="nos-banda__pregunta" id="nosPregunta">
-        ¿Por qué a casi nadie le gusta <em>ir al dentista</em>?
-      </h2>
-      <div class="nos-banda__respuesta">
-        <p>
-          Porque durante mucho tiempo la consulta se pareció más a un trámite que a un
-          cuidado: sillones fríos, explicaciones a medias y la sensación de no saber muy
-          bien qué está pasando dentro de la propia boca.
-        </p>
-        <p>
-          Nosotros partimos de lo contrario. Un diagnóstico que se explica hasta que se
-          entiende. Un presupuesto sin letra pequeña. Un equipo que sabe que el miedo al
-          dentista no se quita con prisa, sino con confianza. Eso es todo lo que hay
-          detrás de Smilers, y es bastante más difícil de sostener que cualquier
-          tecnología.
-        </p>
-      </div>
-    </section>
-
-    <section class="nos-m-mvo revelar" style="--retraso:.05s" aria-labelledby="nosMvo">
-      <h2 class="nos-rotulo" id="nosMvo">
-        <span class="nos-rotulo__indice">02</span><span class="nos-rotulo__nombre">Misión, visión y objetivos</span>
-      </h2>
-
-      <div class="nos-mvo">
-        <article class="nos-mvo__bloque">
-          <h3 class="nos-mvo__nombre">Misión</h3>
-          <p class="nos-mvo__texto">
-            Acompañar a cada paciente hacia una salud bucal duradera, con diagnósticos
-            precisos, tratamientos de la más alta calidad y un trato humano que convierta
-            la visita al odontólogo en una experiencia serena y de confianza.
-          </p>
-        </article>
-        <article class="nos-mvo__bloque">
-          <h3 class="nos-mvo__nombre">Visión</h3>
-          <p class="nos-mvo__texto">
-            Ser la clínica dental de referencia por la calidad de nuestros resultados y por
-            la forma en que cuidamos a quienes nos confían su sonrisa: un lugar donde la
-            excelencia clínica y la calidez humana se den por descontadas.
-          </p>
-        </article>
-      </div>
-
-      <h3 class="nos-mvo__rotulo">Nuestros objetivos</h3>
-      <ol class="nos-objetivos">
-        <li>
-          <span class="nos-objetivo__nombre">Diagnosticar con precisión</span>
-          <span class="nos-objetivo__texto">Cada plan parte de un estudio digital completo, nunca de una impresión general.</span>
-        </li>
-        <li>
-          <span class="nos-objetivo__nombre">Tratar sin dolor innecesario</span>
-          <span class="nos-objetivo__texto">Protocolos mínimamente invasivos y control del dolor en cada procedimiento.</span>
-        </li>
-        <li>
-          <span class="nos-objetivo__nombre">Explicar siempre</span>
-          <span class="nos-objetivo__texto">Nadie firma un plan que no entiende: tiempos, alternativas y costos, por delante.</span>
-        </li>
-        <li>
-          <span class="nos-objetivo__nombre">Cuidar el largo plazo</span>
-          <span class="nos-objetivo__texto">Un trabajo bien hecho es el que sigue bien diez años después. El seguimiento no termina con el tratamiento.</span>
-        </li>
-        <li>
-          <span class="nos-objetivo__nombre">Formarnos sin parar</span>
-          <span class="nos-objetivo__texto">Actualización clínica continua de todo el equipo, porque la odontología de hace cinco años ya no alcanza.</span>
-        </li>
-      </ol>
-    </section>
-
-    <section class="nos-m-valores revelar" style="--retraso:.05s" aria-labelledby="nosValores">
-      <h2 class="nos-rotulo" id="nosValores">
-        <span class="nos-rotulo__indice">03</span><span class="nos-rotulo__nombre">Nuestros valores</span>
-      </h2>
-      <ul class="nos-valores">
-        <li>
-          <span class="nos-valor__nombre">Excelencia</span>
-          <span class="nos-valor__texto">En cada detalle, sin compromisos.</span>
-        </li>
-        <li>
-          <span class="nos-valor__nombre">Confianza</span>
-          <span class="nos-valor__texto">Tratamientos transparentes y honestos.</span>
-        </li>
-        <li>
-          <span class="nos-valor__nombre">Exclusividad</span>
-          <span class="nos-valor__texto">Atención personalizada para cada paciente.</span>
-        </li>
-        <li>
-          <span class="nos-valor__nombre">Innovación</span>
-          <span class="nos-valor__texto">Tecnología y técnicas de última generación.</span>
-        </li>
-      </ul>
-    </section>
-
-    <section class="nos-m-equipo revelar" style="--retraso:.05s" aria-labelledby="nosEquipo">
-      <h2 class="nos-rotulo" id="nosEquipo">
-        <span class="nos-rotulo__indice">04</span><span class="nos-rotulo__nombre">Nuestro equipo</span>
-      </h2>
-      <p class="nos-lead">
-        Doce especialistas, <em>una sola forma de trabajar</em>.
-      </p>
-      <p class="nos-parrafo">
-        Cada área tiene su responsable, y ninguno trabaja solo: los casos que tocan dos
-        especialidades se planifican entre las dos antes de empezar. Lo que compartimos no
-        es solo el método — es la idea de que detrás de cada boca hay una persona que
-        preferiría estar en otro sitio, y que buena parte de nuestro trabajo consiste en
-        que eso deje de ser verdad.
-      </p>
-
-      <div class="eq-acordeon" data-eq-acordeon>
-
-        <article class="eq-panel abierta" data-eq-panel>
-          <img class="eq-panel__foto" src="../imagenes/equipo-1.webp?v=7dadb1fd33"
-               srcset="../imagenes/equipo-1-480.webp?v=0109bd657d 480w, ../imagenes/equipo-1-720.webp?v=1a077e1d09 720w, ../imagenes/equipo-1.webp?v=7dadb1fd33 900w"
-               sizes="(max-width: 991.98px) 100vw, 50vw"
-               width="900" height="600" alt="Especialista de ortodoncia de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <span class="eq-panel__velo" aria-hidden="true"></span>
-          <span class="eq-panel__marca" aria-hidden="true"></span>
-          <h3 class="eq-panel__titulo">
-            <button class="eq-panel__disparador" type="button" aria-expanded="true" aria-controls="eq-ficha-1">
-              <span class="eq-panel__indice" aria-hidden="true">01</span>
-              <span class="eq-panel__nombre">Ortodoncia</span>
-              <span class="eq-panel__rol">Dra. Nombre Apellido</span>
-            </button>
-          </h3>
-          <div class="eq-panel__ficha" id="eq-ficha-1">
-            <p class="eq-panel__texto">
-              Alineamos mordidas con brackets estéticos y alineadores invisibles,
-              planificando cada movimiento en digital antes de tocar un diente. El plan
-              se revisa contigo: sabes cuánto va a durar y qué vas a ver en cada control.
-            </p>
-            <ul class="eq-panel__credenciales">
-              <li>Alineadores invisibles</li>
-              <li>Brackets estéticos</li>
-              <li>Ortodoncia interceptiva</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="eq-panel" data-eq-panel>
-          <img class="eq-panel__foto" src="../imagenes/equipo-2.webp?v=cd4a853990"
-               srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
-               sizes="(max-width: 991.98px) 100vw, 50vw"
-               width="900" height="1350" alt="Especialista de implantología y cirugía de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <span class="eq-panel__velo" aria-hidden="true"></span>
-          <h3 class="eq-panel__titulo">
-            <button class="eq-panel__disparador" type="button" aria-expanded="false" aria-controls="eq-ficha-2">
-              <span class="eq-panel__indice" aria-hidden="true">02</span>
-              <span class="eq-panel__nombre">Implantología</span>
-              <span class="eq-panel__rol">Dr. Nombre Apellido</span>
-            </button>
-          </h3>
-          <div class="eq-panel__ficha" id="eq-ficha-2">
-            <p class="eq-panel__texto">
-              Reponemos piezas perdidas con implantes guiados por tomografía, y resolvemos
-              extracciones complejas y terceros molares con protocolos mínimamente
-              invasivos. Menos tiempo en el sillón y una recuperación más corta.
-            </p>
-            <ul class="eq-panel__credenciales">
-              <li>Implantes unitarios y múltiples</li>
-              <li>Cirugía guiada</li>
-              <li>Terceros molares</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="eq-panel" data-eq-panel>
-          <img class="eq-panel__foto" src="../imagenes/equipo-3.webp?v=af31db4954"
-               srcset="../imagenes/equipo-3-480.webp?v=2caa776cc3 480w, ../imagenes/equipo-3-720.webp?v=b62996f01b 720w, ../imagenes/equipo-3.webp?v=af31db4954 900w"
-               sizes="(max-width: 991.98px) 100vw, 50vw"
-               width="900" height="600" alt="Especialista de estética dental de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <span class="eq-panel__velo" aria-hidden="true"></span>
-          <h3 class="eq-panel__titulo">
-            <button class="eq-panel__disparador" type="button" aria-expanded="false" aria-controls="eq-ficha-3">
-              <span class="eq-panel__indice" aria-hidden="true">03</span>
-              <span class="eq-panel__nombre">Estética dental</span>
-              <span class="eq-panel__rol">Dra. Nombre Apellido</span>
-            </button>
-          </h3>
-          <div class="eq-panel__ficha" id="eq-ficha-3">
-            <p class="eq-panel__texto">
-              Carillas, blanqueamiento y diseño digital de sonrisa. Antes de empezar ves
-              el resultado simulado sobre tu propia cara: el diseño se aprueba en
-              pantalla, no sobre la marcha.
-            </p>
-            <ul class="eq-panel__credenciales">
-              <li>Diseño de sonrisa digital</li>
-              <li>Carillas de porcelana</li>
-              <li>Blanqueamiento supervisado</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="eq-panel" data-eq-panel>
-          <img class="eq-panel__foto" src="../imagenes/equipo-4.webp?v=53353e6f81"
-               srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
-               sizes="(max-width: 991.98px) 100vw, 50vw"
-               width="900" height="1350" alt="Especialista de odontopediatría de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <span class="eq-panel__velo" aria-hidden="true"></span>
-          <h3 class="eq-panel__titulo">
-            <button class="eq-panel__disparador" type="button" aria-expanded="false" aria-controls="eq-ficha-4">
-              <span class="eq-panel__indice" aria-hidden="true">04</span>
-              <span class="eq-panel__nombre">Odontopediatría</span>
-              <span class="eq-panel__rol">Dra. Nombre Apellido</span>
-            </button>
-          </h3>
-          <div class="eq-panel__ficha" id="eq-ficha-4">
-            <p class="eq-panel__texto">
-              La primera visita marca la relación de un niño con el dentista para
-              siempre. Trabajamos sin prisa, explicando cada paso con palabras que
-              entienden y con la sala preparada para que el sillón no imponga.
-            </p>
-            <ul class="eq-panel__credenciales">
-              <li>Primera visita</li>
-              <li>Sellantes y flúor</li>
-              <li>Control de hábitos</li>
-            </ul>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <section class="nos-m-tecno revelar" style="--retraso:.05s" aria-labelledby="nosTecno">
-      <h2 class="nos-rotulo" id="nosTecno">
-        <span class="nos-rotulo__indice">05</span><span class="nos-rotulo__nombre">Tecnología e infraestructura</span>
-      </h2>
-
-      <div class="nos-tecno">
-        <div class="nos-tecno__texto">
-          <p class="nos-lead">
-            La tecnología no está para lucirse. <em>Se nota en el resultado.</em>
-          </p>
-          <p class="nos-parrafo">
-            Trabajamos con equipamiento de diagnóstico digital que nos permite ver antes de
-            intervenir. El escaneado intraoral sustituye a las impresiones incómodas, y la
-            imagen tridimensional nos deja planificar una cirugía o un implante sobre la
-            anatomía real del paciente, con margen de milímetros, en lugar de sobre una
-            estimación.
-          </p>
-          <p class="nos-parrafo">
-            Cada consultorio está pensado para que el tiempo en el sillón sea el más breve
-            y el más cómodo posible: iluminación cálida, ambiente silencioso y espacios
-            amplios donde un acompañante puede quedarse. La esterilización sigue protocolos
-            con trazabilidad por instrumental: cada set que llega a la boca de un paciente
-            tiene su propio registro.
-          </p>
-        </div>
-
-        <ul class="nos-tecno__pilares">
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">01</span>
-            <span class="nos-tecno__nombre">Diagnóstico digital</span>
-            <span class="nos-tecno__detalle">Escaneado intraoral y radiología digital de baja dosis.</span>
+        <ul class="ns-valores revelar" style="--retraso:.08s">
+          <li class="ns-valor">
+            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-info"></use></svg></span>
+            <span class="ns-valor__nombre">Transparencia en presupuestos</span>
+            <span class="ns-valor__texto">El plan se explica en pantalla y el costo se entrega por escrito. Sin letra pequeña ni sorpresas a mitad del tratamiento.</span>
           </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">02</span>
-            <span class="nos-tecno__nombre">Planificación 3D</span>
-            <span class="nos-tecno__detalle">Cirugía e implantes proyectados sobre la anatomía real.</span>
+          <li class="ns-valor">
+            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></span>
+            <span class="ns-valor__nombre">Odontología sin dolor innecesario</span>
+            <span class="ns-valor__texto">Protocolos mínimamente invasivos y control del dolor en cada procedimiento, desde una limpieza hasta una cirugía.</span>
           </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">03</span>
-            <span class="nos-tecno__nombre">Bioseguridad</span>
-            <span class="nos-tecno__detalle">Esterilización con trazabilidad por instrumental.</span>
+          <li class="ns-valor">
+            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
+            <span class="ns-valor__nombre">Especialistas por área</span>
+            <span class="ns-valor__texto">Cada área tiene su responsable, y los casos que tocan dos especialidades se planifican entre las dos antes de empezar.</span>
           </li>
-          <li>
-            <span class="nos-tecno__indice" aria-hidden="true">04</span>
-            <span class="nos-tecno__nombre">Confort</span>
-            <span class="nos-tecno__detalle">Consultorios amplios, luz cálida y ambiente silencioso.</span>
+          <li class="ns-valor">
+            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
+            <span class="ns-valor__nombre">Acompañamiento post-tratamiento</span>
+            <span class="ns-valor__texto">Revisiones periódicas después del alta. Un trabajo bien hecho es el que sigue bien diez años después.</span>
           </li>
         </ul>
       </div>
+    </section>
 
-      <div class="nos-mosaico">
+    <section class="ns-seccion ns-pantalla ns-pantalla--clara ns-equipo" id="equipo"
+             data-pantalla="Equipo" aria-labelledby="nsEquipo">
+      <span class="ns-fondo ns-fondo--marmol-claro" aria-hidden="true">
+        <img src="../imagenes/fondos/marmol-blanco.webp?v=7a0a399eb7"
+             width="1920" height="800" alt="" loading="lazy" decoding="async">
+      </span>
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--a">
-          <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
-               srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="1200" height="800" alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Tecnología</figcaption>
-        </figure>
+      <div class="ns-envoltura">
+        <div class="revelar">
+          <p class="ns-rotulo"><i>03</i> Nuestro equipo</p>
+          <h2 class="ns-titulo" id="nsEquipo">
+            El equipo detrás de <em>tu nueva sonrisa</em>.
+          </h2>
+        </div>
+      </div>
 
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--b">
-          <img src="../imagenes/nosotros.webp?v=50efd7060f"
-               srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="1000" height="750" alt="Sala de atención de Smilers Dental Clinique" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Instalaciones</figcaption>
-        </figure>
+      <div class="acordeon-galeria ns-equipo__galeria" id="acordeonEquipo"
+           role="list" aria-label="Especialistas de Smilers Dental Clinique">
 
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--c">
-          <img src="../imagenes/sonrisa.webp?v=24597df771"
-               srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
-               sizes="(max-width: 767.98px) 50vw, 22vw"
-               width="800" height="552" alt="Resultado de un tratamiento estético" loading="lazy" decoding="async">
-          <figcaption class="nos-mosaico__leyenda">Resultados</figcaption>
-        </figure>
+        <div class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-current="true">
+          <span class="ag-panel__media">
+            <img src="../imagenes/equipo-1.webp?v=7dadb1fd33"
+                 srcset="../imagenes/equipo-1-480.webp?v=0109bd657d 480w, ../imagenes/equipo-1-720.webp?v=1a077e1d09 720w, ../imagenes/equipo-1.webp?v=7dadb1fd33 900w"
+                 sizes="(min-width: 768px) 42vw, 96vw"
+                 width="900" height="600"
+                 alt="Especialista de ortodoncia de Smilers Dental Clinique" loading="lazy" decoding="async">
+          </span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
+            <span class="ag-panel__desc">Ortodoncia</span>
+          </span>
+        </div>
 
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--d">
-          <img src="../imagenes/implantologia.webp?v=ab7b059165"
-               srcset="../imagenes/implantologia-480.webp?v=4a2132544d 480w, ../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
-               sizes="(max-width: 767.98px) 25vw, 11vw"
-               width="1200" height="800" alt="Detalle de un procedimiento de implantología" loading="lazy" decoding="async">
-        </figure>
+        <div class="ag-panel" role="listitem" tabindex="0">
+          <span class="ag-panel__media">
+            <img src="../imagenes/equipo-2.webp?v=cd4a853990"
+                 srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
+                 sizes="(min-width: 768px) 42vw, 96vw"
+                 width="900" height="1350"
+                 alt="Especialista de implantología y cirugía de Smilers Dental Clinique" loading="lazy" decoding="async">
+          </span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
+            <span class="ag-panel__desc">Implantología y cirugía</span>
+          </span>
+        </div>
 
-        <figure class="nos-mosaico__pieza nos-mosaico__pieza--e">
-          <img src="../imagenes/hero-2.webp?v=41a603a5d5"
-               srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
-               sizes="(max-width: 767.98px) 25vw, 11vw"
-               width="1920" height="1280" alt="Interior de la clínica" loading="lazy" decoding="async">
-        </figure>
+        <div class="ag-panel" role="listitem" tabindex="0">
+          <span class="ag-panel__media">
+            <img src="../imagenes/equipo-3.webp?v=af31db4954"
+                 srcset="../imagenes/equipo-3-480.webp?v=2caa776cc3 480w, ../imagenes/equipo-3-720.webp?v=b62996f01b 720w, ../imagenes/equipo-3.webp?v=af31db4954 900w"
+                 sizes="(min-width: 768px) 42vw, 96vw"
+                 width="900" height="600"
+                 alt="Especialista de rehabilitación oral de Smilers Dental Clinique" loading="lazy" decoding="async">
+          </span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
+            <span class="ag-panel__desc">Rehabilitación oral</span>
+          </span>
+        </div>
+
+        <div class="ag-panel" role="listitem" tabindex="0">
+          <span class="ag-panel__media">
+            <img src="../imagenes/equipo-4.webp?v=53353e6f81"
+                 srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
+                 sizes="(min-width: 768px) 42vw, 96vw"
+                 width="900" height="1350"
+                 alt="Especialista de odontopediatría de Smilers Dental Clinique" loading="lazy" decoding="async">
+          </span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
+            <span class="ag-panel__desc">Odontopediatría</span>
+          </span>
+        </div>
 
       </div>
 
-      <ul class="nos-porque">
-        <li>Instalaciones exclusivas</li>
-        <li>Tecnología de punta</li>
-        <li>Atención personalizada</li>
-        <li>Materiales de primera calidad</li>
-        <li>Resultados que perduran</li>
-      </ul>
-    </section>
-
-    <section class="nos-m-cifras revelar" style="--retraso:.05s" aria-labelledby="nosCifras">
-      <h2 class="nos-rotulo" id="nosCifras">
-        <span class="nos-rotulo__indice">06</span><span class="nos-rotulo__nombre">En cifras</span>
-      </h2>
-      <div class="contador-lujo revelar" aria-label="Cifras de la clínica">
-        <div class="cl-item">
-          <span class="cl-num"><span data-contador="8500">0</span><i class="cl-sufijo">+</i></span>
-          <span class="cl-etiqueta">Pacientes atendidos</span>
-          <span class="cl-linea" aria-hidden="true"></span>
-        </div>
-        <div class="cl-item">
-          <span class="cl-num"><span data-contador="12">0</span></span>
-          <span class="cl-etiqueta">Especialistas</span>
-          <span class="cl-linea" aria-hidden="true"></span>
-        </div>
-        <div class="cl-item">
-          <span class="cl-num"><span data-contador="25">0</span></span>
-          <span class="cl-etiqueta">Años de experiencia</span>
-          <span class="cl-linea" aria-hidden="true"></span>
-        </div>
-        <div class="cl-item">
-          <span class="cl-num"><span data-contador="98">0</span><i class="cl-sufijo">%</i></span>
-          <span class="cl-etiqueta">Satisfacción</span>
-          <span class="cl-linea" aria-hidden="true"></span>
-        </div>
+      <div class="ns-envoltura">
+        <p class="ns-equipo__pie">Elige un retrato para conocer a su especialista.</p>
       </div>
     </section>
 
-    <div class="nos-cierre revelar">
-      <p>¿Nos conocemos en persona?</p>
-      <a href="https://api.whatsapp.com/send?phone=593997556002&amp;text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental"
-         target="_blank" rel="noopener" class="nos-boton">
-        Agenda tu valoración
-        <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
-      </a>
-    </div>
+    <section class="ns-seccion ns-pantalla ns-pantalla--clara" id="infraestructura"
+             data-pantalla="Infraestructura" aria-labelledby="nsInfra">
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
+
+      <div class="ns-envoltura">
+        <div class="revelar">
+          <p class="ns-rotulo"><i>04</i> Nuestra infraestructura</p>
+          <h2 class="ns-titulo" id="nsInfra">
+            Un espacio diseñado para <em>tu tranquilidad</em>.
+          </h2>
+          <p class="ns-parrafo">
+            Escaneado intraoral en lugar de impresiones incómodas, imagen tridimensional
+            para planificar sobre tu anatomía real, y esterilización con trazabilidad por
+            instrumental: cada set que llega a tu boca tiene su propio registro.
+          </p>
+        </div>
+
+        <div class="ns-galeria revelar" style="--retraso:.08s">
+          <figure>
+            <img src="../imagenes/hero-2.webp?v=41a603a5d5"
+                 srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
+                 sizes="(max-width: 767.98px) 100vw, 24vw"
+                 width="1920" height="1280"
+                 alt="Consultorio con sillón dental en Smilers Dental Clinique" loading="lazy" decoding="async">
+            <figcaption>Consultorios</figcaption>
+          </figure>
+          <figure>
+            <img src="../imagenes/cirugia.webp?v=e3d3520635"
+                 srcset="../imagenes/cirugia-480.webp?v=3c31b35eb6 480w, ../imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, ../imagenes/cirugia.webp?v=e3d3520635 1200w"
+                 sizes="(max-width: 767.98px) 100vw, 24vw"
+                 width="1200" height="1800"
+                 alt="Área quirúrgica con protocolo de bioseguridad" loading="lazy" decoding="async">
+            <figcaption>Bioseguridad</figcaption>
+          </figure>
+          <figure>
+            <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
+                 srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
+                 sizes="(max-width: 767.98px) 100vw, 24vw"
+                 width="1200" height="800"
+                 alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
+            <figcaption>Escáner 3D</figcaption>
+          </figure>
+          <figure>
+            <img src="../imagenes/hero-1.webp?v=9bd092de88"
+                 srcset="../imagenes/hero-1-480.webp?v=aeab827b33 480w, ../imagenes/hero-1-720.webp?v=44baaaa35a 720w, ../imagenes/hero-1.webp?v=9bd092de88 1920w"
+                 sizes="(max-width: 767.98px) 100vw, 24vw"
+                 width="1920" height="1284"
+                 alt="Sala equipada con tecnología digital en Smilers Dental Clinique" loading="lazy" decoding="async">
+            <figcaption>Tecnología en sala</figcaption>
+          </figure>
+        </div>
+
+        <ul class="ns-sedes revelar" style="--retraso:.12s">
+          <li class="ns-sede">
+            <span class="ns-sede__nombre">Matriz</span>
+            <ul>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg> General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB, Quito</li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg> <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+5932909990">2909-990</a></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg> Lun a Vie 9:00 – 19:00 &middot; Sáb 9:00 – 14:00</li>
+            </ul>
+          </li>
+          <li class="ns-sede">
+            <span class="ns-sede__nombre">Sucursal</span>
+            <ul>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg> Valparaíso N2158 y José Aguirre, Quito</li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg> <a href="tel:+593998113383">099-811-3383</a></li>
+              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg> Lun a Vie 9:00 – 19:00 &middot; Sáb 9:00 – 14:00</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ns-bloque ns-pantalla" id="cifras"
+             data-pantalla="En cifras" aria-labelledby="nsCifras">
+      <span class="ns-fondo" aria-hidden="true">
+        <img src="../imagenes/hero-1.webp?v=9bd092de88"
+             srcset="../imagenes/hero-1-720.webp?v=44baaaa35a 720w, ../imagenes/hero-1.webp?v=9bd092de88 1920w"
+             sizes="100vw" width="1920" height="1284" alt="" loading="lazy" decoding="async">
+      </span>
+      <span class="ns-pantalla__velo" aria-hidden="true"></span>
+
+      <div class="ns-envoltura">
+        <div class="revelar">
+          <p class="ns-rotulo ns-rotulo--claro">En cifras</p>
+          <h2 class="ns-titulo ns-titulo--claro" id="nsCifras">
+            Veinticinco años, <em>medidos</em>.
+          </h2>
+        </div>
+
+        <ul class="ns-cifras revelar" style="--retraso:.08s">
+          <li class="ns-cifra">
+            <span class="ns-cifra__num"><span data-contador="8500">0</span><i>+</i></span>
+            <span class="ns-cifra__etq">Pacientes atendidos</span>
+          </li>
+          <li class="ns-cifra">
+            <span class="ns-cifra__num"><span data-contador="12">0</span></span>
+            <span class="ns-cifra__etq">Especialistas</span>
+          </li>
+          <li class="ns-cifra">
+            <span class="ns-cifra__num"><span data-contador="25">0</span></span>
+            <span class="ns-cifra__etq">Años de experiencia</span>
+          </li>
+          <li class="ns-cifra">
+            <span class="ns-cifra__num"><span data-contador="98">0</span><i>%</i></span>
+            <span class="ns-cifra__etq">Satisfacción</span>
+          </li>
+        </ul>
+
+        <div class="ns-cta revelar" style="--retraso:.12s">
+          <h2>¿Nos conocemos en persona?</h2>
+          <a class="ns-boton"
+             href="https://api.whatsapp.com/send?phone=593997556002&amp;text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental"
+             target="_blank" rel="noopener">
+            Agenda tu valoración <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
+          </a>
+        </div>
+      </div>
+    </section>
 
   </main>
 
@@ -668,12 +724,12 @@
 
   <script src="../vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
   <script src="../scripts/planificador.js?v=d5cc9d4082"></script>
-  <script src="../scripts/navegacion.js?v=3e8e97bf56"></script>
+  <script src="../scripts/navegacion.js?v=54a68df087"></script>
   <script src="../scripts/revelados.js?v=c38a19e149"></script>
   <script src="../scripts/footer.js?v=7d71806edc"></script>
   <script src="../scripts/subpaginas.js?v=b13a1084ad"></script>
-  <script src="../scripts/secciones.js?v=7945704ccf"></script>
+  <script src="../scripts/secciones.js?v=ebc3d95c48"></script>
   <script src="../scripts/hero.js?v=d637ef3740"></script>
-  <script src="../scripts/equipo.js?v=3526c92b4d"></script>
+  <script src="../scripts/interiores.js?v=83b256aca2"></script>
 </body>
 </html>

@@ -1,0 +1,164 @@
+.pagina-nosotros,
+.pagina-tratamientos {
+  --gm-crema:      #FAF8F5;
+  --gm-crema-alt:  #F3F0E9;
+  --gm-superficie: #FFFFFF;
+  --gm-negro:      #0A0A0A;
+  --gm-negro-2:    #111111;
+  --gm-oro:        #C5A059;
+  --gm-oro-vivo:   #D4AF37;
+  --gm-oro-hondo:  #8A6C28;
+  --gm-texto:      #2B2B2B;
+  --gm-texto-2:    #5A554E;
+  --gm-borde:      rgba(197, 160, 89, .34);
+  --gm-borde-vivo: rgba(197, 160, 89, .70);
+  --gm-borde-osc:  rgba(212, 175, 55, .22);
+  --gm-sombra:     0 14px 38px rgba(43, 35, 20, .07);
+  --gm-sombra-alta:0 28px 64px rgba(43, 35, 20, .14);
+  --gm-radio:      4px;
+  --gm-curva:      cubic-bezier(.22, 1, .36, 1);
+
+  --gradiente-oro: linear-gradient(100deg, #A8823F 0%, #E3C57A 32%, #C5A059 64%, #D4AF37 100%);
+  --gradiente-oro-menudo: linear-gradient(100deg, #7A5F20 0%, #B8933F 34%, #8E7028 66%, #A98726 100%);
+
+  --nos-blanco: var(--gm-crema);
+  --nos-negro:  var(--gm-texto);
+  --nos-texto:  var(--gm-texto);
+  --nos-dorado: var(--gm-oro);
+  --nos-dorado-claro: var(--gm-oro-vivo);
+  --nos-dorado-texto: var(--gm-oro-hondo);
+  --nos-linea:  var(--gm-borde-vivo);
+  --texto: var(--gm-texto);
+  --texto-suave: var(--gm-texto-2);
+  --gold-200: var(--gm-oro-vivo);
+  --gold-500: var(--gm-oro);
+
+  background: var(--gm-crema);
+}
+
+.pagina-nosotros::before,
+.pagina-tratamientos::before {
+  background:
+    radial-gradient(115% 62% at 86% -12%, rgba(197, 160, 89, .09), transparent 58%),
+    radial-gradient(88% 55% at -12% 108%, rgba(197, 160, 89, .06), transparent 60%);
+}
+
+.pagina-tratamientos section.bloque-tratamiento:nth-of-type(even) {
+  background: var(--gm-crema-alt);
+}
+
+.pagina-tratamientos .seccion { padding: clamp(2.2rem, 3.8vw, 4rem) 0; }
+.pagina-tratamientos .bloque-tratamiento { padding: clamp(2rem, 3.4vw, 3.6rem) 0; }
+
+.pagina-cubierta .nos-portada {
+  background:
+    radial-gradient(120% 84% at 50% 116%, rgba(212, 175, 55, .13), transparent 64%),
+    linear-gradient(180deg, var(--gm-negro) 0%, var(--gm-negro-2) 58%, var(--gm-negro) 100%);
+  border-bottom-color: var(--gm-borde-osc);
+}
+
+.nos-portada__ambiente {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+}
+.nos-portada__ambiente img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .24;
+}
+.nos-portada__ambiente::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 8, .74) 0%, rgba(8, 8, 8, .5) 42%, rgba(6, 6, 6, .94) 100%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .08) 0 1px, transparent 1px 3px);
+}
+.pagina-cubierta .nos-portada > *:not(.nos-portada__ambiente) {
+  position: relative;
+  z-index: 1;
+}
+
+.pz-cita {
+  border-radius: var(--gm-radio);
+  border-color: var(--gm-borde-osc);
+  background:
+    radial-gradient(86% 124% at 88% -22%, rgba(212, 175, 55, .16), transparent 62%),
+    linear-gradient(180deg, var(--gm-negro) 0%, var(--gm-negro-2) 100%);
+}
+.pz-cita__texto { color: #FFFFFF; }
+
+.pz-tarjeta {
+  overflow: hidden;
+  border-radius: var(--gm-radio);
+  border-color: var(--gm-borde);
+  background: var(--gm-superficie);
+  box-shadow: var(--gm-sombra);
+  transition: transform .55s var(--gm-curva), box-shadow .55s var(--gm-curva),
+              border-color .55s var(--gm-curva);
+}
+.pz-tarjeta__foto img {
+  filter: saturate(1.04) contrast(1.02);
+  transform: scale(1.01);
+}
+.pz-tarjeta:hover .pz-tarjeta__foto img,
+.pz-tarjeta:focus-within .pz-tarjeta__foto img {
+  filter: saturate(1.1) contrast(1.03);
+  transform: scale(1.06);
+}
+.pz-tarjeta__sello {
+  background: var(--gm-negro);
+  border-color: var(--gm-borde-vivo);
+  color: var(--gm-oro-vivo);
+  box-shadow: 0 8px 20px rgba(43, 35, 20, .24);
+  transition: transform .55s var(--gm-curva);
+}
+
+.pz-medallon__aro {
+  background: var(--gm-superficie);
+  border-color: var(--gm-borde-vivo);
+  box-shadow: var(--gm-sombra);
+  transition: transform .5s var(--gm-curva), border-color .5s var(--gm-curva),
+              box-shadow .5s var(--gm-curva);
+}
+
+.pagina-tratamientos .comparador-marco {
+  border-radius: var(--gm-radio);
+  overflow: hidden;
+  border-color: var(--gm-borde-vivo);
+  box-shadow: var(--gm-sombra);
+}
+
+.pagina-tratamientos .btn {
+  border-radius: var(--gm-radio);
+  transition: background .45s var(--gm-curva), color .45s var(--gm-curva),
+              transform .45s var(--gm-curva), box-shadow .45s var(--gm-curva);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pz-tarjeta:hover {
+    transform: translateY(-7px);
+    border-color: var(--gm-borde-vivo);
+    box-shadow: var(--gm-sombra-alta);
+  }
+  .pz-tarjeta:hover .pz-tarjeta__sello { transform: translateY(-50%) scale(1.07); }
+  .pz-medallon:hover .pz-medallon__aro {
+    transform: translateY(-5px);
+    box-shadow: var(--gm-sombra-alta);
+  }
+  .pagina-tratamientos .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(148, 111, 33, .24);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-tarjeta,
+  .pz-tarjeta__sello,
+  .pz-medallon__aro,
+  .pagina-tratamientos .btn { transition: none; }
+}

@@ -16,10 +16,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/01-variables.css?v=a9755c5c13">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
   <link rel="stylesheet" href="../estilos/03-botones.css?v=0d84d5591e">
-  <link rel="stylesheet" href="../estilos/04-navbar.css?v=c044ea70bb">
+  <link rel="stylesheet" href="../estilos/04-navbar.css?v=3342d4eb11">
   <link rel="stylesheet" href="../estilos/05-hero.css?v=944559e9d9">
   <link rel="stylesheet" href="../estilos/06-secciones.css?v=59e062c1d6">
   <link rel="stylesheet" href="../estilos/07-nosotros.css?v=09327e14ce">
@@ -27,15 +27,18 @@
   <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=71eaaef346">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=2da93e44a8">
   <link rel="stylesheet" href="../estilos/11-animaciones.css?v=e2373190e3">
-  <link rel="stylesheet" href="../estilos/12-interiores.css?v=485cf2a523">
-  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=db3b13d642">
-  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2edc077961">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=5bc888daf2">
+  <link rel="stylesheet" href="../estilos/12-interiores.css?v=58ffdcc9ca">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=1dd97b2e08">
+  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=7b29690584">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=dd21d42f44">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=15ba043f0d">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=f054ad9538">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=2b99660299">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=6d617aea94">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=82fce3e7c2">
 </head>
 
-<body class="pagina-clara pagina-tratamientos">
+<body class="pagina-clara pagina-cubierta pagina-tratamientos">
 
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
@@ -80,6 +83,9 @@
   </svg>
 
   <nav class="navbar navbar-principal fixed-top" id="navbarPrincipal">
+    <span class="navbar-marmol" aria-hidden="true">
+      <img src="../imagenes/fondos/marmol-negro-barra.webp?v=971a283533" width="1920" height="130" alt="" decoding="async">
+    </span>
     <div class="container">
       <a class="navbar-brand marca" href="../index.html">
         <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
@@ -114,31 +120,138 @@
     </div>
   </div>
 
-  <header class="banner-pagina">
-    <div class="container">
-      <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
-        <i class="fa-solid fa-house"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-house"></use></svg></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-right"></use></svg></i> <span>Tratamientos</span>
-      </nav>
-      <h1>Tratamientos pensados para <span class="texto-naranja">cada sonrisa</span></h1>
-      <p class="banner-subtitulo">
-        Diagnóstico digital, planes personalizados y seguimiento cercano en cada una de
-        nuestras especialidades.
-      </p>
+  <header class="nos-portada">
+
+    <span class="nos-portada__ambiente crsl" aria-hidden="true" data-carrusel data-intervalo="6000">
+      <span class="crsl__pista">
+        <span class="crsl__toma crsl__toma--activa">
+          <img src="../imagenes/hero-1.webp?v=9bd092de88"
+               srcset="../imagenes/hero-1-720.webp?v=44baaaa35a 720w, ../imagenes/hero-1.webp?v=9bd092de88 1920w"
+               sizes="100vw" width="1920" height="1284" alt=""
+               fetchpriority="high" decoding="async">
+        </span>
+        <span class="crsl__toma">
+          <img src="../imagenes/cirugia.webp?v=e3d3520635"
+               srcset="../imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, ../imagenes/cirugia.webp?v=e3d3520635 1200w"
+               sizes="100vw" width="1200" height="1800" alt=""
+               loading="lazy" decoding="async">
+        </span>
+        <span class="crsl__toma">
+          <img src="../imagenes/implantologia.webp?v=ab7b059165"
+               srcset="../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
+               sizes="100vw" width="1200" height="800" alt=""
+               loading="lazy" decoding="async">
+        </span>
+        <span class="crsl__toma">
+          <img src="../imagenes/sonrisa.webp?v=24597df771"
+               srcset="../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
+               sizes="100vw" width="800" height="552" alt=""
+               loading="lazy" decoding="async">
+        </span>
+      </span>
+    </span>
+
+    <p class="nos-portada__lema">Nueve<br>especialidades.<br>Un mismo criterio.</p>
+
+    <div class="nos-portada__escena">
+      <h1 class="nos-titulo">TRATAMIENTOS</h1>
     </div>
 
+    <div class="nos-portada__pie">
+      <div class="nos-portada__firma">
+        <span class="nos-regla" aria-hidden="true"></span>
+        <p class="nos-portada__sub">Diagnóstico digital, plan personalizado y seguimiento cercano en cada especialidad</p>
+      </div>
+      <p class="nos-portada__sello">
+        <span>Smilers Dental Clinique</span>
+        Quito &middot; Ecuador
+      </p>
+    </div>
   </header>
 
-  <section class="seccion pb-0 seccion-decorada">
+  <section class="pz-seccion">
     <div class="container">
-      <div class="row justify-content-center text-center revelar">
-        <div class="col-lg-8">
-          <h2 class="titulo-seccion">Todo bajo un mismo techo</h2>
-          <p class="subtitulo-seccion">
-            Desde una limpieza de rutina hasta una rehabilitación completa: cada tratamiento
-            comienza con un diagnóstico digital y termina con un plan claro, sin sorpresas.
-          </p>
-        </div>
+      <div class="pz-triptico pz-solape revelar">
+
+        <article class="pz-tarjeta">
+          <span class="pz-tarjeta__foto">
+            <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
+                 srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
+                 sizes="(max-width: 991.98px) 100vw, 30vw"
+                 width="1200" height="800"
+                 alt="Equipamiento de diagnóstico digital de Smilers Dental Clinique"
+                 loading="lazy" decoding="async">
+          </span>
+          <div class="pz-tarjeta__cuerpo">
+            <span class="pz-tarjeta__sello" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-microchip"></use></svg></span>
+            <h2 class="pz-tarjeta__titulo">Todo empieza en digital</h2>
+            <p class="pz-tarjeta__texto">
+              Escáner intraoral, radiología de baja dosis y fotografía clínica. El plan se
+              proyecta sobre tu anatomía real, no sobre una estimación.
+            </p>
+          </div>
+        </article>
+
+        <article class="pz-tarjeta">
+          <span class="pz-tarjeta__foto">
+            <img src="../imagenes/nosotros.webp?v=50efd7060f"
+                 srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
+                 sizes="(max-width: 991.98px) 100vw, 30vw"
+                 width="1000" height="750"
+                 alt="Sala de atención de Smilers Dental Clinique"
+                 loading="lazy" decoding="async">
+          </span>
+          <div class="pz-tarjeta__cuerpo">
+            <span class="pz-tarjeta__sello" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-comments"></use></svg></span>
+            <h2 class="pz-tarjeta__titulo">Un plan sin sorpresas</h2>
+            <p class="pz-tarjeta__texto">
+              Tiempos, alternativas y costos por delante. Nadie firma un tratamiento que no
+              entiende, y no hay letra pequeña después.
+            </p>
+          </div>
+        </article>
+
+        <article class="pz-tarjeta">
+          <span class="pz-tarjeta__foto">
+            <img src="../imagenes/sonrisa.webp?v=24597df771"
+                 srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
+                 sizes="(max-width: 991.98px) 100vw, 30vw"
+                 width="800" height="552"
+                 alt="Resultado de un tratamiento estético en Smilers Dental Clinique"
+                 loading="lazy" decoding="async">
+          </span>
+          <div class="pz-tarjeta__cuerpo">
+            <span class="pz-tarjeta__sello" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
+            <h2 class="pz-tarjeta__titulo">Seguimiento a largo plazo</h2>
+            <p class="pz-tarjeta__texto">
+              Revisiones periódicas después del alta. Un tratamiento está bien hecho si
+              sigue bien diez años más tarde.
+            </p>
+          </div>
+        </article>
+
       </div>
+    </div>
+  </section>
+
+  <section class="pz-seccion pz-intro">
+    <div class="container">
+
+      <nav class="nos-ruta revelar" aria-label="Ruta de navegación">
+        <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Tratamientos</span>
+      </nav>
+
+      <div class="revelar">
+        <p class="nos-rotulo">Especialidades</p>
+        <h2 class="nos-lead">Todo bajo <em>un mismo techo</em>.</h2>
+        <p class="nos-parrafo">
+          Desde una limpieza de rutina hasta una rehabilitación completa: cada tratamiento
+          comienza con un diagnóstico digital y termina con un plan claro, sin sorpresas.
+          Nueve especialidades que se hablan entre sí, porque los casos que tocan dos áreas
+          se planifican entre las dos antes de empezar.
+        </p>
+      </div>
+
     </div>
   </section>
 
@@ -172,21 +285,24 @@
           </div>
         </div>
         <div class="col-lg-6 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">01</span>
-          <h2 class="titulo-seccion text-start">Estética Dental</h2>
-          <p class="parrafo">
-            Carillas de porcelana, blanqueamiento y diseño digital de sonrisa para lograr
-            resultados naturales y armónicos con la forma de tu rostro.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Diseño de sonrisa digital (DSD) previo al tratamiento</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Carillas de porcelana y resina de alta estética</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Blanqueamiento dental profesional supervisado</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Reconstrucciones estéticas de dientes fracturados</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">01</span>
+            <h2 class="titulo-seccion text-start">Estética Dental</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              Carillas de porcelana, blanqueamiento y diseño digital de sonrisa para lograr
+              resultados naturales y armónicos con la forma de tu rostro.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Diseño de sonrisa digital (DSD) previo al tratamiento</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Carillas de porcelana y resina de alta estética</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Blanqueamiento dental profesional supervisado</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Reconstrucciones estéticas de dientes fracturados</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -225,21 +341,24 @@
           </div>
         </div>
         <div class="col-lg-6 order-lg-1 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">02</span>
-          <h2 class="titulo-seccion text-start">Ortodoncia</h2>
-          <p class="parrafo">
-            Brackets estéticos, autoligado y alineadores invisibles planificados en 3D para
-            corregir la posición dental con el menor impacto en tu día a día.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Alineadores invisibles con planificación digital</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Brackets estéticos de zafiro y autoligado</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Ortodoncia interceptiva para niños y adolescentes</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Contención y seguimiento post-tratamiento</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">02</span>
+            <h2 class="titulo-seccion text-start">Ortodoncia</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              Brackets estéticos, autoligado y alineadores invisibles planificados en 3D para
+              corregir la posición dental con el menor impacto en tu día a día.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Alineadores invisibles con planificación digital</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Brackets estéticos de zafiro y autoligado</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Ortodoncia interceptiva para niños y adolescentes</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Contención y seguimiento post-tratamiento</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -278,21 +397,24 @@
           </div>
         </div>
         <div class="col-lg-6 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">03</span>
-          <h2 class="titulo-seccion text-start">Implantología</h2>
-          <p class="parrafo">
-            Recupera piezas perdidas con implantes de titanio guiados por cirugía digital,
-            planificados con tomografía 3D para máxima precisión y menor tiempo de recuperación.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Cirugía guiada por computadora</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Implantes unitarios y rehabilitación total</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Injertos óseos cuando se requiere mayor soporte</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Coronas sobre implante de alta estética</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">03</span>
+            <h2 class="titulo-seccion text-start">Implantología</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              Recupera piezas perdidas con implantes de titanio guiados por cirugía digital,
+              planificados con tomografía 3D para máxima precisión y menor tiempo de recuperación.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Cirugía guiada por computadora</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Implantes unitarios y rehabilitación total</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Injertos óseos cuando se requiere mayor soporte</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Coronas sobre implante de alta estética</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -331,21 +453,24 @@
           </div>
         </div>
         <div class="col-lg-6 order-lg-1 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">04</span>
-          <h2 class="titulo-seccion text-start">Cirugía Oral</h2>
-          <p class="parrafo">
-            Extracción de terceros molares, injertos óseos y cirugías menores con protocolos
-            de mínima invasión y control estricto del dolor y la inflamación.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Extracción de terceros molares (muelas del juicio)</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Cirugía de dientes incluidos o retenidos</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Injertos óseos y elevación de seno maxilar</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Frenectomías y biopsias de tejido blando</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">04</span>
+            <h2 class="titulo-seccion text-start">Cirugía Oral</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              Extracción de terceros molares, injertos óseos y cirugías menores con protocolos
+              de mínima invasión y control estricto del dolor y la inflamación.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Extracción de terceros molares (muelas del juicio)</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Cirugía de dientes incluidos o retenidos</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Injertos óseos y elevación de seno maxilar</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Frenectomías y biopsias de tejido blando</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -384,20 +509,23 @@
           </div>
         </div>
         <div class="col-lg-6 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">05</span>
-          <h2 class="titulo-seccion text-start">Rehabilitación Oral</h2>
-          <p class="parrafo">
-            Cuando faltan piezas o el desgaste ya cambió la forma de morder, no se arregla diente por diente: se planifica la boca entera. Coronas, puentes y prótesis pensados como un solo conjunto, para que la mordida vuelva a repartir la fuerza donde debe.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Coronas y puentes en zirconio y disilicato de litio</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Prótesis fijas y removibles sobre dientes o implantes</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Rehabilitación completa de arcada sobre implantes</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Ajuste de la mordida y control del desgaste dental</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">05</span>
+            <h2 class="titulo-seccion text-start">Rehabilitación Oral</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              Cuando faltan piezas o el desgaste ya cambió la forma de morder, no se arregla diente por diente: se planifica la boca entera. Coronas, puentes y prótesis pensados como un solo conjunto, para que la mordida vuelva a repartir la fuerza donde debe.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Coronas y puentes en zirconio y disilicato de litio</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Prótesis fijas y removibles sobre dientes o implantes</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Rehabilitación completa de arcada sobre implantes</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Ajuste de la mordida y control del desgaste dental</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -436,20 +564,23 @@
           </div>
         </div>
         <div class="col-lg-6 revelar order-lg-1">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">06</span>
-          <h2 class="titulo-seccion text-start">Endodoncia</h2>
-          <p class="parrafo">
-            El tratamiento de conducto tiene mala fama de otra época. Con instrumentación rotatoria, localizador electrónico de ápice y anestesia bien puesta, se retira el nervio afectado, se sella el conducto y el diente se queda en su sitio.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Endodoncia uni y multirradicular en una o dos sesiones</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Instrumentación rotatoria y localizador de ápice</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Retratamiento de conductos que no cerraron bien</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Reconstrucción del diente y corona de protección</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">06</span>
+            <h2 class="titulo-seccion text-start">Endodoncia</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              El tratamiento de conducto tiene mala fama de otra época. Con instrumentación rotatoria, localizador electrónico de ápice y anestesia bien puesta, se retira el nervio afectado, se sella el conducto y el diente se queda en su sitio.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Endodoncia uni y multirradicular en una o dos sesiones</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Instrumentación rotatoria y localizador de ápice</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Retratamiento de conductos que no cerraron bien</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Reconstrucción del diente y corona de protección</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -488,20 +619,23 @@
           </div>
         </div>
         <div class="col-lg-6 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">07</span>
-          <h2 class="titulo-seccion text-start">Periodoncia</h2>
-          <p class="parrafo">
-            La encía es el cimiento: sin ella no hay tratamiento que dure. Medimos el estado periodontal antes de cualquier otra cosa y trabajamos sobre lo que sostiene el diente, que es el hueso que no se ve.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Periodontograma y control del nivel de hueso</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Raspado y alisado radicular (curetaje) por cuadrantes</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Tratamiento de gingivitis y enfermedad periodontal</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Mantenimiento periodontal cada tres a seis meses</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">07</span>
+            <h2 class="titulo-seccion text-start">Periodoncia</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              La encía es el cimiento: sin ella no hay tratamiento que dure. Medimos el estado periodontal antes de cualquier otra cosa y trabajamos sobre lo que sostiene el diente, que es el hueso que no se ve.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Periodontograma y control del nivel de hueso</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Raspado y alisado radicular (curetaje) por cuadrantes</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Tratamiento de gingivitis y enfermedad periodontal</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Mantenimiento periodontal cada tres a seis meses</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -540,20 +674,23 @@
           </div>
         </div>
         <div class="col-lg-6 revelar order-lg-1">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">08</span>
-          <h2 class="titulo-seccion text-start">Odontopediatría</h2>
-          <p class="parrafo">
-            La primera visita decide la relación que tendrá con el dentista el resto de su vida. Por eso empieza sin procedimientos: conocer el sillón, tocar los instrumentos y salir con ganas de volver. Todo lo demás viene después.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Primera consulta de adaptación, sin procedimientos</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Selladores de fosetas y fisuras en molares definitivos</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Aplicación de flúor según la edad y el riesgo de caries</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Control del crecimiento y derivación temprana a ortodoncia</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">08</span>
+            <h2 class="titulo-seccion text-start">Odontopediatría</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              La primera visita decide la relación que tendrá con el dentista el resto de su vida. Por eso empieza sin procedimientos: conocer el sillón, tocar los instrumentos y salir con ganas de volver. Todo lo demás viene después.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Primera consulta de adaptación, sin procedimientos</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Selladores de fosetas y fisuras en molares definitivos</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Aplicación de flúor según la edad y el riesgo de caries</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Control del crecimiento y derivación temprana a ortodoncia</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -592,20 +729,23 @@
           </div>
         </div>
         <div class="col-lg-6 revelar">
-          <span class="bloque-tratamiento-numero" aria-hidden="true">09</span>
-          <h2 class="titulo-seccion text-start">Armonización Orofacial</h2>
-          <p class="parrafo">
-            El equilibrio entre la sonrisa y el rostro que la enmarca. Procedimientos estéticos no quirúrgicos, en dosis medidas y siempre después del tratamiento dental, nunca en lugar de él: primero la función, luego la proporción.
-          </p>
-          <ul class="lista-incluye">
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Toxina botulínica para sonrisa gingival y bruxismo</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Rellenos de ácido hialurónico en labios y surcos</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Tratamiento del dolor y el chasquido de la ATM</li>
-            <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Valoración facial previa con registro fotográfico</li>
-          </ul>
-          <a href="#contacto" class="btn btn-turquesa">
-            Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
-          </a>
+          <div class="pz-panel">
+            <span class="bloque-tratamiento-numero" aria-hidden="true">09</span>
+            <h2 class="titulo-seccion text-start">Armonización Orofacial</h2>
+            <span class="pz-regla" aria-hidden="true"></span>
+            <p class="parrafo">
+              El equilibrio entre la sonrisa y el rostro que la enmarca. Procedimientos estéticos no quirúrgicos, en dosis medidas y siempre después del tratamiento dental, nunca en lugar de él: primero la función, luego la proporción.
+            </p>
+            <ul class="lista-incluye">
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Toxina botulínica para sonrisa gingival y bruxismo</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Rellenos de ácido hialurónico en labios y surcos</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Tratamiento del dolor y el chasquido de la ATM</li>
+              <li><i class="fa-solid fa-circle-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-check"></use></svg></i> Valoración facial previa con registro fotográfico</li>
+            </ul>
+            <a href="#contacto" class="btn btn-turquesa">
+              Agendar valoración <i class="fa-solid fa-arrow-right ms-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></i>
+            </a>
+          </div>
         </div>
       </div>
       </div>
@@ -613,40 +753,63 @@
     </div>
   </section>
 
+  <section class="pz-seccion pz-seccion--cita">
+    <div class="container">
+      <blockquote class="pz-cita revelar">
+        <div>
+          <span class="pz-cita__marca" aria-hidden="true">&ldquo;</span>
+          <p class="pz-cita__texto">
+            La mejor tecnología no sirve de nada si sales de la consulta sin entender qué
+            te van a hacer.
+          </p>
+          <span class="pz-cita__regla" aria-hidden="true"></span>
+          <p class="pz-cita__firma">El equipo de Smilers</p>
+        </div>
+        <p class="pz-cita__nota">
+          Por eso ningún plan sale de aquí sin explicarse en pantalla, con tiempos,
+          alternativas y costos por delante. La decisión es tuya, con toda la información
+          sobre la mesa.
+        </p>
+      </blockquote>
+    </div>
+  </section>
+
   <section class="seccion proceso fondo-suave seccion-decorada">
     <div class="container">
-      <div class="text-center mb-5 revelar">
-        <h2 class="titulo-seccion">De tu primera visita al resultado final</h2>
+
+      <div class="revelar">
+        <p class="nos-rotulo">El proceso</p>
+        <h2 class="nos-lead">De tu primera visita <em>al resultado final</em>.</h2>
       </div>
 
-      <div class="row g-4 proceso-fila">
-        <div class="proceso-linea"></div>
-        <div class="col-6 col-lg revelar proceso-item">
-          <span class="proceso-numero">1</span>
-          <h3>Consulta inicial</h3>
-          <p>Escuchamos tu necesidad y hacemos una revisión clínica completa.</p>
-        </div>
-        <div class="col-6 col-lg revelar proceso-item">
-          <span class="proceso-numero">2</span>
-          <h3>Diagnóstico digital</h3>
-          <p>Escáner 3D, radiografías y fotografía clínica de alta precisión.</p>
-        </div>
-        <div class="col-6 col-lg revelar proceso-item">
-          <span class="proceso-numero">3</span>
-          <h3>Plan personalizado</h3>
-          <p>Te explicamos opciones, tiempos y costos antes de decidir.</p>
-        </div>
-        <div class="col-6 col-lg revelar proceso-item">
-          <span class="proceso-numero">4</span>
-          <h3>Tratamiento</h3>
-          <p>Ejecutamos el plan con protocolos de bioseguridad certificados.</p>
-        </div>
-        <div class="col-6 col-lg revelar proceso-item">
-          <span class="proceso-numero">5</span>
-          <h3>Seguimiento</h3>
-          <p>Revisiones periódicas para cuidar el resultado a largo plazo.</p>
-        </div>
-      </div>
+      <ul class="pz-medallones revelar">
+        <li class="pz-medallon">
+          <span class="pz-medallon__aro" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-comments"></use></svg></span>
+          <span class="pz-medallon__nombre">Consulta inicial</span>
+          <span class="pz-medallon__texto">Escuchamos tu necesidad y hacemos una revisión clínica completa.</span>
+        </li>
+        <li class="pz-medallon">
+          <span class="pz-medallon__aro" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-cube"></use></svg></span>
+          <span class="pz-medallon__nombre">Diagnóstico digital</span>
+          <span class="pz-medallon__texto">Escáner 3D, radiografías y fotografía clínica de alta precisión.</span>
+        </li>
+        <li class="pz-medallon">
+          <span class="pz-medallon__aro" aria-hidden="true"><svg class="icono" focusable="false"><use href="#regular-calendar-check"></use></svg></span>
+          <span class="pz-medallon__nombre">Plan personalizado</span>
+          <span class="pz-medallon__texto">Te explicamos opciones, tiempos y costos antes de decidir.</span>
+        </li>
+        <li class="pz-medallon">
+          <span class="pz-medallon__aro" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-kit-medical"></use></svg></span>
+          <span class="pz-medallon__nombre">Tratamiento</span>
+          <span class="pz-medallon__texto">Ejecutamos el plan con protocolos de bioseguridad certificados.</span>
+        </li>
+        <li class="pz-medallon">
+          <span class="pz-medallon__aro" aria-hidden="true"><svg class="icono" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
+          <span class="pz-medallon__nombre">Seguimiento</span>
+          <span class="pz-medallon__texto">Revisiones periódicas para cuidar el resultado a largo plazo.</span>
+        </li>
+      </ul>
+
     </div>
   </section>
 
@@ -789,11 +952,12 @@
 
   <script src="../vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
   <script src="../scripts/planificador.js?v=d5cc9d4082"></script>
-  <script src="../scripts/navegacion.js?v=3e8e97bf56"></script>
+  <script src="../scripts/navegacion.js?v=54a68df087"></script>
   <script src="../scripts/revelados.js?v=c38a19e149"></script>
   <script src="../scripts/footer.js?v=7d71806edc"></script>
   <script src="../scripts/subpaginas.js?v=b13a1084ad"></script>
-  <script src="../scripts/secciones.js?v=7945704ccf"></script>
+  <script src="../scripts/secciones.js?v=ebc3d95c48"></script>
   <script src="../scripts/hero.js?v=d637ef3740"></script>
+  <script src="../scripts/interiores.js?v=83b256aca2"></script>
 </body>
 </html>

@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  (function () {
-    var galeria = document.getElementById('acordeonEspecialidades');
-    if (!galeria) return;
+  document.querySelectorAll('.acordeon-galeria').forEach(function (galeria) {
 
     var paneles = Array.prototype.slice.call(galeria.querySelectorAll('.ag-panel'));
     if (!paneles.length) return;
@@ -68,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     });
-  })();
+  });
 
   (function () {
     var heroCarrusel = document.getElementById('heroCarrusel');
