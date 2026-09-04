@@ -25,10 +25,6 @@
   letter-spacing: .16em;
   margin-right: -.16em;
 }
-.nos-titulo__ligero { font-weight: 400; }
-
-.nos-titulo__fuerte { font-weight: 700; }
-
 .nos-regla {
   display: block;
   width: clamp(56px, 8vw, 96px);
