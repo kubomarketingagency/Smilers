@@ -12,10 +12,12 @@ sale.
 ## Estilos — `estilos/`
 
 **El número del nombre es el orden de carga, y el orden importa.** En CSS,
-cuando dos reglas tienen la misma fuerza gana la última; el `16-oro.css` va
-al final justamente porque tiene que poder pisar a los quince anteriores.
-Si se añade un archivo nuevo hay que enlazarlo en las cinco páginas, en la
-posición que le toque por número.
+cuando dos reglas tienen la misma fuerza gana la última; `16-oro.css` va casi
+al final justamente porque tiene que poder pisar a los quince anteriores, y
+`17-detalle-lujo.css` va después porque retoca lo que dejaron todos.
+Del 01 al 16 los cargan las cinco páginas; el 17 solo Nosotros y Tratamientos.
+Si se añade un archivo nuevo hay que enlazarlo en la posición que le toque
+por número.
 
 | Archivo | Qué contiene | Prefijos |
 |---|---|---|
@@ -35,6 +37,7 @@ posición que le toque por número.
 | `14-pagina-nosotros.css` | Solo `subpaginas/nosotros.html`. | `.nos-*` |
 | `15-lienzo-claro.css` | Las subpáginas sobre fondo claro. | `.pagina-clara`, `.pagina-*` |
 | `16-oro.css` | **Va el último a propósito.** Reparte el oro de marca sobre todo lo anterior. | — |
+| `17-detalle-lujo.css` | Capa de acabado de Nosotros y Tratamientos: fondo con trama, portada de «NOSOTROS», misión/visión/objetivos, tecnología, acordeón del equipo y mosaico. **Solo lo cargan esas dos páginas.** | `.nos-portada__*`, `.nos-mvo*`, `.nos-objetivo*`, `.nos-tecno*`, `.eq-*` |
 
 ---
 
@@ -52,6 +55,7 @@ tiene que ir primero porque los demás lo usan.
 | `subpaginas.js` | Filtros de galería, lightbox, comparador antes/después y acordeón de tratamientos. |
 | `secciones.js` | Formas decorativas, acordeón de especialidades, pausa del carrusel y cinta de la banda final. |
 | `hero.js` | Carrusel de portada, hero cine, imán de tratamientos, desenfoque, cierre cine y splash. |
+| `equipo.js` | El acordeón de especialistas. Solo lo carga `subpaginas/nosotros.html`. |
 | `testimonios-esfera.js` | La esfera WebGL de testimonios. Solo la carga `index.html`. |
 | `sellar-version.js` | Herramienta. Ver `CACHE.md`. |
 | `convert-to-webp.js` | Herramienta para convertir imágenes. |

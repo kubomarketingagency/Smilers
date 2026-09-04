@@ -7,20 +7,6 @@
   overflow: hidden;
   background: var(--nos-negro);
 }
-.nos-portada__fotos {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-}
-.nos-portada__fotos img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 24%;
-  filter: grayscale(1) contrast(1.12) brightness(.86);
-}
-
 .nos-portada::after {
   content: '';
   position: absolute;
@@ -30,13 +16,6 @@
               rgba(10, 10, 10, .12) 38%,
               rgba(10, 10, 10, .82) 100%);
 }
-.nos-portada__texto {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 0 clamp(1.5rem, 6vw, 6rem) clamp(2.6rem, 6vw, 5.5rem);
-}
-
 .nos-titulo {
   font-family: var(--fuente-menu);
   font-size: clamp(2.8rem, 11vw, 8.5rem);
@@ -64,14 +43,6 @@
   font-size: clamp(.9rem, 1.5vw, 1.05rem);
   letter-spacing: .06em;
   color: rgba(255, 255, 255, .86);
-}
-
-@media (max-width: 767.98px) {
-  .nos-portada { min-height: 88svh; }
-  .nos-portada__fotos {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
 }
 
 .nos-lienzo {
@@ -108,14 +79,16 @@
 .nos-ruta span { color: var(--nos-negro); font-weight: 700; }
 
 .nos-m-historia  { grid-column: 1 / span 6; }
-.nos-m-filosofia { grid-column: 8 / span 5; margin-top: clamp(2rem, 7vw, 7rem); }
+.nos-m-mvo { grid-column: 1 / -1; }
+.nos-m-tecno { grid-column: 1 / -1; }
 .nos-m-equipo    { grid-column: 2 / span 6; }
 .nos-m-porque    { grid-column: 9 / span 4; margin-top: clamp(0rem, 3vw, 3.5rem); }
 
 @media (max-width: 991.98px) {
   .nos-lienzo { row-gap: clamp(3rem, 11vw, 4.5rem); }
   .nos-m-historia,
-  .nos-m-filosofia,
+  .nos-m-mvo,
+  .nos-m-tecno,
   .nos-m-equipo,
   .nos-m-porque { grid-column: 1 / -1; margin-top: 0; }
 }
