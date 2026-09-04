@@ -28,7 +28,7 @@ posición que le toque por número.
 | `07-nosotros.css` | Sección 3 de la portada: collage, texto, pilares y contador. | `.nm-*`, `.nc-*`, `.cl-*`, `.pilar*` |
 | `08-especialidades.css` | Tarjetas de especialidades y acordeón de galería. | `.card-especialidad`, `.acordeon-*`, `.ag-*` |
 | `09-cierre-cta.css` | Cierre cine y banda final con llamada a la acción. | `.cierre-cine*`, `.banda-cta*` |
-| `10-footer.css` | Pie de página, mapas, formulario, redes y botón de subir. | `.footer*`, `.mapa-*`, `.redes-sociales` |
+| `10-footer.css` | Pie de página, mapas, formulario, redes y los dos botones flotantes (WhatsApp y subir). | `.footer*`, `.mapa-*`, `.redes-sociales`, `.wsp-flotante`, `.btn-subir` |
 | `11-animaciones.css` | Apariciones al hacer scroll, cortinas y formas decorativas. | `.revelar`, `.cortina*`, `.forma-*` |
 | `12-interiores.css` | Piezas de las subpáginas: banner, equipo, historia, tratamientos, FAQ, comparador. | `.banner-*`, `.bloque-tratamiento*`, `.comparador*` |
 | `13-testimonios.css` | La esfera de testimonios y su versión en tarjetas. | `.testimonios-*`, `.tst-*`, `.tc-*` |
