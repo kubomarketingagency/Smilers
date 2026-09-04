@@ -1,48 +1,5 @@
-/* ==========================================================================
-   SMILERS DENTAL CLINIQUE — TESTIMONIOS EN ESFERA (WebGL2)
-   --------------------------------------------------------------------------
-   Qué hace
-   ---------
-   Dibuja los testimonios como discos repartidos sobre una esfera (el efecto
-   "InfiniteMenu" de ReactBits) y la hace GIRAR CON EL SCROLL en vez de con
-   el arrastre del mouse: cada tramo de scroll dentro del pin lleva un
-   testimonio distinto al frente, se detiene un momento (ahí aparece su
-   texto) y sigue rodando al siguiente.
-
-   Sobre la foto que queda al frente:
-     - se ve en blanco y negro  ->  es el ANTES
-     - al pasar el cursor / hacer clic  ->  funde al DESPUÉS a color
-
-   Por qué está portado a mano
-   ---------------------------
-   El componente original es React + el paquete npm "gl-matrix". Este sitio
-   es HTML/CSS/JS plano, sin build ni node_modules (igual que Bootstrap, que
-   vive auto-hospedado en vendor/), así que:
-     - el componente se reescribió como un módulo vanilla, y
-     - de gl-matrix solo se incrustó abajo el puñado de funciones que se
-       usan (V3 / Q / M4). Son las mismas fórmulas de la librería, nada más
-       que sin la dependencia.
-
-   Mejora respecto del original
-   ----------------------------
-   El demo de ReactBits deja dos discos rotos: los vértices que caen justo
-   en los polos (0, ±R, 0) son paralelos al vector "arriba" [0,1,0] y su
-   matriz targetTo sale degenerada (se ve un hueco). Aquí, cuando el vértice
-   es casi paralelo a "arriba", se usa [1,0,0] y la esfera queda completa.
-
-   Los datos NO viven en este archivo: se leen del <ol class="testimonios-lista">
-   del HTML (data-antes / data-despues / data-nombre / data-tratamiento +
-   el <blockquote>). Así esa lista sigue siendo el contenido real de la
-   página — la que ven Google y los lectores de pantalla, y la que se
-   muestra tal cual si no hay WebGL o si el visitante pidió menos
-   movimiento.
-   ========================================================================== */
 (function () {
   'use strict';
-
-  /* ======================================================================
-     1. ÁLGEBRA MÍNIMA (el subconjunto de gl-matrix que se usa)
-     ====================================================================== */
 
   var V3 = {
     crear: function () { return new Float32Array(3); },
@@ -64,8 +21,7 @@
       else { o[0] = 0; o[1] = 0; o[2] = 0; }
       return o;
     },
-    /* Gira el vector por el cuaternión (fórmula rápida de gl-matrix:
-       v + 2 * (qv x (qv x v + w*v))). */
+
     porCuaternion: function (o, a, q) {
       var qx = q[0], qy = q[1], qz = q[2], qw = q[3];
       var x = a[0], y = a[1], z = a[2];
@@ -113,7 +69,7 @@
         var seno = Math.sin(omega);
         escalaA = Math.sin((1 - t) * omega) / seno;
         escalaB = Math.sin(t * omega) / seno;
-      } else {                       // casi paralelos: interpolación lineal
+      } else {
         escalaA = 1 - t;
         escalaB = t;
       }
@@ -123,15 +79,13 @@
       o[3] = escalaA * aw + escalaB * bw;
       return o;
     },
-    /* Giro más corto que lleva la dirección "a" a la dirección "b"
-       (ambas ya normalizadas). */
+
     entreVectores: function (o, a, b) {
       var eje = V3.cruz(V3.crear(), a, b);
       var largo = Math.sqrt(eje[0] * eje[0] + eje[1] * eje[1] + eje[2] * eje[2]);
       var d = Math.min(1, Math.max(-1, V3.punto(a, b)));
       if (largo < 0.000001) {
-        // Paralelos (nada que girar) o antiparalelos (media vuelta por
-        // cualquier eje perpendicular).
+
         if (d > 0) { o[0] = 0; o[1] = 0; o[2] = 0; o[3] = 1; return o; }
         var perp = Math.abs(a[0]) < 0.9 ? V3.de(1, 0, 0) : V3.de(0, 1, 0);
         V3.normalizar(eje, V3.cruz(eje, a, perp));
@@ -175,8 +129,7 @@
       o.set(m);
       return o;
     },
-    /* targetTo de gl-matrix: matriz de "mirar desde ojo hacia objetivo"
-       SIN invertir (es una matriz de modelo, no de vista). */
+
     apuntarA: function (o, ojo, objetivo, arriba) {
       var z0 = ojo[0] - objetivo[0], z1 = ojo[1] - objetivo[1], z2 = ojo[2] - objetivo[2];
       var l = z0 * z0 + z1 * z1 + z2 * z2;
@@ -235,13 +188,6 @@
     }
   };
 
-
-  /* ======================================================================
-     2. GEOMETRÍAS
-     ====================================================================== */
-
-  /* Disco: un abanico de triángulos con UVs radiales (0.5,0.5 en el centro).
-     Es el "portarretrato" circular de cada testimonio. */
   function geometriaDisco(pasos, radio) {
     var vertices = [0, 0, 0];
     var uvs = [0.5, 0.5];
@@ -261,8 +207,6 @@
     };
   }
 
-  /* Icosaedro subdividido y "esferizado": sus vértices son las posiciones
-     donde se planta cada disco. Con 1 subdivisión son 42 posiciones. */
   function posicionesEsfera(subdivisiones, radio) {
     var t = (Math.sqrt(5) + 1) / 2;
     var vs = [
@@ -303,11 +247,6 @@
       return V3.escalar(p, p, radio);
     });
   }
-
-
-  /* ======================================================================
-     3. AYUDAS DE WebGL
-     ====================================================================== */
 
   function crearShader(gl, tipo, fuente) {
     var sh = gl.createShader(tipo);
@@ -351,20 +290,12 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    // 1 píxel transparente mientras cargan las fotos, para no ver basura.
+
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
       new Uint8Array([0, 0, 0, 0]));
     return tex;
   }
 
-
-  /* ======================================================================
-     4. SHADERS
-     ====================================================================== */
-
-  /* Vértice: igual que el original. Coloca el disco de la instancia, lo
-     "estira" en el sentido del giro según la velocidad de rotación (de ahí
-     la sensación de goma al rodar) y lo vuelve a pegar a la esfera. */
   var SHADER_VERTICE = `#version 300 es
 
 uniform mat4 uWorldMatrix;
@@ -418,11 +349,6 @@ void main() {
 }
 `;
 
-  /* Fragmento: aquí vive el antes/después. Hay DOS atlas (uno con las fotos
-     "antes", otro con las "después"). Todos los discos se pintan en blanco
-     y negro con un temple champán (el mismo trato B/N que el hero); solo el
-     disco del testimonio activo funde hacia la foto a color cuando
-     uRevelado sube de 0 a 1. */
   var SHADER_FRAGMENTO = `#version 300 es
 precision highp float;
 
@@ -472,11 +398,6 @@ void main() {
 }
 `;
 
-
-  /* ======================================================================
-     5. LA ESFERA
-     ====================================================================== */
-
   var RADIO_ESFERA = 2;
   var DURACION_CUADRO = 1000 / 60;
 
@@ -485,13 +406,7 @@ void main() {
     this.lienzo = lienzo;
     this.items = items;
     this.escala = opciones.escala || 3.2;
-    /* Encuadre: mitad del alto visible en el plano del centro, en unidades
-       de mundo. Es lo que decide de verdad qué tan grande sale el disco del
-       frente — NO la escala. El fov se deriva de altura/distancia y la
-       distancia es 3*escala, así que las dos se cancelan y mover la escala
-       deja el encuadre en reposo igual que estaba (solo cambia la fuerza de
-       la perspectiva y cuánto pesa el retroceso de cámara al girar). Cuanto
-       MENOR el encuadre, más cerrado el plano y más grande el disco. */
+
     this.encuadre = opciones.encuadre || 0.35;
 
     this.gl = lienzo.getContext('webgl2', { antialias: true, alpha: true });
@@ -508,7 +423,7 @@ void main() {
     this._velocidadSuave = 0;
     this._orientacionPrevia = Q.crear();
 
-    this.posicion = 0;      // posición continua sobre la ruta (0 .. n-1)
+    this.posicion = 0;
     this.activo = 0;
     this.revelado = 0;
     this.objetivoRevelado = 0;
@@ -555,7 +470,6 @@ void main() {
       inst: gl.getAttribLocation(this.programa, 'aInstanceMatrix')
     };
 
-    // --- geometría del disco ---
     this.disco = geometriaDisco(56, 1);
     this.vao = gl.createVertexArray();
     gl.bindVertexArray(this.vao);
@@ -574,7 +488,6 @@ void main() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufIdx);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.disco.indices, gl.STATIC_DRAW);
 
-    // --- una instancia por vértice de la esfera ---
     this.posicionesInstancia = posicionesEsfera(1, RADIO_ESFERA);
     this.cantidadInstancias = this.posicionesInstancia.length;
 
@@ -589,7 +502,7 @@ void main() {
     this.bufferInstancias = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferInstancias);
     gl.bufferData(gl.ARRAY_BUFFER, this.matricesArray.byteLength, gl.DYNAMIC_DRAW);
-    for (var j = 0; j < 4; j++) {           // una mat4 = 4 ranuras de atributo
+    for (var j = 0; j < 4; j++) {
       var loc = a.inst + j;
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, 64, j * 16);
@@ -606,19 +519,6 @@ void main() {
     this.redimensionar();
   };
 
-  /* ---- Ruta de vértices ------------------------------------------------
-     El shader saca la foto de cada disco con "instancia % cantidad de
-     testimonios", así que el testimonio i vive en todos los vértices cuyo
-     índice deja resto i. De todos esos se elige uno por paso, buscando que
-     el giro respecto del anterior ronde siempre los 70°: así cada avance de
-     scroll se siente igual de largo, en vez de a veces un salto enorme y a
-     veces casi nada. Para cada paso se guarda la orientación que deja ese
-     vértice justo al frente.
-
-     Nota sobre el "frente": por cómo se arma la matriz de instancia, el
-     disco del vértice p termina dibujado en la dirección OPUESTA (-p). Por
-     eso el vértice que mira a cámara es el que apunta a (0,0,-1) y no a
-     (0,0,1) — mismo criterio que usa el original en su snapDirection. */
   EsferaTestimonios.prototype._construirRuta = function () {
     var n = this.items.length;
     var frente = V3.de(0, 0, -1);
@@ -638,7 +538,7 @@ void main() {
         if (v % n !== i) continue;
         var d = V3.porCuaternion(V3.crear(), direcciones[v], orientacion);
         var coseno = V3.punto(d, frente);
-        // El primero: el que ya esté más al frente (arranque sin tirón).
+
         var puntaje = (i === 0) ? -coseno : Math.abs(coseno - COS_OBJETIVO);
         if (puntaje < mejorPuntaje) { mejorPuntaje = puntaje; mejor = v; }
       }
@@ -656,11 +556,6 @@ void main() {
     Q.copiar(this._orientacionPrevia, this.orientaciones[0]);
   };
 
-  /* ---- Atlas de fotos --------------------------------------------------
-     Las fotos van a dos texturas-mosaico (antes / después) de celdas
-     cuadradas de 512 px, recortadas tipo "cover" para que ninguna cara
-     salga deformada. Se dibujan en un <canvas> 2D y de ahí a la GPU. Si una
-     foto falta, su celda queda transparente y el resto sigue funcionando. */
   EsferaTestimonios.prototype._cargarAtlas = function () {
     var gl = this.gl;
     var self = this;
@@ -689,13 +584,7 @@ void main() {
           if (!img) return;
           var x = (i % self.tamAtlas) * CELDA;
           var y = Math.floor(i / self.tamAtlas) * CELDA;
-          /* Recorte cuadrado centrado del ORIGEN (drawImage de 9 argumentos)
-             en vez de escalar la foto entera tipo "cover" hacia la celda: al
-             escalarla, una foto apaisada sobresale por los lados y se mete
-             en la celda vecina, y como se dibujan en orden, cada foto le
-             pisaba una franja a la anterior — en el disco se colaba un
-             pedazo de otro testimonio. Recortando en el origen nada se sale
-             de su celda. */
+
           var lado = Math.min(img.width, img.height);
           var sx = (img.width - lado) / 2;
           var sy = (img.height - lado) / 2;
@@ -713,10 +602,7 @@ void main() {
 
   EsferaTestimonios.prototype.redimensionar = function () {
     var gl = this.gl;
-    /* En móvil se topa el ratio en 1.5 en vez de 2. La esfera ocupa casi
-       toda la pantalla, así que a 2x en un teléfono de 3x son más del doble
-       de píxeles que rellenar por cuadro; a 1.5x la foto se sigue viendo
-       nítida y el shader hace la mitad del trabajo. */
+
     var topeDpr = window.innerWidth < 992 ? 1.5 : 2;
     var dpr = Math.min(topeDpr, window.devicePixelRatio || 1);
     var ancho = Math.max(1, Math.round(this.lienzo.clientWidth * dpr));
@@ -725,16 +611,10 @@ void main() {
     if (this.lienzo.width !== ancho || this.lienzo.height !== alto) {
       this.lienzo.width = ancho;
       this.lienzo.height = alto;
-      this._yaPinto = false;   // el buffer se limpió: hay que volver a dibujar
+      this._yaPinto = false;
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
 
-    /* Mismo encuadre que el original: el alto visible se fija en una
-       fracción del radio, así el disco del frente manda en la escena y los
-       vecinos apenas asoman por las esquinas. El fov se calcula con la
-       distancia EN REPOSO (3 * escala) y no con la distancia actual: como
-       la cámara se aleja mientras la esfera rueda, usar la distancia viva
-       cambiaría el encuadre en cada resize según el momento del giro. */
     var aspecto = this.lienzo.clientWidth / Math.max(1, this.lienzo.clientHeight);
     var altura = RADIO_ESFERA * this.encuadre;
     var zReposo = 3 * this.escala;
@@ -750,8 +630,6 @@ void main() {
     M4.invertir(this.camara.vista, this.camara.matriz);
   };
 
-  /* Posición continua sobre la ruta: 0 = primer testimonio al frente,
-     n-1 = el último. La mueve el controlador de scroll. */
   EsferaTestimonios.prototype.irA = function (posicion) {
     this.posicion = Math.min(this.items.length - 1, Math.max(0, posicion));
   };
@@ -764,25 +642,19 @@ void main() {
     var gl = this.gl;
     var escalaTiempo = delta / DURACION_CUADRO + 0.00001;
 
-    /* --- orientación objetivo: slerp entre los dos pasos que rodean la
-       posición actual, con una curva que "aguanta" en cada testimonio y
-       hace el viaje en el tramo del medio. */
     var k = Math.min(this.items.length - 2, Math.floor(this.posicion));
     var f = this.posicion - k;
     if (k < 0) { k = 0; f = 0; }
-    var suave = f * f * f * (f * (f * 6 - 15) + 10);   // smootherstep
+    var suave = f * f * f * (f * (f * 6 - 15) + 10);
     if (this.items.length > 1) {
       Q.slerp(this.objetivoOrientacion, this.orientaciones[k], this.orientaciones[k + 1], suave);
     }
 
-    // --- la orientación real persigue a la objetivo (de ahí la inercia)
     Q.copiar(this._orientacionPrevia, this.orientacion);
     Q.slerp(this.orientacion, this.orientacion, this.objetivoOrientacion,
       Math.min(1, 0.13 * escalaTiempo));
     Q.normalizar(this.orientacion, this.orientacion);
 
-    /* --- eje y velocidad de giro de este cuadro: alimentan el estirón de
-       goma del shader y el retroceso de cámara. */
     var deltaQ = Q.multiplicar(Q.crear(), this.orientacion,
       Q.conjugar(Q.crear(), this._orientacionPrevia));
     if (deltaQ[3] < 0) {
@@ -795,10 +667,7 @@ void main() {
     var vel = 0;
     if (seno > 0.000001) {
       vel = rad / (2 * Math.PI);
-      /* El eje solo se pisa si sale de verdad unitario: los cuaterniones son
-         Float32Array, y con giros diminutos deltaQ.xyz se va a cero por
-         redondeo aunque "seno" (calculado en doble) todavia pase el umbral.
-         Guardar ese (0,0,0) dejaba el eje nulo y apagaba la esfera. */
+
       var ex = deltaQ[0] / seno, ey = deltaQ[1] / seno, ez = deltaQ[2] / seno;
       if (Math.abs(ex) + Math.abs(ey) + Math.abs(ez) > 0.000001) {
         this.ejeRotacion[0] = ex;
@@ -809,15 +678,12 @@ void main() {
     this._velocidadSuave += (vel - this._velocidadSuave) * Math.min(1, 0.5 * escalaTiempo);
     this.velocidadRotacion = this._velocidadSuave / escalaTiempo;
 
-    // --- cámara: se aleja mientras rueda, vuelve al encuadre al frenar
     var objetivoZ = 3 * this.escala + Math.min(3, this.velocidadRotacion * 90);
     this.camara.z += (objetivoZ - this.camara.z) / (5 / escalaTiempo);
     this._actualizarCamara();
 
-    // --- revelado del "después"
     this.revelado += (this.objetivoRevelado - this.revelado) * Math.min(1, 0.14 * escalaTiempo);
 
-    // --- matriz de cada disco
     var arribaY = V3.de(0, 1, 0);
     var arribaX = V3.de(1, 0, 0);
     var origen = V3.de(0, 0, 0);
@@ -827,14 +693,9 @@ void main() {
     for (var i = 0; i < this.cantidadInstancias; i++) {
       var p = V3.porCuaternion(V3.crear(), this.posicionesInstancia[i], this.orientacion);
 
-      /* Los discos del fondo se achican y los del frente quedan a tamaño
-         completo, así la esfera se lee como volumen y no como recorte. */
       var s = (Math.abs(p[2]) / RADIO_ESFERA) * INTENSIDAD + (1 - INTENSIDAD);
       var escFinal = s * ESC_DISCO;
 
-      /* Vértices casi paralelos a "arriba" (los polos): con [0,1,0] la
-         matriz sale degenerada y el disco desaparece — ese es el hueco del
-         demo original. Ahí se usa [1,0,0]. */
       var largo = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]) || 1;
       var arriba = Math.abs(p[1] / largo) > 0.995 ? arribaX : arribaY;
 
@@ -852,14 +713,6 @@ void main() {
 
     this.activo = Math.round(this.posicion);
 
-    /* ¿Sigue moviéndose algo? Durante la MESETA de cada testimonio (más de
-       la mitad del scroll de la sección) la esfera está quieta: la
-       orientación ya alcanzó su objetivo, la cámara está en su sitio y el
-       revelado no se está cruzando. Ahí no hay nada nuevo que dibujar, y
-       repintar la esfera igualmente son varios cientos de miles de píxeles
-       de shader por cuadro, en la sección más larga de la página. Con este
-       flag el bucle sigue vivo (para reaccionar al instante) pero se salta
-       el dibujado. */
     var quieta =
       Math.abs(this.velocidadRotacion) < 0.00025 &&
       Math.abs(this.camara.z - (3 * this.escala)) < 0.004 &&
@@ -905,7 +758,7 @@ void main() {
     if (this.corriendo) return;
     this.corriendo = true;
     this.tiempo = 0;
-    this._yaPinto = false;   // fuerza un cuadro al volver a entrar en pantalla
+    this._yaPinto = false;
     var self = this;
     var paso = function (t) {
       if (!self.corriendo) return;
@@ -927,11 +780,6 @@ void main() {
     this.solicitud = 0;
   };
 
-
-  /* ======================================================================
-     6. CONTROLADOR: scroll -> esfera + textos
-     ====================================================================== */
-
   function acotar(v) { return Math.min(1, Math.max(0, v)); }
 
   function iniciarSeccion(seccion) {
@@ -950,8 +798,6 @@ void main() {
 
     if (!lienzo || fichas.length < 2) return;
 
-    /* Los datos salen de la lista del HTML: es el contenido real, no una
-       copia. Si mañana se edita un testimonio ahí, la esfera lo toma solo. */
     var items = fichas.map(function (ficha) {
       var cita = ficha.querySelector('blockquote');
       return {
@@ -963,25 +809,12 @@ void main() {
       };
     });
 
-    /* La clase va ANTES de construir la esfera: hasta que no está puesta,
-       .testimonios-escena sigue en display:none, el lienzo mide 0x0 y la
-       esfera nacería con un buffer de 1x1 (y una proyección degenerada,
-       porque el aspecto sale 0). Si luego falla, se quita y la sección
-       vuelve a su lista de tarjetas como si nada. */
     seccion.classList.add('esfera-activa');
 
-    /* La escala es la distancia de cámara: se queda como estaba porque no
-       cambia el tamaño del disco en reposo (ver el comentario de
-       this.encuadre), solo la perspectiva y el retroceso al girar. */
     function escalaSegunPantalla() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
 
-    /* Lo que SÍ agranda el disco. Con el 0.35 original ocupaba ~43% del lado
-       del lienzo y la foto se veía chica, sobre todo en móvil; con estos
-       valores pasa a ~53% en escritorio y ~65% en móvil. Si se vuelven a
-       tocar, hay que mover con ellos el ancho de .testimonios-revelar en el
-       CSS, que es el botón calcado sobre ese disco. */
     function encuadreSegunPantalla() {
       return window.innerWidth < 992 ? 0.232 : 0.285;
     }
@@ -993,46 +826,21 @@ void main() {
         encuadre: encuadreSegunPantalla()
       });
     } catch (e) {
-      /* Sin WebGL 2 se queda la lista de tarjetas del HTML, que ya funciona
-         sola (antes/después por CSS). No hay que tocar nada más. */
+
       seccion.classList.remove('esfera-activa');
       return;
     }
 
     var revelando = false;
     var ultimoIndice = -1;
-    var ultimoCierre = null;   // última posición escrita en las hojas del cierre
-    var progresoSeccion = 0;   // lo mide la fase de lectura del planificador
-    /* Últimos valores escritos en el panel y en el botón: ver "actualizar". */
+    var ultimoCierre = null;
+    var progresoSeccion = 0;
+
     var ultimaOpacidadVelo = -1;
     var ultimaOpacidadPanel = -1;
     var ultimaOpacidadBoton = -1;
     var ultimoBotonActivo = null;
 
-    /* ---- PISTA DE "ESTO SE TOCA": EN TODOS, NO SOLO EN EL PRIMERO --------
-       El disco del frente cambia del antes al despues, pero nada lo decia:
-       con raton se descubre sin querer al pasar por encima, y en un telefono
-       -donde no hay hover y la pista de texto va oculta por sitio- no se
-       descubria nunca.
-
-       ANTES SALIA SOLO EN EL PRIMER TESTIMONIO, con el argumento de que una
-       vez aprendido el gesto repetirlo seria ruido. En la practica no se
-       sostiene: la seccion son varias pantallas de scroll y a nadie se le
-       queda que el disco se toca porque hace ocho pantallas parpadeo un
-       anillo. Peor todavia, quien entraba por una marca de progreso o venia
-       de vuelta ni siquiera veia el primero. Ahora el anillo sale en cada
-       testimonio al llegar a su meseta.
-
-       Y "gastada" pasa a ser POR TESTIMONIO, no global. Antes, revelar una
-       sola foto apagaba la pista para el resto de la visita; ahora apagarla
-       significa "en este ya lo hizo", y al llegar al siguiente vuelve a
-       salir. Eso es lo que hace que el efecto sea el mismo en los siete sin
-       convertirse en un parpadeo perpetuo encima del que ya esta jugando con
-       el disco: en el testimonio que estas mirando, en cuanto lo tocas, se
-       calla.
-
-       El CSS la deja en unas pocas repeticiones (no eternas) por lo mismo:
-       una pista que parpadea sin fin deja de leerse como invitacion. */
     var pistaGastada = false;
 
     function apagarPista() {
@@ -1042,33 +850,18 @@ void main() {
     }
 
     function ajustarPista() {
-      /* Se llama al cambiar de testimonio: el contador de "ya lo toco" se
-         reinicia y el anillo vuelve a salir desde el principio en el disco
-         que acaba de llegar al frente.
 
-         EL RE-ENCENDIDO VA EN EL CUADRO SIGUIENTE, y no es un capricho.
-         Quitar y volver a poner una clase dentro del mismo cuadro no
-         reinicia la animacion: el navegador solo compara el estilo calculado
-         al final del cuadro, no ve ningun cambio y la animacion sigue con el
-         ciclo que le quedara del testimonio anterior. La forma habitual de
-         forzarlo es leer offsetWidth entre el remove y el add, pero eso es un
-         reflow forzado — y esta funcion corre dentro de la fase de ESCRITURA
-         del planificador de scroll, o sea que invalidaria el layout para
-         todos los efectos que escriben despues en ese mismo cuadro (ver "1b.
-         PLANIFICADOR UNICO DE SCROLL" en scripts/script.js). Separandolo un
-         cuadro se consigue el mismo reinicio sin medir nada. */
       pistaGastada = false;
       seccion.classList.remove('tst-pista-toque');
       requestAnimationFrame(function () {
-        /* Puede haber revelado la foto en el cuadro intermedio: si ya lo
-           hizo, la pista no vuelve. */
+
         if (!pistaGastada) seccion.classList.add('tst-pista-toque');
       });
     }
 
     function fijarRevelado(encendido) {
       if (revelando === encendido) return;
-      /* Reveló una foto: ya sabe que se toca. */
+
       if (encendido) apagarPista();
       revelando = encendido;
       esfera.revelar(encendido);
@@ -1077,37 +870,12 @@ void main() {
       seccion.classList.toggle('mostrando-despues', encendido);
     }
 
-    /* ---- REPARTO DEL SCROLL: UNA TABLA, Y TODO SALE DE ELLA -------------
-       El recorrido arranca y termina con un tramo de "reposo" en el que la
-       esfera no gira, para que el primer y el último testimonio se queden
-       quietos un momento en vez de aparecer justo en el borde del pin.
-
-       LOS DOS TRAMOS NO SON IGUALES, y no es un descuido: el recorrido no
-       empieza donde empieza el primer testimonio (antes hay que levantar el
-       velo) ni termina donde termina el último (después entra el obturador),
-       así que para que todos duren LO MISMO las dos puntas tienen que
-       compensar esas dos transiciones.
-
-       ANTES ESTO ERAN CINCO FRACCIONES ESCRITAS A MANO, calculadas para
-       exactamente cinco testimonios (0.097, 0.703, 0.044, 0.853, 0.978).
-       Agregar uno a la lista del HTML las dejaba todas mal a la vez: las
-       mesetas se desigualaban, el imán dejaba de encuadrar el último y el
-       obturador empezaba a cerrarse encima de un testimonio todavía vivo. Y
-       nada lo avisaba, porque son números sueltos que no saben cuántos
-       elementos hay. Ahora la tabla es esta, y las fracciones se derivan de
-       ella y de items.length: la lista del HTML manda de verdad, agregar o
-       quitar un testimonio no pide tocar nada aquí.
-
-       LAS UNIDADES SON, EN LA PRÁCTICA, VH DE SCROLL (ver fijarAlto() más
-       abajo: el alto de la sección se calcula desde este mismo total). Si
-       algún día se pide "que la sección dure menos", el número a mover es
-       `meseta`: es el que se multiplica por el número de testimonios. */
     var UNIDADES = {
-      apertura:  24,   // el velo negro se disuelve y entra el primero
-      meseta:    58,   // x N · un testimonio COMPLETAMENTE quieto al frente
-      giro:      38,   // x (N-1) · la esfera rueda hasta el siguiente
-      obturador: 68,   // las dos hojas del cierre se juntan en el centro
-      cola:       1    // negro absoluto antes de soltar el pin
+      apertura:  24,
+      meseta:    58,
+      giro:      38,
+      obturador: 68,
+      cola:       1
     };
 
     var N = items.length;
@@ -1115,66 +883,16 @@ void main() {
     var TOTAL = UNIDADES.apertura + N * UNIDADES.meseta + TRAMOS * UNIDADES.giro
               + UNIDADES.obturador + UNIDADES.cola;
 
-    /* Las mesetas miden lo mismo TODAS, incluidas la primera y la última: la
-       primera arranca a media meseta del velo (de ahí el + meseta/2) y la
-       última termina justo donde empieza el obturador. */
     var REPOSO_INICIO = (UNIDADES.apertura + UNIDADES.meseta / 2) / TOTAL;
     var TRAMO_GIRO    = TRAMOS * (UNIDADES.meseta + UNIDADES.giro) / TOTAL;
 
-    /* Dónde termina de disolverse el velo de apertura. Va atado a la tabla:
-       si se apagara más tarde se comería meseta del primero, y si se apagara
-       antes el primero duraría de más. */
     var APERTURA = UNIDADES.apertura / TOTAL;
 
-    /* ---- cierre en obturador --------------------------------------------
-       Arranca DESPUÉS de que el último testimonio haya tenido su meseta
-       entera. Las hojas tardan en juntarse a propósito — así el final se lee
-       como un gesto y no como un telón que cae de golpe. Su contrapartida
-       está en el pin de abajo, que revela la banda de contacto en cuanto
-       recibe la pantalla (ver script.js, 14e): cerrar despacio se lee como
-       una decisión; abrir despacio, como una espera.
-
-       Y NO TERMINA EN EL 100%: la cola es scroll ya en negro absoluto antes
-       de soltar el pin, y hace falta porque el progreso llega a 1 justo en
-       el cuadro en que la sección entrega la pantalla a #cierreCine.
-       Cerrando exactamente ahí, cualquier variación de un píxel en el alto
-       del viewport dejaba las hojas sin juntar en el momento del relevo — y
-       en un teléfono eso pasa CADA vez que la barra de direcciones se recoge
-       o vuelve, que cambia innerHeight a media bajada.
-
-       LA COLA BAJÓ DE 12 UNIDADES A 1, y esa es la mitad del encargo de "que
-       la siguiente sección aparezca de inmediato en cuanto se cierre la
-       pantalla". Doce unidades eran ~12vh de negro absoluto en los que ya no
-       pasaba nada: el obturador cerrado, la sección de abajo sin empezar, y
-       había que seguir bajando a ciegas. Una basta para el seguro del
-       párrafo anterior — es un colchón contra la barra de direcciones, no un
-       tramo de la puesta en escena. La otra mitad del encargo está en
-       .cierre-cine, donde el revelado dejó de colgar del scroll y pasó a ser
-       una transición en el tiempo (ver estilos.css y script.js, 14e). */
     var CIERRE_DESDE = (UNIDADES.apertura + N * UNIDADES.meseta + TRAMOS * UNIDADES.giro) / TOTAL;
     var CIERRE_HASTA = CIERRE_DESDE + UNIDADES.obturador / TOTAL;
 
-    /* ---- meseta por testimonio ------------------------------------------
-       Con el reparto lineal, cada testimonio tenía su tramo pero la esfera
-       no paraba nunca del todo: el disco entraba y ya estaba saliendo, y no
-       daba tiempo de detenerse a comparar el antes/después. MESETA es la
-       fracción de cada tramo en la que la posición NO avanza (repartida
-       mitad al principio y mitad al final del tramo); el giro se hace en el
-       resto, con suavizado en las dos puntas para que no arranque de golpe.
-       58/96 = 0.604: casi dos tercios del scroll de cada testimonio son
-       pausa. */
     var MESETA = UNIDADES.meseta / (UNIDADES.meseta + UNIDADES.giro);
 
-    /* ---- ALTO DE LA SECCIÓN ---------------------------------------------
-       Lo escribe el JS y no el CSS, por lo mismo que las fracciones de
-       arriba: depende de cuántos testimonios haya. El CSS solo pone el valor
-       de reserva de --alto-cine, por si este archivo no llegara a correr.
-
-       Recorrido real = alto - una pantalla, así que al total en unidades se
-       le suman 100vh. Y la unidad no vale lo mismo en las dos anchuras: en
-       móvil cada pantalla de scroll cuesta más gesto, así que se encoge un
-       14% — es la proporción que ya tenían los 570vh de móvil contra los 650
-       de escritorio del reparto anterior. */
     function vhPorUnidad() { return window.innerWidth < 992 ? 0.861 : 1.007; }
     function fijarAlto() {
       seccion.style.setProperty('--alto-cine', (100 + Math.round(TOTAL * vhPorUnidad())) + 'vh');
@@ -1191,10 +909,6 @@ void main() {
       return i + v * v * (3 - 2 * v);
     }
 
-    /* FASE DE LECTURA: única función de este archivo que consulta el layout
-       durante el scroll. Va separada de la escritura para no forzar un
-       recálculo de layout entre las escrituras de los demás efectos del
-       sitio — ver "1b. PLANIFICADOR ÚNICO DE SCROLL" en scripts/script.js. */
     function leerSeccion(ctx) {
       var rect = seccion.getBoundingClientRect();
       var recorrido = seccion.offsetHeight - ctx.alto;
@@ -1207,13 +921,8 @@ void main() {
       var t = conParadas(acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * (items.length - 1));
       esfera.irA(t);
 
-      /* APERTURA: el velo se disuelve en el primer tramo. Como es del mismo
-         ónix que el fondo de la sección, mientras esta entra en pantalla no
-         se ve como un bloque negro de más: solo apaga la esfera y el texto
-         hasta que el primer testimonio está en su sitio. */
       if (velo) {
-        /* Igual que el panel: pasada la apertura esto vale 0 para el resto de
-           la sección, y se estaba reescribiendo el mismo "0" en cada cuadro. */
+
         var opVelo = Number(acotar((APERTURA - progreso) / APERTURA).toFixed(3));
         if (opVelo !== ultimaOpacidadVelo) {
           ultimaOpacidadVelo = opVelo;
@@ -1221,42 +930,22 @@ void main() {
         }
       }
 
-      /* CIERRE: dos hojas negras entran desde arriba y desde abajo hasta
-         juntarse en el centro, como el obturador de una cámara. Antes esto
-         era un fundido a negro del velo; en obturador el final de la
-         sección se lee como un cierre deliberado y no como que se apagó la
-         luz. El tramo exacto y por qué es ese, arriba en CIERRE_DESDE.
-
-         Se escribe solo mientras las hojas se mueven: pasado el 100% ya
-         están juntas y no hay nada que reescribir en cada cuadro. */
       if (hojas.length === 2) {
         var c = acotar((progreso - CIERRE_DESDE) / (CIERRE_HASTA - CIERRE_DESDE));
-        /* Smootherstep (6c^5-15c^4+10c^3) en vez de smoothstep, y sobre un
-           tramo un 20% más largo. El smoothstep de antes sale de cero con
-           pendiente nula pero acelera enseguida, y como las hojas recorren
-           media pantalla cada una, el arranque se notaba: la imagen estaba
-           quieta y de pronto los dos filos ya venían lanzados. Smootherstep
-           también deja la SEGUNDA derivada en cero en las dos puntas, o sea
-           que ni empieza ni termina con tirón — las hojas se despegan sin
-           que se vea el instante en que empiezan a moverse y se posan en el
-           centro en vez de chocar. */
+
         var suave = c * c * c * (c * (c * 6 - 15) + 10);
         var fuera = ((1 - suave) * 100).toFixed(2);
         if (fuera !== ultimoCierre) {
           ultimoCierre = fuera;
           hojas[0].style.transform = 'translate3d(0,-' + fuera + '%,0)';
           hojas[1].style.transform = 'translate3d(0,' + fuera + '%,0)';
-          /* El filo dorado acompaña el movimiento y se apaga en el último
-             15% del recorrido, para que las hojas ya juntas no dejen una
-             costura clara en medio del negro (ver .tc-hoja::after). */
+
           if (cierre) {
             cierre.style.setProperty('--filo', Math.min(1, (1 - suave) / 0.15).toFixed(3));
           }
         }
       }
 
-      /* Qué tan "asentado" está el testimonio del frente: 1 justo encima,
-         0 en pleno viaje. Manda la opacidad del texto y apaga el botón. */
       var indice = Math.round(t);
       var quietud = 1 - Math.min(1, Math.abs(t - indice) / 0.26);
       var suavizada = quietud * quietud * (3 - 2 * quietud);
@@ -1269,19 +958,14 @@ void main() {
         if (salidaTratamiento) salidaTratamiento.textContent = item.tratamiento;
         pasos.forEach(function (paso, i) {
           paso.classList.toggle('es-activo', i === indice);
-          /* aria-current, no solo la clase: un lector de pantalla tiene que
-             poder decir cuál de los botones es el que está sonando. */
+
           if (i === indice) paso.setAttribute('aria-current', 'true');
           else paso.removeAttribute('aria-current');
         });
         ajustarPista();
-        fijarRevelado(false);   // al cambiar de testimonio vuelve al "antes"
+        fijarRevelado(false);
       }
 
-      /* Redondeado a dos decimales y escrito solo si cambió. Durante la
-         meseta -que es más de la mitad del recorrido de cada testimonio- la
-         opacidad vale 1 fija: sin este filtro se reescribían dos estilos por
-         cuadro para dejar el elemento exactamente como estaba. */
       var op = Number(suavizada.toFixed(2));
       if (panel && op !== ultimaOpacidadPanel) {
         ultimaOpacidadPanel = op;
@@ -1289,13 +973,9 @@ void main() {
         panel.style.transform = 'translateY(' + ((1 - op) * 26).toFixed(1) + 'px)';
       }
 
-      /* Mientras rueda, el "después" se apaga: la comparación solo tiene
-         sentido con la foto quieta al frente. */
       if (quietud < 0.5 && revelando) fijarRevelado(false);
       if (boton) {
-        /* pointer-events no repinta nada, pero tocarlo invalida el estilo
-           calculado del botón y de su chip en cada cuadro. Solo en los dos
-           cuadros en que de verdad cambia. */
+
         var pasa = quietud > 0.75;
         if (pasa !== ultimoBotonActivo) {
           ultimoBotonActivo = pasa;
@@ -1308,10 +988,6 @@ void main() {
       }
     }
 
-    /* ---- antes / después ------------------------------------------------
-       Con mouse basta pasar por encima; en pantallas táctiles (donde no
-       existe el hover) el toque alterna. También responde al teclado, por
-       eso es un <button> de verdad y no un div. */
     if (boton) {
       if (window.matchMedia('(hover: hover)').matches) {
         boton.addEventListener('pointerenter', function () { fijarRevelado(true); });
@@ -1322,36 +998,6 @@ void main() {
       boton.addEventListener('blur', function () { fijarRevelado(false); });
     }
 
-    /* ---- IMÁN DE TESTIMONIOS --------------------------------------------
-       Cuando el scroll se detiene dentro de la sección, la página termina
-       de encuadrar el testimonio más cercano: lo lleva al centro exacto de
-       su meseta, que es donde la esfera está quieta y el texto se lee al
-       100% de opacidad. Sin esto uno se quedaba a menudo entre dos
-       testimonios, con el disco a medio girar y la cita medio transparente.
-
-       El cálculo vive AQUÍ y no en script.js porque es aquí donde se sabe
-       cómo se reparte el scroll entre testimonios (REPOSO y MESETA): la
-       meseta del testimonio i está centrada exactamente en t = i, así que
-       basta con deshacer el mapeo progreso -> t para saber a qué altura de
-       la página cae ese centro.
-
-       Los dos extremos quedan fuera a propósito: por debajo de APERTURA manda
-       el velo, y a partir de CIERRE_DESDE ya están entrando las hojas del
-       obturador; un imán ahí pelearía con esas dos transiciones.
-
-       Los dos topes van atados a esas dos constantes y no escritos a mano,
-       que es como el último testimonio se quedaba fuera: con un 0.80 fijo y
-       una meseta que caía en el 0.92, era el único que la página no
-       terminaba de encuadrar nunca. Ahora el tope ES el arranque del
-       obturador, así que la quinta meseta -que termina justo ahí- entra
-       entera, y cualquier retoque del reparto la sigue llevando con él. */
-    /* ---- IR A UN TESTIMONIO ---------------------------------------------
-       La Y de documento en la que el testimonio i se queda quieto al frente:
-       el centro de su meseta, deshaciendo el mapeo progreso -> t. La usan
-       las dos cosas que llevan a un testimonio -el imán al detenerse el
-       scroll y las marcas de progreso, que ahora son botones- para que no
-       haya dos versiones del mismo cálculo que se puedan desincronizar si
-       mañana se toca REPOSO_INICIO o TRAMO_GIRO. */
     function yDeTestimonio(indice) {
       var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
       var tramos = items.length - 1;
@@ -1361,34 +1007,12 @@ void main() {
       return Math.round(tope + progreso * recorrido);
     }
 
-    /* ---- LAS MARCAS DE PROGRESO SON BOTONES ------------------------------
-       En escritorio la sección se recorre con la rueda sin esfuerzo, pero en
-       un teléfono son cuatro pantallas y media de scroll: volver al segundo
-       testimonio significaba deslizar a ciegas hasta dar con él. Ahora se
-       toca su marca y la página se desliza sola hasta su meseta, con el
-       mismo recorrido abortable que usa el imán -cualquier gesto lo para-.
-
-       El aria-label se completa aquí y no en el HTML porque los nombres
-       viven en la lista de testimonios: si mañana se edita uno, la etiqueta
-       del botón se actualiza sola. */
     pasos.forEach(function (paso, indice) {
       var quien = items[indice];
       if (quien && quien.nombre) {
         paso.setAttribute('aria-label', 'Ir al testimonio de ' + quien.nombre);
       }
-      /* RESPUESTA INMEDIATA AL DEDO. Con un 'click' a secas, en el teléfono
-         el recorrido no arrancaba hasta que el navegador daba por terminado
-         el gesto -levantar el dedo, descartar que fuera un doble toque o el
-         principio de un scroll-, y encima la animación empezaba con 380 ms
-         de rampa: entre una cosa y otra, al tocar la barra parecía que no
-         había pasado nada y había que esperar.
 
-         Ahora en táctil se sale en 'pointerdown', o sea en el instante en
-         que el dedo toca. Con ratón y con teclado se sigue usando 'click',
-         que es lo correcto: en escritorio actuar al apretar el botón impide
-         arrepentirse arrastrando fuera antes de soltar, y 'pointerdown' no
-         lo dispara la tecla Intro. La bandera evita que el toque cuente dos
-         veces cuando el navegador manda además el 'click' de compatibilidad. */
       var yaAtendido = false;
 
       function irAlTestimonio() {
@@ -1397,10 +1021,7 @@ void main() {
         apagarPista();
         var salto = Math.abs(destino - window.scrollY);
         if (window.SmilersScroll && window.SmilersScroll.deslizarA) {
-          /* Arranque mucho más corto (120 ms de base en vez de 380) para que
-             el movimiento empiece dentro del mismo cuadro del toque. La
-             duración sigue creciendo con la distancia, que es lo que hace
-             que un salto largo no se sienta un teletransporte. */
+
           window.SmilersScroll.deslizarA(destino, Math.min(760, 120 + salto * 0.32), true);
         } else {
           window.scrollTo({ top: destino, behavior: 'smooth' });
@@ -1419,10 +1040,6 @@ void main() {
       });
     });
 
-    /* El planificador ya filtró la dirección: estos imanes solo se consultan
-       cuando el visitante viene BAJANDO (ver "alDetenerse" en script.js).
-       Subiendo, volver a encuadrar el testimonio se sentía como que la
-       página no te deja retroceder a releer una cita. */
     if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
       window.SmilersScroll.alDetenerse(function () {
         var progreso = progresoSeccion;
@@ -1435,51 +1052,24 @@ void main() {
         var destino = yDeTestimonio(Math.round(lineal));
         if (destino === null) return null;
 
-        /* "maximo" en 0.62 de pantalla y no el tope común (0.55): el salto más
-           largo que este imán puede necesitar es medio tramo -la mitad del
-           camino entre el centro de una meseta y el de la vecina-, o sea
-           TRAMO_GIRO/(2·TRAMOS) del recorrido, que sale a media meseta + medio
-           giro = 48 unidades. Como la unidad vale ~1vh por construcción (ver
-           fijarAlto), eso es medio viewport largo. Con el tope común quedaba
-           tan al filo que cualquier variación de alto lo descartaba y el imán
-           no se movía nunca. El margen tampoco depende de cuántos testimonios
-           haya: al crecer la lista crece el recorrido en la misma proporción,
-           así que el salto en píxeles se queda igual. */
         return { y: destino, maximo: 0.62 };
       });
     }
 
-    /* Se engancha al planificador común del sitio si está (index.html carga
-       script.js antes que este archivo); si por lo que sea no estuviera,
-       cae a un listener propio con el mismo contrato lectura -> escritura. */
     if (window.SmilersScroll) {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
-        /* El alto depende del ancho (la unidad vale menos en móvil), así que
-           se recalcula al redimensionar: sin esto, girar el teléfono o cruzar
-           los 992px dejaba la sección con el reparto de la otra anchura. */
+
         fijarAlto();
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
       }, {
-        /* Guarda: esta sección vive en el último tercio del documento, y
-           hasta ahora medía su caja en CADA cuadro de scroll de toda la
-           portada para acabar escribiendo siempre el mismo progreso 0. Con
-           la guarda solo trabaja cuando falta menos de una pantalla para
-           llegar. El planificador le da un cuadro completo al entrar y otro
-           al salir, así que el velo de apertura y las hojas del cierre
-           quedan siempre en su estado final. */
+
         guarda: seccion,
         alCambiarVisibilidad: function (dentro) {
-          /* La pista del primer testimonio es una animación en bucle: si
-             corriera con la sección fuera de pantalla estaría componiendo un
-             anillo cada cuadro durante toda la portada para nada. */
+
           seccion.classList.toggle('tst-en-juego', dentro);
-          /* Las dos hojas del obturador solo necesitan capa propia mientras
-             la sección está en juego; fuera de ella son dos rectángulos
-             negros quietos y no hay por qué tenerlas reservadas en la GPU
-             durante toda la visita (el will-change permanente de .tc-hoja se
-             quitó de la hoja de estilos por esto mismo). */
+
           var valor = dentro ? 'transform' : '';
           for (var i = 0; i < hojas.length; i++) hojas[i].style.willChange = valor;
           if (panel) panel.style.willChange = dentro ? 'opacity, transform' : '';
@@ -1506,9 +1096,6 @@ void main() {
       });
     }
 
-    /* La esfera solo dibuja mientras la sección está en pantalla: si no,
-       serían 60 cuadros por segundo de WebGL compitiendo con el resto de
-       efectos de scroll del sitio. */
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entradas) {
         entradas.forEach(function (entrada) {
@@ -1525,8 +1112,7 @@ void main() {
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Con "menos movimiento" activado no se arma la esfera: queda la lista
-    // de tarjetas del HTML, que ya es la versión estática de lo mismo.
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     Array.prototype.forEach.call(
       document.querySelectorAll('[data-esfera-testimonios]'),

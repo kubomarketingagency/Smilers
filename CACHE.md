@@ -30,7 +30,7 @@ Recorre los cinco HTML del sitio y le pone a cada recurso local un
 `?v=<primeros 10 del SHA-1 del archivo>`:
 
 ```html
-<link rel="stylesheet" href="estilos/estilos.css?v=10f475c1e6">
+<link rel="stylesheet" href="estilos/04-navbar.css?v=10f475c1e6">
 <img src="imagenes/nosotros.webp?v=7dadb1fd33" srcset="imagenes/nosotros-720.webp?v=1a077e1d09 720w, ...">
 ```
 
@@ -122,7 +122,7 @@ Service Worker no mejora eso, solo añade riesgo.
 
 ```bash
 # Un asset: debe decir "max-age=31536000, immutable"
-curl -sI https://TU-DOMINIO/estilos/estilos.css | grep -i cache-control
+curl -sI https://TU-DOMINIO/estilos/01-variables.css | grep -i cache-control
 
 # La portada: debe decir "max-age=0, must-revalidate"
 curl -sI https://TU-DOMINIO/ | grep -i cache-control

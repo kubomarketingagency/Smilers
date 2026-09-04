@@ -1,23 +1,11 @@
 #!/usr/bin/env node
-/**
- * Conversion masiva JPG/PNG -> WebP.
- *
- * Uso:
- *   npm install --no-save sharp
- *   node scripts/convert-to-webp.js
- *
- * Recorre INPUT_DIR, y por cada .jpg/.jpeg/.png genera un .webp
- * al lado del original (el original NO se borra: sirve de fallback
- * para navegadores muy viejos que no soportan WebP).
- */
-
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
 const INPUT_DIRS = ['imagenes'];
 const EXTENSIONS = new Set(['.jpg', '.jpeg', '.png']);
-const WEBP_QUALITY = 82; // 80-85 = visualmente sin perdida perceptible, buen ratio de compresion
+const WEBP_QUALITY = 82;
 
 async function convertirArchivo(rutaAbsoluta) {
   const { dir, name } = path.parse(rutaAbsoluta);

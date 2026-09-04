@@ -16,13 +16,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/estilos.css?v=2071949351">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=a9755c5c13">
+  <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
+  <link rel="stylesheet" href="../estilos/03-botones.css?v=0d84d5591e">
+  <link rel="stylesheet" href="../estilos/04-navbar.css?v=c044ea70bb">
+  <link rel="stylesheet" href="../estilos/05-hero.css?v=944559e9d9">
+  <link rel="stylesheet" href="../estilos/06-secciones.css?v=59e062c1d6">
+  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=09327e14ce">
+  <link rel="stylesheet" href="../estilos/08-especialidades.css?v=f8318c380e">
+  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=71eaaef346">
+  <link rel="stylesheet" href="../estilos/10-footer.css?v=2da93e44a8">
+  <link rel="stylesheet" href="../estilos/11-animaciones.css?v=e2373190e3">
+  <link rel="stylesheet" href="../estilos/12-interiores.css?v=485cf2a523">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=db3b13d642">
+  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=f2aa5d3b1c">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=5bc888daf2">
+  <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
 </head>
 
 <body class="pagina-clara pagina-faq">
 
-  <!-- Sprite de iconos, incrustado (no como archivo externo): un <svg><use href="archivo.svg#id"> no funciona al abrir la pagina con doble clic
-       (file://), Chrome lo bloquea por seguridad aunque en http(s):// funciona bien. Incrustado funciona siempre. -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
     <symbol id="brands-instagram" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></symbol>
@@ -65,8 +78,6 @@
     <symbol id="solid-wand-magic-sparkles" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></symbol>
   </svg>
 
-
-  <!-- ============================================================ NAVBAR -->
   <nav class="navbar navbar-principal fixed-top" id="navbarPrincipal">
     <div class="container">
       <a class="navbar-brand marca" href="../index.html">
@@ -85,10 +96,6 @@
     </div>
   </nav>
 
-  <!-- Enlaces del menú, FUERA de <nav>: el backdrop-filter del navbar
-       crea su propio "containing block" para descendientes position:fixed,
-       lo que encajonaba este overlay de pantalla completa al alto de la
-       barra en vez de cubrir todo el viewport. -->
   <div class="navbar-collapse" id="menuPrincipal">
     <div class="menu-panel">
     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
@@ -106,8 +113,6 @@
     </div>
   </div>
 
-
-  <!-- ============================================================ BANNER -->
   <header class="banner-pagina">
     <div class="forma forma-durazno forma-flotante" style="width:280px;height:280px;top:-60px;left:6%;"></div>
     <div class="forma forma-naranja forma-blob" style="width:240px;height:240px;bottom:-70px;right:-60px;"></div>
@@ -128,10 +133,6 @@
 
   </header>
 
-
-  <!-- ============================================================
-       PREGUNTAS FRECUENTES
-       ============================================================ -->
   <section class="seccion fondo-suave seccion-decorada">
     <div class="forma forma-turquesa forma-parallax" data-intensidad="10" style="width:260px;height:260px;top:-80px;right:-90px;"></div>
     <div class="forma forma-naranja forma-blob" style="width:200px;height:200px;bottom:8%;left:-80px;"></div>
@@ -144,7 +145,6 @@
       <div class="row justify-content-center">
         <div class="col-lg-9">
 
-          <!-- General -->
           <div class="faq-categoria-titulo revelar">
             <i class="fa-solid fa-circle-info"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-info"></use></svg></i>
             <h2>General</h2>
@@ -197,8 +197,6 @@
             </div>
           </div>
 
-
-          <!-- Citas y pagos -->
           <div class="faq-categoria-titulo revelar">
             <i class="fa-solid fa-calendar-check"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-calendar-check"></use></svg></i>
             <h2>Citas y pagos</h2>
@@ -264,8 +262,6 @@
             </div>
           </div>
 
-
-          <!-- Tratamientos -->
           <div class="faq-categoria-titulo revelar">
             <i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i>
             <h2>Tratamientos</h2>
@@ -333,8 +329,6 @@
             </div>
           </div>
 
-
-          <!-- Cuidados -->
           <div class="faq-categoria-titulo revelar">
             <i class="fa-solid fa-hand-holding-medical"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></i>
             <h2>Cuidados y postoperatorio</h2>
@@ -377,10 +371,6 @@
     </div>
   </section>
 
-
-  <!-- ============================================================
-       ¿NO ENCONTRASTE TU RESPUESTA?
-       ============================================================ -->
   <section class="seccion pt-0 seccion-decorada">
     <div class="forma forma-degradado-2 forma-blob" style="width:200px;height:200px;top:0;left:2%;"></div>
     <div class="forma forma-durazno" style="width:160px;height:160px;bottom:-30px;right:6%;"></div>
@@ -400,13 +390,10 @@
     </div>
   </section>
 
-
-  <!-- ============================================================ FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="row g-5">
 
-        <!-- ===== Columna 1: Marca, contacto y redes ===== -->
         <div class="col-lg-4">
           <a href="../index.html" class="marca marca-footer mb-3">
             <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
@@ -428,7 +415,6 @@
             <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
           </ul>
 
-          <!-- Redes sociales -->
           <div class="redes-sociales">
             <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram">
               <i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i>
@@ -452,7 +438,6 @@
           </div>
         </div>
 
-        <!-- ===== Columna 2: Mapa de Google Maps (Matriz / Sucursal) ===== -->
         <div class="col-lg-4">
           <h3 class="footer-titulo">Ubícanos</h3>
           <div class="mapa-tabs" role="tablist" aria-label="Elegir sede en el mapa">
@@ -477,14 +462,12 @@
           </div>
         </div>
 
-        <!-- ===== Columna 3: Formulario rápido (envía a WhatsApp) ===== -->
         <div class="col-lg-4" id="contacto">
           <h3 class="footer-titulo">Escríbenos</h3>
           <p class="footer-texto small">
             Déjanos tu mensaje y te responderemos por WhatsApp.
           </p>
 
-          <!-- El JS intercepta el submit y arma el enlace wa.me -->
           <form id="formWhatsapp" class="form-footer" novalidate>
             <div class="mb-3">
               <label for="nombre" class="form-label">Nombre</label>
@@ -502,14 +485,12 @@
               <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Enviar por WhatsApp
             </button>
 
-            <!-- Zona de mensajes de validación / confirmación (la llena el JS) -->
             <p class="form-aviso" id="formAviso" role="status" aria-live="polite"></p>
           </form>
         </div>
 
       </div>
 
-      <!-- Línea inferior -->
       <div class="footer-bottom">
         <p class="mb-0">
           © <span id="anioActual">2026</span> Smilers Dental Clinique. Todos los derechos reservados.
@@ -522,7 +503,6 @@
     </div>
   </footer>
 
-
   <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener" class="wsp-flotante" aria-label="Chatear por WhatsApp">
     <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>
   </a>
@@ -531,6 +511,12 @@
   </button>
 
   <script src="../vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="../scripts/script.js?v=550f603240"></script>
+  <script src="../scripts/planificador.js?v=d5cc9d4082"></script>
+  <script src="../scripts/navegacion.js?v=3e8e97bf56"></script>
+  <script src="../scripts/revelados.js?v=c38a19e149"></script>
+  <script src="../scripts/footer.js?v=7d71806edc"></script>
+  <script src="../scripts/subpaginas.js?v=b13a1084ad"></script>
+  <script src="../scripts/secciones.js?v=7945704ccf"></script>
+  <script src="../scripts/hero.js?v=d637ef3740"></script>
 </body>
 </html>

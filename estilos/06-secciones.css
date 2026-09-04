@@ -1,0 +1,100 @@
+.seccion { padding: 100px 0; }
+
+.seccion-intima { padding: 64px 0; }
+
+.fondo-suave {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--gris-bg);
+}
+
+.seccion-clara {
+  --texto: #525252;
+  --texto-suave: #767676;
+  --superficie: var(--marmol);
+  --superficie-borde: rgba(192, 192, 192, .35);
+  --sombra: 0 10px 28px rgba(28, 28, 28, .12);
+  --sombra-hover: 0 20px 46px rgba(28, 28, 28, .18);
+  --acento-legible: var(--naranja-accion);
+  --acento-legible-hover: var(--onix);
+  color: var(--texto);
+}
+.seccion-clara.fondo-arena  { background: var(--arena-perla); }
+.seccion-clara.fondo-plata  { background: var(--plata); }
+
+.seccion-clara.fondo-marmol {
+  background-color: var(--marmol);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 18% 15%, rgba(120, 118, 112, .06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 45% at 85% 80%, rgba(192, 192, 192, .05) 0%, transparent 60%),
+    repeating-linear-gradient(115deg, rgba(120, 118, 112, .04) 0px, transparent 1.5px, transparent 40px, rgba(120, 118, 112, .04) 41px);
+}
+
+.seccion-clara.fondo-lino {
+  background-color: var(--crema-editorial);
+  background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(210, 172, 71, .07) 0%, transparent 65%);
+}
+
+.seccion-clara.fondo-perla {
+  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gold-500: #C29418;
+  --gold-700: #8C6508;
+  --hairline-oro: rgba(210, 172, 71, .55);
+  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gradiente-oro-menudo: linear-gradient(100deg, #6B4D03 0%, #C29418 34%, #8A6407 66%, #B4880E 100%);
+  --hairline-suave: rgba(122, 108, 82, .16);
+  --texto: #2E2E2E;
+  --texto-suave: #2E2E2E;
+  background-color: #F4F1EA;
+  background-image:
+    radial-gradient(ellipse 55% 40% at 84% 4%, rgba(210, 172, 71, .16) 0%, transparent 62%),
+    radial-gradient(ellipse 70% 55% at 6% 96%, rgba(150, 143, 131, .20) 0%, transparent 66%),
+    linear-gradient(180deg, #F6F3EC 0%, #F3EFE7 55%, #EFEAE0 100%);
+}
+
+.seccion-clara.fondo-perla .titulo-seccion {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--neutral-900);
+}
+
+.seccion-clara.fondo-perla .titulo-seccion [class*="texto-"] {
+  background: var(--gradiente-oro-profundo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #A87C10;
+  font-weight: 500;
+}
+
+.titulo-seccion {
+  font-family: var(--fuente-elegante);
+  font-weight: 400;
+  letter-spacing: .04em;
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
+  margin-bottom: 1rem;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+.titulo-seccion [class*="texto-"] {
+  -webkit-text-fill-color: currentColor;
+}
+
+.subtitulo-seccion {
+  color: var(--silver-500);
+  max-width: 620px;
+  margin: 0 auto;
+  font-family: var(--fuente-menu);
+  font-weight: 500;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+}
+
+.seccion-clara .subtitulo-seccion { color: var(--silver-900); }
+
+.parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }

@@ -4,90 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== SPLASH DE BIENVENIDA: marca la sesión ANTES de pintar nada, para
-       que si ya se vio en esta pestaña no haya ni un parpadeo del splash
-       al navegar de vuelta a inicio.
-
-       PARA VOLVER A VERLA: abre la página con ?intro al final
-       (smilersdental.vercel.app/?intro). La marca vive en sessionStorage, o
-       sea que dura lo que dure la pestaña abierta -en un teléfono, semanas-
-       y recargar NO la borra. Sin esta puerta trasera, la única forma de
-       revisar la intro era cerrar la pestaña por completo. ===== -->
   <script>
     try {
       if (!/[?&]intro(=|&|$)/.test(location.search) &&
           sessionStorage.getItem('smilersSplashVisto')) {
         document.documentElement.classList.add('sin-splash');
       }
-    } catch (e) { /* modo privado / almacenamiento bloqueado: se muestra el splash */ }
+    } catch (e) {}
   </script>
 
-  <!-- ===== SEO BÁSICO ===== -->
   <title>Smilers Dental Clinique | Odontología Premium y Alta Tecnología</title>
   <meta name="description" content="Smilers Dental Clinique: clínica dental de primer nivel. Estética dental, ortodoncia, implantes y cirugía en instalaciones de lujo con tecnología de vanguardia.">
   <meta name="keywords" content="clínica dental, estética dental, ortodoncia, implantes dentales, blanqueamiento">
 
-  <!-- ===== FAVICON (SVG generado con los colores de marca; sustitúyelo cuando tengas el archivo oficial) ===== -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2316130F'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='bold' fill='%23B08D4A' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 
-  <!-- ===== BOOTSTRAP 5 (auto-hospedado en vendor/bootstrap/, ver README del proyecto) ===== -->
   <link href="vendor/bootstrap/bootstrap.min.css?v=c5ac1dee96" rel="stylesheet">
 
-  <!-- ===== GOOGLE FONTS: Bodoni Moda (titulares) + Prata (wordmark del banner) + Lato (cuerpo)
-       Prata entra SOLO para la palabra "Smilers" del hero (ver --fuente-banner
-       en estilos.css). Es una didone de display -contraste extremo y serifas
-       planas de un pelo- que a 13rem dibuja los remates finos que Bodoni Moda
-       engorda al llegar al peso 700. Pesa una sola variante (400), así que el
-       coste de sumarla es una petición de fuente, no una familia entera. ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Prata&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <!-- ===== ESTILOS PERSONALIZADOS (siempre al final para que sobrescriba Bootstrap) ===== -->
-  <link rel="stylesheet" href="estilos/estilos.css?v=2071949351">
+  <link rel="stylesheet" href="estilos/01-variables.css?v=a9755c5c13">
+  <link rel="stylesheet" href="estilos/02-base.css?v=d68ca06a7e">
+  <link rel="stylesheet" href="estilos/03-botones.css?v=0d84d5591e">
+  <link rel="stylesheet" href="estilos/04-navbar.css?v=c044ea70bb">
+  <link rel="stylesheet" href="estilos/05-hero.css?v=944559e9d9">
+  <link rel="stylesheet" href="estilos/06-secciones.css?v=59e062c1d6">
+  <link rel="stylesheet" href="estilos/07-nosotros.css?v=09327e14ce">
+  <link rel="stylesheet" href="estilos/08-especialidades.css?v=f8318c380e">
+  <link rel="stylesheet" href="estilos/09-cierre-cta.css?v=71eaaef346">
+  <link rel="stylesheet" href="estilos/10-footer.css?v=2da93e44a8">
+  <link rel="stylesheet" href="estilos/11-animaciones.css?v=e2373190e3">
+  <link rel="stylesheet" href="estilos/12-interiores.css?v=485cf2a523">
+  <link rel="stylesheet" href="estilos/13-testimonios.css?v=db3b13d642">
+  <link rel="stylesheet" href="estilos/14-pagina-nosotros.css?v=f2aa5d3b1c">
+  <link rel="stylesheet" href="estilos/15-lienzo-claro.css?v=5bc888daf2">
+  <link rel="stylesheet" href="estilos/16-oro.css?v=7eb0dabb87">
 
-  <!-- ===== LCP: precarga la 1a foto del hero para que empiece a bajar en
-       paralelo con el CSS. Dos entradas con "media" porque el hero usa
-       <picture>: si se precargara siempre la de 1920 px, en el teléfono se
-       descargarían las dos (la precargada y la que el <picture> elige). ===== -->
   <link rel="preload" as="image" href="imagenes/hero-1-720.webp?v=44baaaa35a" media="(max-width: 767.98px)" fetchpriority="high">
   <link rel="preload" as="image" href="imagenes/hero-1.webp?v=9bd092de88" media="(min-width: 768px)" fetchpriority="high">
 
-  <!-- ===== El clip de bienvenida NO se precarga desde aquí. Se intentó con
-       <link rel="preload" as="video">, pero ningún navegador admite ese
-       valor de "as": Chrome descarta la línea y encima la denuncia en
-       consola (<link rel=preload> must have a valid "as" value). O sea,
-       cero beneficio y una advertencia de regalo.
-       La descarga la arranca igual el <script> en línea que va pegado al
-       <video>, casi al principio del body: para cuando corre, el navegador
-       apenas ha leído este <head>, así que lo que se pierde son unos pocos
-       milisegundos. Ese mismo script es el que elige el corte según el
-       ancho y el que no pide nada si hay "menos movimiento". ===== -->
 </head>
 
 <body>
 
-  <!-- ============================================================
-       SPLASH DE BIENVENIDA (solo la primera vez de cada sesión)
-       Pantalla negra con el logo animado; se aparta sola al terminar el
-       clip (o si el navegador bloquea el autoplay / el vídeo falla).
-
-       POR QUÉ VA AQUÍ ARRIBA, Y CON SU PROPIO <script>
-       El src se elegía desde scripts/script.js, o sea en DOMContentLoaded:
-       para entonces el navegador ya se había bajado Bootstrap y los dos
-       scripts del sitio, y RECIÉN ahí empezaba a pedir el vídeo. En un
-       teléfono con datos eso llega tardísimo, y el seguro de "si no puede
-       reproducir, aparta el splash" saltaba antes que el primer fotograma:
-       la intro sencillamente no se veía nunca en el celular.
-       Estando aquí -lo primero del body, antes incluso del sprite de
-       iconos- el vídeo se empieza a descargar mientras el navegador
-       todavía está leyendo el HTML. script.js solo se ocupa después de
-       cuándo retirar la pantalla.
-       ============================================================ -->
   <div class="splash-inicio" id="splashInicio" aria-hidden="true">
-    <!-- Dos cortes: el vertical para el teléfono y el apaisado para el
-         resto. Son los mismos clips re-comprimidos a 720 px (26 y 36 KB),
-         que es lo que permite que estén listos a tiempo con datos. -->
+
     <video id="splashVideo" muted playsinline autoplay preload="auto"
            data-src-escritorio="video-hero/SmilersCompu-720.mp4?v=442156d929"
            data-src-movil="video-hero/SmilersCelular-720.mp4?v=df614e064a"></video>
@@ -96,26 +59,17 @@
     (function () {
       var v = document.getElementById('splashVideo');
       if (!v || document.documentElement.classList.contains('sin-splash')) return;
-      /* Con "menos movimiento" el CSS ya oculta la pantalla: ni se pide el
-         vídeo, para no gastar datos en un clip que nadie va a ver. */
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      /* Se marca la sesión YA, no en script.js: si alguien navega antes de
-         que ese archivo llegue a ejecutarse, el splash no debe repetirse. */
       try { sessionStorage.setItem('smilersSplashVisto', '1'); } catch (e) {}
 
-      /* Mismo corte que usa el CSS del sitio para "teléfono". */
       var movil = window.matchMedia('(max-width: 767.98px)').matches;
       v.src = movil ? v.dataset.srcMovil : v.dataset.srcEscritorio;
 
-      /* muted como PROPIEDAD además de atributo: varios navegadores móviles
-         solo dan por "silenciado" -y por tanto reproducible sin que el
-         usuario toque nada- lo que está puesto en la propiedad. */
       v.muted = true;
       v.playbackRate = 1.3;
 
-      /* Se intenta arrancar ya. Si el navegador lo rechaza queda anotado y
-         script.js lo usa para apartar el splash en vez de hacer esperar. */
       var intento = v.play();
       if (intento && typeof intento.catch === 'function') {
         intento.catch(function () { v.dataset.autoplayBloqueado = '1'; });
@@ -123,8 +77,6 @@
     })();
   </script>
 
-  <!-- Sprite de iconos, incrustado (no como archivo externo): un <svg><use href="archivo.svg#id"> no funciona al abrir la pagina con doble clic
-       (file://), Chrome lo bloquea por seguridad aunque en http(s):// funciona bien. Incrustado funciona siempre. -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
     <symbol id="brands-instagram" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></symbol>
@@ -167,16 +119,9 @@
     <symbol id="solid-wand-magic-sparkles" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></symbol>
   </svg>
 
-
-  <!-- ============================================================
-       1. NAVBAR STICKY
-       - Se vuelve blanca con sombra al hacer scroll (ver script.js)
-       - Colapsa en menú hamburguesa en móviles
-       ============================================================ -->
   <nav class="navbar navbar-principal fixed-top" id="navbarPrincipal">
     <div class="container">
 
-      <!-- Logo (marca tipográfica con los colores de Smilers; sustituye por tu logotipo oficial en imagenes/logo.png si lo prefieres) -->
       <a class="navbar-brand marca" href="index.html">
         <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
         <span class="marca-texto">
@@ -185,10 +130,6 @@
         </span>
       </a>
 
-      <!-- Botón hamburguesa: parte del navbar (se oculta con él al bajar,
-           como el logo) — script.js congela ese auto-hide mientras el menú
-           está desplegado, para que la X nunca se mueva ni desaparezca
-           mientras el panel sigue abierto. -->
       <button class="navbar-toggler" type="button" aria-controls="menuPrincipal"
               aria-expanded="false" aria-label="Abrir menú de navegación">
         <span class="hamburguesa-icono" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -197,11 +138,6 @@
     </div>
   </nav>
 
-  <!-- Enlaces del menú, FUERA de <nav>: el backdrop-filter del navbar
-       crea su propio "containing block" para descendientes position:fixed,
-       lo que encajonaba este overlay de pantalla completa al alto de la
-       barra en vez de cubrir todo el viewport. Como hermano de <nav> en
-       vez de hijo, el fixed/inset:0 se resuelve contra la ventana. -->
   <div class="navbar-collapse" id="menuPrincipal">
     <div class="menu-panel">
     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
@@ -220,7 +156,7 @@
       <li class="nav-item">
         <a class="nav-link" href="subpaginas/faq.html">FAQ</a>
       </li>
-      <!-- CTA destacado -->
+
       <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
         <a class="btn btn-naranja btn-sm-nav" href="#contacto">
           <i class="fa-solid fa-phone me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg></i>Contáctanos
@@ -230,40 +166,14 @@
     </div>
   </div>
 
-
-  <!-- ============================================================
-       2. HERO SECTION CON CARRUSEL DE FONDO
-       - 3 fotografías reales de consultorios/instalaciones (carousel-fade)
-       - Cada <img> reserva su espacio exacto con width/height + CSS
-       ============================================================ -->
-  <!-- ============================================================
-       HERO CINE: el header ".hero" y el mosaico ".hero-etapa2" quedan
-       "clavados" en pantalla (position:sticky, ver estilos.css) mientras
-       este contenedor más alto que el viewport se desplaza detrás; el
-       scroll funde una etapa en la otra (ver script.js, sección 14c).
-       Imita el mecanismo del banner de depaudental.com: video/wordmark
-       gigante -> mosaico de fotos con titular.
-       ============================================================ -->
   <div class="hero-cine" id="heroCine">
   <div class="hero-cine-pin" id="heroCinePin">
 
   <header class="hero" id="heroEtapa1">
 
-    <!-- Carrusel de fondo: tratado en blanco y negro por CSS (.hero-slide-img)
-         con ciclo corto para que se sienta tan dinámico como un video que
-         intercambia cortos. -->
     <div id="heroCarrusel" class="carousel slide carousel-fade hero-carrusel"
          data-bs-ride="carousel" data-bs-interval="4200">
-      <!-- <picture> con "media", NO srcset con descriptores "w": el hero
-           ocupa el 100% del ancho, así que un sizes honesto ("100vw") en un
-           teléfono de 390 px y densidad 3 pide 1170 px y el navegador
-           elegiría igualmente la de 1920. Y esas tres fotos de 1920x1284,
-           decodificadas, son ~10 MB de mapa de bits CADA UNA: 30 MB de
-           memoria de imagen viva en el arranque de la portada, en el mismo
-           momento en que el hero cine ya está animando. Con la variante de
-           720 px son 1.4 MB por foto. Al ir en blanco y negro, bajo un velo
-           oscuro y con filtro de contraste, la diferencia no se ve en una
-           pantalla de teléfono; la de memoria sí se siente. -->
+
       <div class="carousel-inner">
         <div class="carousel-item active">
           <picture>
@@ -292,29 +202,14 @@
       </div>
     </div>
 
-    <!-- Pátina dorada sobre el blanco y negro. AQUÍ HABÍA DOS CAPAS MÁS que
-         se retiran por encargo ("los destellos se ven muy exagerados"): un
-         barrido de luz que cruzaba el hero cada vez que cambiaba la foto
-         (.hero-flash) y un lienzo de partículas doradas alrededor del
-         wordmark (canvas#heroSparkles). El lujo del banner lo tiene que
-         poner la foto y el tipo, no el brillo. De paso se va con ellos un
-         canvas que se repintaba 60 veces por segundo. -->
     <div class="hero-duotone" aria-hidden="true"></div>
 
-    <!-- Capa semitransparente oscura sobre el carrusel -->
     <div class="hero-overlay"></div>
 
-    <!-- Contenido del hero: solo la marca, grande, sobre el fondo dinámico.
-         Sin etiqueta, sin subtítulo, sin botones — el fondo en blanco y
-         negro (con su destello dorado) es el protagonista. -->
     <div class="container hero-contenido">
       <div class="row justify-content-center text-center">
         <div class="col-12">
-          <!-- El <span> no es decorativo: el marco (velo traslúcido + filete
-               dorado) y la palabra en degradado dorado NO pueden vivir en el
-               mismo elemento, porque background-clip:text recorta al texto
-               TODOS los fondos de su caja — el velo incluido. El <h1> es el
-               marco; el <span> de dentro es la palabra. -->
+
           <h1 class="hero-titulo"><span class="hero-titulo__texto">Smilers</span></h1>
         </div>
       </div>
@@ -322,16 +217,8 @@
 
   </header>
 
-  <!-- Etapa 2 del hero cine: mosaico de 4 fotos en blanco y negro con un
-       titular centrado, como el bloque "Transforma vidas" del banner de
-       referencia. 100% decorativo/emocional — el equipo real, con nombres
-       y roles, ya está presentado con su propio texto más abajo y en
-       subpaginas/nosotros.html — por eso todo el bloque va aria-hidden. -->
   <div class="hero-etapa2" id="heroEtapa2" aria-hidden="true">
-    <!-- Aquí el sizes SÍ puede ser honesto: son 4 columnas (25vw en
-         escritorio, 50vw en la rejilla 2x2 de móvil), así que el navegador
-         elige solo la variante correcta. Antes se pedía siempre la de
-         900 px para pintarla en una columna de 195 px. -->
+
     <div class="hero-etapa2-col"><img src="imagenes/equipo-1.webp?v=7dadb1fd33" srcset="imagenes/equipo-1-480.webp?v=0109bd657d 480w, imagenes/equipo-1-720.webp?v=1a077e1d09 720w, imagenes/equipo-1.webp?v=7dadb1fd33 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" loading="lazy" decoding="async"></div>
     <div class="hero-etapa2-col"><img src="imagenes/equipo-2.webp?v=cd4a853990" srcset="imagenes/equipo-2-480.webp?v=a75db47d20 480w, imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, imagenes/equipo-2.webp?v=cd4a853990 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="1350" alt="" loading="lazy" decoding="async"></div>
     <div class="hero-etapa2-col"><img src="imagenes/equipo-3.webp?v=af31db4954" srcset="imagenes/equipo-3-480.webp?v=2caa776cc3 480w, imagenes/equipo-3-720.webp?v=b62996f01b 720w, imagenes/equipo-3.webp?v=af31db4954 900w" sizes="(max-width: 767.98px) 50vw, 25vw" width="900" height="600" alt="" loading="lazy" decoding="async"></div>
@@ -345,41 +232,15 @@
   </div>
   </div>
 
-
-  <!-- Oscurecimiento de acercamiento: capa fija que se oscurece a medida
-       que Tratamientos se aproxima (en cualquiera de los dos sentidos de
-       scroll) y se aclara de nuevo apenas se entra a la sección — ver
-       script.js, "14f. OSCURECIMIENTO AL ACERCARSE A TRATAMIENTOS". -->
   <div class="acercamiento-negro" id="acercamientoNegro" aria-hidden="true"></div>
 
-  <!-- ============================================================
-       3. SECCIÓN RESUMEN — NOSOTROS
-       ============================================================ -->
   <section class="seccion seccion-decorada seccion-clara fondo-perla seccion-nosotros escena-salida"
            id="nosotros" data-escena-salida>
     <div class="cortina" aria-hidden="true"><span class="cortina-panel"></span></div>
 
-    <!-- Halos metálicos (plata + un hilo de oro) muy diluidos: dan profundidad
-         al lienzo blanco sin ensuciarlo, en lugar de las "formas" de color
-         saturado que usaba la versión anterior sobre el fondo crema. -->
     <div class="nosotros-halo nosotros-halo--plata forma-parallax" data-intensidad="14" aria-hidden="true"></div>
     <div class="nosotros-halo nosotros-halo--oro forma-parallax" data-intensidad="22" aria-hidden="true"></div>
 
-    <!-- ===== 3a. SPLIT EDITORIAL: mosaico a media pantalla | texto =====
-         En escritorio el mosaico ocupa literalmente la mitad del viewport
-         (grid 1fr/1fr rompiendo el .container), tal como se pidió.
-
-         EL PARALAJE VA EN EL MOSAICO ENTERO, NO PIEZA POR PIEZA. Antes cada
-         figura llevaba su propio data-parallax con velocidad distinta (de
-         -34 a +42), y al hacer scroll el mosaico se "desarmaba" unos píxeles
-         y volvía a alinearse: con las fotos separadas 13px eso se leía como
-         profundidad. Con seis piezas encajadas y canales de 8px se lee como
-         que la rejilla está rota — las separaciones dejan de ser iguales y
-         además cambian mientras uno baja. Ahora el que se desplaza es el
-         bloque completo, así que los canales son fijos SIEMPRE y el mosaico
-         sigue moviéndose a distinta velocidad que el texto de al lado, que
-         es de donde salía la profundidad de verdad.
-         (Solo translate3d — ver script.js, "5c. PARALAJE DE SCROLL".) -->
     <div class="nosotros-split">
 
       <div class="nosotros-media" data-parallax="-16">
@@ -425,8 +286,6 @@
                loading="lazy" decoding="async">
         </figure>
 
-        <!-- Sello de trayectoria: mismo dato que la tarjeta flotante anterior,
-             ahora como pieza de vidrio ónix apoyada sobre el mosaico. -->
         <div class="nm-sello revelar" style="--retraso:.24s">
           <span class="nm-sello__num">25</span>
           <span class="nm-sello__txt">años de<br>práctica clínica</span>
@@ -479,7 +338,6 @@
 
     </div>
 
-    <!-- ===== 3b. PILARES: los cuatro argumentos de la clínica ===== -->
     <div class="container">
       <div class="pilares-editorial">
         <article class="pilar revelar">
@@ -509,12 +367,6 @@
       </div>
     </div>
 
-    <!-- ===== 3c. SEGUNDA BANDA: INSTALACIONES =====
-         Mismo mecanismo que la primera, con el mosaico espejado al lado
-         derecho (ver .nosotros-split--invertido): la página alterna el peso
-         de izquierda a derecha en vez de repetir el mismo bloque dos veces.
-         El mosaico va primero en el HTML también aquí, para que al apilarse
-         en móvil las dos bandas se lean igual: foto y después texto. -->
     <div class="nosotros-split nosotros-split--invertido">
 
       <div class="nosotros-media" data-parallax="-13">
@@ -613,13 +465,6 @@
 
     <div class="container">
 
-      <!-- ===== 3d. CONTADOR =====
-           Losa de obsidiana sobre el lienzo blanco: el contraste hace que el
-           oro del número se lea de verdad (sobre blanco un degradado dorado
-           claro se apaga). Los números usan tabular-nums para que no
-           "salten" de ancho mientras el contador sube, y cada columna lleva
-           una regla dorada que se dibuja de 0 a 100% al entrar en pantalla
-           — ver .contador-lujo en estilos.css. -->
       <div class="contador-lujo revelar" aria-label="Cifras de la clínica">
         <div class="cl-item">
           <span class="cl-num"><span data-contador="8500">0</span><i class="cl-sufijo">+</i></span>
@@ -645,29 +490,14 @@
     </div>
   </section>
 
-
-  <!-- ============================================================
-       4. SECCIÓN ESPECIALIDADES (Cards de Bootstrap)
-       ============================================================ -->
   <section class="acordeon-seccion" id="especialidades" aria-label="Especialidades y tratamientos">
 
-    <!-- Ceremonia de entrada: mismo mecanismo .cortina/blur que el resto
-         del sitio, con el mensaje "Tratamientos" a pantalla completa;
-         data-retraso-ms le pide al observer (script.js, 5b) que espere ese
-         tiempo quieta antes de desvanecerse y revelar el acordeón. -->
     <div class="cortina acordeon-intro" aria-hidden="true" data-retraso-ms="550">
       <span class="cortina-panel"><span class="acordeon-intro__texto">Tratamientos</span></span>
     </div>
 
-    <!-- Etiqueta fija: queda sobre el acordeón todo el tiempo, con una
-         barra que se desvanece hacia abajo para no taparlo. -->
     <div class="acordeon-etiqueta" aria-hidden="true"><span>Tratamientos</span></div>
 
-    <!-- Galería en acordeón: cada panel se expande al pasar el cursor
-         (o al enfocarlo/tocarlo) mostrando su descripción; un segundo
-         click/tap sobre el panel ya activo navega a su tratamiento en
-         tratamientos.html. Ver .ag-* en estilos.css y la sección
-         correspondiente en script.js. -->
     <div class="acordeon-galeria" id="acordeonEspecialidades"
          role="list" aria-label="Especialidades de Smilers Dental Clinique">
 
@@ -773,81 +603,21 @@
     </div>
   </section>
 
-
-  <!-- ============================================================
-       4. TESTIMONIOS — ESFERA WEBGL MOVIDA POR SCROLL
-       - Los testimonios viven como discos sobre una esfera (el efecto
-         "InfiniteMenu"). En vez de arrastrarla con el mouse, la GIRA EL
-         SCROLL: cada tramo del pin trae un testimonio al frente, se
-         detiene (ahí aparece su texto) y sigue rodando al siguiente.
-       - La foto del frente se ve en blanco y negro: ese es el ANTES. Al
-         pasar el cursor (o tocar, en móvil) funde al DESPUÉS a color.
-       - Motor: scripts/testimonios-esfera.js (port vanilla del componente
-         React original, sin npm ni gl-matrix — ver el encabezado de ese
-         archivo).
-
-       DÓNDE SE EDITA EL CONTENIDO
-       ---------------------------
-       Aquí abajo, en <ol class="testimonios-lista">. Esa lista es el
-       contenido de verdad: es lo que leen Google y los lectores de
-       pantalla, lo que se ve si el navegador no tiene WebGL y lo que se
-       muestra si el visitante pidió "menos movimiento". El script la lee y
-       arma la esfera con esos mismos datos, así que NO hay que tocar el JS
-       para cambiar un testimonio, una foto o agregar/quitar uno.
-
-       CUÁNTOS HAY: siete. El número NO está escrito en ningún otro sitio —
-       ni en el JS ni en el CSS. El reparto del scroll y el alto de la
-       sección se calculan a partir de esta lista (ver "reparto del scroll"
-       en testimonios-esfera.js), así que agregar o quitar un <li> de aquí
-       basta. Lo único que hay que acompañar es la lista de marcas de
-       progreso (.tst-pasos), unas líneas más arriba: un <li> por testimonio.
-
-       OJO — DOS COSAS PENDIENTES DE REEMPLAZAR:
-       1) Los textos son de EJEMPLO. Cámbialos por testimonios reales de
-          pacientes (con su autorización); publicar reseñas inventadas como
-          si fueran auténticas es engañoso y en varios países es sancionable.
-       2) Las fotos son PROVISIONALES: se reutilizan fotos que ya están en
-          el sitio, solo para que la sección no se vea rota. Antes vivían
-          duplicadas en imagenes/testimonios/ (diez archivos idénticos, byte
-          a byte, a otros que ya estaban en imagenes/) y esa carpeta se
-          eliminó. Para poner las reales basta con cambiar, en cada <figure>
-          de aquí abajo, los cuatro sitios donde va la foto: data-antes,
-          data-despues y el src de los dos <img>. Ideal: cuadradas, ~800x800
-          px y con el mismo encuadre en el antes y en el después.
-       ============================================================ -->
   <section class="testimonios-cine" id="testimonios"
            data-esfera-testimonios aria-labelledby="testimoniosTitulo">
     <div class="testimonios-pin">
 
-      <!-- Velo de apertura y cierre: lo controla el scroll (ver
-           testimonios-esfera.js). Arranca negro y se abre al entrar; en el
-           último tramo se vuelve a cerrar, de modo que la sección se apaga
-           sola y entrega la pantalla ya en negro al cierre de cine que
-           viene justo después, sin corte seco entre las dos. -->
       <div class="testimonios-velo" data-velo-testimonios aria-hidden="true"></div>
 
-      <!-- Cierre de la sección: dos hojas negras que entran desde arriba y
-           desde abajo hasta juntarse en el centro cuando el último
-           testimonio ya pasó — como el obturador de una cámara cerrándose.
-           Van por encima del velo (que ahora solo hace la apertura) y
-           entregan la pantalla en negro al cierre de cine que viene
-           después, que la vuelve a abrir con un difuminado sobre la banda
-           de contacto. Las mueve testimonios-esfera.js con el mismo
-           progreso de scroll que gira la esfera. -->
       <div class="testimonios-cierre" data-cierre-testimonios aria-hidden="true">
         <span class="tc-hoja tc-hoja--arriba"></span>
         <span class="tc-hoja tc-hoja--abajo"></span>
       </div>
 
-      <!-- Etiqueta fija, mismo criterio que la de Tratamientos -->
       <div class="testimonios-etiqueta">
         <span id="testimoniosTitulo">Testimonios</span>
       </div>
 
-      <!-- Escena WebGL. Nace oculta y solo se muestra cuando el script
-           consiguió armar la esfera (le pone .esfera-activa a la sección).
-           Va aria-hidden porque es un duplicado visual de la lista de
-           abajo: quien usa lector de pantalla lee la lista, no el canvas. -->
       <div class="testimonios-escena" aria-hidden="true">
 
         <div class="testimonios-texto" data-panel-testimonio>
@@ -858,25 +628,7 @@
             <span class="tst-firma__linea"></span>
             <span class="tst-firma__tratamiento" data-tratamiento></span>
           </p>
-          <!-- Las marcas de progreso son BOTONES, no adornos: al tocar una,
-               la pagina se desliza hasta la meseta de ese testimonio (ver
-               testimonios-esfera.js, "IR A UN TESTIMONIO"). En movil, donde
-               la seccion son cuatro pantallas y media de scroll, era la
-               unica forma de volver a uno concreto sin recorrerla entera.
-               El aria-label lo completa el JS con el nombre real de cada
-               paciente en cuanto lee la lista de abajo. -->
-          <!-- tabindex=-1, igual que el boton de antes/despues de mas abajo y
-               por el mismo motivo: toda esta escena va dentro de un
-               aria-hidden, porque es un duplicado VISUAL de la lista de
-               testimonios que hay al final del bloque (esa es la que leen los
-               lectores de pantalla). Un elemento enfocable dentro de un
-               aria-hidden es un fallo de accesibilidad: se puede tabular
-               hasta el, pero la tecnologia de apoyo tiene orden de hacer como
-               si no existiera, asi que el foco desaparece en un punto ciego.
-               Quien navega con teclado no pierde nada: estos botones giran
-               una esfera que para el no existe, y el contenido completo -las
-               citas con su nombre y tratamiento- lo tiene entero en esa
-               lista. Con el dedo y con el raton siguen funcionando igual. -->
+
           <ol class="tst-pasos">
             <li><button type="button" class="es-activo" data-paso tabindex="-1" aria-label="Ir al testimonio 1"></button></li>
             <li><button type="button" data-paso tabindex="-1" aria-label="Ir al testimonio 2"></button></li>
@@ -890,8 +642,7 @@
 
         <div class="testimonios-esfera">
           <canvas class="testimonios-lienzo" data-lienzo-testimonios></canvas>
-          <!-- Botón circular calcado sobre el disco del frente: al pasar
-               el cursor (o tocarlo) cambia el antes por el después. -->
+
           <button type="button" class="testimonios-revelar" data-revelar
                   tabindex="-1" aria-pressed="false">
             <span class="testimonios-revelar__chip">
@@ -903,7 +654,6 @@
 
       </div>
 
-      <!-- ===== CONTENIDO REAL: edita los testimonios AQUÍ ===== -->
       <ol class="testimonios-lista">
 
         <li>
@@ -1037,38 +787,13 @@
     </div>
   </section>
 
-
-  <!-- ============================================================
-       CIERRE CINE + BANDA CTA (llamado a la acción)
-       - Mismo mecanismo de pin que el hero (ver .hero-cine): la pantalla
-         se queda en negro, y al seguir bajando ese negro se levanta como
-         una cortina para revelar la banda CTA ya armada debajo — el cierre
-         "simétrico" a la apertura del hero, tal como en depaudental.com
-         (allá cierran con "COMIENZA TU EXPERIENCIA" revelándose desde
-         negro antes del formulario de contacto).
-       ============================================================ -->
   <div class="cierre-cine" id="cierreCine">
     <div class="cierre-cine-pin" id="cierreCinePin">
 
       <section class="banda-cta" id="bandaCta">
-        <!-- Fondo tipo masonry, como carrusel automático continuo hacia la
-             izquierda. script.js (sección "MARQUEE DE LA BANDA CTA") arma las
-             columnas de la "cinta" en JS en vez de fijas aquí: con un set fijo
-             de 4 columnas, en pantallas anchas (monitores grandes) el set no
-             alcanzaba a cubrir el viewport y a mitad del loop se veía un hueco
-             negro antes de que la copia siguiente entrara — las fotos
-             "desaparecían" un instante. El script mide el ancho real de
-             pantalla y repite las columnas las veces que hagan falta para que
-             el set siempre sea más ancho que la pantalla, así el loop (mismo
-             truco translateX 0 -> -50% con una copia idéntica al final) nunca
-             se queda corto, sea cual sea el monitor. -->
+
         <div class="banda-cta-masonry" aria-hidden="true">
-          <!-- La lista de fotos vive AQUÍ, no dentro de script.js, por la caché:
-               el sellado de versión (scripts/sellar-version.js) recorre los
-               HTML, así que una URL escrita en el JS se quedaba sin "?v=" y,
-               con /imagenes marcado "immutable" a un año, reemplazar una de
-               estas fotos no habría llegado nunca a quien ya visitó el sitio.
-               En el HTML se sella sola. Van en grupos de 3 = una columna. -->
+
           <div class="banda-cta-masonry__cinta" id="bandaCtaMasonryCinta"
                data-fotos="imagenes/hero-1-480.webp?v=aeab827b33, imagenes/equipo-1-480.webp?v=0109bd657d, imagenes/sonrisa-480.webp?v=33c4c4c590, imagenes/hero-2-480.webp?v=f64e90b09f, imagenes/equipo-3-480.webp?v=2caa776cc3, imagenes/tecnologia-480.webp?v=bbded9d1d1, imagenes/hero-3-480.webp?v=23df82beb8, imagenes/equipo-2-480.webp?v=a75db47d20, imagenes/cirugia-480.webp?v=3c31b35eb6, imagenes/equipo-4-480.webp?v=6dea302323, imagenes/implantologia-480.webp?v=4a2132544d, imagenes/nosotros-480.webp?v=2e9bc31f97"></div>
         </div>
@@ -1090,27 +815,15 @@
         </div>
       </section>
 
-      <!-- Cortina negra que se levanta (opacity 1 -> 0) controlada por
-           script.js (sección 14e), por encima de todo lo demás dentro del
-           pin. Empieza opaca (oculta la banda CTA) y se desvanece a medio
-           recorrido del pin, revelándola igual que un cierre de cine. -->
       <div class="cierre-cine-negro" id="cierreCineNegro" aria-hidden="true"></div>
 
     </div>
   </div>
 
-
-  <!-- ============================================================
-       5. FOOTER
-       - Columna 1: marca + redes sociales
-       - Columna 2: mapa de Google Maps
-       - Columna 3: formulario rápido -> WhatsApp
-       ============================================================ -->
   <footer class="footer">
     <div class="container">
       <div class="row g-5">
 
-        <!-- ===== Columna 1: Marca, contacto y redes ===== -->
         <div class="col-lg-4">
           <a href="index.html" class="marca marca-footer mb-3">
             <span class="marca-icono"><i class="fa-solid fa-tooth"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-tooth"></use></svg></i></span>
@@ -1132,22 +845,6 @@
             <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
           </ul>
 
-          <!-- Redes sociales. EL ORDEN ES EL PEDIDO Y NO ES ALFABÉTICO NI
-               CASUAL: Instagram, Facebook, TikTok, YouTube, WhatsApp, Mail.
-               Los dos últimos no son "redes" sino canales de contacto, y van
-               al final por eso.
-
-               EL CORREO ABRE GMAIL, NO mailto:. Es lo que se pidió, y tiene
-               su lado bueno y su lado malo: en un teléfono o en un escritorio
-               con Gmail ya iniciado, el visitante cae directo en una ventana
-               de redacción con el destinatario y el asunto puestos, en vez de
-               en el diálogo de "elige una aplicación" que a mucha gente le
-               abre un cliente que no usa. A cambio, quien tiene Outlook,
-               Apple Mail o cualquier otro correo se encuentra con una
-               pantalla de inicio de sesión de Google.
-               Si algún día se prefiere lo neutro, se vuelve a
-               "mailto:smilersdentalclinique@gmail.com" y se quitan el target
-               y el rel: la dirección visible es la misma. -->
           <div class="redes-sociales">
             <a href="https://www.instagram.com/smilersdentalclinique/?hl=es" target="_blank" rel="noopener" aria-label="Instagram">
               <i class="fa-brands fa-instagram"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-instagram"></use></svg></i>
@@ -1171,7 +868,6 @@
           </div>
         </div>
 
-        <!-- ===== Columna 2: Mapa de Google Maps (Matriz / Sucursal) ===== -->
         <div class="col-lg-4">
           <h3 class="footer-titulo">Ubícanos</h3>
           <div class="mapa-tabs" role="tablist" aria-label="Elegir sede en el mapa">
@@ -1196,14 +892,12 @@
           </div>
         </div>
 
-        <!-- ===== Columna 3: Formulario rápido (envía a WhatsApp) ===== -->
         <div class="col-lg-4" id="contacto">
           <h3 class="footer-titulo">Escríbenos</h3>
           <p class="footer-texto small">
             Déjanos tu mensaje y te responderemos por WhatsApp.
           </p>
 
-          <!-- El JS intercepta el submit y arma el enlace wa.me -->
           <form id="formWhatsapp" class="form-footer" novalidate>
             <div class="mb-3">
               <label for="nombre" class="form-label">Nombre</label>
@@ -1221,14 +915,12 @@
               <i class="fa-brands fa-whatsapp me-2"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>Enviar por WhatsApp
             </button>
 
-            <!-- Zona de mensajes de validación / confirmación (la llena el JS) -->
             <p class="form-aviso" id="formAviso" role="status" aria-live="polite"></p>
           </form>
         </div>
 
       </div>
 
-      <!-- Línea inferior -->
       <div class="footer-bottom">
         <p class="mb-0">
           © <span id="anioActual">2026</span> Smilers Dental Clinique. Todos los derechos reservados.
@@ -1241,24 +933,24 @@
     </div>
   </footer>
 
-
-  <!-- ===== Botón flotante de WhatsApp ===== -->
   <a href="https://api.whatsapp.com/send?phone=593997556002&text=Hola%2C%20vi%20sus%20publicaciones%20en%20redes%20sociales.%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20o%20una%20cita%20dental" target="_blank" rel="noopener"
      class="wsp-flotante" aria-label="Chatear por WhatsApp">
     <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>
   </a>
 
-  <!-- ===== Botón "volver arriba" (lo controla el JS) ===== -->
   <button class="btn-subir" id="btnSubir" aria-label="Volver arriba">
     <i class="fa-solid fa-chevron-up"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-up"></use></svg></i>
   </button>
 
-
-  <!-- ===== SCRIPTS ===== -->
   <script src="vendor/bootstrap/bootstrap.bundle.min.js?v=ddc6e9ead6"></script>
-  <script src="scripts/script.js?v=550f603240"></script>
-  <!-- Esfera de testimonios (solo la usa index.html; se apaga sola si no
-       hay WebGL 2 o si el visitante pidió menos movimiento). -->
-  <script src="scripts/testimonios-esfera.js?v=58550a2ceb"></script>
+  <script src="scripts/planificador.js?v=d5cc9d4082"></script>
+  <script src="scripts/navegacion.js?v=3e8e97bf56"></script>
+  <script src="scripts/revelados.js?v=c38a19e149"></script>
+  <script src="scripts/footer.js?v=7d71806edc"></script>
+  <script src="scripts/subpaginas.js?v=b13a1084ad"></script>
+  <script src="scripts/secciones.js?v=7945704ccf"></script>
+  <script src="scripts/hero.js?v=d637ef3740"></script>
+
+  <script src="scripts/testimonios-esfera.js?v=2ca396a64b"></script>
 </body>
 </html>
