@@ -189,7 +189,7 @@
   height: 3px;
   border-radius: 3px;
   background: var(--gold-500);
-  box-shadow: 0 0 12px rgba(210, 172, 71, .6);
+  box-shadow: 0 0 12px rgba(212, 175, 55, .6);
 }
 .ag-panel__titulo {
   font-family: var(--fuente-elegante);

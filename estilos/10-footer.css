@@ -151,7 +151,7 @@
 .form-footer .form-control:focus {
   background: rgba(255, 255, 255, .08);
   border-color: var(--gold-500);
-  box-shadow: 0 0 0 .2rem rgba(210, 172, 71, .18);
+  box-shadow: 0 0 0 .2rem rgba(212, 175, 55, .18);
   color: #fff;
 }
 
@@ -206,7 +206,7 @@
   position: absolute;
   inset: -1px;
   border-radius: 50%;
-  border: 2px solid #EDC967;
+  border: 2px solid #E6C95F;
   box-shadow: 0 0 14px rgba(237, 201, 103, .55),
               inset 0 0 10px rgba(237, 201, 103, .3);
   pointer-events: none;
@@ -230,7 +230,7 @@
 
 .wsp-flotante:hover,
 .wsp-flotante:focus-visible {
-  background: linear-gradient(100deg, #AE8625 0%, #F7EF8A 32%, #D2AC47 64%, #EDC967 100%);
+  background: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
   border-color: transparent;
   color: #0A0806;
   transform: translateY(-4px);

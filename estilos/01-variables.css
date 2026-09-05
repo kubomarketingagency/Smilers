@@ -1,14 +1,15 @@
 :root {
-  --gold-100: #F7EF8A;
-  --gold-200: #EDC967;
-  --gold-300: #EDC967;
-  --gold-500: #D2AC47;
-  --gold-700: #AE8625;
-  --gold-900: #7A5C19;
+  --gold-100: #F7E7A6;
+  --gold-200: #E6C95F;
+  --gold-300: #E6C95F;
+  --gold-500: #D4AF37;
+  --gold-700: #B08D22;
+  --gold-900: #7E621A;
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
-  --gradiente-oro-profundo: linear-gradient(100deg, #7E5B05 0%, #D9B44A 32%, #A87C10 64%, #C89C22 100%);
+  --gradiente-oro-profundo: linear-gradient(100deg, #8F6F14 0%, #E2C558 32%, #B8942A 64%, #C9A62F 100%);
   --gradiente-oro-menudo: var(--gradiente-oro);
-  --gradiente-oro-hondo: linear-gradient(100deg, #634B12 0%, #9A7724 34%, #745719 66%, #8A6B16 100%);
+  --gradiente-oro-hondo: linear-gradient(100deg, #9C7A1C 0%, #DCBB4E 34%, #B08D22 66%, #C4A02B 100%);
+  --gradiente-plata: linear-gradient(100deg, #8C8C8C 0%, #F2F2F2 32%, #C0C0C0 64%, #E4E4E4 100%);
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
   --silver-500: #C0C0C0;

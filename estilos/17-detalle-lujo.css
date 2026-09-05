@@ -11,8 +11,8 @@
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(115% 62% at 86% -12%, rgba(210, 172, 71, .07), transparent 58%),
-    radial-gradient(88% 55% at -12% 108%, rgba(210, 172, 71, .045), transparent 60%);
+    radial-gradient(115% 62% at 86% -12%, rgba(212, 175, 55, .07), transparent 58%),
+    radial-gradient(88% 55% at -12% 108%, rgba(212, 175, 55, .045), transparent 60%);
 }
 
 .pagina-tratamientos .seccion,
@@ -48,7 +48,7 @@
 
 .pagina-tratamientos .comparador { max-width: none; }
 .pagina-tratamientos .comparador-marco {
-  border: 1px solid rgba(210, 172, 71, .40);
+  border: 1px solid rgba(212, 175, 55, .40);
 }
 
 .pagina-tratamientos .comparador-marco::before,

@@ -1,6 +1,6 @@
 .pagina-tratamientos {
   --pz-tinta: #0A0A0A;
-  --pz-borde: rgba(210, 172, 71, .32);
+  --pz-borde: rgba(212, 175, 55, .32);
   --pz-curva: cubic-bezier(.22, 1, .36, 1);
 }
 
@@ -66,7 +66,7 @@
   width: clamp(42px, 3.4vw, 52px);
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 1px solid rgba(210, 172, 71, .5);
+  border: 1px solid rgba(212, 175, 55, .5);
   background: var(--pz-tinta);
   color: var(--gold-200);
   font-size: clamp(.9rem, 1.1vw, 1.05rem);
@@ -110,7 +110,7 @@
   position: relative;
   margin: 0;
   padding: clamp(1.6rem, 2.9vw, 2.6rem);
-  border: 1px solid rgba(210, 172, 71, .34);
+  border: 1px solid rgba(212, 175, 55, .34);
 }
 .pz-cita__marca {
   display: block;
@@ -170,7 +170,7 @@
   content: "";
   position: absolute;
   inset: 5px;
-  border: 1px solid rgba(210, 172, 71, .28);
+  border: 1px solid rgba(212, 175, 55, .28);
   border-radius: 50%;
 }
 .pz-medallon__aro .icono { width: 1em; height: 1em; }

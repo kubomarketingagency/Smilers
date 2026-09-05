@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
   SmilersScroll.pedir();
 
   const botonMenu = document.querySelector('.navbar-toggler');
-  const enlacesMenu = document.querySelectorAll('#menuPrincipal .nav-link, #menuPrincipal .btn');
+  const enlacesMenu = document.querySelectorAll('#menuPrincipal a');
+  const veloMenu = menu.querySelector('[data-cerrar-menu]');
 
   function alternarMenu(forzarCerrado) {
     const abierto = menu.classList.contains('menu-abierto');
@@ -63,6 +64,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   enlacesMenu.forEach(function (enlace) {
     enlace.addEventListener('click', function () { alternarMenu(true); });
+  });
+
+  if (veloMenu) {
+    veloMenu.addEventListener('click', function () { alternarMenu(true); });
+  }
+
+  document.addEventListener('keydown', function (evento) {
+    if (evento.key !== 'Escape') return;
+    if (!menu.classList.contains('menu-abierto')) return;
+    alternarMenu(true);
+    if (botonMenu) botonMenu.focus();
   });
 
   const btnSubir = document.getElementById('btnSubir');

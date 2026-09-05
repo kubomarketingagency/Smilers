@@ -36,26 +36,17 @@
   background: var(--gradiente-oro);
 }
 
-.navbar-toggler { color: var(--plata); }
-.hamburguesa-icono span {
-  background: linear-gradient(100deg, var(--silver-100) 0%, var(--silver-500) 45%, var(--silver-700) 100%);
-}
+.navbar-toggler,
+.pagina-clara .navbar-toggler { color: var(--gold-500); }
+.hamburguesa-icono span,
+.pagina-clara .hamburguesa-icono span { background: var(--gradiente-oro); }
 
-.pagina-clara .navbar-toggler { color: var(--plata); }
-.pagina-clara .hamburguesa-icono span {
-  background: linear-gradient(100deg, #ECECEC 0%, #C0C0C0 45%, #8A8A8A 100%);
-}
-
-.navbar-collapse .nav-link { color: var(--plata); }
-
-.navbar-collapse .nav-link::after { background: var(--gradiente-oro); }
-
-.nos-boton,
-.nosotros-acciones .btn,
-.pagina-clara .btn,
-.footer .btn,
-.btn-sm-nav,
-.banda-cta .btn {
+/* Un solo boton en todo el sitio: filo de oro, letras de oro y, al pasar
+   por encima, el degradado de oro entero de fondo. Las variantes viejas
+   (.btn-naranja, .btn-turquesa, .btn-blanco, .btn-contorno, .btn-fantasma,
+   .btn-traslucido) ya no pintan nada propio; esta hoja va despues y las
+   iguala a todas. */
+.btn {
   padding: 1.05rem 2.1rem;
   border: 1px solid transparent;
   border-image: var(--gradiente-oro) 1;
@@ -67,13 +58,11 @@
   font-size: .72rem;
   letter-spacing: .2em;
   text-transform: uppercase;
+  color: var(--gold-500);
 }
-.nos-boton:hover, .nos-boton:focus-visible,
-.nosotros-acciones .btn:hover, .nosotros-acciones .btn:focus, .nosotros-acciones .btn:focus-visible,
-.pagina-clara .btn:hover, .pagina-clara .btn:focus, .pagina-clara .btn:focus-visible,
-.footer .btn:hover, .footer .btn:focus, .footer .btn:focus-visible,
-.btn-sm-nav:hover, .btn-sm-nav:focus,
-.banda-cta .btn:hover, .banda-cta .btn:focus {
+.btn-lg { padding: 1.15rem 2.5rem; font-size: .78rem; }
+
+.btn:hover, .btn:focus, .btn:focus-visible {
   background: var(--gradiente-oro);
   border-image: var(--gradiente-oro) 1;
   color: var(--onix);
@@ -81,15 +70,21 @@
   transform: none;
 }
 
+/* Sobre piedra clara el reposo va en tinta: el oro se queda en el filo y
+   en el relleno del hover, que es donde se ve. */
 .pagina-clara .btn,
-.nos-boton,
-.nosotros-acciones .btn { color: var(--nos-negro, #0A0A0A); }
-.footer .btn,
-.btn-sm-nav,
-.banda-cta .btn { color: var(--marmol); }
-.pagina-clara .footer .btn,
-.pagina-clara .navbar-collapse .btn { color: var(--marmol); }
+.nosotros-acciones .btn,
+.seccion-clara .btn,
+.seccion-piedra .btn { color: var(--nos-negro, #0A0A0A); }
 
+/* Salvo dentro de las piezas oscuras que viven en esas paginas. */
+.pagina-clara .footer .btn,
+.pagina-clara .banda-cta--jardin .btn,
+.footer .btn,
+.banda-cta .btn,
+.btn-sm-nav { color: var(--gold-500); }
+
+.btn::before,
 .pagina-clara .btn::before,
 .footer .btn::before,
 .btn-sm-nav::before,
@@ -111,9 +106,9 @@
 .redes-sociales a { border-color: rgba(192, 192, 192, .55); color: var(--plata); }
 .redes-sociales a:hover { border-color: transparent; }
 .marca-footer .marca-slogan { color: var(--plata); }
-.footer-bottom { border-top-color: rgba(210, 172, 71, .22); }
+.footer-bottom { border-top-color: rgba(212, 175, 55, .22); }
 .footer-bottom a { color: var(--gold-200); }
-.mapa-tab { border-color: rgba(210, 172, 71, .3); }
-.mapa-contenedor { border-color: rgba(210, 172, 71, .28); }
-.form-footer .form-control { border-color: rgba(210, 172, 71, .28); }
+.mapa-tab { border-color: rgba(212, 175, 55, .3); }
+.mapa-contenedor { border-color: rgba(212, 175, 55, .28); }
+.form-footer .form-control { border-color: rgba(212, 175, 55, .28); }
 .form-footer .form-label { color: var(--gold-200); }

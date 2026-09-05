@@ -10,7 +10,7 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(60% 55% at 72% 50%, rgba(210, 172, 71, .10) 0%, transparent 70%);
+  background: radial-gradient(60% 55% at 72% 50%, rgba(212, 175, 55, .10) 0%, transparent 70%);
 }
 
 .testimonios-pin {
@@ -26,23 +26,25 @@
   overflow: hidden;
   pointer-events: none;
 }
+/* El jardin se ve mas: sube la foto y se afloja el velo de encima. Lo negro
+   se queda solo en los bordes, para coser la seccion con las vecinas. */
 .testimonios-fondo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .38;
-  filter: saturate(.62);
+  opacity: .62;
+  filter: saturate(.86) brightness(1.08);
 }
 .testimonios-fondo::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(72% 58% at 50% 48%, rgba(210, 172, 71, .08) 0%, transparent 68%),
+    radial-gradient(72% 58% at 50% 48%, rgba(212, 175, 55, .08) 0%, transparent 68%),
     linear-gradient(180deg,
       var(--onix) 0%,
-      rgba(10, 8, 6, .2) 22%,
-      rgba(10, 8, 6, .2) 78%,
+      rgba(10, 8, 6, .06) 16%,
+      rgba(10, 8, 6, .06) 84%,
       var(--onix) 100%);
 }
 
@@ -104,9 +106,9 @@
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(210, 172, 71, .5) 28%,
+    rgba(212, 175, 55, .5) 28%,
     var(--gold-100) 50%,
-    rgba(210, 172, 71, .5) 72%,
+    rgba(212, 175, 55, .5) 72%,
     transparent 100%);
   opacity: calc(.7 * var(--filo, 1));
 }
@@ -327,11 +329,11 @@
 .tst-pasos [data-paso].es-activo { width: 44px; }
 .tst-pasos [data-paso].es-activo::after { background: var(--gold-500); }
 
-.tst-pasos [data-paso]:hover::after { background: rgba(210, 172, 71, .6); }
+.tst-pasos [data-paso]:hover::after { background: rgba(212, 175, 55, .6); }
 .tst-pasos [data-paso]:focus-visible { outline: none; }
 .tst-pasos [data-paso]:focus-visible::after {
   background: var(--gold-100);
-  box-shadow: 0 0 0 2px rgba(210, 172, 71, .45);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, .45);
 }
 
 .testimonios-esfera {
@@ -365,6 +367,7 @@
   align-items: flex-end;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .testimonios-revelar:focus-visible { box-shadow: var(--foco); }
 
@@ -397,8 +400,8 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(210, 172, 71, .75);
-  box-shadow: 0 0 14px rgba(210, 172, 71, .3);
+  border: 1px solid rgba(212, 175, 55, .75);
+  box-shadow: 0 0 14px rgba(212, 175, 55, .3);
   opacity: 0;
   pointer-events: none;
 }
@@ -440,7 +443,7 @@
 }
 
 .mostrando-despues .testimonios-revelar__chip {
-  background: rgba(210, 172, 71, .94);
+  background: rgba(212, 175, 55, .94);
   border-color: transparent;
 }
 .mostrando-despues .testimonios-revelar__estado { color: var(--onix); }

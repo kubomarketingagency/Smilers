@@ -96,22 +96,24 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 .ns-parrafo:last-child { margin-bottom: 0; }
 .ns-parrafo strong { font-weight: 700; }
 
+/* El mismo boton que el `.btn` del 16: filo de oro y relleno de oro al
+   pasar por encima. Si se cambia alli, se cambia aqui. */
 .ns-boton {
   display: inline-flex;
   align-items: center;
   gap: .85rem;
   padding: 1.05rem 2.1rem;
-  border: 1px solid var(--gm-oro);
-  border-radius: var(--gm-radio);
+  border: 1px solid transparent;
+  border-image: var(--gradiente-oro) 1;
+  border-radius: 0;
   background: transparent;
-  font-family: var(--fuente-cuerpo);
-  font-weight: 700;
-  font-size: .7rem;
-  letter-spacing: .24em;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--gm-oro-vivo);
-  transition: background .45s var(--gm-curva), color .45s var(--gm-curva),
-              transform .45s var(--gm-curva), box-shadow .45s var(--gm-curva);
+  transition: background .45s var(--gm-curva), color .45s var(--gm-curva);
 }
 .ns-boton .icono {
   width: 1.05em;
@@ -124,8 +126,6 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
   .ns-boton:focus-visible {
     background: var(--gradiente-oro);
     color: var(--gm-negro);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(148, 111, 33, .26);
   }
   .ns-boton:hover .icono { transform: translateX(4px); }
 }

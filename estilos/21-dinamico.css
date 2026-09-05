@@ -117,15 +117,19 @@
   padding-block: clamp(2rem, 3.2vw, 3.2rem);
   overflow: hidden;
 }
+/* La palabra son mayusculas sin bajos, asi que la tinta cae en la mitad
+   alta de su linea: centrar las cajas la deja pareciendo comida por arriba.
+   El relleno de abajo va mas corto que el de arriba menos la barra, y con eso
+   el bloque baja lo justo para quedar centrado a ojo. */
 .ns-portada.ns-pantalla {
-  padding-block: calc(var(--alto-navbar) + clamp(1.2rem, 2.2vw, 2.2rem)) clamp(1rem, 2vw, 1.8rem);
+  padding-block: calc(var(--alto-navbar) + clamp(2rem, 3.8vw, 3.6rem)) clamp(1.4rem, 2.4vw, 2.2rem);
 }
 
 /* La portada: el carrusel ocupa el hero entero, de borde a borde, y el hero
    mide un tercio de la pantalla. La palabra va encima de la foto y la ruta
    justo debajo. */
 .ns-portada.ns-pantalla {
-  min-height: max(420px, calc(var(--alto-navbar) + 46svh));
+  min-height: max(460px, calc(var(--alto-navbar) + 50svh));
   justify-content: center;
   background: var(--gm-negro);
 }
@@ -180,14 +184,14 @@
   z-index: 3;
   background:
     radial-gradient(66% 70% at 50% 46%,
-      rgba(8, 8, 8, .68) 0%,
-      rgba(8, 8, 8, .34) 62%,
-      rgba(8, 8, 8, .12) 82%),
+      rgba(8, 8, 8, .5) 0%,
+      rgba(8, 8, 8, .24) 62%,
+      rgba(8, 8, 8, .06) 82%),
     linear-gradient(180deg,
-      rgba(8, 8, 8, .66) 0%,
-      rgba(8, 8, 8, .34) 34%,
-      rgba(8, 8, 8, .38) 62%,
-      rgba(8, 8, 8, .74) 100%);
+      rgba(8, 8, 8, .5) 0%,
+      rgba(8, 8, 8, .2) 34%,
+      rgba(8, 8, 8, .24) 62%,
+      rgba(8, 8, 8, .58) 100%);
 }
 
 .ns-portada__centro {
@@ -241,7 +245,7 @@
 .pagina-tratamientos .ns-portada__palabra { --palabra-escala: 6vw; }
 
 @media (max-width: 767.98px) {
-  .ns-portada.ns-pantalla { min-height: max(360px, calc(var(--alto-navbar) + 44svh)); }
+  .ns-portada.ns-pantalla { min-height: max(400px, calc(var(--alto-navbar) + 48svh)); }
   .ns-portada__palabra { font-size: min(11.6vw, 3.4rem); }
   .pagina-tratamientos .ns-portada__palabra { font-size: min(8vw, 2.4rem); }
 }
@@ -377,23 +381,32 @@
   border-bottom-color: rgba(43, 35, 20, .16);
 }
 .ns-cifras-sec .ns-cifra { border-left-color: rgba(43, 35, 20, .14); }
-.ns-cifras-sec .ns-cifra__num { color: var(--gm-texto); }
+.ns-cifras-sec .ns-cifra__num,
 .ns-cifras-sec .ns-cifra__num i { color: var(--gm-oro-hondo); }
 .ns-cifras-sec .ns-cifra__etq { color: var(--gm-texto-2); }
 .pagina-nosotros .ns-cifras-sec .ns-cta h2 { color: var(--gm-texto); }
-/* El boton se apoya sobre la foto: pastilla clara y oro hondo, que es el
-   que se lee sobre piedra clara. */
-.ns-cifras-sec .ns-boton {
-  border-color: var(--gm-oro);
-  background: rgba(255, 255, 255, .88);
-  color: var(--gm-oro-hondo);
+/* La pregunta y el boton se apoyaban sueltos sobre la foto y se perdian:
+   van dentro de una tarjeta clara con filo de oro, la misma piedra clara del
+   resto de la pagina. El boton sigue siendo el de siempre. */
+.ns-cifras-sec .ns-cta {
+  margin-top: clamp(1.8rem, 3.2vw, 2.8rem);
+  padding: clamp(1.4rem, 2.6vw, 2.2rem) clamp(1.4rem, 2.8vw, 2.4rem);
+  border: 1px solid var(--gm-borde-vivo);
+  border-radius: var(--gm-radio);
+  background: rgba(255, 255, 255, .9);
+  box-shadow: var(--gm-sombra);
 }
+.pagina-nosotros .ns-cifras-sec .ns-cta h2 { margin-bottom: 0; }
+.ns-cifras-sec .ns-boton { color: var(--gm-texto); }
 
-.ns-fondo--jardin img { opacity: .42; filter: saturate(.62); }
+/* El jardin de Fundamentos: con el velo de antes la hoja quedaba tan negra
+   que no se distinguia del marmol. Sube la foto y afloja el velo hasta donde
+   el texto blanco de encima aguanta. */
+.ns-fondo--jardin img { opacity: .68; filter: saturate(.82); }
 .ns-fondo--jardin::after {
   background:
-    radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .12), transparent 62%),
-    linear-gradient(180deg, rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .19) 44%, rgba(8, 8, 8, .66) 100%);
+    radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .1), transparent 62%),
+    linear-gradient(180deg, rgba(8, 8, 8, .42) 0%, rgba(8, 8, 8, .24) 44%, rgba(8, 8, 8, .5) 100%);
 }
 
 .ns-riel {
@@ -656,19 +669,19 @@
   align-items: center;
 }
 .pz-intro__texto > *:last-child { margin-bottom: 0; }
+/* El logo ya no lleva placa: la version `-marmol` viene recortada sobre
+   transparente y con la plata y el blanco pasados a tinta, que es lo unico
+   que se lee sobre la piedra clara. El oro se queda como esta. */
 .ns-sello {
   display: block;
-  padding: clamp(1rem, 1.8vw, 1.6rem) clamp(1.2rem, 2.2vw, 2rem);
-  border: 1px solid var(--gm-borde-vivo);
-  border-radius: var(--gm-radio);
-  /* Negro puro, el mismo del recorte del logo: si no, se ve el borde de la
-     imagen dentro de la placa. */
-  background: #000000;
-  box-shadow: 0 20px 48px rgba(43, 35, 20, .18);
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
 }
 .ns-sello img {
   display: block;
-  width: clamp(220px, 22vw, 320px);
+  width: clamp(240px, 24vw, 360px);
   height: auto;
 }
 @media (min-width: 992px) {
@@ -677,10 +690,10 @@
 }
 @media (max-width: 767.98px) {
   .ns-sello { margin-inline: auto; }
-  .ns-sello img { width: min(240px, 70vw); }
+  .ns-sello img { width: min(260px, 74vw); }
 }
 
-/* La cinta de tratamientos: una linea recta de texto en oro sobre negro
+/* La cinta de tratamientos: una linea recta de texto en plata sobre negro
    que recorre la pagina de derecha a izquierda. La lista va dos veces —la
    segunda oculta al lector de pantalla— para que el bucle no tenga costura. */
 .cinta-trat {
@@ -688,7 +701,7 @@
   z-index: 1;
   display: block;
   overflow: hidden;
-  padding-block: clamp(.45rem, .8vw, .7rem);
+  padding-block: clamp(.26rem, .42vw, .38rem);
   border-block: 1px solid var(--gm-borde-osc);
   background: var(--gm-negro);
 }
@@ -714,19 +727,20 @@
   font-size: clamp(.8rem, 1.1vw, 1.02rem);
   letter-spacing: .08em;
   white-space: nowrap;
-  background: var(--gradiente-oro);
+  line-height: 1.15;
+  background: var(--gradiente-plata);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--gm-oro-vivo);
+  color: var(--silver-500);
 }
-/* El rombo separador no puede heredar el recorte de oro del texto. */
+/* El rombo separador no puede heredar el recorte de plata del texto. */
 .cinta-trat__pieza::after {
   content: "";
   width: clamp(3px, .38vw, 4px);
   aspect-ratio: 1;
   margin-left: clamp(.9rem, 1.7vw, 1.5rem);
-  background: var(--gm-oro-vivo);
+  background: var(--silver-500);
   transform: rotate(45deg);
 }
 @keyframes cinta-trat-corre {
@@ -902,38 +916,24 @@
 }
 
 
-/* La banda de cierre de Tratamientos: jardin detras y la pregunta dentro
-   de un vidrio, para que se lea sobre la hoja. */
-.pagina-tratamientos .banda-cta--jardin {
-  min-height: 0;
-  padding-block: clamp(3rem, 6vw, 6rem);
-  background: var(--gm-negro);
-  border-color: var(--gm-borde-osc);
+/* El cierre de Tratamientos repite la parada de "En cifras": la foto
+   emerge del marmol hacia abajo y el texto se queda oscuro encima. Aqui no
+   hay `.ns-pantalla` que dispare el zoom, asi que la foto entra quieta. */
+.pz-proceso {
+  position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
-.pagina-tratamientos .banda-cta--jardin > .container { position: relative; z-index: 1; }
-
-.banda-cta__vidrio {
-  margin-inline: 0;
-  padding: clamp(1.6rem, 3vw, 2.6rem) clamp(1.4rem, 2.6vw, 2.4rem);
-  border: 1px solid var(--gm-borde);
-  border-radius: var(--gm-radio);
-  background: rgba(8, 9, 7, .78);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 30px 70px rgba(4, 6, 3, .45);
+.pz-proceso > .container { position: relative; z-index: 1; }
+.pz-proceso .ns-fondo img { transform: none; }
+/* La seccion es corta y el texto cae justo sobre la foto, asi que el lavado
+   claro entra antes que en la de cifras. */
+.pz-proceso .ns-fondo--degradado::after {
+  background: linear-gradient(180deg,
+    rgba(250, 248, 245, .34) 0%,
+    rgba(250, 248, 245, .5) 46%,
+    rgba(250, 248, 245, .62) 100%);
 }
-.pagina-tratamientos .banda-cta--jardin h2 { color: #FFFFFF; }
-.pagina-tratamientos .banda-cta--jardin p { color: rgba(255, 255, 255, .82); }
-.pagina-tratamientos .banda-cta--jardin .btn {
-  color: var(--gm-oro-vivo);
-  border-color: var(--gm-borde-vivo);
-}
-.pagina-tratamientos .banda-cta--jardin .btn:hover,
-.pagina-tratamientos .banda-cta--jardin .btn:focus-visible {
-  color: var(--gm-negro);
-  background: var(--gradiente-oro);
-  border-color: transparent;
-}
-
 
 /* Sobre la piedra el titulo va en oro y el texto de leer en claro. */
 .pagina-nosotros .ns-valor .ns-valor__nombre,

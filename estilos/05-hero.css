@@ -108,7 +108,7 @@
   padding: .25em .3em .08em;
   max-width: 100%;
   border-radius: .18em 0 .18em 0;
-  border: 1px solid rgba(210, 172, 71, .45);
+  border: 1px solid rgba(212, 175, 55, .45);
   background: rgba(10, 8, 6, .20);
   -webkit-backdrop-filter: blur(10px) saturate(1.2);
   backdrop-filter: blur(10px) saturate(1.2);
@@ -132,7 +132,7 @@
   inset: .04em;
   pointer-events: none;
   border-radius: .14em 0 .14em 0;
-  border: 1px solid rgba(210, 172, 71, .16);
+  border: 1px solid rgba(212, 175, 55, .16);
 }
 
 .hero-titulo__texto {

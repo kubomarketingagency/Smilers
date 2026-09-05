@@ -46,6 +46,7 @@
 .pagina-nosotros .ns-valor .ns-valor__nombre,
 .pagina-tratamientos .pz-tarjeta .pz-tarjeta__titulo,
 .pagina-tratamientos .pz-panel .titulo-seccion,
+.pagina-nosotros .ns-cifras-sec .ns-cifra__num,
 .pagina-nosotros .ns-cifras-sec .ns-cifra__num i,
 .footer-contacto i,
 .footer-bottom a,
@@ -60,7 +61,8 @@
 /* Ojo con los hijos: -webkit-text-fill-color se hereda pero el fondo no,
    asi que un <span> dentro de un texto recortado se queda invisible. A los
    que los tienen se les pasa el mismo degradado. */
-.cl-num > * {
+.cl-num > *,
+.pagina-nosotros .ns-cifras-sec .ns-cifra__num > * {
   background-image: inherit;
   -webkit-background-clip: text;
           background-clip: text;
@@ -104,7 +106,6 @@
 .pagina-clara .menu-panel,
 .pagina-clara .footer,
 .pagina-clara .cinta-trat,
-.pagina-clara .ns-sello,
 .pagina-clara .ns-bloque,
 .pagina-clara .ns-doble,
 .pagina-clara .ns-ficha,

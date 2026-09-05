@@ -26,6 +26,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
     });
+
+    function filtrarSegunDireccion() {
+      const marca = decodeURIComponent(window.location.hash.slice(1));
+      if (!marca) return;
+      const boton = Array.prototype.find.call(botonesFiltro, function (b) {
+        return b.dataset.filtro === marca;
+      });
+      if (boton) boton.click();
+    }
+
+    filtrarSegunDireccion();
+    window.addEventListener('hashchange', filtrarSegunDireccion);
   }
 
   const modalLightboxEl = document.getElementById('modalLightbox');
@@ -64,15 +76,38 @@ document.addEventListener('DOMContentLoaded', function () {
       return (x / rect.width) * 100;
     }
 
+    let punteroActivo = null;
+
     marco.addEventListener('pointerdown', function (evento) {
+      punteroActivo = evento.pointerId;
+
+      if (marco.setPointerCapture) {
+        try { marco.setPointerCapture(evento.pointerId); } catch (e) {}
+      }
       fijarPosicion(porcentajeDesdeEvento(evento));
     });
+
     marco.addEventListener('pointermove', function (evento) {
 
-      if (evento.pointerType === 'mouse' || evento.pressure > 0) {
+      if (punteroActivo === evento.pointerId) {
+
+        if (evento.cancelable) evento.preventDefault();
         fijarPosicion(porcentajeDesdeEvento(evento));
+        return;
       }
+      if (evento.pointerType === 'mouse' && evento.buttons === 0) return;
+      if (evento.pointerType === 'mouse') fijarPosicion(porcentajeDesdeEvento(evento));
     });
+
+    function soltar(evento) {
+      if (punteroActivo !== evento.pointerId) return;
+      punteroActivo = null;
+      if (marco.releasePointerCapture) {
+        try { marco.releasePointerCapture(evento.pointerId); } catch (e) {}
+      }
+    }
+    marco.addEventListener('pointerup', soltar);
+    marco.addEventListener('pointercancel', soltar);
 
     rango.addEventListener('input', function () {
       fijarPosicion(Number(rango.value));

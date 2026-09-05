@@ -2,10 +2,10 @@
   --nos-blanco: #FFFFFF;
   --nos-negro: #0A0A0A;
   --nos-texto: #2E2E2E;
-  --nos-dorado: #A87C10;
-  --nos-dorado-claro: #D2AC47;
+  --nos-dorado: #B8942A;
+  --nos-dorado-claro: #D4AF37;
   --nos-dorado-texto: #8C6508;
-  --nos-linea: rgba(210, 172, 71, .55);
+  --nos-linea: rgba(212, 175, 55, .55);
   --texto: #2E2E2E;
   --texto-suave: #2E2E2E;
   --blanco: #FFFFFF;
@@ -18,7 +18,7 @@
   --gold-700: #8C6508;
   --silver-100: #2E2E2E;
   --silver-300: #4A4A4A;
-  --naranja: #A87C10;
+  --naranja: #B8942A;
   --naranja-oscuro: #8C6508;
   --naranja-accion: #8C6508;
   --turquesa: #0A0A0A;
@@ -38,8 +38,7 @@
 .pagina-clara .container { padding-inline: clamp(1.5rem, 6vw, 6rem); }
 
 .pagina-clara .navbar-principal > .container,
-.pagina-clara .footer .container,
-.pagina-clara .menu-pantalla .container {
+.pagina-clara .footer .container {
   padding-inline: calc(var(--bs-gutter-x, 1.5rem) * .5);
 }
 .pagina-clara .seccion { padding: clamp(2.2rem, 4.4vw, 4.4rem) 0; }
@@ -159,7 +158,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #A87C10;
+  color: #B8942A;
   font-weight: 500;
 }
 
@@ -280,7 +279,7 @@
 
 .pagina-clara .comparador-tag { border-radius: 0; }
 
-.pagina-clara .comparador-tag-despues { background: #D2AC47; color: #0A0A0A; }
+.pagina-clara .comparador-tag-despues { background: #D4AF37; color: #0A0A0A; }
 .pagina-clara .comparador-nota {
   text-align: left;
   font-style: normal;
@@ -317,14 +316,10 @@
 
 .pagina-clara .footer { border-top: 1px solid rgba(10, 10, 10, .1); }
 
+/* Las piezas oscuras que viven dentro de una pagina clara vuelven a la
+   paleta de fondo negro: la barra, el menu y el pie. */
 .pagina-clara .footer,
-.pagina-clara .navbar-collapse,
-.pagina-clara .menu-pantalla,
-.pagina-clara .tarjeta-ayuda {
-  --gold-500: #D2AC47;
-  --gold-700: #AE8625;
-  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
-  --gradiente-oro-menudo: var(--gradiente-oro);
+.pagina-clara .navbar-collapse {
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
   --neutral-300: #B9B4AC;
@@ -349,7 +344,6 @@
 .pagina-clara .footer h2,
 .pagina-clara .footer h3,
 .pagina-clara .footer h4,
-.pagina-clara .tarjeta-ayuda h2,
 .pagina-clara .footer .footer-titulo { color: var(--marmol); }
 
 .pagina-clara .banda-cta .btn { color: var(--nos-negro); }
@@ -357,12 +351,8 @@
 .pagina-clara .banda-cta .btn:focus,
 .pagina-clara .banda-cta .btn:focus-visible { color: var(--onix); }
 
-.pagina-clara .footer .btn,
-.pagina-clara .tarjeta-ayuda .btn,
-.pagina-clara .navbar-collapse .btn { color: var(--marmol); background: transparent; }
-.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus, .pagina-clara .footer .btn:focus-visible,
-.pagina-clara .tarjeta-ayuda .btn:hover, .pagina-clara .tarjeta-ayuda .btn:focus, .pagina-clara .tarjeta-ayuda .btn:focus-visible,
-.pagina-clara .navbar-collapse .btn:hover, .pagina-clara .navbar-collapse .btn:focus, .pagina-clara .navbar-collapse .btn:focus-visible {
+.pagina-clara .footer .btn { color: var(--marmol); background: transparent; }
+.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus, .pagina-clara .footer .btn:focus-visible {
   background: var(--gradiente-oro);
   color: var(--onix);
 }
@@ -533,7 +523,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(118% 72% at 84% 0%, rgba(197, 160, 89, .13), transparent 58%),
+    radial-gradient(118% 72% at 84% 0%, rgba(212, 175, 55, .13), transparent 58%),
     linear-gradient(180deg,
       rgba(255, 255, 255, .38) 0%,
       rgba(255, 255, 255, .12) 42%,
@@ -557,7 +547,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(112% 68% at 84% 0%, rgba(197, 160, 89, .13), transparent 58%),
+    radial-gradient(112% 68% at 84% 0%, rgba(212, 175, 55, .13), transparent 58%),
     linear-gradient(180deg,
       rgba(255, 255, 255, .34) 0%,
       rgba(255, 255, 255, .1) 42%,
@@ -725,7 +715,7 @@
   background: linear-gradient(155deg,
     rgba(255, 255, 255, .60) 0%,
     rgba(240, 224, 178, .54) 46%,
-    rgba(210, 172, 71, .50) 100%);
+    rgba(212, 175, 55, .50) 100%);
   color: #14110C;
   font-size: 1rem;
   opacity: 0;
@@ -739,7 +729,7 @@
   border: 1px solid rgba(255, 255, 255, .85);
   border-radius: 50%;
   background: rgba(255, 255, 255, .92);
-  color: #8A6C28;
+  color: #A8801E;
   font-size: 1.05rem;
   box-shadow: 0 12px 28px rgba(43, 35, 20, .26);
   transform: scale(.84);

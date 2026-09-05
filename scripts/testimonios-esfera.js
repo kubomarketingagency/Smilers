@@ -409,6 +409,8 @@ void main() {
 
     this.encuadre = opciones.encuadre || 0.35;
 
+    this.velocidadRevelado = opciones.velocidadRevelado || 0.14;
+
     this.gl = lienzo.getContext('webgl2', { antialias: true, alpha: true });
     if (!this.gl) throw new Error('Sin WebGL 2');
 
@@ -682,7 +684,7 @@ void main() {
     this.camara.z += (objetivoZ - this.camara.z) / (5 / escalaTiempo);
     this._actualizarCamara();
 
-    this.revelado += (this.objetivoRevelado - this.revelado) * Math.min(1, 0.14 * escalaTiempo);
+    this.revelado += (this.objetivoRevelado - this.revelado) * Math.min(1, this.velocidadRevelado * escalaTiempo);
 
     var arribaY = V3.de(0, 1, 0);
     var arribaX = V3.de(1, 0, 0);
@@ -811,6 +813,8 @@ void main() {
 
     seccion.classList.add('esfera-activa');
 
+    var hayHover = window.matchMedia('(hover: hover)').matches;
+
     function escalaSegunPantalla() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
@@ -823,7 +827,9 @@ void main() {
     try {
       esfera = new EsferaTestimonios(lienzo, items, {
         escala: escalaSegunPantalla(),
-        encuadre: encuadreSegunPantalla()
+        encuadre: encuadreSegunPantalla(),
+
+        velocidadRevelado: hayHover ? 0.14 : 0.34
       });
     } catch (e) {
 
@@ -989,13 +995,29 @@ void main() {
     }
 
     if (boton) {
-      if (window.matchMedia('(hover: hover)').matches) {
+      if (hayHover) {
         boton.addEventListener('pointerenter', function () { fijarRevelado(true); });
         boton.addEventListener('pointerleave', function () { fijarRevelado(false); });
+        boton.addEventListener('click', function () { fijarRevelado(!revelando); });
+        boton.addEventListener('focus', function () { fijarRevelado(true); });
+        boton.addEventListener('blur', function () { fijarRevelado(false); });
+      } else {
+
+        var yaTocado = false;
+
+        boton.addEventListener('pointerdown', function (evento) {
+          if (evento.pointerType === 'mouse') return;
+
+          yaTocado = true;
+          fijarRevelado(!revelando);
+        });
+
+        boton.addEventListener('click', function () {
+
+          if (yaTocado) { yaTocado = false; return; }
+          fijarRevelado(!revelando);
+        });
       }
-      boton.addEventListener('click', function () { fijarRevelado(!revelando); });
-      boton.addEventListener('focus', function () { fijarRevelado(true); });
-      boton.addEventListener('blur', function () { fijarRevelado(false); });
     }
 
     function yDeTestimonio(indice) {

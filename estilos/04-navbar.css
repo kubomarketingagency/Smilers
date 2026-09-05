@@ -28,7 +28,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(130% 200% at 16% 0%, rgba(210, 172, 71, .10), transparent 58%),
+    radial-gradient(130% 200% at 16% 0%, rgba(212, 175, 55, .10), transparent 58%),
     linear-gradient(180deg, rgba(0, 0, 0, .22) 0%, transparent 46%, rgba(0, 0, 0, .34) 100%);
 }
 
@@ -41,9 +41,9 @@
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(210, 172, 71, .28) 18%,
-    rgba(210, 172, 71, .62) 50%,
-    rgba(210, 172, 71, .28) 82%,
+    rgba(212, 175, 55, .28) 18%,
+    rgba(212, 175, 55, .62) 50%,
+    rgba(212, 175, 55, .28) 82%,
     transparent 100%);
   opacity: .55;
   transition: opacity .35s ease;
@@ -58,11 +58,11 @@
 }
 
 .pagina-clara .navbar-principal .marca-nombre {
-  background: linear-gradient(100deg, #AE8625 0%, #F7EF8A 32%, #D2AC47 64%, #EDC967 100%);
+  background: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #D2AC47;
+  color: #D4AF37;
 }
 .pagina-clara .navbar-principal .marca-slogan { color: var(--neutral-300); }
 
@@ -73,11 +73,6 @@
   transition: opacity .3s ease, visibility .3s ease;
 }
 
-.navbar-principal:has(.navbar-toggler[aria-expanded="true"]) .marca {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
 .marca-icono {
   flex: 0 0 auto;
   width: 30px;
@@ -161,73 +156,170 @@
 .navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(2) { opacity: 0; }
 .navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(3) { top: 8px; transform: rotate(-45deg); }
 
+/* ===========================================================================
+   El menu se despliega: un panel que entra por la derecha sobre un velo
+   desenfocado. En pantallas pequenas lleva las cinco secciones, como antes;
+   en escritorio esas cinco se abren en columnas con todo lo que hay dentro
+   de cada una.
+
+   Es la unica excepcion a la regla de "un solo desenfoque en todo el sitio":
+   el velo va desenfocado a peticion expresa. El panel, no.
+   =========================================================================== */
+
 .navbar-collapse {
   position: fixed;
   inset: 0;
   z-index: 1029;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-y: auto;
-  padding: 90px 0;
-  background: rgba(10, 8, 6, .95);
-  opacity: 0;
+  display: block;
+  padding: 0;
+  background: none;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity .4s ease, visibility 0s linear .4s;
 }
 .navbar-collapse.menu-abierto {
-  opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity .4s ease, visibility 0s linear 0s;
 }
+
+.menu-velo {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 5, 4, .58);
+  -webkit-backdrop-filter: blur(16px) saturate(.85);
+          backdrop-filter: blur(16px) saturate(.85);
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.menu-abierto .menu-velo { opacity: 1; }
 
 .menu-panel {
-  width: 100%;
-  max-width: 480px;
-  margin: auto 0;
-  padding: 0 1.5rem;
-}
-.menu-panel > .navbar-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(430px, 88vw);
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.1rem;
-  text-align: center;
+  justify-content: center;
+  gap: clamp(1.4rem, 3vh, 2.4rem);
+  margin: 0;
+  padding: calc(var(--alto-navbar) + 1.6rem) clamp(1.5rem, 4vw, 2.6rem) 2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background:
+    linear-gradient(180deg, rgba(10, 9, 8, .97) 0%, rgba(6, 6, 6, .99) 100%);
+  border-left: 1px solid rgba(212, 175, 55, .34);
+  box-shadow: -30px 0 70px rgba(0, 0, 0, .55);
+  transform: translateX(100%);
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1);
 }
-.navbar-collapse .nav-link {
-  font-family: var(--fuente-menu);
-  font-style: normal;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .34em;
-  font-size: clamp(.95rem, 2vw, 1.25rem);
-  padding: .65rem 1rem !important;
-  min-height: 0;
+.menu-abierto .menu-panel { transform: translateX(0); }
+
+.menu-columnas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.menu-col__titulo {
   position: relative;
   display: inline-flex;
-  color: var(--naranja);
-  transition: color .25s ease;
+  align-self: flex-start;
+  padding: .3rem 0;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--plata);
+  text-decoration: none;
+  transition: color .3s ease;
 }
-
-.navbar-collapse .nav-link::after {
+.menu-col__titulo::after {
   content: '';
   position: absolute;
-  left: 1rem;
-  bottom: -.1rem;
-  width: calc(100% - 2rem);
+  left: 0;
+  bottom: 0;
+  width: 100%;
   height: 2px;
-  background: var(--naranja);
-  border-radius: 3px;
+  background: var(--gradiente-oro);
   transform: scaleX(0);
-  transform-origin: center;
-  transition: transform .3s ease;
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(.22, 1, .36, 1);
 }
-.navbar-collapse .nav-link:hover::after,
-.navbar-collapse .nav-link.activo::after { transform: scaleX(1); }
+.menu-col__titulo:hover,
+.menu-col__titulo:focus-visible,
+.menu-col__titulo.activo { color: var(--marmol); }
+.menu-col__titulo:hover::after,
+.menu-col__titulo:focus-visible::after,
+.menu-col__titulo.activo::after { transform: scaleX(1); }
 
-.navbar-collapse .nav-link:hover,
-.navbar-collapse .nav-link.activo { color: var(--marmol); }
+.menu-sub {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-sub a {
+  display: block;
+  padding: .3rem 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .84rem;
+  letter-spacing: .06em;
+  color: rgba(217, 214, 208, .62);
+  text-decoration: none;
+  transition: color .28s ease, transform .28s ease;
+}
+.menu-sub a:hover,
+.menu-sub a:focus-visible {
+  color: var(--gold-200);
+  transform: translateX(4px);
+}
 
-.navbar-collapse .nav-item.ms-lg-3 { margin-top: 1.2rem !important; }
+/* En pantallas pequenas el panel lleva lo mismo que llevaba antes: las
+   cinco secciones y el boton. Lo de dentro de cada una se queda fuera. */
+@media (max-width: 991.98px) {
+  .menu-sub { display: none; }
+  .menu-columnas { gap: 1.35rem; }
+  .menu-panel { justify-content: center; }
+}
+
+/* En escritorio el panel se abre a lo ancho y reparte las cinco secciones
+   en columnas, cada una con todo su contenido debajo. */
+@media (min-width: 992px) {
+  .menu-panel {
+    width: min(1180px, 96vw);
+
+    bottom: auto;
+    max-height: 100vh;
+    justify-content: flex-start;
+    padding: calc(var(--alto-navbar) + 2.6rem) clamp(2rem, 4vw, 4rem) 2.4rem;
+    border-bottom: 1px solid rgba(212, 175, 55, .34);
+  }
+  .menu-columnas {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(1.5rem, 3vw, 3.2rem);
+  }
+  .menu-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+  }
+  .menu-col + .menu-col {
+    padding-left: clamp(1.5rem, 3vw, 3.2rem);
+    margin-left: calc(-1 * clamp(1.5rem, 3vw, 3.2rem) / 2);
+    border-left: 1px solid rgba(212, 175, 55, .16);
+  }
+  .menu-col__titulo { font-size: 1rem; letter-spacing: .22em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel,
+  .menu-velo,
+  .menu-sub a,
+  .menu-col__titulo::after { transition: none; }
+}
