@@ -4,7 +4,7 @@
   --nos-texto: #2E2E2E;
   --nos-dorado: #B8942A;
   --nos-dorado-claro: #D4AF37;
-  --nos-dorado-texto: #8C6508;
+  --nos-dorado-texto: #9C7A1C;
   --nos-linea: rgba(212, 175, 55, .55);
   --texto: #2E2E2E;
   --texto-suave: #2E2E2E;
@@ -14,22 +14,22 @@
   --superficie-borde: rgba(10, 10, 10, .10);
   --sombra: none;
   --sombra-hover: none;
-  --gold-500: #C29418;
-  --gold-700: #8C6508;
+  --gold-500: #B8942A;
+  --gold-700: #9C7A1C;
   --silver-100: #2E2E2E;
   --silver-300: #4A4A4A;
   --naranja: #B8942A;
-  --naranja-oscuro: #8C6508;
-  --naranja-accion: #8C6508;
+  --naranja-oscuro: #9C7A1C;
+  --naranja-accion: #9C7A1C;
   --turquesa: #0A0A0A;
   --turquesa-osc: #0A0A0A;
   --turquesa-accion: #0A0A0A;
   --turquesa-profundo: #0A0A0A;
   --turquesa-claro: rgba(10, 10, 10, .12);
-  --acento-legible: #8C6508;
+  --acento-legible: #9C7A1C;
   --acento-legible-hover: #0A0A0A;
   --gradiente-oro: var(--gradiente-oro-profundo);
-  --gradiente-oro-menudo: linear-gradient(100deg, #6B4D03 0%, #C29418 34%, #8A6407 66%, #B4880E 100%);
+  --gradiente-oro-menudo: var(--gradiente-oro-hondo);
   --neutral-300: #6F6F6F;
   background: var(--nos-blanco);
   color: var(--nos-texto);
@@ -185,31 +185,11 @@
 }
 .pagina-clara h2, .pagina-clara h3, .pagina-clara h4 { color: var(--nos-negro); }
 
-.pagina-clara .btn {
-  padding: 1.05rem 2.1rem;
-  border: 1px solid var(--nos-negro);
-  border-radius: 0;
-  background: transparent;
-  color: var(--nos-negro);
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: .72rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  box-shadow: none;
-  transition: background .45s cubic-bezier(.22, 1, .36, 1),
-              color .45s cubic-bezier(.22, 1, .36, 1);
-}
-.pagina-clara .btn::before { inset: 4px; border-radius: 0; border-color: rgba(255, 255, 255, .38); }
-.pagina-clara .btn:hover,
-.pagina-clara .btn:focus,
-.pagina-clara .btn:focus-visible {
-  background: var(--nos-negro);
-  border-color: var(--nos-negro);
-  color: #FFFFFF;
-  box-shadow: none;
-  transform: none;
-}
+/* El boton de las paginas claras es el mismo que el del resto: lo viste el
+   16 entero. Aqui llevaba `border: 1px solid var(--nos-negro)`, y ese atajo
+   borraba el `border-image` dorado — de ahi que en las cuatro subpaginas el
+   filo saliera negro y el hover se llenara de negro en vez de oro. */
+.pagina-clara .btn::before { inset: 4px; border-radius: 0; }
 
 .pagina-clara .tarjeta-tratamiento-compacta,
 .pagina-clara .tarjeta-tratamiento-compacta.fondo-naranja,
@@ -320,6 +300,10 @@
    paleta de fondo negro: la barra, el menu y el pie. */
 .pagina-clara .footer,
 .pagina-clara .navbar-collapse {
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  --gradiente-oro-menudo: var(--gradiente-oro);
+  --gold-500: #D4AF37;
+  --gold-700: #B08D22;
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
   --neutral-300: #B9B4AC;
@@ -350,12 +334,6 @@
 .pagina-clara .banda-cta .btn:hover,
 .pagina-clara .banda-cta .btn:focus,
 .pagina-clara .banda-cta .btn:focus-visible { color: var(--onix); }
-
-.pagina-clara .footer .btn { color: var(--marmol); background: transparent; }
-.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus, .pagina-clara .footer .btn:focus-visible {
-  background: var(--gradiente-oro);
-  color: var(--onix);
-}
 
 .pagina-tratamientos .bloque-tratamiento {
   border-bottom: 0;

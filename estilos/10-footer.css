@@ -3,31 +3,10 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
 }
 
-.footer .btn {
-  padding: 1.05rem 2.1rem;
-  border: 1px solid rgba(255, 255, 255, .45);
-  border-radius: 0;
-  background: transparent;
-  color: #FFFFFF;
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: .72rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  box-shadow: none;
-  transition: background .45s cubic-bezier(.22, 1, .36, 1),
-              color .45s cubic-bezier(.22, 1, .36, 1);
-}
-.footer .btn::before { inset: 4px; border-radius: 0; border-color: rgba(10, 10, 10, .35); }
-.footer .btn:hover,
-.footer .btn:focus,
-.footer .btn:focus-visible {
-  background: #FFFFFF;
-  border-color: #FFFFFF;
-  color: var(--onix);
-  box-shadow: none;
-  transform: none;
-}
+/* El boton del pie es el mismo que el resto: filo de oro y relleno de oro
+   al pasar por encima. Todo eso lo pone el 16; aqui solo se ajusta el filo
+   interior, que en el pie va un pelo mas adentro. */
+.footer .btn::before { inset: 4px; border-radius: 0; }
 
 .footer {
   position: relative;

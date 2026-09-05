@@ -36,12 +36,11 @@
 }
 
 .seccion-clara.fondo-perla {
-  --gradiente-oro: var(--gradiente-oro-profundo);
-  --gold-500: #C29418;
-  --gold-700: #8C6508;
+  --gold-500: #B8942A;
+  --gold-700: #9C7A1C;
   --hairline-oro: rgba(212, 175, 55, .55);
   --gradiente-oro: var(--gradiente-oro-profundo);
-  --gradiente-oro-menudo: linear-gradient(100deg, #6B4D03 0%, #C29418 34%, #8A6407 66%, #B4880E 100%);
+  --gradiente-oro-menudo: var(--gradiente-oro-hondo);
   --hairline-suave: rgba(122, 108, 82, .16);
   --texto: #2E2E2E;
   --texto-suave: #2E2E2E;
