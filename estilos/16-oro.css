@@ -84,6 +84,19 @@
 .banda-cta .btn,
 .btn-sm-nav { color: var(--gold-500); }
 
+/* Y al pasar por encima, todas en negro sobre el oro.
+   Ojo: `.footer .btn` y `.btn:hover` pesan lo mismo (0,2,0), y el de arriba
+   va despues, asi que sin repetir el hover aqui las letras se quedaban
+   doradas sobre el relleno dorado. */
+.pagina-clara .btn:hover, .pagina-clara .btn:focus, .pagina-clara .btn:focus-visible,
+.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus-visible,
+.footer .btn:hover, .footer .btn:focus, .footer .btn:focus-visible,
+.banda-cta .btn:hover, .banda-cta .btn:focus, .banda-cta .btn:focus-visible,
+.seccion-clara .btn:hover, .seccion-clara .btn:focus-visible,
+.seccion-piedra .btn:hover, .seccion-piedra .btn:focus-visible,
+.nosotros-acciones .btn:hover, .nosotros-acciones .btn:focus-visible,
+.btn-sm-nav:hover, .btn-sm-nav:focus { color: var(--onix); }
+
 .btn::before,
 .pagina-clara .btn::before,
 .footer .btn::before,
