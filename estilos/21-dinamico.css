@@ -387,20 +387,27 @@
 .ns-cifras-sec .ns-cifra__num,
 .ns-cifras-sec .ns-cifra__num i { color: var(--gm-oro-hondo); }
 .ns-cifras-sec .ns-cifra__etq { color: var(--gm-texto-2); }
-.pagina-nosotros .ns-cifras-sec .ns-cta h2 { color: var(--gm-texto); }
 /* La pregunta y el boton se apoyaban sueltos sobre la foto y se perdian:
-   van dentro de una tarjeta clara con filo de oro, la misma piedra clara del
-   resto de la pagina. El boton sigue siendo el de siempre. */
+   van dentro de una tarjeta negra con opacidad y filo de oro, la misma que
+   los valores de Fundamentos. La foto se sigue viendo por debajo, y lo de
+   dentro pasa a tinta clara porque ya no se apoya en piedra clara. */
 .ns-cifras-sec .ns-cta {
   margin-top: clamp(1.8rem, 3.2vw, 2.8rem);
   padding: clamp(1.4rem, 2.6vw, 2.2rem) clamp(1.4rem, 2.8vw, 2.4rem);
   border: 1px solid var(--gm-borde-vivo);
   border-radius: var(--gm-radio);
-  background: rgba(255, 255, 255, .9);
-  box-shadow: var(--gm-sombra);
+  /* Un punto mas opaca que las de Fundamentos: aqui debajo hay piedra clara
+     y la foto lavada, y al 72% la tarjeta se leia gris, no negra. */
+  background: rgba(8, 8, 8, .84);
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .28);
 }
-.pagina-nosotros .ns-cifras-sec .ns-cta h2 { margin-bottom: 0; }
-.ns-cifras-sec .ns-boton { color: var(--gm-texto); }
+.pagina-nosotros .ns-cifras-sec .ns-cta h2 {
+  margin-bottom: 0;
+  color: #FFFFFF;
+}
+/* Dentro de la tarjeta manda el oro vivo, no el hondo de la piedra clara. */
+.pagina-clara .ns-cifras-sec .ns-cta { --oro-vivo-degradado: var(--gradiente-oro); }
+.ns-cifras-sec .ns-boton { color: var(--gm-oro-vivo); }
 
 /* El jardin de Fundamentos: con el velo de antes la hoja quedaba tan negra
    que no se distinguia del marmol. Sube la foto y afloja el velo hasta donde
