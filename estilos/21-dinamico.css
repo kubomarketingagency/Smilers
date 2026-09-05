@@ -24,6 +24,10 @@
   box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .28);
 }
 
+/* Las de valores no llevan piedra: negro con opacidad, para que el jardin
+   de la seccion se siga viendo por debajo de la tarjeta. */
+.pagina-nosotros .ns-valor { background: rgba(8, 8, 8, .72); }
+
 /* La piedra de cada tarjeta va debajo del contenido; por eso todo lo
    demas que hay dentro sube a z-index 1. */
 .tarjeta-piedra {
@@ -49,7 +53,7 @@
   background: linear-gradient(180deg, rgba(10, 10, 10, .3) 0%, rgba(10, 10, 10, .54) 100%);
   transition: background 1s var(--gm-curva);
 }
-.pagina-nosotros .ns-valor > *:not(.tarjeta-piedra),
+.pagina-nosotros .ns-valor > *,
 .pagina-tratamientos .pz-tarjeta > *:not(.tarjeta-piedra),
 .pagina-tratamientos .pz-panel > *:not(.tarjeta-piedra) {
   position: relative;
@@ -86,7 +90,6 @@
     transform: scale(1.022);
     box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 34px 74px rgba(6, 6, 6, .46);
   }
-  .pagina-nosotros .ns-valor:hover .tarjeta-piedra img,
   .pagina-tratamientos .pz-tarjeta:hover .tarjeta-piedra img,
   .pagina-tratamientos .pz-panel:hover .tarjeta-piedra img { transform: scale(1); }
 }
