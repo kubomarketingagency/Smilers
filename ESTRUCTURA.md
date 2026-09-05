@@ -77,6 +77,12 @@ Si hay que cambiar el oro se cambia ahí y en ningún otro sitio: ni el 19 ni
 el 15 vuelven a declararlo. La única pieza que a propósito **no** es de oro
 es la cinta de Tratamientos (`.cinta-trat`), que va en plata.
 
+**El mármol no lleva oro encima.** Ni el negro de la barra
+(`.navbar-marmol`), ni el blanco de la sección 3 de la portada
+(`.seccion-marmol`), ni el de las tarjetas (`.tarjeta-piedra`): el lavado
+dorado que llevaban se veía como una mancha sobre la piedra. El oro de esas
+piezas vive en sus filos y en su tipografía, no en el fondo.
+
 ---
 
 ## La medida que se calcula sola
