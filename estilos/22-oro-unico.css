@@ -1,0 +1,120 @@
+/* ===========================================================================
+   Un solo oro en todo el sitio.
+
+   El oro de la marca no es un color plano: es el degradado recortado sobre
+   el texto que lleva "Smilers" en la barra. Esta hoja va la ultima y le pone
+   ese mismo acabado a toda la tipografia dorada, que hasta ahora usaba
+   colores planos sueltos.
+
+   Dos avisos para quien toque esto:
+
+   - `background-clip: text` recorta TODAS las capas de fondo del elemento,
+     el color incluido. Por eso aqui no entra nada que tenga fondo propio:
+     los iconos dentro de su circulo, los sellos, las manijas. Esos se quedan
+     en oro plano, que ademas es lo unico posible: un SVG no se puede
+     recortar con el fondo del texto.
+   - Sobre marmol claro el degradado vivo se pierde (su tramo claro es casi
+     blanco). Ahi entra el mismo efecto con el degradado hondo, que es el
+     que aguanta sobre piedra clara sin dejar de ser oro.
+   =========================================================================== */
+
+.nos-rotulo,
+.ns-rotulo,
+.ns-rotulo i,
+.ns-rotulo--claro,
+.ns-rotulo--claro i,
+.ns-mvo__num,
+.ns-sede__nombre,
+.ns-portada__sello span,
+.ns-cifra__num i,
+.ns-ficha__esp,
+.ns-ruta--filo .ns-ruta__sep,
+.ns-ruta--filo > span:last-child,
+.ns-ruta--claro span,
+.crsl__pie i,
+.ag-panel__titulo,
+.ag-panel__ir,
+.cl-num,
+.nm-sello__num,
+.pz-cita__marca,
+.pagina-clara .enlace-card,
+.pagina-clara .proceso-numero,
+.pagina-clara .breadcrumb-personalizado i,
+.pagina-faq .faq-categoria-titulo h2,
+.pagina-tratamientos .acordeon-tratamiento-numero,
+.pagina-tratamientos .bloque-tratamiento-numero,
+.pagina-nosotros .ns-valor .ns-valor__nombre,
+.pagina-tratamientos .pz-tarjeta .pz-tarjeta__titulo,
+.pagina-tratamientos .pz-panel .titulo-seccion,
+.pagina-nosotros .ns-cifras-sec .ns-cifra__num i,
+.footer-contacto i,
+.footer-bottom a,
+.form-footer .form-label {
+  background-image: var(--oro-vivo-degradado, var(--gradiente-oro));
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+/* Ojo con los hijos: -webkit-text-fill-color se hereda pero el fondo no,
+   asi que un <span> dentro de un texto recortado se queda invisible. A los
+   que los tienen se les pasa el mismo degradado. */
+.cl-num > * {
+  background-image: inherit;
+  -webkit-background-clip: text;
+          background-clip: text;
+}
+
+/* Los botones se quedan fuera a proposito. Un boton necesita su relleno, y
+   `background-clip: text` recorta el fondo contra las letras: no se pueden
+   tener las dos cosas. Ni con sombra interior ni con un pseudo detras —
+   ambos se pintan DESPUES del fondo recortado y lo tapan—. Su oro es plano. */
+
+/* Los enlaces que solo se ponen dorados al pasar por encima: el oro que
+   aparece es el mismo degradado, no un color plano. */
+.footer-contacto a:hover,
+.footer-bottom a:hover,
+.nos-ruta a:hover,
+.nos-ruta a:focus-visible,
+.ns-ruta a:hover,
+.ns-ruta a:focus-visible,
+.ns-ruta--filo a:hover,
+.ns-ruta--filo a:focus-visible,
+.ns-sede a:hover,
+.ns-sede a:focus-visible,
+.pagina-clara .breadcrumb-personalizado a:hover,
+.pagina-clara .breadcrumb-personalizado a:focus-visible {
+  background-image: var(--oro-vivo-degradado, var(--gradiente-oro));
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+
+/* Sobre piedra clara manda el degradado hondo. */
+.pagina-clara {
+  --oro-vivo-degradado: var(--gradiente-oro-hondo);
+}
+
+/* Salvo dentro de las piezas oscuras que viven en esas paginas claras: la
+   barra, el pie, las tarjetas de piedra y las bandas negras, donde el
+   degradado vivo es el que corresponde. */
+.pagina-clara .navbar-principal,
+.pagina-clara .menu-panel,
+.pagina-clara .footer,
+.pagina-clara .cinta-trat,
+.pagina-clara .ns-sello,
+.pagina-clara .ns-bloque,
+.pagina-clara .ns-doble,
+.pagina-clara .ns-ficha,
+.pagina-clara .ns-valor,
+.pagina-clara .pz-tarjeta,
+.pagina-clara .pz-panel,
+.pagina-clara .pz-cita,
+.pagina-clara .ag-panel,
+.pagina-clara .banda-cta--jardin,
+.pagina-clara .ns-portada {
+  --oro-vivo-degradado: var(--gradiente-oro);
+}
+

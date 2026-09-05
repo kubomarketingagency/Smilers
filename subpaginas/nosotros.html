@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Prata&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=c0f5766df3">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
   <link rel="stylesheet" href="../estilos/03-botones.css?v=f7e75f47b4">
   <link rel="stylesheet" href="../estilos/04-navbar.css?v=eb4f63da84">
@@ -34,9 +34,10 @@
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
   <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=a621e2345f">
   <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=bc55264cc9">
-  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=912afe24d8">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=7699084b27">
   <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=3297249583">
-  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=f9050a0b89">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=41315e4c7f">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=3af0dbfa99">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-nosotros">
@@ -243,8 +244,8 @@
       </div>
     </section>
 
-    <section class="ns-bloque ns-pantalla" id="fundamentos"
-             data-pantalla="Fundamentos" aria-labelledby="nsFundamentos">
+    <section class="ns-bloque ns-pantalla ns-doble" id="fundamentos"
+             data-pantalla="Fundamentos y valores" aria-labelledby="nsFundamentos">
       <span class="ns-fondo ns-fondo--jardin" aria-hidden="true">
         <img src="../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115"
              srcset="../imagenes/fondos/jardin-mosaico-720.webp?v=5f4f2c8cbd 720w, ../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115 1440w"
@@ -252,96 +253,93 @@
       </span>
       <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
-      <div class="ns-envoltura">
-        <div class="revelar">
-          <p class="ns-rotulo ns-rotulo--claro">Fundamentos</p>
-          <h2 class="ns-titulo ns-titulo--claro" id="nsFundamentos">
-            Lo que nos mueve, <em>puesto por escrito</em>.
-          </h2>
+      <div class="ns-envoltura ns-doble__reja">
+
+        <div class="ns-doble__mitad">
+          <div class="revelar">
+            <p class="ns-rotulo ns-rotulo--claro"><i>01</i> Fundamentos</p>
+            <h2 class="ns-titulo ns-titulo--claro" id="nsFundamentos">
+              Lo que nos mueve, <em>puesto por escrito</em>.
+            </h2>
+          </div>
+          <ul class="ns-mvo revelar" style="--retraso:.08s">
+
+            <li class="ns-mvo__ficha">
+              <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-heart"></use></svg></span>
+              <span class="ns-mvo__num">01</span>
+              <h3 class="ns-mvo__nombre">Misión</h3>
+              <p class="ns-mvo__texto">
+                Acompañar a cada paciente con empatía, confort real en el sillón y un
+                diagnóstico transparente: tiempos, alternativas y costos por delante, para
+                que nadie firme un plan que no entiende.
+              </p>
+            </li>
+
+            <li class="ns-mvo__ficha">
+              <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-eye"></use></svg></span>
+              <span class="ns-mvo__num">02</span>
+              <h3 class="ns-mvo__nombre">Visión</h3>
+              <p class="ns-mvo__texto">
+                Transformar la experiencia odontológica en Quito eliminando el miedo de la
+                ecuación y poniendo la salud estética a largo plazo por delante del arreglo
+                rápido.
+              </p>
+            </li>
+
+            <li class="ns-mvo__ficha">
+              <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-bullseye"></use></svg></span>
+              <span class="ns-mvo__num">03</span>
+              <h3 class="ns-mvo__nombre">Objetivos</h3>
+              <ul class="ns-mvo__lista">
+                <li>Innovación tecnológica: diagnóstico y planificación 3D en cada caso.</li>
+                <li>Actualización científica continua de todo el equipo clínico.</li>
+                <li>Atención personalizada, con todas las especialidades bajo un mismo techo.</li>
+              </ul>
+            </li>
+
+          </ul>
         </div>
 
-        <ul class="ns-mvo revelar" style="--retraso:.08s">
-
-          <li class="ns-mvo__ficha">
-            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-heart"></use></svg></span>
-            <span class="ns-mvo__num">01</span>
-            <h3 class="ns-mvo__nombre">Misión</h3>
-            <p class="ns-mvo__texto">
-              Acompañar a cada paciente con empatía, confort real en el sillón y un
-              diagnóstico transparente: tiempos, alternativas y costos por delante, para
-              que nadie firme un plan que no entiende.
+        <div class="ns-doble__mitad" id="valores">
+          <div class="revelar">
+            <p class="ns-rotulo ns-rotulo--claro"><i>02</i> Nuestros valores</p>
+            <h2 class="ns-titulo ns-titulo--claro" id="nsValores">
+              Cuatro compromisos que <em>no se negocian</em>.
+            </h2>
+            <p class="ns-parrafo ns-parrafo--claro">
+              No son un cartel en la pared. Son los criterios con los que decidimos cuánto
+              tiempo pide un caso, qué material entra en tu boca y qué atajo descartamos
+              cuando aparece.
             </p>
-          </li>
-
-          <li class="ns-mvo__ficha">
-            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-eye"></use></svg></span>
-            <span class="ns-mvo__num">02</span>
-            <h3 class="ns-mvo__nombre">Visión</h3>
-            <p class="ns-mvo__texto">
-              Transformar la experiencia odontológica en Quito eliminando el miedo de la
-              ecuación y poniendo la salud estética a largo plazo por delante del arreglo
-              rápido.
-            </p>
-          </li>
-
-          <li class="ns-mvo__ficha">
-            <span class="ns-mvo__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-bullseye"></use></svg></span>
-            <span class="ns-mvo__num">03</span>
-            <h3 class="ns-mvo__nombre">Objetivos</h3>
-            <ul class="ns-mvo__lista">
-              <li>Innovación tecnológica: diagnóstico y planificación 3D en cada caso.</li>
-              <li>Actualización científica continua de todo el equipo clínico.</li>
-              <li>Atención personalizada, con todas las especialidades bajo un mismo techo.</li>
-            </ul>
-          </li>
-
-        </ul>
-      </div>
-    </section>
-
-    <section class="ns-seccion ns-pantalla ns-pantalla--clara" id="valores"
-             data-pantalla="Valores" aria-labelledby="nsValores">
-      <span class="ns-pantalla__velo" aria-hidden="true"></span>
-
-      <div class="ns-envoltura">
-        <div class="revelar">
-          <p class="ns-rotulo"><i>02</i> Nuestros valores</p>
-          <h2 class="ns-titulo" id="nsValores">
-            Cuatro compromisos que <em>no se negocian</em>.
-          </h2>
-          <p class="ns-parrafo">
-            No son un cartel en la pared. Son los criterios con los que decidimos cuánto
-            tiempo pide un caso, qué material entra en tu boca y qué atajo descartamos
-            cuando aparece.
-          </p>
+          </div>
+          <ul class="ns-valores revelar" style="--retraso:.08s">
+            <li class="ns-valor">
+              <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
+              <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-info"></use></svg></span>
+              <span class="ns-valor__nombre">Transparencia en presupuestos</span>
+              <span class="ns-valor__texto">El plan se explica en pantalla y el costo se entrega por escrito. Sin letra pequeña ni sorpresas a mitad del tratamiento.</span>
+            </li>
+            <li class="ns-valor">
+              <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
+              <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></span>
+              <span class="ns-valor__nombre">Odontología sin dolor innecesario</span>
+              <span class="ns-valor__texto">Protocolos mínimamente invasivos y control del dolor en cada procedimiento, desde una limpieza hasta una cirugía.</span>
+            </li>
+            <li class="ns-valor">
+              <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
+              <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
+              <span class="ns-valor__nombre">Especialistas por área</span>
+              <span class="ns-valor__texto">Cada área tiene su responsable, y los casos que tocan dos especialidades se planifican entre las dos antes de empezar.</span>
+            </li>
+            <li class="ns-valor">
+              <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
+              <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
+              <span class="ns-valor__nombre">Acompañamiento post-tratamiento</span>
+              <span class="ns-valor__texto">Revisiones periódicas después del alta. Un trabajo bien hecho es el que sigue bien diez años después.</span>
+            </li>
+          </ul>
         </div>
 
-        <ul class="ns-valores revelar" style="--retraso:.08s">
-          <li class="ns-valor">
-            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
-            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-info"></use></svg></span>
-            <span class="ns-valor__nombre">Transparencia en presupuestos</span>
-            <span class="ns-valor__texto">El plan se explica en pantalla y el costo se entrega por escrito. Sin letra pequeña ni sorpresas a mitad del tratamiento.</span>
-          </li>
-          <li class="ns-valor">
-            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
-            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></span>
-            <span class="ns-valor__nombre">Odontología sin dolor innecesario</span>
-            <span class="ns-valor__texto">Protocolos mínimamente invasivos y control del dolor en cada procedimiento, desde una limpieza hasta una cirugía.</span>
-          </li>
-          <li class="ns-valor">
-            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
-            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
-            <span class="ns-valor__nombre">Especialistas por área</span>
-            <span class="ns-valor__texto">Cada área tiene su responsable, y los casos que tocan dos especialidades se planifican entre las dos antes de empezar.</span>
-          </li>
-          <li class="ns-valor">
-            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
-            <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
-            <span class="ns-valor__nombre">Acompañamiento post-tratamiento</span>
-            <span class="ns-valor__texto">Revisiones periódicas después del alta. Un trabajo bien hecho es el que sigue bien diez años después.</span>
-          </li>
-        </ul>
       </div>
     </section>
 
@@ -496,7 +494,7 @@
       </div>
     </section>
 
-    <section class="ns-bloque ns-pantalla" id="cifras"
+    <section class="ns-seccion ns-pantalla ns-pantalla--clara ns-cifras-sec" id="cifras"
              data-pantalla="En cifras" aria-labelledby="nsCifras">
       <span class="ns-fondo ns-fondo--degradado" aria-hidden="true">
         <img src="../imagenes/hero-1.webp?v=9bd092de88"
@@ -507,8 +505,8 @@
 
       <div class="ns-envoltura">
         <div class="revelar">
-          <p class="ns-rotulo ns-rotulo--claro">En cifras</p>
-          <h2 class="ns-titulo ns-titulo--claro" id="nsCifras">
+          <p class="ns-rotulo">En cifras</p>
+          <h2 class="ns-titulo" id="nsCifras">
             Veinticinco años, <em>medidos</em>.
           </h2>
         </div>

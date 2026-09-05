@@ -8,6 +8,7 @@
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
   --gradiente-oro-profundo: linear-gradient(100deg, #7E5B05 0%, #D9B44A 32%, #A87C10 64%, #C89C22 100%);
   --gradiente-oro-menudo: var(--gradiente-oro);
+  --gradiente-oro-hondo: linear-gradient(100deg, #634B12 0%, #9A7724 34%, #745719 66%, #8A6B16 100%);
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
   --silver-500: #C0C0C0;

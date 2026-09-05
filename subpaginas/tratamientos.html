@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=c0f5766df3">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
   <link rel="stylesheet" href="../estilos/03-botones.css?v=f7e75f47b4">
   <link rel="stylesheet" href="../estilos/04-navbar.css?v=eb4f63da84">
@@ -34,9 +34,10 @@
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
   <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=a621e2345f">
   <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=bc55264cc9">
-  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=912afe24d8">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=7699084b27">
   <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=3297249583">
-  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=f9050a0b89">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=41315e4c7f">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=3af0dbfa99">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-tratamientos">
@@ -243,23 +244,56 @@
   <section class="pz-seccion pz-intro">
     <div class="container">
 
-      <nav class="nos-ruta revelar" aria-label="Ruta de navegación">
-        <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Tratamientos</span>
-      </nav>
+      <div class="pz-intro__reja revelar">
+        <div class="pz-intro__texto">
+          <p class="nos-rotulo">Especialidades</p>
+          <h2 class="nos-lead">Todo bajo <em>un mismo techo</em>.</h2>
+          <p class="nos-parrafo">
+            Desde una limpieza de rutina hasta una rehabilitación completa: cada tratamiento
+            comienza con un diagnóstico digital y termina con un plan claro, sin sorpresas.
+            Nueve especialidades que se hablan entre sí, porque los casos que tocan dos áreas
+            se planifican entre las dos antes de empezar.
+          </p>
+        </div>
 
-      <div class="revelar">
-        <p class="nos-rotulo">Especialidades</p>
-        <h2 class="nos-lead">Todo bajo <em>un mismo techo</em>.</h2>
-        <p class="nos-parrafo">
-          Desde una limpieza de rutina hasta una rehabilitación completa: cada tratamiento
-          comienza con un diagnóstico digital y termina con un plan claro, sin sorpresas.
-          Nueve especialidades que se hablan entre sí, porque los casos que tocan dos áreas
-          se planifican entre las dos antes de empezar.
-        </p>
+        <span class="ns-sello">
+          <img src="../imagenes/logo-smilers.webp?v=2eb7b65466"
+               srcset="../imagenes/logo-smilers-440.webp?v=d427b89085 440w, ../imagenes/logo-smilers.webp?v=2eb7b65466 880w"
+               sizes="(max-width: 991.98px) 260px, 320px"
+               width="880" height="387"
+               alt="Smilers Dental Clinique" loading="lazy" decoding="async">
+        </span>
       </div>
 
     </div>
   </section>
+
+  <aside class="cinta-trat" aria-label="Tratamientos que hacemos">
+    <div class="cinta-trat__pista">
+      <ul class="cinta-trat__lista">
+        <li class="cinta-trat__pieza">Estética Dental</li>
+        <li class="cinta-trat__pieza">Ortodoncia</li>
+        <li class="cinta-trat__pieza">Implantología</li>
+        <li class="cinta-trat__pieza">Cirugía Oral</li>
+        <li class="cinta-trat__pieza">Rehabilitación Oral</li>
+        <li class="cinta-trat__pieza">Endodoncia</li>
+        <li class="cinta-trat__pieza">Periodoncia</li>
+        <li class="cinta-trat__pieza">Odontopediatría</li>
+        <li class="cinta-trat__pieza">Armonización Orofacial</li>
+      </ul>
+      <ul class="cinta-trat__lista" aria-hidden="true">
+        <li class="cinta-trat__pieza">Estética Dental</li>
+        <li class="cinta-trat__pieza">Ortodoncia</li>
+        <li class="cinta-trat__pieza">Implantología</li>
+        <li class="cinta-trat__pieza">Cirugía Oral</li>
+        <li class="cinta-trat__pieza">Rehabilitación Oral</li>
+        <li class="cinta-trat__pieza">Endodoncia</li>
+        <li class="cinta-trat__pieza">Periodoncia</li>
+        <li class="cinta-trat__pieza">Odontopediatría</li>
+        <li class="cinta-trat__pieza">Armonización Orofacial</li>
+      </ul>
+    </div>
+  </aside>
 
   <section class="bloque-tratamiento" id="estetica-dental">
     <div class="container">

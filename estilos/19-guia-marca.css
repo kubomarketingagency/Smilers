@@ -53,9 +53,7 @@
 .pz-cita {
   border-radius: var(--gm-radio);
   border-color: var(--gm-borde-osc);
-  background:
-    radial-gradient(86% 124% at 88% -22%, rgba(212, 175, 55, .16), transparent 62%),
-    linear-gradient(180deg, var(--gm-negro) 0%, var(--gm-negro-2) 100%);
+  background: linear-gradient(180deg, var(--gm-negro) 0%, var(--gm-negro-2) 100%);
 }
 .pz-cita__texto { color: #FFFFFF; }
 
