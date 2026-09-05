@@ -18,28 +18,34 @@
 
   <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
-  <link rel="stylesheet" href="../estilos/03-botones.css?v=0d84d5591e">
-  <link rel="stylesheet" href="../estilos/04-navbar.css?v=3342d4eb11">
+  <link rel="stylesheet" href="../estilos/03-botones.css?v=f7e75f47b4">
+  <link rel="stylesheet" href="../estilos/04-navbar.css?v=eb4f63da84">
   <link rel="stylesheet" href="../estilos/05-hero.css?v=944559e9d9">
   <link rel="stylesheet" href="../estilos/06-secciones.css?v=59e062c1d6">
-  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=09327e14ce">
+  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=6a10a36cca">
   <link rel="stylesheet" href="../estilos/08-especialidades.css?v=f8318c380e">
-  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=71eaaef346">
+  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=af736e030d">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=2da93e44a8">
   <link rel="stylesheet" href="../estilos/11-animaciones.css?v=e2373190e3">
-  <link rel="stylesheet" href="../estilos/12-interiores.css?v=58ffdcc9ca">
-  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=1dd97b2e08">
-  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=7b29690584">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=dd21d42f44">
+  <link rel="stylesheet" href="../estilos/12-interiores.css?v=4c74477fd5">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=652af27f7a">
+  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=7a6203ede1">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=f054ad9538">
-  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=2b99660299">
-  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=6d617aea94">
-  <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=d39d0d0e8f">
-  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=82fce3e7c2">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=a621e2345f">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=bc55264cc9">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=912afe24d8">
+  <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=3297249583">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=f9050a0b89">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-nosotros">
+
+  <span class="lienzo-marmol" aria-hidden="true">
+    <img src="../imagenes/fondos/marmol-blanco.webp?v=7a0a399eb7"
+         width="1920" height="800" alt="" fetchpriority="high" decoding="async">
+  </span>
+
 
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
@@ -123,97 +129,48 @@
   </div>
 
   <header class="ns-portada ns-pantalla" id="portada" data-pantalla="Portada">
-    <span class="ns-fondo ns-fondo--marmol" aria-hidden="true">
-      <img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8"
-           width="1920" height="800" alt="" fetchpriority="high" decoding="async">
+    <span class="ns-portada__cinta crsl" data-carrusel data-intervalo="5200" aria-hidden="true">
+      <span class="crsl__pista">
+        <span class="crsl__toma crsl__toma--activa" data-encuadre="bajo">
+          <img src="../imagenes/hero-3.webp?v=79aeb82853"
+               srcset="../imagenes/hero-3-720.webp?v=b88f3de464 720w, ../imagenes/hero-3.webp?v=79aeb82853 1920w"
+               sizes="100vw"
+               width="1920" height="1280" alt="" fetchpriority="high" decoding="async">
+        </span>
+        <span class="crsl__toma" data-encuadre="medio-bajo">
+          <img src="../imagenes/hero-2.webp?v=41a603a5d5"
+               srcset="../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
+               sizes="100vw"
+               width="1920" height="1280" alt="" loading="lazy" decoding="async">
+        </span>
+        <span class="crsl__toma">
+          <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
+               srcset="../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
+               sizes="100vw"
+               width="1200" height="800" alt="" loading="lazy" decoding="async">
+        </span>
+        <span class="crsl__toma" data-encuadre="medio-bajo">
+          <img src="../imagenes/nosotros.webp?v=50efd7060f"
+               srcset="../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1200w"
+               sizes="100vw"
+               width="1200" height="800" alt="" loading="lazy" decoding="async">
+        </span>
+      </span>
     </span>
+
     <span class="ns-pantalla__velo" aria-hidden="true"></span>
-    <span class="ns-portada__marca" aria-hidden="true">NOSOTROS</span>
 
     <div class="ns-envoltura">
-      <div class="ns-portada__reja">
-
-        <div class="ns-portada__texto">
-          <nav class="ns-ruta ns-ruta--claro" aria-label="Ruta de navegación">
-            <a href="../index.html">Inicio</a> &nbsp;/&nbsp; <span>Nosotros</span>
-          </nav>
-          <p class="ns-rotulo ns-rotulo--claro">Nosotros &middot; Smilers Dental Clinique</p>
-          <h1 class="ns-titular">
-            La excelencia clínica
-            <em>explicada desde el origen</em>
-          </h1>
-          <p class="ns-portada__sub">
-            Smilers Dental Clinique — Sonrisas que se planean contigo.
-          </p>
-          <a class="ns-boton" href="#historia">
-            Conoce más <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
-          </a>
-        </div>
-
-        <figure class="ns-portada__figura crsl" data-carrusel data-intervalo="5200"
-                aria-label="Instalaciones de Smilers Dental Clinique">
-          <div class="crsl__pista">
-
-            <div class="crsl__toma crsl__toma--activa">
-              <img src="../imagenes/hero-3.webp?v=79aeb82853"
-                   srcset="../imagenes/hero-3-480.webp?v=23df82beb8 480w, ../imagenes/hero-3-720.webp?v=b88f3de464 720w, ../imagenes/hero-3.webp?v=79aeb82853 1920w"
-                   sizes="(max-width: 991.98px) 100vw, 38vw"
-                   width="1920" height="1280"
-                   alt="Consultorio de Smilers Dental Clinique iluminado con luz natural"
-                   fetchpriority="high" decoding="async">
-              <span class="crsl__pie"><i>01</i> &nbsp;Consultorios con luz natural</span>
-            </div>
-
-            <div class="crsl__toma">
-              <img src="../imagenes/hero-2.webp?v=41a603a5d5"
-                   srcset="../imagenes/hero-2-480.webp?v=f64e90b09f 480w, ../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
-                   sizes="(max-width: 991.98px) 100vw, 38vw"
-                   width="1920" height="1280"
-                   alt="Sillón dental preparado para una consulta" loading="lazy" decoding="async">
-              <span class="crsl__pie"><i>02</i> &nbsp;Confort en el sillón</span>
-            </div>
-
-            <div class="crsl__toma">
-              <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
-                   srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
-                   sizes="(max-width: 991.98px) 100vw, 38vw"
-                   width="1200" height="800"
-                   alt="Equipamiento de diagnóstico digital de la clínica" loading="lazy" decoding="async">
-              <span class="crsl__pie"><i>03</i> &nbsp;Diagnóstico en 3D</span>
-            </div>
-
-            <div class="crsl__toma">
-              <img src="../imagenes/nosotros.webp?v=50efd7060f"
-                   srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
-                   sizes="(max-width: 991.98px) 100vw, 38vw"
-                   width="1000" height="750"
-                   alt="Atención a un paciente en Smilers Dental Clinique" loading="lazy" decoding="async">
-              <span class="crsl__pie"><i>04</i> &nbsp;Atención cercana</span>
-            </div>
-
-          </div>
-
-          <div class="crsl__mandos">
-            <button type="button" class="crsl__flecha crsl__flecha--previa" aria-label="Imagen anterior">
-              <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
-            </button>
-            <div class="crsl__puntos"></div>
-            <button type="button" class="crsl__flecha crsl__flecha--siguiente" aria-label="Imagen siguiente">
-              <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg>
-            </button>
-          </div>
-        </figure>
-
+      <div class="ns-portada__centro">
+        <h1 class="ns-portada__palabra">Nosotros</h1>
+        <nav class="ns-ruta ns-ruta--filo" aria-label="Ruta de navegación">
+          <a href="../index.html">Inicio</a>
+          <span class="ns-ruta__sep" aria-hidden="true">&rsaquo;</span>
+          <span>Nosotros</span>
+        </nav>
       </div>
     </div>
 
-    <div class="ns-portada__pie">
-      <p class="ns-portada__lema">Excelencia, cuidado y arte en cada sonrisa</p>
-      <p class="ns-portada__sello">
-        <span>Smilers Dental Clinique</span>
-        Quito &middot; Ecuador
-      </p>
-    </div>
   </header>
 
   <main>
@@ -344,11 +301,6 @@
 
     <section class="ns-seccion ns-pantalla ns-pantalla--clara" id="valores"
              data-pantalla="Valores" aria-labelledby="nsValores">
-      <span class="ns-fondo ns-fondo--claro" aria-hidden="true">
-        <img src="../imagenes/hero-2.webp?v=41a603a5d5"
-             srcset="../imagenes/hero-2-720.webp?v=4385b8c0f3 720w, ../imagenes/hero-2.webp?v=41a603a5d5 1920w"
-             sizes="100vw" width="1920" height="1280" alt="" loading="lazy" decoding="async">
-      </span>
       <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
       <div class="ns-envoltura">
@@ -366,21 +318,25 @@
 
         <ul class="ns-valores revelar" style="--retraso:.08s">
           <li class="ns-valor">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-circle-info"></use></svg></span>
             <span class="ns-valor__nombre">Transparencia en presupuestos</span>
             <span class="ns-valor__texto">El plan se explica en pantalla y el costo se entrega por escrito. Sin letra pequeña ni sorpresas a mitad del tratamiento.</span>
           </li>
           <li class="ns-valor">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-hand-holding-medical"></use></svg></span>
             <span class="ns-valor__nombre">Odontología sin dolor innecesario</span>
             <span class="ns-valor__texto">Protocolos mínimamente invasivos y control del dolor en cada procedimiento, desde una limpieza hasta una cirugía.</span>
           </li>
           <li class="ns-valor">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-user-doctor"></use></svg></span>
             <span class="ns-valor__nombre">Especialistas por área</span>
             <span class="ns-valor__texto">Cada área tiene su responsable, y los casos que tocan dos especialidades se planifican entre las dos antes de empezar.</span>
           </li>
           <li class="ns-valor">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="ns-valor__icono" aria-hidden="true"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-shield-heart"></use></svg></span>
             <span class="ns-valor__nombre">Acompañamiento post-tratamiento</span>
             <span class="ns-valor__texto">Revisiones periódicas después del alta. Un trabajo bien hecho es el que sigue bien diez años después.</span>
@@ -391,10 +347,6 @@
 
     <section class="ns-seccion ns-pantalla ns-pantalla--clara ns-equipo" id="equipo"
              data-pantalla="Equipo" aria-labelledby="nsEquipo">
-      <span class="ns-fondo ns-fondo--marmol-claro" aria-hidden="true">
-        <img src="../imagenes/fondos/marmol-blanco.webp?v=7a0a399eb7"
-             width="1920" height="800" alt="" loading="lazy" decoding="async">
-      </span>
       <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
       <div class="ns-envoltura">
@@ -406,76 +358,86 @@
         </div>
       </div>
 
-      <div class="acordeon-galeria ns-equipo__galeria" id="acordeonEquipo"
-           role="list" aria-label="Especialistas de Smilers Dental Clinique">
-
-        <div class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-current="true">
-          <span class="ag-panel__media">
-            <img src="../imagenes/equipo-1.webp?v=7dadb1fd33"
-                 srcset="../imagenes/equipo-1-480.webp?v=0109bd657d 480w, ../imagenes/equipo-1-720.webp?v=1a077e1d09 720w, ../imagenes/equipo-1.webp?v=7dadb1fd33 900w"
-                 sizes="(min-width: 768px) 42vw, 96vw"
-                 width="900" height="600"
-                 alt="Especialista de ortodoncia de Smilers Dental Clinique" loading="lazy" decoding="async">
-          </span>
-          <span class="ag-panel__overlay" aria-hidden="true"></span>
-          <span class="ag-panel__texto">
-            <span class="ag-panel__barra" aria-hidden="true"></span>
-            <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
-            <span class="ag-panel__desc">Ortodoncia</span>
-          </span>
-        </div>
-
-        <div class="ag-panel" role="listitem" tabindex="0">
-          <span class="ag-panel__media">
-            <img src="../imagenes/equipo-2.webp?v=cd4a853990"
-                 srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
-                 sizes="(min-width: 768px) 42vw, 96vw"
-                 width="900" height="1350"
-                 alt="Especialista de implantología y cirugía de Smilers Dental Clinique" loading="lazy" decoding="async">
-          </span>
-          <span class="ag-panel__overlay" aria-hidden="true"></span>
-          <span class="ag-panel__texto">
-            <span class="ag-panel__barra" aria-hidden="true"></span>
-            <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
-            <span class="ag-panel__desc">Implantología y cirugía</span>
-          </span>
-        </div>
-
-        <div class="ag-panel" role="listitem" tabindex="0">
-          <span class="ag-panel__media">
-            <img src="../imagenes/equipo-3.webp?v=af31db4954"
-                 srcset="../imagenes/equipo-3-480.webp?v=2caa776cc3 480w, ../imagenes/equipo-3-720.webp?v=b62996f01b 720w, ../imagenes/equipo-3.webp?v=af31db4954 900w"
-                 sizes="(min-width: 768px) 42vw, 96vw"
-                 width="900" height="600"
-                 alt="Especialista de rehabilitación oral de Smilers Dental Clinique" loading="lazy" decoding="async">
-          </span>
-          <span class="ag-panel__overlay" aria-hidden="true"></span>
-          <span class="ag-panel__texto">
-            <span class="ag-panel__barra" aria-hidden="true"></span>
-            <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
-            <span class="ag-panel__desc">Rehabilitación oral</span>
-          </span>
-        </div>
-
-        <div class="ag-panel" role="listitem" tabindex="0">
-          <span class="ag-panel__media">
-            <img src="../imagenes/equipo-4.webp?v=53353e6f81"
-                 srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
-                 sizes="(min-width: 768px) 42vw, 96vw"
-                 width="900" height="1350"
-                 alt="Especialista de odontopediatría de Smilers Dental Clinique" loading="lazy" decoding="async">
-          </span>
-          <span class="ag-panel__overlay" aria-hidden="true"></span>
-          <span class="ag-panel__texto">
-            <span class="ag-panel__barra" aria-hidden="true"></span>
-            <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
-            <span class="ag-panel__desc">Odontopediatría</span>
-          </span>
-        </div>
-
-      </div>
-
       <div class="ns-envoltura">
+        <div class="ns-equipo__reparto">
+          <div class="acordeon-galeria ns-equipo__galeria" id="acordeonEquipo"
+               role="list" aria-label="Especialistas de Smilers Dental Clinique">
+
+            <div class="ag-panel ag-panel--activo" role="listitem" tabindex="0" aria-current="true" data-esp-texto="Alineadores invisibles, brackets estéticos y ortodoncia interceptiva. Planifica cada caso en 3D antes de empezar, para que sepas desde el primer día a dónde va tu sonrisa." data-esp-puntos="Planificación digital del movimiento dental | Brackets de zafiro y autoligado | Ortodoncia temprana en niños">
+              <span class="ag-panel__media">
+                <img src="../imagenes/equipo-1.webp?v=7dadb1fd33"
+                     srcset="../imagenes/equipo-1-480.webp?v=0109bd657d 480w, ../imagenes/equipo-1-720.webp?v=1a077e1d09 720w, ../imagenes/equipo-1.webp?v=7dadb1fd33 900w"
+                     sizes="(min-width: 768px) 42vw, 96vw"
+                     width="900" height="600"
+                     alt="Especialista de ortodoncia de Smilers Dental Clinique" loading="lazy" decoding="async">
+              </span>
+              <span class="ag-panel__overlay" aria-hidden="true"></span>
+              <span class="ag-panel__texto">
+                <span class="ag-panel__barra" aria-hidden="true"></span>
+                <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
+                <span class="ag-panel__desc">Ortodoncia</span>
+              </span>
+            </div>
+
+            <div class="ag-panel" role="listitem" tabindex="0" data-esp-texto="Implantes unitarios y rehabilitaciones completas, con cirugía guiada por tomografía. Trabaja sobre tu anatomía real, no sobre una estimación." data-esp-puntos="Cirugía guiada por tomografía 3D | Injertos óseos y de tejido blando | Extracciones complejas y terceros molares">
+              <span class="ag-panel__media">
+                <img src="../imagenes/equipo-2.webp?v=cd4a853990"
+                     srcset="../imagenes/equipo-2-480.webp?v=a75db47d20 480w, ../imagenes/equipo-2-720.webp?v=19e8ff11e2 720w, ../imagenes/equipo-2.webp?v=cd4a853990 900w"
+                     sizes="(min-width: 768px) 42vw, 96vw"
+                     width="900" height="1350"
+                     alt="Especialista de implantología y cirugía de Smilers Dental Clinique" loading="lazy" decoding="async">
+              </span>
+              <span class="ag-panel__overlay" aria-hidden="true"></span>
+              <span class="ag-panel__texto">
+                <span class="ag-panel__barra" aria-hidden="true"></span>
+                <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
+                <span class="ag-panel__desc">Implantología y cirugía</span>
+              </span>
+            </div>
+
+            <div class="ag-panel" role="listitem" tabindex="0" data-esp-texto="Devuelve función y estética cuando faltan piezas o el desgaste ya cambió la mordida. Coordina el caso con las demás especialidades antes de tocar un diente." data-esp-puntos="Coronas y puentes de porcelana | Prótesis fija y removible | Reconstrucción de mordida">
+              <span class="ag-panel__media">
+                <img src="../imagenes/equipo-3.webp?v=af31db4954"
+                     srcset="../imagenes/equipo-3-480.webp?v=2caa776cc3 480w, ../imagenes/equipo-3-720.webp?v=b62996f01b 720w, ../imagenes/equipo-3.webp?v=af31db4954 900w"
+                     sizes="(min-width: 768px) 42vw, 96vw"
+                     width="900" height="600"
+                     alt="Especialista de rehabilitación oral de Smilers Dental Clinique" loading="lazy" decoding="async">
+              </span>
+              <span class="ag-panel__overlay" aria-hidden="true"></span>
+              <span class="ag-panel__texto">
+                <span class="ag-panel__barra" aria-hidden="true"></span>
+                <span class="ag-panel__titulo">Dra. Nombre Apellido</span>
+                <span class="ag-panel__desc">Rehabilitación oral</span>
+              </span>
+            </div>
+
+            <div class="ag-panel" role="listitem" tabindex="0" data-esp-texto="La primera visita marca la relación de un niño con el dentista para siempre. Trabaja sin prisa, explicando cada paso en su idioma." data-esp-puntos="Primera consulta desde el primer diente | Prevención: sellantes y flúor | Manejo del miedo y la ansiedad">
+              <span class="ag-panel__media">
+                <img src="../imagenes/equipo-4.webp?v=53353e6f81"
+                     srcset="../imagenes/equipo-4-480.webp?v=6dea302323 480w, ../imagenes/equipo-4-720.webp?v=707e69bcb0 720w, ../imagenes/equipo-4.webp?v=53353e6f81 900w"
+                     sizes="(min-width: 768px) 42vw, 96vw"
+                     width="900" height="1350"
+                     alt="Especialista de odontopediatría de Smilers Dental Clinique" loading="lazy" decoding="async">
+              </span>
+              <span class="ag-panel__overlay" aria-hidden="true"></span>
+              <span class="ag-panel__texto">
+                <span class="ag-panel__barra" aria-hidden="true"></span>
+                <span class="ag-panel__titulo">Dr. Nombre Apellido</span>
+                <span class="ag-panel__desc">Odontopediatría</span>
+              </span>
+            </div>
+
+          </div>
+          <div class="ns-ficha" data-ficha-equipo aria-live="polite">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
+            <div class="ns-ficha__cabeza">
+              <p class="ns-ficha__esp" data-ficha-esp></p>
+              <h3 class="ns-ficha__nombre" data-ficha-nombre></h3>
+            </div>
+            <p class="ns-ficha__texto" data-ficha-texto></p>
+            <ul class="ns-ficha__puntos" data-ficha-lista></ul>
+          </div>
+        </div>
         <p class="ns-equipo__pie">Elige un retrato para conocer a su especialista.</p>
       </div>
     </section>
@@ -531,31 +493,12 @@
             <figcaption>Tecnología en sala</figcaption>
           </figure>
         </div>
-
-        <ul class="ns-sedes revelar" style="--retraso:.12s">
-          <li class="ns-sede">
-            <span class="ns-sede__nombre">Matriz</span>
-            <ul>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg> General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB, Quito</li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg> <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+5932909990">2909-990</a></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg> Lun a Vie 9:00 – 19:00 &middot; Sáb 9:00 – 14:00</li>
-            </ul>
-          </li>
-          <li class="ns-sede">
-            <span class="ns-sede__nombre">Sucursal</span>
-            <ul>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg> Valparaíso N2158 y José Aguirre, Quito</li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg> <a href="tel:+593998113383">099-811-3383</a></li>
-              <li><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg> Lun a Vie 9:00 – 19:00 &middot; Sáb 9:00 – 14:00</li>
-            </ul>
-          </li>
-        </ul>
       </div>
     </section>
 
     <section class="ns-bloque ns-pantalla" id="cifras"
              data-pantalla="En cifras" aria-labelledby="nsCifras">
-      <span class="ns-fondo" aria-hidden="true">
+      <span class="ns-fondo ns-fondo--degradado" aria-hidden="true">
         <img src="../imagenes/hero-1.webp?v=9bd092de88"
              srcset="../imagenes/hero-1-720.webp?v=44baaaa35a 720w, ../imagenes/hero-1.webp?v=9bd092de88 1920w"
              sizes="100vw" width="1920" height="1284" alt="" loading="lazy" decoding="async">
@@ -728,8 +671,8 @@
   <script src="../scripts/revelados.js?v=c38a19e149"></script>
   <script src="../scripts/footer.js?v=7d71806edc"></script>
   <script src="../scripts/subpaginas.js?v=b13a1084ad"></script>
-  <script src="../scripts/secciones.js?v=ebc3d95c48"></script>
+  <script src="../scripts/secciones.js?v=6ba098c107"></script>
   <script src="../scripts/hero.js?v=d637ef3740"></script>
-  <script src="../scripts/interiores.js?v=83b256aca2"></script>
+  <script src="../scripts/interiores.js?v=4c21198fab"></script>
 </body>
 </html>

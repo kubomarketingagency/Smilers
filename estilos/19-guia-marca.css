@@ -47,41 +47,8 @@
   background: var(--gm-crema-alt);
 }
 
-.pagina-tratamientos .seccion { padding: clamp(2.2rem, 3.8vw, 4rem) 0; }
-.pagina-tratamientos .bloque-tratamiento { padding: clamp(2rem, 3.4vw, 3.6rem) 0; }
-
-.pagina-cubierta .nos-portada {
-  background:
-    radial-gradient(120% 84% at 50% 116%, rgba(212, 175, 55, .13), transparent 64%),
-    linear-gradient(180deg, var(--gm-negro) 0%, var(--gm-negro-2) 58%, var(--gm-negro) 100%);
-  border-bottom-color: var(--gm-borde-osc);
-}
-
-.nos-portada__ambiente {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  overflow: hidden;
-}
-.nos-portada__ambiente img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: .24;
-}
-.nos-portada__ambiente::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(8, 8, 8, .74) 0%, rgba(8, 8, 8, .5) 42%, rgba(6, 6, 6, .94) 100%),
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, .08) 0 1px, transparent 1px 3px);
-}
-.pagina-cubierta .nos-portada > *:not(.nos-portada__ambiente) {
-  position: relative;
-  z-index: 1;
-}
+.pagina-tratamientos .seccion { padding: clamp(1.8rem, 3.2vw, 3.2rem) 0; }
+.pagina-tratamientos .bloque-tratamiento { padding: clamp(1.6rem, 2.8vw, 2.8rem) 0; }
 
 .pz-cita {
   border-radius: var(--gm-radio);

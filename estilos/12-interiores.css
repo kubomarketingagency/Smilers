@@ -368,17 +368,39 @@
   cursor: zoom-in;
 }
 
+/* El visor respeta el tamaño real de la foto: no la estira ni la deforma.
+   El marco la centra y, cuando la imagen se queda corta, es el borde el que
+   sostiene la caja en lugar de estirar la foto. */
+#modalLightbox .modal-dialog {
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: min(94vw, 1280px);
+}
 #modalLightbox .modal-content {
   background: transparent;
   border: 0;
+  align-items: center;
 }
 #modalLightbox .modal-body { padding: 0; position: relative; }
-#modalLightbox img {
-  width: 100%;
+#modalLightbox .lightbox-marco {
+  display: grid;
+  place-items: center;
+  min-width: min(320px, 86vw);
+  min-height: min(220px, 34svh);
+  padding: clamp(.45rem, .9vw, .8rem);
+  border: 1px solid rgba(210, 172, 71, .55);
   border-radius: var(--radio-sm);
-  max-height: 82vh;
+  background: rgba(12, 10, 8, .92);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .5);
+}
+#modalLightbox img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 1240px);
+  max-height: 76svh;
   object-fit: contain;
-  background: #000;
+  border-radius: 2px;
 }
 #modalLightbox .btn-close {
   position: absolute;
@@ -589,7 +611,7 @@
   pointer-events: none;
   z-index: 1;
 }
-.comparador-tag-antes  { left: 16px; background: rgba(22, 19, 15, .78); backdrop-filter: blur(3px); }
+.comparador-tag-antes  { left: 16px; background: rgba(22, 19, 15, .88); }
 .comparador-tag-despues{ right: 16px; background: var(--naranja-accion); }
 
 .comparador-rango {

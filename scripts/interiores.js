@@ -29,12 +29,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var reloj = null;
 
+    var previaToma = null;
+
     function pintar() {
+      // La toma que acaba de salir se marca aparte: asi el carrusel del hero
+      // puede sacarla por un lado mientras la nueva entra por el otro.
+      var saliente = previaToma;
       tomas.forEach(function (toma, indice) {
         var activa = indice === actual;
+        toma.classList.toggle('crsl__toma--saliente', !activa && toma === saliente);
         toma.classList.toggle('crsl__toma--activa', activa);
         toma.setAttribute('aria-hidden', activa ? 'false' : 'true');
       });
+      previaToma = tomas[actual];
       puntos.forEach(function (punto, indice) {
         var activo = indice === actual;
 

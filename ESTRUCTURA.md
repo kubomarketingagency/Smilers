@@ -33,31 +33,39 @@ por número.
 | `09-cierre-cta.css` | Cierre cine y banda final con llamada a la acción. | `.cierre-cine*`, `.banda-cta*` |
 | `10-footer.css` | Pie de página, mapas, formulario, redes y los dos botones flotantes (WhatsApp y subir). | `.footer*`, `.mapa-*`, `.redes-sociales`, `.wsp-flotante`, `.btn-subir` |
 | `11-animaciones.css` | Apariciones al hacer scroll, cortinas y formas decorativas. | `.revelar`, `.cortina*`, `.forma-*` |
-| `12-interiores.css` | Piezas de las subpáginas: banner, equipo, historia, tratamientos, FAQ, comparador. | `.banner-*`, `.bloque-tratamiento*`, `.comparador*` |
+| `12-interiores.css` | Piezas de las subpáginas: banner, equipo, historia, tratamientos, FAQ, comparador y el visor de la galería (`#modalLightbox`, que respeta el tamaño real de la foto y le pone marco cuando se queda corta). | `.banner-*`, `.bloque-tratamiento*`, `.comparador*`, `.lightbox-marco` |
 | `13-testimonios.css` | La esfera de testimonios, su versión en tarjetas y el fondo de jardín que va detrás de las dos. | `.testimonios-*`, `.tst-*`, `.tc-*` |
 | `14-pagina-nosotros.css` | Nació para Nosotros, pero hoy quien usa estas piezas de texto es Tratamientos: portada, ruta, rótulo, entradilla y párrafo. | `.nos-*` |
-| `15-lienzo-claro.css` | Las subpáginas sobre fondo claro, y el lienzo de mármol de FAQ (`.lienzo-marmol`: va fijo detrás de todo, así que las secciones de esa página son transparentes a propósito). | `.pagina-clara`, `.pagina-*`, `.lienzo-marmol` |
+| `15-lienzo-claro.css` | Las subpáginas sobre fondo claro y el mármol que llevan debajo: `.lienzo-marmol` va fijo detrás de toda la página, `.seccion-marmol` detrás de una sola sección. **Las secciones claras no pintan fondo a propósito; si se les devuelve un color, se tapa la piedra.** | `.pagina-clara`, `.pagina-*`, `.lienzo-marmol`, `.seccion-marmol` |
 | `16-oro.css` | **Va el último a propósito.** Reparte el oro de marca sobre todo lo anterior. | — |
 | `17-detalle-lujo.css` | El fondo con trama de las dos páginas, la portada negra con la palabra en oro (Tratamientos la usa con la clase `.pagina-cubierta` del `<body>`) y los retoques del comparador antes/después. **Solo lo cargan esas dos páginas.** | `.nos-portada__*`, `.pagina-tratamientos *` |
 | `18-piezas-editoriales.css` | **Va después del 17 a propósito.** Las piezas de Tratamientos: el tríptico de tarjetas que se monta sobre la portada, la tarjeta de cita negra y la fila de medallones del proceso. | `.pz-*` |
 | `19-guia-marca.css` | La guía de marca aplicada: reescribe los tokens a crema `#FAF8F5`, negro `#0A0A0A` y oro champán `#C5A059`, y de ahí salen los fondos, los bordes finos, las sombras y los estados de hover de las dos páginas. **Aquí se cambia el color de marca, no en el 01, y aquí se cambia el alto de las secciones de Tratamientos, no en el 15 ni en el 17.** | `--gm-*` |
-| `20-nosotros-editorial.css` | **Solo `subpaginas/nosotros.html`.** Toda la página: portada asimétrica con marco dorado, collage bento de la historia, bloque negro de misión/visión/objetivos, tarjetas de valores, galería e infraestructura con las dos sedes, y la franja de cifras con el cierre. | `.ns-*` |
-| `21-dinamico.css` | **Va el último y lo cargan Nosotros y Tratamientos.** Lo que da movimiento a las dos páginas: el carrusel dorado, las tarjetas de cristal con borde de oro, las secciones de Nosotros con su telón de entrada (`.ns-pantalla__velo`, que se levanta en vez de desvanecerse), la costura de oro que se dibuja sola entre sección y sección, el riel de puntos lateral y el fondo fotográfico de sección (`.ns-fondo`, con las variantes `--jardin`, `--marmol` y `--marmol-claro`). **Aquí se cambia el alto de las secciones de Nosotros.** Aquí se convierten en cristal las fichas del 20 y las tarjetas del 18. | `.crsl-*`, `.ns-pantalla`, `.ns-riel`, `.ns-fondo`, `.pz-panel` |
+| `20-nosotros-editorial.css` | **Lo cargan Nosotros y Tratamientos**: es el kit editorial (rótulos, titulares, párrafos, fichas). Las dos portadas son la misma pieza `.ns-portada`, solo cambia la palabra. | `.ns-portada*`, `.ns-titulo`, `.ns-rotulo` |
+| `21-dinamico.css` | **Va el último y lo cargan Nosotros y Tratamientos.** Lo que da movimiento a las dos páginas: el carrusel dorado, las tarjetas de piedra (que al pasar el ratón solo crecen un pelo y hunden la sombra: el oro vive en sus títulos, no en el hover), las secciones de Nosotros con su telón de entrada (`.ns-pantalla__velo`, que se levanta en vez de desvanecerse), la costura de oro que se dibuja sola entre sección y sección, el riel de puntos lateral, la portada (`.ns-portada__cinta`: el carrusel de fondo a todo el ancho y todo el alto del hero, que mide un tercio de la pantalla; las tomas no se funden en el sitio sino que entran por la derecha y salen por la izquierda —de ahí la clase `crsl__toma--saliente` que pone `interiores.js`—, con la palabra encima —peso 400 a propósito, porque es un `h1` y heredaría la negrita— y la ruta con filo dorado debajo, y nada más; cada toma dice por dónde quiere que la recorten con `data-encuadre`, porque la cinta es muy ancha y muy baja), la única parada de scroll de Nosotros —la de Equipo, que cabe entera en pantalla—, la piedra de las tarjetas (`.tarjeta-piedra`, que va debajo y por eso todo lo demás de la tarjeta sube a `z-index: 1`), la ficha del especialista (`.ns-ficha`, que rellena `scripts/secciones.js` con los `data-esp-*` de cada retrato y se despliega **a la derecha** de los retratos dentro de `.ns-equipo__reparto`: elegir a alguien no abre su foto, cambia la ficha) y el fondo fotográfico de sección (`.ns-fondo`, con las variantes `--jardin` y `--marmol`; las secciones claras ya no llevan fondo propio, lo pone el lienzo del 15). **Aquí se cambia el alto de las secciones de Nosotros.** Aquí se visten de piedra las fichas del 20 y las tarjetas del 18. | `.crsl-*`, `.ns-pantalla`, `.ns-riel`, `.ns-fondo`, `.pz-panel` |
 
 
 ---
 
-## Dos medidas que se calculan solas
+## El desenfoque: uno solo en todo el sitio
 
-Hay dos números que estaban repetidos a mano en varios sitios y que ahora
-salen de una variable. Si se tocan, se tocan una vez:
+Solo la tarjeta del titular de la portada (`.hero-titulo`, en `05-hero.css`)
+lleva `backdrop-filter`. Todo lo demás que antes era cristal esmerilado
+—el menú, la banda del comparador, el chip de testimonios, la tarjeta
+flotante, el globo del riel, las flechas del carrusel, la cita y el cierre
+de Tratamientos— es ahora negro con opacidad. Si hace falta un panel
+translúcido nuevo, se resuelve con opacidad, no con desenfoque.
+
+---
+
+## La medida que se calcula sola
 
 - `--alto-navbar` (en `01-variables.css`): lo que mide la barra. De ahí sacan
   su hueco el rótulo de Testimonios y las portadas de Nosotros y Tratamientos,
-  para que la barra no se les monte encima.
-- `--pz-solape` (en `18-piezas-editoriales.css`): lo que el tríptico de
-  Tratamientos se sube por encima de su portada. La portada reserva ese mismo
-  valor de `padding-bottom`, así que ya no se pueden descuadrar.
+  para que la barra no se les monte encima. Si se toca, se toca una vez.
+
+El tríptico de Tratamientos ya no se sube sobre la portada: va en su sitio,
+separado por su propio margen.
 
 ---
 
@@ -70,9 +78,9 @@ que es quien pone la veladura para que el texto de encima se siga leyendo.
 | Archivo | Dónde se usa |
 |---|---|
 | `jardin-mosaico.webp` (+ `-720`) | Testimonios de la portada y Fundamentos de Nosotros. |
-| `marmol-negro.webp` | Portada de Nosotros. |
+| `marmol-negro.webp` | Las dos portadas (Nosotros y Tratamientos) y el fondo de las tarjetas: valores, tríptico, paneles de tratamiento y la ficha del especialista, todas con `.tarjeta-piedra` dentro. |
 | `marmol-negro-barra.webp` | La barra de navegación, en las cinco páginas. Es una tira recortada del mármol negro, de 1920×130, para no cargar la imagen entera por 60px de alto. |
-| `marmol-blanco.webp` | Dos sitios: Nuestro equipo, en Nosotros, y la página entera de FAQ. En los dos la sección es clara y el mármol se ve casi entero. |
+| `marmol-blanco.webp` | El fondo de todo lo que en el sitio es claro: Nosotros, Tratamientos, Galería y FAQ lo llevan de lienzo de página (`.lienzo-marmol`), y la sección de Nosotros de la portada lo lleva por sección (`.seccion-marmol`). |
 
 ---
 

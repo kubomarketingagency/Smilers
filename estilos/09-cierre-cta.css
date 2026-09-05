@@ -26,12 +26,12 @@
 }
 .cierre-cine.cc-revelado .cierre-cine-negro { opacity: 0; }
 
-.banda-cta { transition: filter .6s cubic-bezier(.22, 1, .36, 1); }
+.banda-cta { transition: opacity .6s cubic-bezier(.22, 1, .36, 1); }
 .banda-cta-contenido {
   transition: opacity .55s cubic-bezier(.22, 1, .36, 1),
               transform .55s cubic-bezier(.22, 1, .36, 1);
 }
-.cierre-cine.cc-velado .banda-cta { filter: blur(14px); }
+.cierre-cine.cc-velado .banda-cta { opacity: .18; }
 .cierre-cine.cc-velado .banda-cta-contenido {
   opacity: 0;
   transform: translateY(26px);

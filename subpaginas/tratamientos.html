@@ -18,27 +18,34 @@
 
   <link rel="stylesheet" href="../estilos/01-variables.css?v=f1800a04d2">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
-  <link rel="stylesheet" href="../estilos/03-botones.css?v=0d84d5591e">
-  <link rel="stylesheet" href="../estilos/04-navbar.css?v=3342d4eb11">
+  <link rel="stylesheet" href="../estilos/03-botones.css?v=f7e75f47b4">
+  <link rel="stylesheet" href="../estilos/04-navbar.css?v=eb4f63da84">
   <link rel="stylesheet" href="../estilos/05-hero.css?v=944559e9d9">
   <link rel="stylesheet" href="../estilos/06-secciones.css?v=59e062c1d6">
-  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=09327e14ce">
+  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=6a10a36cca">
   <link rel="stylesheet" href="../estilos/08-especialidades.css?v=f8318c380e">
-  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=71eaaef346">
+  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=af736e030d">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=2da93e44a8">
   <link rel="stylesheet" href="../estilos/11-animaciones.css?v=e2373190e3">
-  <link rel="stylesheet" href="../estilos/12-interiores.css?v=58ffdcc9ca">
-  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=1dd97b2e08">
-  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=7b29690584">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=dd21d42f44">
+  <link rel="stylesheet" href="../estilos/12-interiores.css?v=4c74477fd5">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=652af27f7a">
+  <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=7a6203ede1">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=7eb0dabb87">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=f054ad9538">
-  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=2b99660299">
-  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=6d617aea94">
-  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=82fce3e7c2">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=a621e2345f">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=bc55264cc9">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=912afe24d8">
+  <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=3297249583">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=f9050a0b89">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-tratamientos">
+
+  <span class="lienzo-marmol" aria-hidden="true">
+    <img src="../imagenes/fondos/marmol-blanco.webp?v=7a0a399eb7"
+         width="1920" height="800" alt="" fetchpriority="high" decoding="async">
+  </span>
+
 
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="brands-facebook-f" viewBox="0 0 320 512"><path d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"/></symbol>
@@ -120,60 +127,57 @@
     </div>
   </div>
 
-  <header class="nos-portada">
-
-    <span class="nos-portada__ambiente crsl" aria-hidden="true" data-carrusel data-intervalo="6000">
+  <header class="ns-portada ns-pantalla" id="portada" data-pantalla="Portada">
+    <span class="ns-portada__cinta crsl" data-carrusel data-intervalo="5200" aria-hidden="true">
       <span class="crsl__pista">
-        <span class="crsl__toma crsl__toma--activa">
+        <span class="crsl__toma crsl__toma--activa" data-encuadre="bajo">
           <img src="../imagenes/hero-1.webp?v=9bd092de88"
                srcset="../imagenes/hero-1-720.webp?v=44baaaa35a 720w, ../imagenes/hero-1.webp?v=9bd092de88 1920w"
-               sizes="100vw" width="1920" height="1284" alt=""
-               fetchpriority="high" decoding="async">
+               sizes="100vw"
+               width="1920" height="1284" alt="" fetchpriority="high" decoding="async">
         </span>
-        <span class="crsl__toma">
-          <img src="../imagenes/cirugia.webp?v=e3d3520635"
-               srcset="../imagenes/cirugia-720.webp?v=e0ce8b5c79 720w, ../imagenes/cirugia.webp?v=e3d3520635 1200w"
-               sizes="100vw" width="1200" height="1800" alt=""
-               loading="lazy" decoding="async">
+        <span class="crsl__toma" data-encuadre="alto">
+          <img src="../imagenes/aligner.webp?v=1494f07af8"
+               srcset="../imagenes/aligner-720.webp?v=f7f0c1946e 720w, ../imagenes/aligner.webp?v=1494f07af8 800w"
+               sizes="100vw"
+               width="800" height="533" alt="" loading="lazy" decoding="async">
         </span>
         <span class="crsl__toma">
           <img src="../imagenes/implantologia.webp?v=ab7b059165"
                srcset="../imagenes/implantologia-720.webp?v=6a1a6cc86b 720w, ../imagenes/implantologia.webp?v=ab7b059165 1200w"
-               sizes="100vw" width="1200" height="800" alt=""
-               loading="lazy" decoding="async">
+               sizes="100vw"
+               width="1200" height="800" alt="" loading="lazy" decoding="async">
         </span>
         <span class="crsl__toma">
           <img src="../imagenes/sonrisa.webp?v=24597df771"
                srcset="../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
-               sizes="100vw" width="800" height="552" alt=""
-               loading="lazy" decoding="async">
+               sizes="100vw"
+               width="800" height="552" alt="" loading="lazy" decoding="async">
         </span>
       </span>
     </span>
 
-    <p class="nos-portada__lema">Nueve<br>especialidades.<br>Un mismo criterio.</p>
+    <span class="ns-pantalla__velo" aria-hidden="true"></span>
 
-    <div class="nos-portada__escena">
-      <h1 class="nos-titulo">TRATAMIENTOS</h1>
-    </div>
-
-    <div class="nos-portada__pie">
-      <div class="nos-portada__firma">
-        <span class="nos-regla" aria-hidden="true"></span>
-        <p class="nos-portada__sub">Diagnóstico digital, plan personalizado y seguimiento cercano en cada especialidad</p>
+    <div class="ns-envoltura">
+      <div class="ns-portada__centro">
+        <h1 class="ns-portada__palabra">Tratamientos</h1>
+        <nav class="ns-ruta ns-ruta--filo" aria-label="Ruta de navegación">
+          <a href="../index.html">Inicio</a>
+          <span class="ns-ruta__sep" aria-hidden="true">&rsaquo;</span>
+          <span>Tratamientos</span>
+        </nav>
       </div>
-      <p class="nos-portada__sello">
-        <span>Smilers Dental Clinique</span>
-        Quito &middot; Ecuador
-      </p>
     </div>
+
   </header>
 
   <section class="pz-seccion">
     <div class="container">
-      <div class="pz-triptico pz-solape revelar">
+      <div class="pz-triptico revelar">
 
         <article class="pz-tarjeta">
+          <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
           <span class="pz-tarjeta__foto">
             <img src="../imagenes/tecnologia.webp?v=641c0d4bb5"
                  srcset="../imagenes/tecnologia-480.webp?v=bbded9d1d1 480w, ../imagenes/tecnologia-720.webp?v=c5c8153e42 720w, ../imagenes/tecnologia.webp?v=641c0d4bb5 1200w"
@@ -193,6 +197,7 @@
         </article>
 
         <article class="pz-tarjeta">
+          <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
           <span class="pz-tarjeta__foto">
             <img src="../imagenes/nosotros.webp?v=50efd7060f"
                  srcset="../imagenes/nosotros-480.webp?v=2e9bc31f97 480w, ../imagenes/nosotros-720.webp?v=726b9e3483 720w, ../imagenes/nosotros.webp?v=50efd7060f 1000w"
@@ -212,6 +217,7 @@
         </article>
 
         <article class="pz-tarjeta">
+          <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
           <span class="pz-tarjeta__foto">
             <img src="../imagenes/sonrisa.webp?v=24597df771"
                  srcset="../imagenes/sonrisa-480.webp?v=33c4c4c590 480w, ../imagenes/sonrisa-720.webp?v=15ba844325 720w, ../imagenes/sonrisa.webp?v=24597df771 800w"
@@ -286,6 +292,7 @@
         </div>
         <div class="col-lg-6 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">01</span>
             <h2 class="titulo-seccion text-start">Estética Dental</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -342,6 +349,7 @@
         </div>
         <div class="col-lg-6 order-lg-1 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">02</span>
             <h2 class="titulo-seccion text-start">Ortodoncia</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -398,6 +406,7 @@
         </div>
         <div class="col-lg-6 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">03</span>
             <h2 class="titulo-seccion text-start">Implantología</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -454,6 +463,7 @@
         </div>
         <div class="col-lg-6 order-lg-1 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">04</span>
             <h2 class="titulo-seccion text-start">Cirugía Oral</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -510,6 +520,7 @@
         </div>
         <div class="col-lg-6 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">05</span>
             <h2 class="titulo-seccion text-start">Rehabilitación Oral</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -565,6 +576,7 @@
         </div>
         <div class="col-lg-6 revelar order-lg-1">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">06</span>
             <h2 class="titulo-seccion text-start">Endodoncia</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -620,6 +632,7 @@
         </div>
         <div class="col-lg-6 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">07</span>
             <h2 class="titulo-seccion text-start">Periodoncia</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -675,6 +688,7 @@
         </div>
         <div class="col-lg-6 revelar order-lg-1">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">08</span>
             <h2 class="titulo-seccion text-start">Odontopediatría</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -730,6 +744,7 @@
         </div>
         <div class="col-lg-6 revelar">
           <div class="pz-panel">
+            <span class="tarjeta-piedra" aria-hidden="true"><img src="../imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
             <span class="bloque-tratamiento-numero" aria-hidden="true">09</span>
             <h2 class="titulo-seccion text-start">Armonización Orofacial</h2>
             <span class="pz-regla" aria-hidden="true"></span>
@@ -813,9 +828,14 @@
     </div>
   </section>
 
-  <section class="banda-cta">
+  <section class="banda-cta banda-cta--jardin">
+    <span class="ns-fondo ns-fondo--jardin" aria-hidden="true">
+      <img src="../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115"
+           srcset="../imagenes/fondos/jardin-mosaico-720.webp?v=5f4f2c8cbd 720w, ../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115 1440w"
+           sizes="100vw" width="1440" height="600" alt="" loading="lazy" decoding="async">
+    </span>
     <div class="container">
-      <div class="row align-items-center g-4">
+      <div class="banda-cta__vidrio row align-items-center g-4">
         <div class="col-lg-8 text-center text-lg-start">
           <h2 class="mb-2">¿No sabes qué tratamiento necesitas?</h2>
           <p class="mb-0">Agenda una valoración gratuita y te orientamos sin compromiso.</p>
@@ -956,8 +976,8 @@
   <script src="../scripts/revelados.js?v=c38a19e149"></script>
   <script src="../scripts/footer.js?v=7d71806edc"></script>
   <script src="../scripts/subpaginas.js?v=b13a1084ad"></script>
-  <script src="../scripts/secciones.js?v=ebc3d95c48"></script>
+  <script src="../scripts/secciones.js?v=6ba098c107"></script>
   <script src="../scripts/hero.js?v=d637ef3740"></script>
-  <script src="../scripts/interiores.js?v=83b256aca2"></script>
+  <script src="../scripts/interiores.js?v=4c21198fab"></script>
 </body>
 </html>

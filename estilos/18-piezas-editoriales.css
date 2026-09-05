@@ -1,5 +1,4 @@
 .pagina-tratamientos {
-  --pz-solape: clamp(2.6rem, 7vw, 7rem);
   --pz-tinta: #0A0A0A;
   --pz-borde: rgba(210, 172, 71, .32);
   --pz-curva: cubic-bezier(.22, 1, .36, 1);
@@ -24,8 +23,8 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(.9rem, 1.6vw, 1.5rem);
 }
-
-.pz-solape { margin-top: calc(-1 * var(--pz-solape)); }
+/* El triptico ya no se sube sobre la portada: se separa de ella. */
+.pagina-tratamientos .pz-triptico { margin-top: clamp(1.8rem, 3.6vw, 3.4rem); }
 
 .pz-tarjeta {
   position: relative;
@@ -104,7 +103,6 @@
 
 @media (max-width: 991.98px) {
   .pz-triptico { grid-template-columns: 1fr; }
-  .pagina-tratamientos { --pz-solape: clamp(1.6rem, 5vw, 3rem); }
   .pz-tarjeta__foto { aspect-ratio: 16 / 6; }
 }
 
@@ -195,11 +193,6 @@
   line-height: 1.75;
   color: var(--nos-texto);
 }
-
-.pagina-tratamientos .nos-portada { position: relative; z-index: 1; }
-
-.pagina-tratamientos .nos-titulo { font-size: min(8.6vw, 8.4rem); }
-
 
 .pagina-tratamientos .pz-intro {
   padding: clamp(2.6rem, 5vw, 5rem) 0 clamp(1.4rem, 2.6vw, 2.4rem);

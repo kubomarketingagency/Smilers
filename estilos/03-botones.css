@@ -98,9 +98,7 @@
 }
 
 .btn-traslucido {
-  background: transparent;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  background: rgba(10, 8, 6, .34);
   color: var(--marmol);
   border-color: var(--gold-500);
 }

@@ -28,6 +28,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var tieneHoverFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+    var ficha = document.querySelector('[data-ficha-equipo]');
+
+    function pintarFicha(panel) {
+      if (!ficha || !panel.dataset.espTexto) return;
+
+      var titulo = panel.querySelector('.ag-panel__titulo');
+      var desc = panel.querySelector('.ag-panel__desc');
+
+      ficha.querySelector('[data-ficha-nombre]').textContent = titulo ? titulo.textContent : '';
+      ficha.querySelector('[data-ficha-esp]').textContent = desc ? desc.textContent : '';
+      ficha.querySelector('[data-ficha-texto]').textContent = panel.dataset.espTexto;
+
+      var lista = ficha.querySelector('[data-ficha-lista]');
+      lista.textContent = '';
+      (panel.dataset.espPuntos || '').split('|').forEach(function (punto) {
+        var limpio = punto.trim();
+        if (!limpio) return;
+        var li = document.createElement('li');
+        li.textContent = limpio;
+        lista.appendChild(li);
+      });
+
+      ficha.classList.remove('ns-ficha--entra');
+
+      void ficha.offsetWidth;
+      ficha.classList.add('ns-ficha--entra');
+    }
+
     function activar(panel) {
       paneles.forEach(function (p) {
         var activo = p === panel;
@@ -35,7 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (activo) p.setAttribute('aria-current', 'true');
         else p.removeAttribute('aria-current');
       });
+      pintarFicha(panel);
     }
+
+    var inicial = galeria.querySelector('.ag-panel--activo') || paneles[0];
+    if (inicial) pintarFicha(inicial);
 
     paneles.forEach(function (panel, indice) {
 

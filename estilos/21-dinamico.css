@@ -1,9 +1,6 @@
 .pagina-nosotros,
 .pagina-tratamientos {
-  --dn-cristal-osc:  rgba(255, 255, 255, .055);
-  --dn-cristal-clr:  rgba(255, 255, 255, .58);
-  --dn-desenfoque:   blur(16px) saturate(1.35);
-  --dn-brillo-oro:   0 0 0 1px rgba(212, 175, 55, .18), 0 26px 62px rgba(8, 8, 8, .34);
+  --dn-cristal-osc:  rgba(10, 10, 10, .78);
 }
 
 .pagina-nosotros .ns-mvo__ficha {
@@ -11,8 +8,6 @@
   border: 1px solid var(--gm-borde);
   border-radius: var(--gm-radio);
   background: var(--dn-cristal-osc);
-  -webkit-backdrop-filter: var(--dn-desenfoque);
-          backdrop-filter: var(--dn-desenfoque);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 26px 62px rgba(6, 6, 6, .38);
 }
 
@@ -20,12 +15,46 @@
 .pagina-tratamientos .pz-tarjeta,
 .pagina-tratamientos .pz-panel {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border: 1px solid var(--gm-borde);
   border-radius: var(--gm-radio);
-  background: var(--dn-cristal-clr);
-  -webkit-backdrop-filter: var(--dn-desenfoque);
-          backdrop-filter: var(--dn-desenfoque);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), var(--gm-sombra);
+  background: var(--gm-negro);
+  color: rgba(255, 255, 255, .82);
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .28);
+}
+
+/* La piedra de cada tarjeta va debajo del contenido; por eso todo lo
+   demas que hay dentro sube a z-index 1. */
+.tarjeta-piedra {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.tarjeta-piedra img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  transition: transform 1.2s var(--gm-curva);
+}
+.tarjeta-piedra::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 92% at 12% 0%, rgba(212, 175, 55, .16), transparent 58%),
+    linear-gradient(180deg, rgba(10, 10, 10, .28) 0%, rgba(10, 10, 10, .52) 100%);
+  transition: background 1s var(--gm-curva);
+}
+.pagina-nosotros .ns-valor > *:not(.tarjeta-piedra),
+.pagina-tratamientos .pz-tarjeta > *:not(.tarjeta-piedra),
+.pagina-tratamientos .pz-panel > *:not(.tarjeta-piedra) {
+  position: relative;
+  z-index: 1;
 }
 
 .pagina-nosotros .ns-mvo__ficha::before,
@@ -40,14 +69,31 @@
   pointer-events: none;
 }
 
+.pagina-nosotros .ns-valor,
+.pagina-tratamientos .pz-tarjeta,
+.pagina-tratamientos .pz-panel {
+  transition: box-shadow .6s var(--gm-curva), transform .6s var(--gm-curva);
+}
+
+/* Al pasar el raton la tarjeta solo crece un poco y hunde mas la sombra.
+   El oro no entra aqui: vive en los titulos, que ya van dorados. */
 @media (hover: hover) and (pointer: fine) {
-  .pagina-nosotros .ns-mvo__ficha:hover,
+  .pagina-nosotros .ns-mvo__ficha:hover {
+    box-shadow: 0 32px 70px rgba(6, 6, 6, .44);
+  }
   .pagina-nosotros .ns-valor:hover,
   .pagina-tratamientos .pz-tarjeta:hover,
   .pagina-tratamientos .pz-panel:hover {
-    border-color: var(--gm-borde-vivo);
-    box-shadow: var(--dn-brillo-oro);
+    transform: scale(1.022);
+    box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 34px 74px rgba(6, 6, 6, .46);
   }
+  .pagina-nosotros .ns-valor:hover .tarjeta-piedra img,
+  .pagina-tratamientos .pz-tarjeta:hover .tarjeta-piedra img,
+  .pagina-tratamientos .pz-panel:hover .tarjeta-piedra img { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-piedra img { transition: none; }
 }
 
 .pz-panel {
@@ -61,11 +107,136 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-block: clamp(2.6rem, 4.2vw, 4.4rem);
+  padding-block: clamp(2rem, 3.2vw, 3.2rem);
   overflow: hidden;
 }
 .ns-portada.ns-pantalla {
-  padding-block: calc(var(--alto-navbar) + clamp(2.2rem, 3.4vw, 3.6rem)) clamp(1.6rem, 2.8vw, 2.6rem);
+  padding-block: calc(var(--alto-navbar) + clamp(1.2rem, 2.2vw, 2.2rem)) clamp(1rem, 2vw, 1.8rem);
+}
+
+/* La portada: el carrusel ocupa el hero entero, de borde a borde, y el hero
+   mide un tercio de la pantalla. La palabra va encima de la foto y la ruta
+   justo debajo. */
+.ns-portada.ns-pantalla {
+  min-height: max(320px, calc(var(--alto-navbar) + 33svh));
+  justify-content: center;
+  background: var(--gm-negro);
+}
+.ns-portada__cinta.crsl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: auto;
+  transform: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ns-portada__cinta .crsl__pista {
+  height: 100%;
+  grid-template-rows: 1fr;
+  border-radius: 0;
+  background: transparent;
+}
+.ns-portada__cinta .crsl__toma { height: 100%; }
+.ns-portada__cinta .crsl__toma::after { content: none; }
+/* La cinta es muy ancha y muy baja: recortada por el centro, cada foto
+   deja fuera lo que importa. Cada toma dice por donde quiere que la corten;
+   los valores salen de mirar las cuatro fotos una por una. */
+.ns-portada__cinta .crsl__toma img { object-position: center 38%; }
+.ns-portada__cinta .crsl__toma[data-encuadre="alto"] img { object-position: center 20%; }
+.ns-portada__cinta .crsl__toma[data-encuadre="medio-bajo"] img { object-position: center 55%; }
+.ns-portada__cinta .crsl__toma[data-encuadre="bajo"] img { object-position: center 70%; }
+
+/* Las tomas no se funden en el sitio: la que entra viene desde la derecha y
+   la que sale se va por la izquierda, asi la fila de fotos se ve recorrer. */
+.ns-portada__cinta .crsl__toma {
+  opacity: 0;
+  transform: translate3d(4.5%, 0, 0);
+  transition: opacity 1.15s var(--gm-curva), transform 1.4s var(--gm-curva);
+}
+.ns-portada__cinta .crsl__toma--saliente {
+  z-index: 1;
+  opacity: 0;
+  transform: translate3d(-4.5%, 0, 0);
+}
+.ns-portada__cinta .crsl__toma--activa {
+  z-index: 2;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* El velo deja ver la foto: solo oscurece lo justo bajo la palabra. */
+.ns-portada__cinta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    radial-gradient(62% 66% at 50% 46%,
+      rgba(8, 8, 8, .56) 0%,
+      rgba(8, 8, 8, .18) 62%,
+      transparent 80%),
+    linear-gradient(180deg,
+      rgba(8, 8, 8, .48) 0%,
+      rgba(8, 8, 8, .10) 34%,
+      rgba(8, 8, 8, .14) 62%,
+      rgba(8, 8, 8, .60) 100%);
+}
+
+.ns-portada__centro {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: clamp(.8rem, 1.6vw, 1.3rem);
+  text-align: center;
+}
+.ns-portada__palabra {
+  margin: 0;
+  font-family: var(--fuente-banner);
+  /* Es un h1: sin esto hereda la negrita y el asta engorda de mas. */
+  font-weight: 400;
+  font-size: min(var(--palabra-escala, 9.2vw), 6.6rem);
+  line-height: .96;
+  letter-spacing: .1em;
+  text-indent: .1em;
+  text-transform: uppercase;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gm-oro-vivo);
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, .78))
+          drop-shadow(0 1px 3px rgba(0, 0, 0, .55));
+}
+.ns-ruta--filo {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  padding: 0 clamp(.6rem, 1.4vw, 1.2rem) clamp(.5rem, .9vw, .75rem);
+  border-bottom: 1px solid var(--gm-borde-vivo);
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: .68rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .72);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .7);
+}
+.ns-ruta--filo a { color: rgba(255, 255, 255, .72); text-decoration: none; }
+.ns-ruta--filo a:hover,
+.ns-ruta--filo a:focus-visible { color: var(--gm-oro-vivo); }
+.ns-ruta--filo .ns-ruta__sep { color: var(--gm-oro-vivo); }
+.ns-ruta--filo > span:last-child { color: var(--gm-oro-vivo); }
+
+/* "TRATAMIENTOS" tiene doce letras y "NOSOTROS" ocho: la escala baja
+   para que la palabra no se salga de la pantalla. */
+.pagina-tratamientos .ns-portada__palabra { --palabra-escala: 6vw; }
+
+@media (max-width: 767.98px) {
+  .ns-portada.ns-pantalla { min-height: max(300px, calc(var(--alto-navbar) + 34svh)); }
+  .ns-portada__palabra { font-size: min(11.6vw, 3.4rem); }
+  .pagina-tratamientos .ns-portada__palabra { font-size: min(8vw, 2.4rem); }
 }
 .ns-pantalla > .ns-envoltura {
   position: relative;
@@ -73,7 +244,7 @@
   width: 100%;
 }
 .ns-seccion.ns-pantalla + .ns-seccion.ns-pantalla {
-  padding-top: clamp(2.6rem, 4.2vw, 4.4rem);
+  padding-top: clamp(2rem, 3.2vw, 3.2rem);
 }
 
 .ns-pantalla + .ns-pantalla::before {
@@ -160,12 +331,6 @@
     radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .12), transparent 62%),
     linear-gradient(180deg, rgba(8, 8, 8, .82) 0%, rgba(8, 8, 8, .66) 44%, rgba(8, 8, 8, .93) 100%);
 }
-.ns-fondo--claro img { opacity: .13; }
-.ns-fondo--claro::after {
-  background:
-    radial-gradient(90% 70% at 82% 4%, rgba(197, 160, 89, .14), transparent 60%),
-    linear-gradient(180deg, rgba(250, 248, 245, .9) 0%, rgba(250, 248, 245, .78) 46%, rgba(250, 248, 245, .95) 100%);
-}
 
 .ns-fondo--marmol img { opacity: .85; }
 .ns-fondo--marmol::after {
@@ -174,22 +339,25 @@
     linear-gradient(180deg, rgba(10, 10, 10, .5) 0%, rgba(10, 10, 10, .3) 46%, rgba(10, 10, 10, .8) 100%);
 }
 
-.ns-fondo--jardin img { opacity: .5; filter: saturate(.72); }
+/* La foto de "En cifras": se ve entera pero entra y sale en degradado,
+   asi que arriba y abajo se funde con las secciones vecinas. */
+.ns-fondo--degradado img { opacity: .62; filter: saturate(.82) contrast(1.04); }
+.ns-fondo--degradado::after {
+  background:
+    radial-gradient(96% 70% at 50% 0%, rgba(212, 175, 55, .14), transparent 60%),
+    linear-gradient(180deg,
+      var(--gm-negro) 0%,
+      rgba(8, 8, 8, .74) 26%,
+      rgba(8, 8, 8, .62) 52%,
+      rgba(8, 8, 8, .8) 78%,
+      var(--gm-negro) 100%);
+}
+
+.ns-fondo--jardin img { opacity: .42; filter: saturate(.62); }
 .ns-fondo--jardin::after {
   background:
     radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .12), transparent 62%),
-    linear-gradient(180deg, rgba(8, 8, 8, .7) 0%, rgba(8, 8, 8, .42) 44%, rgba(8, 8, 8, .82) 100%);
-}
-
-.ns-fondo--marmol-claro img { opacity: .92; }
-.ns-fondo--marmol-claro::after {
-  background:
-    radial-gradient(94% 72% at 82% 2%, rgba(197, 160, 89, .12), transparent 58%),
-    linear-gradient(180deg,
-      var(--gm-crema) 0%,
-      rgba(250, 248, 245, .18) 15%,
-      rgba(250, 248, 245, .18) 85%,
-      var(--gm-crema) 100%);
+    linear-gradient(180deg, rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .19) 44%, rgba(8, 8, 8, .66) 100%);
 }
 
 .ns-riel {
@@ -227,9 +395,7 @@
   padding: .4rem .75rem;
   border: 1px solid var(--gm-borde);
   border-radius: var(--gm-radio);
-  background: rgba(10, 10, 10, .82);
-  -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
+  background: rgba(10, 10, 10, .92);
   font-family: var(--fuente-cuerpo);
   font-weight: 700;
   font-size: .6rem;
@@ -321,9 +487,7 @@
   padding: 0;
   border: 1px solid var(--gm-borde);
   border-radius: 50%;
-  background: rgba(255, 255, 255, .04);
-  -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
+  background: rgba(10, 10, 10, .55);
   color: var(--gm-oro-vivo);
   cursor: pointer;
   transition: background .45s var(--gm-curva), color .45s var(--gm-curva),
@@ -390,18 +554,123 @@
   .ns-portada__figura .crsl__toma img { aspect-ratio: 16 / 10; }
 }
 
+/* Equipo cabe en una pantalla: el rotulo, la galeria, la ficha y el pie
+   suman menos que el alto util, y por eso el scroll para justo aqui. */
 .ns-equipo { padding-inline: 0; }
+.ns-equipo.ns-pantalla { padding-block: clamp(1.5rem, 2.4vw, 2.2rem); }
+.ns-seccion.ns-pantalla + .ns-equipo.ns-pantalla { padding-top: clamp(1.5rem, 2.4vw, 2.2rem); }
 .ns-equipo > .ns-envoltura { position: relative; z-index: 1; }
+
+/* Al elegir un especialista ya no se abre su retrato: los cuatro se quedan
+   igual y lo que se despliega, a su derecha, es la ficha. */
+.ns-equipo__reparto {
+  display: grid;
+  gap: clamp(1rem, 1.8vw, 1.6rem);
+  margin-top: clamp(1rem, 1.8vw, 1.5rem);
+}
+@media (min-width: 992px) {
+  .ns-equipo__reparto {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+}
 .ns-equipo__galeria {
   position: relative;
   z-index: 1;
-  height: clamp(360px, 58svh, 600px);
-  margin-top: clamp(2rem, 3.4vw, 3rem);
-  border-block: 1px solid var(--gm-borde-vivo);
+  height: clamp(280px, 40svh, 420px);
+  margin-top: 0;
+  border: 1px solid var(--gm-borde-vivo);
   box-shadow: 0 24px 60px rgba(43, 35, 20, .18);
 }
+/* Los retratos reparten el ancho a partes iguales y el activo no crece. */
+.pagina-nosotros .ns-equipo__galeria .ag-panel,
+.pagina-nosotros .ns-equipo__galeria .ag-panel.ag-panel--activo { flex: 1 1 0%; }
+.pagina-nosotros .ns-equipo__galeria .ag-panel__media img {
+  filter: brightness(.58) saturate(.92);
+  transform: none;
+}
+.pagina-nosotros .ns-equipo__galeria .ag-panel:hover .ag-panel__media img,
+.pagina-nosotros .ns-equipo__galeria .ag-panel:focus-visible .ag-panel__media img {
+  filter: brightness(.78) saturate(1);
+}
+.pagina-nosotros .ns-equipo__galeria .ag-panel--activo .ag-panel__media img {
+  filter: none;
+  transform: scale(1.03);
+}
+/* El filo de oro marca cual esta abierto, sin mover nada de sitio. */
+.pagina-nosotros .ns-equipo__galeria .ag-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color .45s var(--gm-curva);
+}
+.pagina-nosotros .ns-equipo__galeria .ag-panel--activo::after {
+  border-color: var(--gm-oro-vivo);
+}
+/* El nombre se lee siempre: son cuatro columnas estrechas, no hay sitio
+   para que aparezca solo al abrir. */
+.pagina-nosotros .ns-equipo__galeria .ag-panel__texto {
+  left: .75rem;
+  right: .75rem;
+  bottom: .75rem;
+  gap: .25rem;
+  opacity: 1;
+  transform: none;
+}
+.pagina-nosotros .ns-equipo__galeria .ag-panel__titulo {
+  font-size: clamp(.76rem, .95vw, .88rem);
+  line-height: 1.22;
+  white-space: normal;
+  overflow: visible;
+}
+.pagina-nosotros .ns-equipo__galeria .ag-panel__desc { font-size: .56rem; letter-spacing: .16em; }
+/* Los retratos activos se ven a plena luz: el rotulo se apoya en su sombra. */
+.pagina-nosotros .ns-equipo__galeria .ag-panel__titulo,
+.pagina-nosotros .ns-equipo__galeria .ag-panel__desc { text-shadow: 0 2px 12px rgba(0, 0, 0, .9); }
+.pagina-nosotros .ns-equipo__galeria .ag-panel__barra { width: 22px; height: 2px; }
+.pagina-nosotros .ns-equipo__galeria .ag-panel__overlay {
+  background: linear-gradient(180deg, transparent 34%, rgba(8, 8, 8, .88) 100%);
+}
+
+/* La ficha ocupa la columna de la derecha y va de arriba abajo. */
+.ns-equipo__reparto .ns-ficha {
+  margin-top: 0;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+@media (min-width: 992px) {
+  .ns-equipo__reparto .ns-ficha {
+    align-content: center;
+    padding: clamp(1.4rem, 2.4vw, 2.2rem) clamp(1.5rem, 2.6vw, 2.3rem);
+    overflow-y: auto;
+  }
+}
+
+/* En movil no hay derecha a la que desplegar: los retratos se ponen en
+   cuadricula y la ficha cae debajo, pero siguen sin abrirse. */
+@media (max-width: 991.98px) {
+  .pagina-nosotros .ns-equipo__galeria {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    perspective: none;
+  }
+  .pagina-nosotros .ns-equipo__galeria .ag-panel,
+  .pagina-nosotros .ns-equipo__galeria .ag-panel.ag-panel--activo {
+    height: auto;
+    aspect-ratio: 4 / 4.4;
+  }
+  .pagina-nosotros .ns-equipo__galeria .ag-panel__desc,
+  .pagina-nosotros .ns-equipo__galeria .ag-panel__ir {
+    opacity: 1;
+    max-height: none;
+  }
+}
 .pagina-nosotros .ag-panel { background: var(--gm-negro); }
-.pagina-nosotros .ag-panel + .ag-panel { border-left: 1px solid rgba(212, 175, 55, .26); }
+.pagina-nosotros .ns-equipo__galeria .ag-panel + .ag-panel { border-left: 1px solid rgba(212, 175, 55, .26); }
 .pagina-nosotros .ag-panel__titulo {
   font-family: var(--fuente-titulo);
   font-weight: 500;
@@ -424,7 +693,7 @@
   box-shadow: 0 0 12px rgba(212, 175, 55, .55);
 }
 .ns-equipo__pie {
-  margin: clamp(1.1rem, 1.8vw, 1.5rem) 0 0;
+  margin: clamp(.6rem, 1vw, .9rem) 0 0;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
   font-size: .74rem;
@@ -432,42 +701,14 @@
   color: var(--gm-texto-2);
 }
 
-@media (max-width: 767.98px) {
-  .ns-equipo__galeria { height: auto; border-block: 0; }
-  .pagina-nosotros .ag-panel + .ag-panel { border-left: 0; border-top: 1px solid rgba(212, 175, 55, .26); }
-}
 
-.pagina-nosotros .ns-portada__texto {
-  padding: clamp(1.6rem, 2.8vw, 2.6rem);
-  background: rgba(255, 255, 255, .045);
-  -webkit-backdrop-filter: var(--dn-desenfoque);
-          backdrop-filter: var(--dn-desenfoque);
-  border: 1px solid var(--gm-borde);
-  border-radius: var(--gm-radio);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 30px 70px rgba(4, 4, 4, .45);
-}
+
 .ns-ruta--claro { color: rgba(255, 255, 255, .55); }
 .ns-ruta--claro a { color: rgba(255, 255, 255, .55); }
 .ns-ruta--claro span { color: var(--gm-oro-vivo); }
-.pagina-nosotros .ns-portada__texto .ns-ruta {
-  padding-block: 0 clamp(1rem, 1.8vw, 1.5rem);
-}
-
-.pagina-nosotros .ns-sede {
-  padding: clamp(1.2rem, 2.2vw, 1.8rem);
-  border: 1px solid var(--gm-borde);
-  border-top: 2px solid var(--gm-borde-vivo);
-  border-radius: var(--gm-radio);
-  background: rgba(255, 255, 255, .5);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-}
 
 .pagina-tratamientos .pz-tarjeta__foto { background: transparent; }
-.pagina-tratamientos .pz-cita {
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-}
+.pagina-tratamientos .pz-cita { background: rgba(10, 10, 10, .9); }
 
 @media (prefers-reduced-motion: reduce) {
   .ns-pantalla__velo,
@@ -482,4 +723,194 @@
   .crsl__punto--activo::after { animation: none; }
   .ns-pantalla__velo { opacity: 0; }
   .crsl__toma img { transform: none; }
+}
+
+
+/* La banda de cierre de Tratamientos: jardin detras y la pregunta dentro
+   de un vidrio, para que se lea sobre la hoja. */
+.pagina-tratamientos .banda-cta--jardin {
+  min-height: 0;
+  padding-block: clamp(3rem, 6vw, 6rem);
+  background: var(--gm-negro);
+  border-color: var(--gm-borde-osc);
+  isolation: isolate;
+}
+.pagina-tratamientos .banda-cta--jardin > .container { position: relative; z-index: 1; }
+
+.banda-cta__vidrio {
+  margin-inline: 0;
+  padding: clamp(1.6rem, 3vw, 2.6rem) clamp(1.4rem, 2.6vw, 2.4rem);
+  border: 1px solid var(--gm-borde);
+  border-radius: var(--gm-radio);
+  background: rgba(8, 9, 7, .78);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 30px 70px rgba(4, 6, 3, .45);
+}
+.pagina-tratamientos .banda-cta--jardin h2 { color: #FFFFFF; }
+.pagina-tratamientos .banda-cta--jardin p { color: rgba(255, 255, 255, .82); }
+.pagina-tratamientos .banda-cta--jardin .btn {
+  color: var(--gm-oro-vivo);
+  border-color: var(--gm-borde-vivo);
+}
+.pagina-tratamientos .banda-cta--jardin .btn:hover,
+.pagina-tratamientos .banda-cta--jardin .btn:focus-visible {
+  color: var(--gm-negro);
+  background: var(--gradiente-oro);
+  border-color: transparent;
+}
+
+
+/* Sobre la piedra el titulo va en oro y el texto de leer en claro. */
+.pagina-nosotros .ns-valor .ns-valor__nombre,
+.pagina-tratamientos .pz-tarjeta .pz-tarjeta__titulo,
+.pagina-tratamientos .pz-panel .titulo-seccion { color: var(--gm-oro-vivo); }
+
+.pagina-nosotros .ns-valor .ns-valor__texto,
+.pagina-tratamientos .pz-tarjeta .pz-tarjeta__texto,
+.pagina-tratamientos .pz-panel .parrafo,
+.pagina-tratamientos .pz-panel .lista-incluye li { color: rgba(255, 255, 255, .76); }
+
+.pagina-nosotros .ns-valor .ns-valor__icono,
+.pagina-tratamientos .pz-panel .bloque-tratamiento-numero { color: var(--gm-oro-vivo); }
+.pagina-nosotros .ns-valor .ns-valor__icono {
+  border-color: rgba(212, 175, 55, .42);
+  background: rgba(212, 175, 55, .08);
+}
+
+.pagina-nosotros .ns-valor .ns-valor__nombre::after,
+.pagina-tratamientos .pz-tarjeta .pz-tarjeta__titulo::after {
+  background: var(--gradiente-oro);
+}
+
+.pagina-tratamientos .pz-panel .lista-incluye { border-top-color: rgba(212, 175, 55, .3); }
+.pagina-tratamientos .pz-panel .lista-incluye i {
+  border-left-color: var(--gm-oro-vivo);
+  border-bottom-color: var(--gm-oro-vivo);
+}
+
+.pagina-tratamientos .pz-panel .btn {
+  color: var(--gm-oro-vivo);
+  border-color: var(--gm-borde-vivo);
+}
+.pagina-tratamientos .pz-panel .btn:hover,
+.pagina-tratamientos .pz-panel .btn:focus-visible {
+  color: var(--gm-negro);
+  background: var(--gradiente-oro);
+  border-color: transparent;
+}
+
+
+/* La ficha del especialista: se rellena al elegir un retrato del acordeon
+   (scripts/secciones.js). El texto de cada uno vive en su data-ficha-*. */
+.ns-ficha {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: clamp(1rem, 1.8vw, 1.5rem);
+  padding: clamp(1rem, 1.9vw, 1.6rem) clamp(1.2rem, 2.2vw, 1.9rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(.6rem, 1.2vw, 1rem);
+  border: 1px solid var(--gm-borde);
+  border-radius: var(--gm-radio);
+  background: var(--gm-negro);
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .26);
+}
+.ns-ficha > *:not(.tarjeta-piedra) { position: relative; z-index: 1; }
+
+@media (min-width: 860px) {
+  .ns-ficha {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: clamp(1.6rem, 3vw, 3rem);
+  }
+  .ns-ficha__cabeza { grid-column: 1 / -1; }
+}
+@media (min-width: 1100px) {
+  .ns-ficha {
+    grid-template-columns: minmax(0, .82fr) minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+  .ns-ficha__cabeza { grid-column: auto; }
+}
+
+/* La parada de scroll: Nosotros solo tiene un iman, el de Equipo, para que
+   la seccion se vea entera de una vez. Solo donde de verdad cabe. */
+@media (min-width: 992px) and (min-height: 760px) {
+  html:has(body.pagina-nosotros) { scroll-snap-type: y proximity; }
+  .pagina-nosotros #equipo {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+.ns-ficha__esp {
+  margin: 0 0 .35rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: .68rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gm-oro-vivo);
+}
+/* Doble clase a proposito: .pagina-clara h3 pinta los titulos en gris
+   oscuro y aqui el fondo es piedra negra. */
+.ns-ficha .ns-ficha__nombre {
+  margin: 0 0 .2rem;
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.24;
+  color: #FFFFFF;
+}
+.ns-ficha__texto {
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: clamp(.9rem, 1vw, .98rem);
+  line-height: 1.72;
+  color: rgba(255, 255, 255, .78);
+}
+.ns-ficha__puntos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .5rem;
+  align-content: start;
+}
+.ns-ficha__puntos li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 300;
+  font-size: .9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .74);
+}
+.ns-ficha__puntos li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: .58em;
+  width: 9px;
+  height: 5px;
+  border-left: 1.5px solid var(--gm-oro-vivo);
+  border-bottom: 1.5px solid var(--gm-oro-vivo);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.ns-ficha--entra .ns-ficha__cabeza,
+.ns-ficha--entra .ns-ficha__texto,
+.ns-ficha--entra .ns-ficha__puntos { animation: ns-ficha-entra .55s var(--gm-curva) both; }
+.ns-ficha--entra .ns-ficha__texto { animation-delay: .05s; }
+.ns-ficha--entra .ns-ficha__puntos { animation-delay: .1s; }
+
+@keyframes ns-ficha-entra {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-ficha--entra .ns-ficha__cabeza,
+  .ns-ficha--entra .ns-ficha__texto,
+  .ns-ficha--entra .ns-ficha__puntos { animation: none; }
 }
