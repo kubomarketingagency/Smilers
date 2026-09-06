@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function paso(ahora) {
       if (runIdContador.get(elemento) !== idPropio) return;
-      const progreso = Math.min((ahora - inicio) / duracion, 1);
+      /* Con tope por abajo tambien: el `ahora` que trae el fotograma es el
+         instante en que empezo, y puede ser anterior al `performance.now()`
+         de dos lineas mas arriba. Cuando pasa, el progreso sale negativo y el
+         contador enseña un numero en negativo antes de arrancar. */
+      const progreso = Math.min(Math.max((ahora - inicio) / duracion, 0), 1);
       elemento.textContent = Math.floor(progreso * objetivo).toLocaleString('es-MX');
       if (progreso < 1) requestAnimationFrame(paso);
     }

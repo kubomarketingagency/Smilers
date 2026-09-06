@@ -25,6 +25,10 @@
 @media (min-width: 992px) {
   .seccion-nosotros { padding: 0; }
 }
+/* Y en cuanto la escena esta viva —tambien en el movil— la seccion no pone
+   relleno ninguno: el pin mide la ventana entera, y cualquier relleno le deja
+   una franja de marmol asomando por arriba. */
+.seccion-nosotros:has(.pn-escena--viva) { padding: 0; }
 
 .nosotros-split {
   position: relative;
@@ -948,4 +952,111 @@
   background: var(--oro-marca-degradado);
   opacity: var(--pn-filo-op, 0);
   pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+   La escena en el movil.
+
+   Es la misma —el telon cruza igual de izquierda a derecha—, pero aqui cada
+   pantalla tiene que caber entera en el alto de la ventana, y en el movil el
+   collage va arriba y el texto debajo en vez de al lado. Asi que se aprieta
+   todo: el collage se lleva un tercio de la pantalla, el texto ocupa el
+   resto, y lo que falta sale del interlineado y de los aires — nunca del
+   cuerpo de letra, que es lo que hay que leer.
+
+   El pin va en `dvh` y no en `svh` a proposito: en el movil la barra del
+   navegador se esconde al bajar y la ventana crece, y con `svh` el telon se
+   quedaba corto y asomaba una franja de marmol por debajo.
+   --------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+
+  .pn-escena--viva { height: 300vh; }
+  .pn-escena--viva .pn-pin { height: 100dvh; }
+
+  .pn-escena--viva .pn-fondo .nosotros-split {
+    height: 100%;
+    margin-top: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(.7rem, 2.4vw, 1.1rem);
+    padding-block: clamp(.5rem, 2vw, 1rem);
+  }
+  .pn-escena--viva .pn-fondo .nosotros-media { height: 30svh; }
+
+  .pn-escena--viva .nosotros-cuerpo { max-width: none; }
+
+  /* El parrafo de acompanamiento se cae, y solo en el movil: es el unico
+     texto de la columna que no trae dato —el resumen esta en la entradilla y
+     lo concreto en la lista de debajo—, asi que es lo primero que sobra
+     cuando hay que elegir. Sigue en el HTML para escritorio. */
+  .pn-escena--viva .nosotros-cuerpo .parrafo:not(.parrafo-lead) { display: none; }
+
+  #nosotros .pn-escena--viva .etiqueta-editorial {
+    font-size: .6rem;
+    letter-spacing: .2em;
+    margin-bottom: .5rem;
+  }
+  #nosotros .pn-escena--viva .titulo-seccion {
+    font-size: clamp(1.22rem, 5.4vw, 1.6rem);
+    line-height: 1.28;
+    margin-bottom: .5rem;
+  }
+  .pn-escena--viva .nosotros-cuerpo .parrafo-lead {
+    font-size: .92rem;
+    line-height: 1.55;
+    margin-bottom: 0;
+  }
+
+  .pn-escena--viva .nosotros-checks {
+    margin: .75rem 0 .85rem;
+    padding-top: .65rem;
+  }
+  .pn-escena--viva .nosotros-checks li {
+    padding: .28rem 0 .28rem 1.55rem;
+    font-size: .85rem;
+    line-height: 1.48;
+  }
+  .pn-escena--viva .nc-icono { top: .88rem; left: 0; }
+
+  .pn-escena--viva .nosotros-sedes { margin: .75rem 0 .85rem; }
+  .pn-escena--viva .nosotros-sedes li { padding: .42rem 0; }
+  .pn-escena--viva .ns-clave { font-size: .66rem; margin-bottom: .18rem; }
+  .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .83rem; line-height: 1.42; }
+
+  .pn-escena--viva .nosotros-acciones { gap: .5rem; }
+  .pn-escena--viva .nosotros-acciones .btn {
+    width: auto;
+    flex: 1 1 auto;
+    padding: .78rem .9rem;
+    font-size: .61rem;
+  }
+
+  /* La pantalla negra: los cuatro pilares y las cuatro cifras, en dos
+     columnas cada bloque, cabiendo de una vez. */
+  .pn-telon { padding: clamp(1rem, 4vw, 1.8rem) clamp(.9rem, 4vw, 1.6rem); }
+  .pn-contenido { gap: clamp(.8rem, 3vw, 1.2rem); }
+  .pn-grupo > .etiqueta-editorial { margin-bottom: .45rem; }
+  .pn-grupo + .pn-grupo { padding-top: clamp(.7rem, 2.6vw, 1.1rem); }
+
+  .pn-telon .pilar { padding: .5rem .45rem .45rem; }
+  .pn-telon .pilar__num { font-size: .58rem; }
+  .pn-telon .pilar__icono { margin: .28rem 0 .22rem; font-size: .88rem; }
+  .pn-telon .pilar h3 {
+    font-size: .64rem;
+    letter-spacing: .11em;
+    line-height: 1.32;
+    margin-bottom: .22rem;
+  }
+  .pn-telon .pilar p { font-size: .73rem; line-height: 1.48; }
+
+  .pn-telon .contador-lujo { gap: .65rem 0; }
+  .pn-telon .cl-item { padding: .1rem .35rem .45rem; }
+  .pn-telon .cl-num { font-size: 1.5rem; }
+  .pn-telon .cl-etiqueta {
+    margin-top: .3rem;
+    font-size: .54rem;
+    letter-spacing: .13em;
+  }
+  .pn-telon .cl-linea { bottom: .05rem; }
 }

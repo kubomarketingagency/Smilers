@@ -142,9 +142,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var viva = false;
 
+    /* El telon va tambien en el movil: lo unico que lo apaga es que se haya
+       pedido menos movimiento. Antes pedia ademas 992px de ancho. */
     function cabe() {
-      return window.matchMedia('(min-width: 992px)').matches
-          && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
     var VARIABLES = ['--pn-der', '--pn-izq', '--pn-op', '--pn-desenfoque',
