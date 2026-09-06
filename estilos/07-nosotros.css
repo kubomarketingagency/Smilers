@@ -17,7 +17,14 @@
   background: linear-gradient(90deg, var(--hairline-oro), transparent);
 }
 
+/* En escritorio la seccion no pone relleno propio: cada bloque de dentro mide
+   una pantalla entera y se reparte el aire el mismo. Por debajo de 992px
+   vuelve el relleno de siempre, porque ahi los bloques se apilan y ya no hay
+   pantallas que cuadrar. */
 .seccion-nosotros { padding: clamp(30px, 3.2vw, 54px) 0 clamp(26px, 2.8vw, 46px); }
+@media (min-width: 992px) {
+  .seccion-nosotros { padding: 0; }
+}
 
 .nosotros-split {
   position: relative;
@@ -33,24 +40,48 @@
     grid-template-columns: 1fr 1fr;
     gap: 0;
     padding-inline: 0;
+    min-height: 100svh;
   }
 }
 
+/* El collage va sin separacion entre fotos, pero con filo de oro en todas las
+   juntas. La linea no la pone cada figura: la pone la rejilla. El fondo del
+   contenedor es el oro de marca y el `gap` de 1px lo deja asomar por las
+   juntas; el `padding` del mismo grosor cierra el marco por fuera. Asi todas
+   las lineas —las de dentro y las del borde— son la misma pieza, miden lo
+   mismo y no se doblan donde dos fotos se tocan. */
 .nosotros-media {
   position: relative;
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 8px;
-  padding: 8px;
+  gap: 1px;
+  padding: 1px;
+  background: var(--oro-marca-degradado);
   height: clamp(250px, 34vh, 330px);
   perspective: 1200px;
 }
 
 @media (min-width: 992px) {
+
+  /* Media pagina de ancho —la mitad de la rejilla del split— y la pagina
+     entera de alto. El desvanecido del centro va aqui: el collage no acaba en
+     un canto, se apaga hacia el medio de la pagina y deja pasar el marmol. La
+     mascara se come tambien el filo de oro de ese lado, que es justo lo que
+     funde la foto con la piedra en vez de dejarlas tocandose. */
   .nosotros-media {
-    height: clamp(560px, 78vh, 820px);
+    height: 100svh;
     grid-template-rows: .78fr 1.12fr 1fr .78fr;
+    -webkit-mask-image: linear-gradient(90deg,
+        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+            mask-image: linear-gradient(90deg,
+        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+  }
+  .nosotros-split--invertido .nosotros-media {
+    -webkit-mask-image: linear-gradient(270deg,
+        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+            mask-image: linear-gradient(270deg,
+        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
   }
   .nm-figura--cima { grid-column: 1 / -1; grid-row: 1; }
   .nm-figura--pie  { grid-column: 1; grid-row: 4; }
@@ -85,25 +116,17 @@
 .nm-figura.visible img { transform: scale(1); }
 .nm-figura.visible:hover img { transform: scale(1.06); }
 
-.nm-figura::after {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  left: 0; right: 0; top: 0;
-  height: 3px;
-  pointer-events: none;
-  background: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
-  opacity: 0;
-  transition: opacity .6s ease .25s;
-}
-.nm-figura.visible::after { opacity: 1; }
+/* La figura no se desvanece: entra solo la foto, con el barrido de
+   `revelar--velo`. Es obligatorio ahora que el oro esta en el fondo de la
+   rejilla — con la figura a opacidad 0 lo que se veia por debajo no era el
+   marmol sino el oro, y media pagina se encendia entera antes de aparecer las
+   fotos. Opaca, el oro solo asoma por el milimetro de las juntas, que es de
+   lo que se trataba. */
+#nosotros .nm-figura.revelar { opacity: 1; }
 
-.nosotros-split--invertido .nm-figura::after {
-  background: linear-gradient(260deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
-}
-@media (prefers-reduced-motion: reduce) {
-  .nm-figura::after { opacity: 1; transition: none; }
-}
+/* Cada figura llevaba encima su propia barra de oro de 3px. Ya no hace falta:
+   el filo sale de las juntas de la rejilla, y sumadas las dos cosas la linea
+   de arriba salia el triple de gruesa que las demas. */
 
 @media (max-width: 991.98px) {
   .nm-figura--principal { grid-row: 1 / 3; }
@@ -156,6 +179,19 @@
   color: var(--silver-300);
 }
 
+/* Va aqui, despues de `.nm-sello`, y no arriba con el resto del collage: las
+   dos reglas pesan (0,1,0) y gana la ultima escrita. Puesta antes no hacia
+   nada.
+
+   El sello se despega del canto de abajo. No es compostura: el observador de
+   `revelados.js` recorta su marco un 8% por abajo, y con el collage midiendo
+   la pantalla entera el sello caia justo en esa franja muerta —asomaba un 11%,
+   por debajo del 0,15 que pide para encenderse—, asi que no aparecia nunca.
+   Subido, entra de sobra. */
+@media (min-width: 992px) {
+  .nm-sello { bottom: clamp(2rem, 8vh, 5.5rem); }
+}
+
 .nosotros-split--invertido { margin-top: clamp(.4rem, .9vw, .8rem); }
 
 @media (min-width: 992px) {
@@ -197,14 +233,19 @@
   }
 }
 
+/* El texto de esta columna comparte pantalla con el collage, asi que tiene que
+   caber de una vez y leerse a la primera. Dos cosas: la tinta baja a #1A1A1A
+   —el gris de `--texto` se lavaba sobre el marmol— y el interlineado se cierra
+   de 1,95 a 1,78, que es lo que devuelve el alto que hacia falta. El cuerpo
+   sube un punto, no baja: legible no es pequeno. */
 .nosotros-cuerpo .parrafo {
-  max-width: 62ch;
-  margin-bottom: 1.35rem;
+  max-width: 58ch;
+  margin-bottom: 1.05rem;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
-  font-size: clamp(.95rem, .35vw + .87rem, 1.05rem);
-  line-height: 1.95;
-  color: var(--texto);
+  font-size: clamp(1rem, .3vw + .93rem, 1.1rem);
+  line-height: 1.78;
+  color: #1A1A1A;
 }
 .nosotros-cuerpo .parrafo:last-of-type { margin-bottom: 0; }
 
@@ -212,39 +253,43 @@
   font-family: var(--fuente-menu);
   font-weight: 400;
   font-size: clamp(1.5rem, 1.3vw + 1.02rem, 2.1rem);
-  line-height: 1.45;
+  line-height: 1.4;
   letter-spacing: .01em;
-  margin-bottom: clamp(1.1rem, 1.8vw, 1.5rem);
+  margin-bottom: clamp(.9rem, 1.5vw, 1.25rem);
 }
 
-.parrafo-lead {
-  font-size: clamp(1.03rem, .25vw + .96rem, 1.1rem);
-  line-height: 1.72;
-  color: var(--texto);
+/* Va con `.nosotros-cuerpo` delante a proposito. A secas, `.parrafo-lead`
+   pesa (0,1,0) y `.nosotros-cuerpo .parrafo` (0,2,0), asi que la entradilla
+   nunca llego a ser mas grande que el parrafo de al lado: heredaba el cuerpo
+   y el interlineado del otro y la regla entera no pintaba nada. */
+.nosotros-cuerpo .parrafo-lead {
+  font-size: clamp(1.06rem, .25vw + .99rem, 1.16rem);
+  line-height: 1.7;
+  color: #141414;
 }
 
 .nosotros-checks {
   list-style: none;
-  margin: clamp(1.6rem, 2.6vw, 2.2rem) 0 clamp(1.6rem, 2.6vw, 2.2rem);
-  padding: clamp(1.3rem, 2.2vw, 1.8rem) 0 0;
+  margin: clamp(1.15rem, 2vw, 1.7rem) 0 clamp(1.35rem, 2.2vw, 1.9rem);
+  padding: clamp(1rem, 1.8vw, 1.4rem) 0 0;
   border-top: 1px solid var(--hairline-oro);
   display: block;
 }
 .nosotros-checks li {
   position: relative;
   display: block;
-  padding: .58rem 0 .58rem 1.9rem;
+  padding: .42rem 0 .42rem 1.9rem;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
-  font-size: .93rem;
-  line-height: 1.75;
-  color: var(--texto);
+  font-size: .97rem;
+  line-height: 1.68;
+  color: #1A1A1A;
 }
 .nosotros-checks strong { color: var(--neutral-900); font-weight: 700; }
 .nc-icono {
   position: absolute;
   left: 2px;
-  top: 1.4rem;
+  top: 1.24rem;
   width: 9px;
   height: 5px;
   margin: 0;
@@ -265,13 +310,13 @@
 .nosotros-sedes {
   list-style: none;
   padding: 0;
-  margin: clamp(1.6rem, 2.6vw, 2.2rem) 0 clamp(1.6rem, 2.6vw, 2.2rem);
+  margin: clamp(1.15rem, 2vw, 1.7rem) 0 clamp(1.35rem, 2.2vw, 1.9rem);
   border-top: 0;
 }
 .nosotros-sedes li {
   display: block;
-  padding: clamp(1rem, 1.6vw, 1.35rem) 0;
-  border-top: 1px solid rgba(10, 10, 10, .1);
+  padding: clamp(.7rem, 1.2vw, 1rem) 0;
+  border-top: 1px solid rgba(10, 10, 10, .12);
   border-bottom: 0;
 }
 .nosotros-sedes li:first-child { border-top: 0; padding-top: 0; }
@@ -307,6 +352,31 @@
   font-size: .95rem;
   line-height: 1.75;
   color: var(--texto);
+}
+/* `.ns-valor` es un nombre compartido: en Nosotros son las fichas de valores,
+   que las viste el 20. Esto solo toca la lista de sedes de la portada, que
+   comparte pantalla con el collage y necesita la misma tinta que el resto de
+   la columna. */
+.nosotros-sedes .ns-valor {
+  font-size: .97rem;
+  line-height: 1.62;
+  color: #1A1A1A;
+}
+
+/* Pantallas bajas. Ahora que cada bloque mide una pantalla, en un portatil de
+   720px de alto la columna llegaba al milimetro y el ultimo boton se salia.
+   El alto se saca del interlineado y de los aires de las listas, nunca del
+   cuerpo de letra: lo que hay que leer no encoge. */
+@media (min-width: 992px) and (max-height: 820px) {
+  #nosotros .etiqueta-editorial { margin-bottom: .85rem; }
+  #nosotros .titulo-seccion { line-height: 1.3; margin-bottom: .75rem; }
+  .nosotros-cuerpo .parrafo { line-height: 1.62; margin-bottom: .85rem; }
+  .nosotros-cuerpo .parrafo-lead { line-height: 1.56; }
+  .nosotros-checks { margin: 1rem 0 1.15rem; padding-top: .85rem; }
+  .nosotros-checks li { padding-block: .3rem; line-height: 1.55; }
+  .nc-icono { top: 1.05rem; }
+  .nosotros-sedes { margin: 1rem 0 1.15rem; }
+  .nosotros-sedes li { padding-block: .55rem; }
 }
 
 .pilares-editorial {
@@ -417,14 +487,10 @@
   .pilar p { font-size: .82rem; line-height: 1.75; }
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .escena-salida .nosotros-split,
-  .escena-salida > .container {
-    opacity: var(--escena-op, 1);
-    transform: translate3d(0, var(--escena-y, 0px), 0);
-    will-change: opacity, transform;
-  }
-}
+/* Aqui vivia la «escena de salida»: los bloques de esta seccion se apagaban
+   segun se salia de ella. Se ha ido con el pin — ahora los dos collages estan
+   dentro de la escena y quien decide lo que se ve es el telon, asi que no
+   quedaba nada que apagar. */
 
 @media (max-width: 767.98px) {
   .seccion-nosotros { padding: 24px 0 22px; }
@@ -678,3 +744,208 @@
   transition: width 1.1s cubic-bezier(.16, 1, .3, 1) .35s;
 }
 .contador-lujo.visible .cl-linea { width: 68px; }
+
+
+
+
+/* ===========================================================================
+   La escena de la pantalla negra: un telon que se abre y se cierra con el
+   scroll, no con el reloj.
+
+   Es la misma mecanica que el cierre cine (`.cierre-cine`, en el 09): un
+   envoltorio alto —`.pn-escena`— con un `position: sticky` dentro que se queda
+   clavado ocupando la pantalla entera mientras el envoltorio le pasa por
+   delante. Lo que se mueve no es el telon, es la pagina; de ese recorrido sale
+   un progreso de 0 a 1 que `scripts/revelados.js` escribe en las variables
+   `--pn-*`. **Aqui no hay ni una `transition`**: cada fotograma lo manda el
+   scroll, y por eso se puede ir y volver a mitad del barrido.
+
+   El reparto del recorrido:
+
+     0   -> .05   quieto: se ve el primer collage, que es lo que hay debajo
+     .05 -> .32   el negro cruza de izquierda a derecha y tapa la pantalla
+     .34 -> .46   aparecen los pilares y el contador, saliendo del desenfoque
+     .46 -> .70   se sostiene: es cuando toca leer
+     .70 -> .97   el negro se retira por la izquierda y descubre Instalaciones
+     .97 -> 1     cola, para que la segunda seccion se vea entera antes de
+                  soltarse el pin
+
+   **Los dos collages viven dentro del pin**, uno detras del telon todo el
+   rato: `.pn-fondo--uno` es el primero y `.pn-fondo--dos` el segundo, y el
+   cambiazo se da a mitad de recorrido, **cuando el negro tapa la pantalla
+   entera y no se ve nada**. De ahi que la secuencia se lea como toca: esta el
+   primer collage, le pasa el telon por encima, y al retirarse lo que hay
+   debajo ya es el segundo. Si el segundo se dejara puesto desde el principio
+   —que es como estaba— se veia antes de que entrara el negro y se destripaba
+   la transicion.
+
+   Por eso tambien el filo dorado que viaja con el canto (`.pn-filo`) va fuera
+   del telon: dentro se lo comeria su propio recorte.
+
+   En el HTML van en el orden en que se leen —collage uno, telon, collage
+   dos—, y no es casualidad: sin la clase `.pn-escena--viva` —que solo pone el
+   JS cuando hay ancho de sobra y el visitante no ha pedido menos movimiento—
+   nada de esto se activa y los tres bloques se quedan apilados en flujo
+   normal, en ese mismo orden. Es la red: sin JS, en movil o con
+   `prefers-reduced-motion`, la seccion se sigue leyendo entera; lo unico que
+   falta es el telon.
+   =========================================================================== */
+/* Sin esto el pin no se pega a nada. `.seccion-decorada` (en el 11) le pone
+   `overflow: hidden` a la seccion, y eso la convierte en contenedor de scroll:
+   dentro de una caja que no se desplaza, un `position: sticky` no tiene contra
+   que pegarse y baja con la pagina. `clip` recorta igual —que es lo que hacia
+   falta, para que los halos no desborden— pero no crea contenedor de scroll,
+   asi que el pin vuelve a mirar a la ventana.
+
+   Las dos clases juntas a proposito: pesa (0,2,0) y la del 11 pesa (0,1,0),
+   que si no gana ella por cargarse despues. */
+.seccion-decorada.seccion-nosotros { overflow: clip; }
+
+.pn-escena {
+  --gold-500: #D4AF37;
+  --gold-700: #B08D22;
+  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  --gradiente-oro-menudo: var(--gradiente-oro);
+  --oro-vivo-degradado: var(--gradiente-oro);
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Modo estatico: el de serie, el que se ve si el JS no entra --- */
+
+.pn-telon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.6rem, 3.4vw, 3.4rem) clamp(1.1rem, 3vw, 3rem);
+  background:
+    radial-gradient(ellipse 75% 130% at 14% 0%, rgba(212, 175, 55, .16) 0%, transparent 62%),
+    linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
+}
+/* El filo de oro de la pantalla, por dentro y en pseudo: un `border` en el
+   propio telon se sumaria al recorte y se veria aparecer a trozos. */
+.pn-telon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+}
+
+.pn-contenido {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 1560px);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3.2vw, 3rem);
+}
+
+.pn-filo { display: none; }
+
+.pn-grupo > .etiqueta-editorial { margin-bottom: clamp(.8rem, 1.6vw, 1.3rem); }
+.pn-grupo + .pn-grupo {
+  padding-top: clamp(1.3rem, 2.6vw, 2.4rem);
+  border-top: 1px solid rgba(212, 175, 55, .22);
+}
+
+.pn-telon .pilares-editorial,
+.pn-telon .contador-lujo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+.pn-telon .pilares-editorial::before,
+.pn-telon .contador-lujo::before { content: none; }
+
+/* Sin el relleno del recuadro que tenian, el primer pilar arranca a ras del
+   filo izquierdo; los demas siguen separandose de su linea. */
+@media (min-width: 992px) {
+  .pn-telon .pilar { padding-inline: 0 clamp(.9rem, 1.8vw, 1.5rem); }
+  .pn-telon .pilar + .pilar { padding-inline: clamp(.9rem, 1.8vw, 1.5rem); }
+}
+
+/* El contador entra con el bloque entero, no por su cuenta: quien decide
+   cuando se ve es el telon. */
+.pn-telon .cl-item { opacity: 1; transform: none; transition: none; }
+.pn-telon .cl-linea { width: 68px; transition: none; }
+
+/* --- Modo escena: el pin y el barrido. Lo enciende el JS --- */
+
+.pn-escena--viva { height: 360vh; }
+
+.pn-escena--viva .pn-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.pn-escena--viva .pn-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+/* El cambiazo. Es un corte seco, sin transicion a proposito: se da con el
+   telon tapando la pantalla entera, asi que no hay nada que suavizar y una
+   fundida solo podria asomar por un borde. */
+.pn-escena--viva .pn-fondo--uno { opacity: var(--pn-uno, 1); }
+.pn-escena--viva .pn-fondo--dos { opacity: var(--pn-dos, 0); }
+
+/* Dentro de la escena los dos collages van dibujados desde el principio: se
+   les quita el revelado por scroll.
+
+   No es un capricho. La segunda pantalla espera su turno a opacidad 0, y ahi
+   el observador no la da por visible —se midio: 13 de 26 `.revelar` se
+   quedaban sin encender, justo las 13 de dentro—, asi que al retirarse el
+   telon lo que aparecia era la piedra en blanco. Y de paso arregla la vuelta:
+   al subir el scroll el primer collage tampoco tenia que volver a revelarse.
+
+   Aqui no se pierde nada, porque quien presenta las dos pantallas es el
+   barrido del telon, no la entrada de cada pieza. El peso lo pide
+   `#nosotros .revelar:not(.revelar--velo)`, que vale (1,2,0). */
+#nosotros .pn-escena--viva .pn-fondo .revelar {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+#nosotros .pn-escena--viva .pn-fondo .revelar--velo > * { clip-path: none; }
+#nosotros .pn-escena--viva .pn-fondo .nm-figura img { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  #nosotros .pn-escena--viva .pn-fondo .nm-figura:hover img { transform: scale(1.06); }
+}
+
+.pn-escena--viva .pn-telon {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: inset(0 var(--pn-der, 100%) 0 var(--pn-izq, 0%));
+}
+
+.pn-escena--viva .pn-contenido {
+  opacity: var(--pn-op, 0);
+  filter: blur(var(--pn-desenfoque, 14px));
+  transform: translate3d(var(--pn-x, 0px), 0, 0);
+}
+
+.pn-escena--viva .pn-filo {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pn-filo, 0%);
+  z-index: 3;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--oro-marca-degradado);
+  opacity: var(--pn-filo-op, 0);
+  pointer-events: none;
+}

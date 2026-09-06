@@ -114,8 +114,6 @@
   .revelar--velo { clip-path: none; }
   .nm-figura img { transform: none; transition: none; }
   .cl-item { opacity: 1; transform: none; transition: none; }
-  .escena-salida .nosotros-split,
-  .escena-salida > .container { opacity: 1; transform: none; }
   .cl-linea { width: 68px; transition: none; }
   .row > .revelar, .lista-caracteristicas > li { transition-delay: 0s; }
   .titulo-seccion::after { transition: none; }
