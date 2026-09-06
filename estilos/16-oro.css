@@ -37,19 +37,21 @@
 }
 
 .navbar-toggler,
-.pagina-clara .navbar-toggler { color: var(--gold-500); }
+.pagina-clara .navbar-toggler { color: var(--oro-marca); }
 .hamburguesa-icono span,
-.pagina-clara .hamburguesa-icono span { background: var(--gradiente-oro); }
+.pagina-clara .hamburguesa-icono span { background: var(--oro-marca-degradado); }
 
 /* Un solo boton en todo el sitio: filo de oro, letras de oro y, al pasar
    por encima, el degradado de oro entero de fondo. Las variantes viejas
    (.btn-naranja, .btn-turquesa, .btn-blanco, .btn-contorno, .btn-fantasma,
-   .btn-traslucido) ya no pintan nada propio; esta hoja va despues y las
-   iguala a todas. */
+   .btn-traslucido, .btn-sm-nav) ya no existen: se borraron de 03-botones.css
+   y del HTML. El oro de aqui es `--oro-marca`, que no lo redefine ningun
+   contexto, para que el boton sea el mismo sobre piedra negra y sobre
+   piedra clara. */
 .btn {
   padding: 1.05rem 2.1rem;
   border: 1px solid transparent;
-  border-image: var(--gradiente-oro) 1;
+  border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -58,49 +60,46 @@
   font-size: .72rem;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--gold-500);
+  color: var(--oro-marca);
 }
-.btn-lg { padding: 1.15rem 2.5rem; font-size: .78rem; }
+/* `.btn-lg` tampoco existe ya: el boton de la banda de cierre era un poco
+   mas grande que los demas y eso bastaba para que no parecieran el mismo. */
 
 .btn:hover, .btn:focus, .btn:focus-visible {
-  background: var(--gradiente-oro);
-  border-image: var(--gradiente-oro) 1;
+  background: var(--oro-marca-degradado);
+  border-image: var(--oro-marca-degradado) 1;
   color: var(--onix);
   box-shadow: none;
   transform: none;
 }
 
-/* Sobre piedra clara el reposo va en tinta: el oro se queda en el filo y
-   en el relleno del hover, que es donde se ve. */
+/* El mismo oro en todos, sobre cualquier piedra. Antes esto se partia en
+   dos grupos —tinta sobre piedra clara, oro dentro de las piezas oscuras—
+   mas un hover repetido para deshacer el empate de especificidad, y el
+   resultado era que no habia dos botones iguales en el sitio. Los selectores
+   de contexto siguen aqui porque el suyo (0,2,0) le gana a `.btn` (0,1,0):
+   sin nombrarlos, cualquier regla vieja de esas volveria a mandar. */
+.btn,
 .pagina-clara .btn,
 .nosotros-acciones .btn,
 .seccion-clara .btn,
-.seccion-piedra .btn { color: var(--nos-negro, #0A0A0A); }
-
-/* Salvo dentro de las piezas oscuras que viven en esas paginas. */
-.pagina-clara .footer .btn,
-.pagina-clara .banda-cta--jardin .btn,
+.seccion-piedra .btn,
 .footer .btn,
-.banda-cta .btn,
-.btn-sm-nav { color: var(--gold-500); }
+.banda-cta .btn { color: var(--oro-marca); }
 
-/* Y al pasar por encima, todas en negro sobre el oro.
-   Ojo: `.footer .btn` y `.btn:hover` pesan lo mismo (0,2,0), y el de arriba
-   va despues, asi que sin repetir el hover aqui las letras se quedaban
-   doradas sobre el relleno dorado. */
+/* Y al pasar por encima, todas en negro sobre el oro. Cada grupo de arriba
+   necesita su hover: `.footer .btn` y `.btn:hover` pesan lo mismo (0,2,0) y
+   el de reposo va antes, asi que solo gana el hover si se repite aqui. */
 .pagina-clara .btn:hover, .pagina-clara .btn:focus, .pagina-clara .btn:focus-visible,
-.pagina-clara .footer .btn:hover, .pagina-clara .footer .btn:focus-visible,
 .footer .btn:hover, .footer .btn:focus, .footer .btn:focus-visible,
 .banda-cta .btn:hover, .banda-cta .btn:focus, .banda-cta .btn:focus-visible,
 .seccion-clara .btn:hover, .seccion-clara .btn:focus-visible,
 .seccion-piedra .btn:hover, .seccion-piedra .btn:focus-visible,
-.nosotros-acciones .btn:hover, .nosotros-acciones .btn:focus-visible,
-.btn-sm-nav:hover, .btn-sm-nav:focus { color: var(--onix); }
+.nosotros-acciones .btn:hover, .nosotros-acciones .btn:focus-visible { color: var(--onix); }
 
 .btn::before,
 .pagina-clara .btn::before,
 .footer .btn::before,
-.btn-sm-nav::before,
 .banda-cta .btn::before { border-color: rgba(10, 10, 10, .35); }
 
 .banda-cta h2 {

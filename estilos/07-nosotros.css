@@ -256,31 +256,11 @@
 .nc-icono .icono { display: none; }
 
 .nosotros-acciones { display: flex; flex-wrap: wrap; gap: 1rem; }
-.nosotros-acciones .btn {
-  padding: 1.05rem 2.1rem;
-  border: 1px solid var(--neutral-900);
-  border-radius: 0;
-  background: transparent;
-  color: var(--neutral-900);
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: .72rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  box-shadow: none;
-  transition: background .45s cubic-bezier(.22, 1, .36, 1),
-              color .45s cubic-bezier(.22, 1, .36, 1);
-}
-.nosotros-acciones .btn::before { inset: 4px; border-radius: 0; border-color: rgba(255, 255, 255, .38); }
-.nosotros-acciones .btn:hover,
-.nosotros-acciones .btn:focus,
-.nosotros-acciones .btn:focus-visible {
-  background: var(--neutral-900);
-  border-color: var(--neutral-900);
-  color: #FFFFFF;
-  box-shadow: none;
-  transform: none;
-}
+/* El boton de aqui es el de todo el sitio: lo pinta 16-oro.css. Antes esta
+   regla le ponia `border: 1px solid var(--neutral-900)`, y ese atajo borra el
+   `border-image` del filo dorado; el `:hover` (0,3,0) tambien le ganaba a
+   `.btn:hover` y lo rellenaba de negro. Solo queda el aro de dentro. */
+.nosotros-acciones .btn::before { inset: 4px; border-radius: 0; }
 
 .nosotros-sedes {
   list-style: none;

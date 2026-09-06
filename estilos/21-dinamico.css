@@ -407,7 +407,7 @@
 }
 /* Dentro de la tarjeta manda el oro vivo, no el hondo de la piedra clara. */
 .pagina-clara .ns-cifras-sec .ns-cta { --oro-vivo-degradado: var(--gradiente-oro); }
-.ns-cifras-sec .ns-boton { color: var(--gm-oro-vivo); }
+.ns-cifras-sec .ns-boton { color: var(--oro-marca); }
 
 /* El jardin de Fundamentos: con el velo de antes la hoja quedaba tan negra
    que no se distinguia del marmol. Sube la foto y afloja el velo hasta donde
@@ -936,13 +936,32 @@
 }
 .pz-proceso > .container { position: relative; z-index: 1; }
 .pz-proceso .ns-fondo img { transform: none; }
+
+/* Aqui la foto no acaba en la seccion siguiente: acaba en esta. La mascara
+   de "En cifras" llega al 100% a plena opacidad, y como debajo empieza la
+   banda verde de la pregunta, la foto se cortaba en seco justo en la juntura.
+   Esta entra por arriba, se ve entera en el centro y se apaga antes de tocar
+   la banda, de modo que la seccion termina en la misma piedra en la que
+   empezo. Pesa (0,3,0), asi que le gana a `.ns-fondo--degradado img`. */
+.pz-proceso .ns-fondo--degradado img {
+  -webkit-mask-image: linear-gradient(180deg,
+    transparent 0%, rgba(0, 0, 0, .10) 12%, rgba(0, 0, 0, .52) 36%,
+    #000 58%, rgba(0, 0, 0, .28) 80%, transparent 93%);
+          mask-image: linear-gradient(180deg,
+    transparent 0%, rgba(0, 0, 0, .10) 12%, rgba(0, 0, 0, .52) 36%,
+    #000 58%, rgba(0, 0, 0, .28) 80%, transparent 93%);
+}
+
 /* La seccion es corta y el texto cae justo sobre la foto, asi que el lavado
-   claro entra antes que en la de cifras. */
+   claro entra antes que en la de cifras. Y se retira con ella: donde ya no
+   hay foto no hay nada que lavar. */
 .pz-proceso .ns-fondo--degradado::after {
   background: linear-gradient(180deg,
-    rgba(250, 248, 245, .34) 0%,
-    rgba(250, 248, 245, .5) 46%,
-    rgba(250, 248, 245, .62) 100%);
+    rgba(250, 248, 245, .22) 0%,
+    rgba(250, 248, 245, .48) 36%,
+    rgba(250, 248, 245, .56) 60%,
+    rgba(250, 248, 245, .24) 82%,
+    transparent 93%);
 }
 
 /* Sobre la piedra el titulo va en oro y el texto de leer en claro. */
@@ -973,16 +992,8 @@
   border-bottom-color: var(--gm-oro-vivo);
 }
 
-.pagina-tratamientos .pz-panel .btn {
-  color: var(--gm-oro-vivo);
-  border-color: var(--gm-borde-vivo);
-}
-.pagina-tratamientos .pz-panel .btn:hover,
-.pagina-tratamientos .pz-panel .btn:focus-visible {
-  color: var(--gm-negro);
-  background: var(--gradiente-oro);
-  border-color: transparent;
-}
+/* El boton de la tarjeta es el de siempre (16-oro.css). Esta regla lo
+   repintaba con mas peso (0,3,0) y era una copia que se podia desincronizar. */
 
 
 /* La ficha del especialista: se rellena al elegir un retrato del acordeon

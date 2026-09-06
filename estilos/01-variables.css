@@ -10,6 +10,14 @@
   --gradiente-oro-menudo: var(--gradiente-oro);
   --gradiente-oro-hondo: linear-gradient(100deg, #9C7A1C 0%, #DCBB4E 34%, #B08D22 66%, #C4A02B 100%);
   --gradiente-plata: linear-gradient(100deg, #8C8C8C 0%, #F2F2F2 32%, #C0C0C0 64%, #E4E4E4 100%);
+
+  /* El oro de la marca, clavado. Ningun contexto vuelve a definir estos dos:
+     `--gold-500` y `--gradiente-oro` si cambian de tono segun la piedra que
+     tengan debajo, y por eso no valen para los botones, que son el mismo en
+     todo el sitio. Escritos en hexadecimal a proposito, para que no se cuele
+     un `--gold-700` redefinido por el camino. */
+  --oro-marca: #D4AF37;
+  --oro-marca-degradado: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;
   --silver-500: #C0C0C0;

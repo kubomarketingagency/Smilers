@@ -78,18 +78,8 @@
   color: rgba(255, 255, 255, .82);
 }
 
-.banda-cta--jardin .btn,
-.pagina-clara .banda-cta--jardin .btn {
-  color: var(--gold-500);
-  border-image: var(--gradiente-oro) 1;
-}
-.banda-cta--jardin .btn:hover,
-.banda-cta--jardin .btn:focus-visible,
-.pagina-clara .banda-cta--jardin .btn:hover,
-.pagina-clara .banda-cta--jardin .btn:focus-visible {
-  color: #0A0A0A;
-  background: var(--gradiente-oro);
-}
+/* El boton de la banda es el de 16-oro.css, sin retoques: alli el oro sale
+   de `--oro-marca`, que no cambia de tono segun la piedra de debajo. */
 
 /* Dentro de la banda manda el degradado vivo: es una pieza oscura aunque
    viva en una pagina clara. */

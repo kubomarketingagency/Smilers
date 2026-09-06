@@ -104,7 +104,7 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
   gap: .85rem;
   padding: 1.05rem 2.1rem;
   border: 1px solid transparent;
-  border-image: var(--gradiente-oro) 1;
+  border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
   background: transparent;
   font-family: var(--fuente-menu);
@@ -112,7 +112,7 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
   font-size: .72rem;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--gm-oro-vivo);
+  color: var(--oro-marca);
   transition: background .45s var(--gm-curva), color .45s var(--gm-curva);
 }
 .ns-boton .icono {
@@ -124,8 +124,8 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 @media (hover: hover) and (pointer: fine) {
   .ns-boton:hover,
   .ns-boton:focus-visible {
-    background: var(--gradiente-oro);
-    color: var(--gm-negro);
+    background: var(--oro-marca-degradado);
+    color: var(--onix);
   }
   .ns-boton:hover .icono { transform: translateX(4px); }
 }

@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const texto =
         '¡Hola Smilers Dental Clinique! 👋\n\n' +
+        'Les escribo desde su página web.\n\n' +
         'Mi nombre es: ' + nombre + '\n' +
-        'Mensaje: ' + mensaje + '\n\n' +
-        'Enviado desde el sitio web.';
+        'Mensaje: ' + mensaje;
 
       const url = 'https://wa.me/' + NUMERO_WHATSAPP + '?text=' + encodeURIComponent(texto);
 
