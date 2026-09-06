@@ -103,6 +103,14 @@ color ni de tamaño. Si aparece uno distinto, es que alguna hoja anterior le
 está ganando por peso —el `border:` que borra el `border-image`, o un `:hover`
 de contexto que pesa (0,3,0)—; se busca ahí, no en el 16.
 
+**Y si un botón se rellena de oro pero deja de leerse, es siempre lo mismo:**
+el color de reposo lo está pisando el del hover. `.ns-cifras-sec .ns-boton`
+(en el 21) y `.ns-boton:hover` (en el 20) pesan igual —(0,2,0)— y el 21 va
+después, así que las letras se quedaban doradas sobre el relleno dorado. La
+cura es escribir el hover otra vez en la hoja de más abajo, y dentro del
+mismo `@media (hover: hover)`. Pasó con el botón del pie y volvió a pasar con
+el de «En cifras».
+
 Casi todos abren WhatsApp al número `593997556002` con el mensaje ya escrito,
 y **todos dicen de dónde viene quien escribe**:
 

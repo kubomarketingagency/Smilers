@@ -409,6 +409,16 @@
 .pagina-clara .ns-cifras-sec .ns-cta { --oro-vivo-degradado: var(--gradiente-oro); }
 .ns-cifras-sec .ns-boton { color: var(--oro-marca); }
 
+/* Y el hover repetido aqui. La linea de arriba y `.ns-boton:hover` del 20
+   pesan lo mismo (0,2,0) y esta hoja va despues, asi que sin esto las letras
+   se quedaban doradas sobre el relleno dorado: el boton se rellenaba de oro y
+   dejaba de leerse. Mismo `@media` que el 20 para que solo entre donde el
+   relleno aparece de verdad. */
+@media (hover: hover) and (pointer: fine) {
+  .ns-cifras-sec .ns-boton:hover,
+  .ns-cifras-sec .ns-boton:focus-visible { color: var(--onix); }
+}
+
 /* El jardin de Fundamentos: con el velo de antes la hoja quedaba tan negra
    que no se distinguia del marmol. Sube la foto y afloja el velo hasta donde
    el texto blanco de encima aguanta. */
