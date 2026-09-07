@@ -40,6 +40,12 @@ document.addEventListener('DOMContentLoaded', function () {
     contadores.forEach(function (c) { obsContadores.observe(c); });
   }
 
+  /* La cuenta se puede relanzar desde fuera. La necesita el cierre de
+     Nosotros: alli las cifras viven dentro de un pin, el observador las da por
+     vistas en cuanto la seccion entra en pantalla —con las hojas negras
+     todavia encima— y para cuando se abren la cuenta ya ha terminado. */
+  window.SmilersContadores = { animar: animarContador };
+
   const mapaTabs = document.querySelectorAll('.mapa-tab');
   const mapaIframes = document.querySelectorAll('.mapa-iframe');
 
