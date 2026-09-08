@@ -28,8 +28,6 @@
 .ns-portada__sello span,
 .ns-cifra__num i,
 .ns-ficha__esp,
-.ns-ruta--filo .ns-ruta__sep,
-.ns-ruta--filo > span:last-child,
 .ns-ruta--claro span,
 .crsl__pie i,
 .ag-panel__titulo,
@@ -40,6 +38,7 @@
 .pagina-clara .enlace-card,
 .pagina-clara .proceso-numero,
 .pagina-clara .breadcrumb-personalizado i,
+.pagina-tratamientos .pz-medallon__nombre,
 .pagina-faq .faq-categoria-titulo h2,
 .pagina-tratamientos .acordeon-tratamiento-numero,
 .pagina-tratamientos .bloque-tratamiento-numero,
@@ -81,8 +80,6 @@
 .nos-ruta a:focus-visible,
 .ns-ruta a:hover,
 .ns-ruta a:focus-visible,
-.ns-ruta--filo a:hover,
-.ns-ruta--filo a:focus-visible,
 .ns-sede a:hover,
 .ns-sede a:focus-visible,
 .pagina-clara .breadcrumb-personalizado a:hover,
@@ -97,11 +94,33 @@
 /* Sobre piedra clara manda el degradado hondo. */
 .pagina-clara {
   --oro-vivo-degradado: var(--gradiente-oro-hondo);
+  --oro-plano: var(--oro-hondo);
 }
+
+/* `--oro-plano` es la hermana de la de arriba para lo que NO se puede
+   recortar contra el texto: un icono dentro de su circulo, un aro, una
+   manija. Esas piezas se quedaban en `#D4AF37` en toda la pagina, y sobre
+   marmol claro ese oro da 2:1 contra el fondo: se veia amarillo palido, no
+   oro. La misma regla que ya seguia el degradado —hondo sobre piedra clara,
+   vivo dentro de las piezas oscuras— ahora la sigue tambien el oro plano, y
+   por eso las dos variables viajan siempre en la misma lista.
+
+   Los dos tonos salen del 01 y no de la guia de marca: esta hoja la cargan
+   las cinco paginas y la guia solo dos, asi que con `--gm-oro-*` la variable
+   se quedaba sin valor en la portada, la Galeria y las Preguntas —y una
+   variable vacia no cae al respaldo, invalida la declaracion entera. */
+:root { --oro-plano: var(--oro-marca); }
 
 /* Salvo dentro de las piezas oscuras que viven en esas paginas claras: la
    barra, el pie, las tarjetas de piedra y las bandas negras, donde el
-   degradado vivo es el que corresponde. */
+   degradado vivo es el que corresponde.
+
+   Y aqui va `--oro-marca-degradado`, que es el oro de marca clavado en
+   hexadecimal, y no `--gradiente-oro`: en una pagina clara esa variable ya
+   viene redefinida al degradado hondo desde el 15, asi que la escapatoria no
+   escapaba de nada —el oro de dentro de la barra, del pie y de todas las
+   tarjetas negras de las cuatro paginas interiores salia hondo, el de la
+   piedra clara, en vez de vivo. Se midio. */
 .pagina-clara .navbar-principal,
 .pagina-clara .menu-panel,
 .pagina-clara .footer,
@@ -110,6 +129,10 @@
 .pagina-clara .ns-doble,
 .pagina-clara .ns-ficha,
 .pagina-clara .ns-valor,
+/* La columna del elenco vive sobre la madera desde que las dos mitades
+   cambiaron de lado, y la placa del nombre trae su propia piedra negra. */
+.pagina-clara .ns-elenco__lado,
+.pagina-clara .ns-elenco__placa,
 .pagina-clara .pz-tarjeta,
 .pagina-clara .pz-panel,
 .pagina-clara .pz-cita,
@@ -121,7 +144,8 @@
 .pagina-clara .franja-nav,
 .pagina-clara .faq-categoria-titulo,
 .pagina-clara .ns-portada {
-  --oro-vivo-degradado: var(--gradiente-oro);
+  --oro-vivo-degradado: var(--oro-marca-degradado);
+  --oro-plano: var(--oro-marca);
 }
 
 /* ---------------------------------------------------------------------------
@@ -149,6 +173,8 @@
 .pagina-clara .ns-doble,
 .pagina-clara .ns-ficha,
 .pagina-clara .ns-valor,
+.pagina-clara .ns-elenco__lado,
+.pagina-clara .ns-elenco__placa,
 .pagina-clara .pz-tarjeta,
 .pagina-clara .pz-panel,
 .pagina-clara .pz-cita,

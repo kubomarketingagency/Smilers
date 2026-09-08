@@ -6,8 +6,12 @@
   --gold-700: #B08D22;
   --gold-900: #7E621A;
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
-  --gradiente-oro-profundo: linear-gradient(100deg, #8F6F14 0%, #E2C558 32%, #B8942A 64%, #C9A62F 100%);
   --gradiente-oro-menudo: var(--gradiente-oro);
+  /* El sitio tiene DOS degradados de oro y solo dos: este para la piedra
+     clara y `--gradiente-oro` para la oscura. Habia un tercero
+     —`--gradiente-oro-profundo`, cuatro tonos a menos de diez puntos de
+     estos— que hacia exactamente el mismo trabajo, y por tenerlos los dos la
+     misma pieza salia de un oro o de otro segun por que hoja pasara. */
   --gradiente-oro-hondo: linear-gradient(100deg, #9C7A1C 0%, #DCBB4E 34%, #B08D22 66%, #C4A02B 100%);
   --gradiente-plata: linear-gradient(100deg, #8C8C8C 0%, #F2F2F2 32%, #C0C0C0 64%, #E4E4E4 100%);
 
@@ -17,6 +21,12 @@
      todo el sitio. Escritos en hexadecimal a proposito, para que no se cuele
      un `--gold-700` redefinido por el camino. */
   --oro-marca: #D4AF37;
+  /* El mismo oro para la piedra clara. El sitio tiene dos tonos planos y solo
+     dos: `--oro-marca` sobre piedra oscura y este sobre piedra clara, donde
+     el vivo se lava. Viven aqui y no en la guia de marca (19) porque esa hoja
+     solo la cargan Nosotros y Tratamientos, y el oro tiene que ser el mismo
+     tambien en la portada, la Galeria y las Preguntas. */
+  --oro-hondo: #A8801E;
   --oro-marca-degradado: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
   --silver-100: #ECECEC;
   --silver-300: #D6D6D6;

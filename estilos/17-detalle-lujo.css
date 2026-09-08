@@ -92,7 +92,9 @@
 
 .pagina-tratamientos .comparador-manija {
   background: #FCFBF8;
-  border: 1px solid var(--gold-200);
+  /* El filo iba en `--gold-200` (#E6C95F): un oro palido sobre una manija
+     casi blanca, que a 1px no se veia. Va en el mismo oro que su icono. */
+  border: 1px solid var(--oro-hondo);
   color: var(--nos-dorado-texto);
   box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
 }

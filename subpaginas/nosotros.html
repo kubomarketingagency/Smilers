@@ -23,13 +23,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Prata&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../estilos/01-variables.css?v=eb3414ba7b">
+  <link rel="stylesheet" href="../estilos/01-variables.css?v=fdefcae4a0">
   <link rel="stylesheet" href="../estilos/02-base.css?v=d68ca06a7e">
   <link rel="stylesheet" href="../estilos/03-botones.css?v=0f2bbaaa3c">
   <link rel="stylesheet" href="../estilos/04-navbar.css?v=5309fad584">
   <link rel="stylesheet" href="../estilos/05-hero.css?v=15ae295ccf">
-  <link rel="stylesheet" href="../estilos/06-secciones.css?v=1503d46c14">
-  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=abe71c9da3">
+  <link rel="stylesheet" href="../estilos/06-secciones.css?v=6b79a57503">
+  <link rel="stylesheet" href="../estilos/07-nosotros.css?v=71d6ba4909">
   <link rel="stylesheet" href="../estilos/08-especialidades.css?v=593b33cc06">
   <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=7109aa12e9">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=dd32ae6d1e">
@@ -37,16 +37,16 @@
   <link rel="stylesheet" href="../estilos/12-interiores.css?v=ecf78cecee">
   <link rel="stylesheet" href="../estilos/13-testimonios.css?v=7428acd300">
   <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=4581f11ee3">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=3cfa7fadd1">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=974a4595ff">
-  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=2547f1f60c">
-  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=a9355e6a38">
-  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=bd016e87af">
+  <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=31ac81c02b">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=42981ffed8">
+  <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=7b67b1002a">
   <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=a5248dd227">
-  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=1716e49853">
-  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=33b36fc889">
+  <link rel="stylesheet" href="../estilos/21-dinamico.css?v=176a0e3dfc">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=17a97a4972">
   <link rel="stylesheet" href="../estilos/23-cierres.css?v=467c63d41d">
-  <link rel="stylesheet" href="../estilos/24-nosotros-cine.css?v=4d22fecbfe">
+  <link rel="stylesheet" href="../estilos/24-nosotros-cine.css?v=7254b53a77">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-nosotros">
@@ -224,10 +224,8 @@
 
           <div class="ns-envoltura">
             <div class="ns-cine__texto">
-              <nav class="ns-ruta ns-ruta--filo" aria-label="Ruta de navegación">
-                <a href="../index.html">Inicio</a>
-                <span class="ns-ruta__sep" aria-hidden="true">&rsaquo;</span>
-                <span>Nosotros</span>
+              <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
+                <i class="fa-solid fa-house"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-house"></use></svg></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-right"></use></svg></i> <span>Nosotros</span>
               </nav>
 
               <p class="ns-rotulo ns-rotulo--claro"><i>01</i> Nuestra historia</p>
@@ -259,9 +257,9 @@
         <section class="ns-capa ns-capa--panel ns-capa--fundamentos ns-doble" id="fundamentos"
                  aria-labelledby="nsFundamentos">
           <span class="ns-fondo ns-fondo--madera" aria-hidden="true">
-            <img src="../imagenes/fondos/madera.webp?v=ab977d4e70"
-                 srcset="../imagenes/fondos/madera-960.webp?v=d18f2268bc 960w, ../imagenes/fondos/madera.webp?v=ab977d4e70 1920w"
-                 sizes="100vw" width="1920" height="1280" alt="" loading="lazy" decoding="async">
+            <img src="../imagenes/fondos/madera.webp?v=fdf72df3e6"
+                 srcset="../imagenes/fondos/madera-960.webp?v=211f2987e6 960w, ../imagenes/fondos/madera.webp?v=fdf72df3e6 1920w"
+                 sizes="100vw" width="1920" height="800" alt="" loading="lazy" decoding="async">
           </span>
 
           <div class="ns-envoltura">
@@ -330,10 +328,14 @@
         </section>
 
         <section class="ns-capa ns-capa--elenco" id="equipo" aria-labelledby="nsEquipo">
+          <span class="ns-fondo ns-fondo--elenco-marmol" aria-hidden="true">
+            <img src="../imagenes/fondos/marmol-blanco.webp?v=7a0a399eb7" width="1920" height="800"
+                 alt="" loading="lazy" decoding="async">
+          </span>
           <span class="ns-fondo ns-fondo--elenco" aria-hidden="true">
-            <img src="../imagenes/fondos/madera.webp?v=ab977d4e70"
-                 srcset="../imagenes/fondos/madera-960.webp?v=d18f2268bc 960w, ../imagenes/fondos/madera.webp?v=ab977d4e70 1920w"
-                 sizes="50vw" width="1920" height="1280" alt="" loading="lazy" decoding="async">
+            <img src="../imagenes/fondos/madera.webp?v=fdf72df3e6"
+                 srcset="../imagenes/fondos/madera-960.webp?v=211f2987e6 960w, ../imagenes/fondos/madera.webp?v=fdf72df3e6 1920w"
+                 sizes="50vw" width="1920" height="800" alt="" loading="lazy" decoding="async">
           </span>
           <div class="ns-envoltura">
             <div class="ns-elenco" data-elenco>
@@ -356,7 +358,10 @@
                            sizes="(min-width: 992px) 32vw, 84vw" width="900" height="600"
                            alt="Especialista de ortodoncia de Smilers Dental Clinique" loading="lazy" decoding="async">
                     </span>
-                    <span class="ns-elenco__nombre">Dr. Nombre Apellido</span>
+                    <span class="ns-elenco__placa">
+                      <span class="ns-elenco__nombre">Dr. Nombre Apellido</span>
+                      <span class="ns-elenco__area">Ortodoncia</span>
+                      </span>
                   </li>
 
                   <li class="ns-elenco__retrato"
@@ -370,7 +375,10 @@
                            sizes="(min-width: 992px) 32vw, 84vw" width="900" height="1350"
                            alt="Especialista de implantología y cirugía de Smilers Dental Clinique" loading="lazy" decoding="async">
                     </span>
-                    <span class="ns-elenco__nombre">Dra. Nombre Apellido</span>
+                    <span class="ns-elenco__placa">
+                      <span class="ns-elenco__nombre">Dra. Nombre Apellido</span>
+                      <span class="ns-elenco__area">Implantología y cirugía</span>
+                      </span>
                   </li>
 
                   <li class="ns-elenco__retrato"
@@ -384,7 +392,10 @@
                            sizes="(min-width: 992px) 32vw, 84vw" width="900" height="600"
                            alt="Especialista de rehabilitación oral de Smilers Dental Clinique" loading="lazy" decoding="async">
                     </span>
-                    <span class="ns-elenco__nombre">Dra. Nombre Apellido</span>
+                    <span class="ns-elenco__placa">
+                      <span class="ns-elenco__nombre">Dra. Nombre Apellido</span>
+                      <span class="ns-elenco__area">Rehabilitación oral</span>
+                      </span>
                   </li>
 
                   <li class="ns-elenco__retrato"
@@ -398,7 +409,10 @@
                            sizes="(min-width: 992px) 32vw, 84vw" width="900" height="1350"
                            alt="Especialista de odontopediatría de Smilers Dental Clinique" loading="lazy" decoding="async">
                     </span>
-                    <span class="ns-elenco__nombre">Dr. Nombre Apellido</span>
+                    <span class="ns-elenco__placa">
+                      <span class="ns-elenco__nombre">Dr. Nombre Apellido</span>
+                      <span class="ns-elenco__area">Odontopediatría</span>
+                      </span>
                   </li>
                 </ul>
 
@@ -409,8 +423,8 @@
               </div>
 
               <div class="ns-elenco__lado">
-                <p class="ns-rotulo"><i>03</i> Nuestro equipo</p>
-                <h2 class="ns-titulo" id="nsEquipo">
+                <p class="ns-rotulo ns-rotulo--claro"><i>03</i> Nuestro equipo</p>
+                <h2 class="ns-titulo ns-titulo--claro" id="nsEquipo">
                   El equipo detrás de <em>tu nueva sonrisa</em>.
                 </h2>
 

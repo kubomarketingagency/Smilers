@@ -199,41 +199,81 @@
    puede llegar sin ellos, y por eso la mascara aprieta todo lo que aguanta
    antes de empezar a comerse hombros y pelo.
    --------------------------------------------------------------------------- */
-/* La media pantalla de madera. Va en la capa y no en la rejilla porque tiene
-   que llegar de canto a canto de la ventana: la rejilla vive dentro de
-   `.ns-envoltura`, que esta centrada y con aire a los lados. */
+/* Las dos mitades, y cual va en cada lado.
+
+   El marmol queda debajo del profesional y la madera debajo de lo que se
+   cuenta de el. No es indiferente cual va donde: lo que recorta a la persona
+   no es un recorte de verdad sino una mascara que apaga su foto hacia los
+   cantos, asi que la figura acaba fundiendose en la superficie que tenga
+   detras. Sobre la veta de la madera esa fundida se nota —la veta cruza por
+   donde deberia estar el hombro—; sobre marmol, que es una superficie de
+   grano fino y tono parejo, no. Y de paso la mitad oscura pasa a ser la del
+   texto, que es donde la ficha ya era negra.
+
+   Las dos van en la capa y no en la rejilla porque tienen que llegar de canto
+   a canto de la ventana: la rejilla vive dentro de `.ns-envoltura`, que esta
+   centrada y con aire a los lados. */
+.ns-fondo--elenco-marmol {
+  inset: 0;
+  z-index: 0;
+}
+.ns-fondo--elenco-marmol img {
+  opacity: 1;
+  filter: brightness(1.03) saturate(.96);
+  transform: none;
+}
+/* Sobre el marmol no hay velo que poner: no hay nada escrito encima. Solo un
+   aclarado por la izquierda, para que el profesional se despegue del fondo, y
+   una sombra de canto por la derecha que cose la piedra con la madera. */
+.ns-fondo--elenco-marmol::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(58% 66% at 26% 38%, rgba(255, 255, 255, .58), transparent 72%),
+    linear-gradient(90deg, rgba(255, 253, 249, .34) 0%, rgba(255, 253, 249, .1) 40%, transparent 54%);
+}
+
 .ns-fondo--elenco {
-  right: 50%;
+  left: 50%;
   z-index: 0;
 }
 .ns-fondo--elenco img {
   opacity: 1;
-  filter: saturate(1.06) brightness(.88);
+  filter: saturate(1.06) brightness(.94);
   transform: none;
 }
 /* El velo de la madera y el filo de la junta, en la misma pieza: el filo es
-   el borde derecho de este pseudo, que cae justo en la mitad. */
+   el borde izquierdo de este pseudo, que cae justo en la mitad. Va a 3px y no
+   a 2: es la unica costura de la pagina que separa dos piedras a plena luz
+   —marmol claro contra madera oscura— y a 2px se perdia contra el contraste.
+   Los filos finos de esta pagina siguen a 1px; este manda por ser la juntura,
+   no por ser un adorno mas. */
 .ns-fondo--elenco::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-right: 2px solid transparent;
+  border-left: 3px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   background:
-    radial-gradient(84% 66% at 42% 40%, rgba(212, 175, 55, .12), transparent 66%),
-    linear-gradient(90deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .08) 58%, rgba(9, 7, 5, .2) 100%);
+    radial-gradient(84% 66% at 58% 40%, rgba(212, 175, 55, .12), transparent 66%),
+    linear-gradient(270deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .1) 58%, rgba(9, 7, 5, .34) 100%);
 }
-/* Apilado, la madera pasa a ser la mitad de arriba y el filo se tumba. */
+/* Apilado, el marmol es la mitad de arriba, la madera la de abajo, y el filo
+   se tumba en la juntura. */
 @media (max-width: 991.98px) {
   .ns-fondo--elenco {
-    right: 0;
-    bottom: 52%;
+    left: 0;
+    top: 48%;
   }
   .ns-fondo--elenco::after {
-    border-right: 0;
-    border-bottom: 2px solid transparent;
+    border-left: 0;
+    border-top: 3px solid transparent;
     border-image: var(--oro-marca-degradado) 1;
-    background: linear-gradient(180deg, rgba(9, 7, 5, .42) 0%, rgba(9, 7, 5, .24) 100%);
+    background: linear-gradient(180deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .44) 100%);
+  }
+  .ns-fondo--elenco-marmol::after {
+    background: radial-gradient(66% 44% at 50% 26%, rgba(255, 255, 255, .5), transparent 74%);
   }
 }
 /* Media pantalla para el profesional y media para lo que se cuenta de el.
@@ -258,8 +298,19 @@
   padding: 0;
   list-style: none;
 }
+/* El alto del marco lo manda la ficha de al lado, no la ventana.
+
+   Iba a `min(66svh, 600px)` —600px en una pantalla normal— mientras que la
+   columna de texto mide entre 365 y 390 haga lo que haga la ventana, porque
+   su alto lo pone su contenido y no la pantalla. Con eso el retrato sobresalia
+   118px por arriba y por abajo de la ficha y las dos mitades no cuadraban.
+   Estos 384 son los que igualan a la columna de texto; se midieron a 1920,
+   1440, 1366 y 1280, y en las cuatro la ficha cae entre 365 y 390.
+
+   Y la figura no encoge por ello: lo que se retira del marco es el hueco que
+   ocupaba la placa, que pasa a ir encima de la foto. */
 @media (min-width: 992px) {
-  .ns-elenco__retratos { height: min(66svh, 600px); }
+  .ns-elenco__retratos { height: min(52svh, 384px); }
 }
 
 /* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
@@ -297,6 +348,8 @@
 .ns-elenco__lado > *:last-child { margin-bottom: 0; }
 .ns-elenco__retrato {
   grid-area: 1 / 1;
+  /* El bloque que sostiene a la placa, que va absoluta sobre la foto. */
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -310,34 +363,103 @@
   display: block;
   flex: 1 1 auto;
   min-height: 0;
+  /* La figura va escalada dentro del marco, y el marco tiene que recortar lo
+     que se salga: sin esto la fundida de abajo cae encima de la placa. */
+  overflow: hidden;
 }
 .ns-elenco__foto img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
-  filter: saturate(1.04) contrast(1.14) brightness(1.12);
-  /* Mas apretada y con caida mas seca que antes: el ovalo se estrecha —una
-     persona es alta, no ancha— y lo que sobra se apaga en la mitad de
-     recorrido. Lo que se gana es que el consultorio del fondo desaparece en
-     la madera; lo que se paga es que la mascara pasa cerca del hombro. */
-  -webkit-mask-image: radial-gradient(37% 52% at 50% 36%,
-      #000 26%, rgba(0, 0, 0, .66) 44%, rgba(0, 0, 0, .14) 62%, transparent 76%);
-          mask-image: radial-gradient(37% 52% at 50% 36%,
-      #000 26%, rgba(0, 0, 0, .66) 44%, rgba(0, 0, 0, .14) 62%, transparent 76%);
+  object-position: center 16%;
+  /* La figura, mas grande dentro del mismo marco. El marco no crece —lo
+     limita la tarjeta de al lado, y una foto mas alta que ella descuadra la
+     fila—; quien crece es la persona dentro de el. De ahi la escala, con el
+     origen a la altura de la cara para que lo que se sale por abajo sea
+     cintura y no cabeza. */
+  transform: scale(1.2);
+  transform-origin: 50% 38%;
+  /* Sobre marmol claro ya no hace falta levantar la foto: el brillo de mas
+     estaba para despegarla de la madera. Lo que sigue haciendo falta es el
+     contraste, que es lo que separa a la persona de la pared del fondo. */
+  filter: saturate(1.04) contrast(1.12) brightness(1.02);
+  /* Y la mascara se abre. Antes apretaba todo lo que aguantaba porque tenia
+     que borrar el consultorio del fondo contra una madera oscura; contra el
+     marmol el fondo de la foto ya es casi del color de la piedra, asi que
+     puede soltarse: el ovalo crece de 37x52 a 46x63 y la caida se lleva al
+     final del recorrido. Se gana hombro, brazo y torso; la fundida sigue
+     terminando dentro del marco. */
+  -webkit-mask-image: radial-gradient(38% 37% at 50% 45%,
+      #000 42%, rgba(0, 0, 0, .76) 62%, rgba(0, 0, 0, .22) 80%, transparent 94%);
+          mask-image: radial-gradient(38% 37% at 50% 45%,
+      #000 42%, rgba(0, 0, 0, .76) 62%, rgba(0, 0, 0, .22) 80%, transparent 94%);
 }
-/* El nombre y las flechas viven ya sobre la madera, no sobre el marmol. */
+
+/* La placa del nombre.
+
+   Es nueva y hace falta desde que el retrato vive sobre marmol: el nombre iba
+   en blanco porque debajo tenia madera, y sobre piedra clara habria
+   desaparecido. En vez de girarlo a negro —que lo dejaria flotando sobre la
+   fundida de la foto, sin nada que lo sostenga— se le pone su propia piedra
+   negra debajo, y con ella cabe la especialidad, que hasta ahora solo se leia
+   en la ficha de al lado.
+
+   Tres grosores de oro en tres centimetros, y cada uno dice algo: el filo de
+   arriba a 2px porque es el que corta la fundida de la foto y cierra la
+   figura, el contorno a 1px porque solo dibuja la caja, y el subrayado de la
+   especialidad a 1px pero al 40% porque es el detalle mas pequeno de los
+   tres. */
+.ns-elenco__placa {
+  /* Va encima del pecho y no debajo del marco: asi el retrato se lleva el alto
+     entero de la columna en vez de repartirlo, que es lo que le devuelve el
+     tamano a la figura despues de bajar el marco. Y es como se presenta un
+     retrato: el rotulo sobre la persona, no colgando de ella. */
+  position: absolute;
+  left: 50%;
+  bottom: clamp(.5rem, 1.4vw, 1.1rem);
+  z-index: 2;
+  transform: translateX(-50%);
+  display: block;
+  width: max-content;
+  max-width: calc(100% - clamp(1rem, 4vw, 3rem));
+  margin: 0;
+  padding: clamp(.5rem, 1vw, .8rem) clamp(1rem, 2.2vw, 1.9rem) clamp(.55rem, 1.1vw, .85rem);
+  border: 1px solid rgba(212, 175, 55, .34);
+  background: rgba(10, 9, 8, .9);
+  box-shadow: 0 18px 40px rgba(20, 16, 8, .28);
+  text-align: center;
+}
+/* El filo de 2px va en un pseudo y no en `border-top`: `border-image` con el
+   degradado de marca pinta los cuatro cantos a la vez, asi que no se pueden
+   tener dos grosores distintos en la misma caja por esa via. */
+.ns-elenco__placa::before {
+  content: '';
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 2px;
+  background: var(--oro-marca-degradado);
+}
 .ns-elenco__nombre {
   display: block;
-  margin-top: clamp(.2rem, .8vw, .6rem);
   font-family: var(--fuente-titulo);
   font-weight: 400;
   font-size: clamp(1.05rem, 1.7vw, 1.4rem);
   line-height: 1.25;
   letter-spacing: .03em;
-  text-align: center;
   color: #FFFFFF;
+}
+.ns-elenco__area {
+  display: block;
+  margin-top: .35rem;
+  padding-top: .35rem;
+  border-top: 1px solid rgba(212, 175, 55, .4);
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: clamp(.6rem, .78vw, .68rem);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gm-oro-vivo);
 }
 
 .ns-elenco__puntos {
@@ -349,7 +471,9 @@
   width: 9px;
   height: 9px;
   padding: 0;
-  border: 1px solid var(--gm-oro-hondo);
+  /* El oro hondo es el de la piedra clara, y estos puntos viven ya sobre la
+     madera: ahi el que se ve es el vivo. */
+  border: 1px solid var(--gm-borde-vivo);
   border-radius: 50%;
   background: transparent;
   cursor: pointer;
@@ -562,7 +686,10 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   font-weight: 400;
   color: #FFFFFF;
 }
-.banda-cta--cine { --oro-vivo-degradado: var(--gradiente-oro); }
+.banda-cta--cine {
+  --oro-vivo-degradado: var(--oro-marca-degradado);
+  --oro-plano: var(--oro-marca);
+}
 .banda-cta--cine .ns-cifras {
   margin-top: 0;
   border-color: rgba(255, 255, 255, .16);
@@ -630,7 +757,7 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 
   /* --- el hero --- */
   .ns-cine__texto { max-width: none; }
-  .ns-cine__texto > .ns-ruta { margin-bottom: .7rem; }
+  .ns-cine__texto > .breadcrumb-personalizado { margin-bottom: .7rem; }
 
   /* Sin dos mitades que repartir, el velo pesa parejo: el texto va sobre la
      foto entera y no solo sobre su lado izquierdo. */
@@ -678,7 +805,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-elenco { gap: .8rem; }
   .ns-elenco__retratos { height: 34svh; }
   .ns-elenco__flecha { width: 34px; }
-  .ns-elenco__nombre { margin-top: .1rem; font-size: 1rem; }
+  .ns-elenco__placa { padding: .4rem .9rem .45rem; }
+  .ns-elenco__nombre { font-size: 1rem; }
+  .ns-elenco__area { margin-top: .25rem; padding-top: .25rem; font-size: .56rem; }
   .ns-elenco__lado .ns-rotulo { margin-bottom: .4rem; }
   .ns-elenco .ns-ficha { margin-top: .7rem; padding: .8rem .9rem; gap: .5rem; }
   #nsCine .ns-ficha__texto { font-size: .82rem; line-height: 1.55; }
@@ -709,7 +838,68 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-cine__cinta .crsl__toma img { transition: none; }
 }
 
-.ns-cine__texto > .ns-ruta { margin-bottom: clamp(.9rem, 2vw, 1.6rem); }
+/* ---------------------------------------------------------------------------
+   El indicador de pagina.
+
+   Es la MISMA pieza que en Galeria, Tratamientos y FAQ —`.breadcrumb-
+   personalizado`, con su casita y su galon— y no una version propia. Antes
+   aqui vivia un `.ns-ruta--filo` que se le parecia en la letra pero no en el
+   resto: sin iconos, con un `>` tipografico en vez del galon y con un filo de
+   oro debajo que ninguna otra pagina llevaba. Se ve una vez por pagina y en
+   las cuatro tiene que ser la misma.
+
+   Lo unico que se escribe aqui es lo que pide la piedra de debajo: en las
+   otras tres el indicador cae sobre madera quieta y aqui sobre un carrusel de
+   fotos de consulta, con batas blancas pasando cada cinco segundos. De ahi la
+   sombra: el velo solo no basta contra un fondo que cambia.
+   --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   Los grosores del oro.
+
+   Toda la pagina llevaba sus filos a 1px y a la misma opacidad, con lo que
+   las cuatro piezas de una pantalla pesaban igual aunque no dijeran lo mismo.
+   Aqui se les da una escala, y lo que decide el grosor es la jerarquia, no el
+   gusto:
+
+     3px  la juntura de las dos piedras del elenco. Es la unica linea de la
+          pagina que separa dos superficies, no dos cajas.
+     2px  el filo de arriba de la pieza que lleva la afirmacion principal de
+          su pantalla: las dos fichas de Fundamentos, la ficha del
+          especialista y la placa de su nombre.
+     1px  el contorno de todo lo demas.
+     1px al 32%  los remates de dentro —subrayados, separadores—, que estaban
+          al 50% y competian con el contorno que los rodea.
+
+   Los filos de 2px van en el `::before` que estas piezas ya tenian, no en el
+   `border`: asi el degradado sigue siendo el de marca y el contorno se queda
+   entero a 1px por los cuatro cantos. */
+.pagina-nosotros .ns-mvo__ficha::before,
+.pagina-nosotros .ns-ficha::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--oro-marca-degradado);
+  opacity: .82;
+  pointer-events: none;
+}
+.pagina-nosotros .ns-valor::before { opacity: .32; }
+
+.ns-cine__texto > .breadcrumb-personalizado { margin-bottom: clamp(.9rem, 2vw, 1.6rem); }
+
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado,
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado a {
+  color: rgba(255, 255, 255, .7);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .7);
+}
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado span { color: #FFFFFF; }
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado i.fa-house {
+  color: rgba(255, 255, 255, .7);
+}
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado a:hover,
+.pagina-nosotros .ns-cine__texto .breadcrumb-personalizado a:focus-visible {
+  border-bottom-color: rgba(212, 175, 55, .5);
+}
 
 /* `.banda-cta` es un flex centrado, y ahi el envoltorio no estira solo. */
 .pagina-clara .banda-cta--cine > .ns-envoltura { flex: 1 1 auto; }

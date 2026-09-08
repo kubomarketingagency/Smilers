@@ -39,7 +39,7 @@
   --gold-500: #B8942A;
   --gold-700: #9C7A1C;
   --hairline-oro: rgba(212, 175, 55, .55);
-  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gradiente-oro: var(--gradiente-oro-hondo);
   --gradiente-oro-menudo: var(--gradiente-oro-hondo);
   --hairline-suave: rgba(122, 108, 82, .16);
   --texto: #2E2E2E;
@@ -58,11 +58,11 @@
 }
 
 .seccion-clara.fondo-perla .titulo-seccion [class*="texto-"] {
-  background: var(--gradiente-oro-profundo);
+  background: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #B8942A;
+  color: var(--oro-hondo);
   font-weight: 500;
 }
 

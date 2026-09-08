@@ -175,9 +175,13 @@
   width: clamp(62px, 5.8vw, 84px);
   aspect-ratio: 1;
   margin-bottom: clamp(.9rem, 1.6vw, 1.25rem);
-  border: 1px solid var(--nos-linea);
+  /* Dos grosores: el aro de fuera a 2px porque es lo que se ve de lejos —una
+     fila de cinco circulos— y el de dentro a 1px, que solo lo dobla. */
+  border: 2px solid var(--nos-linea);
   border-radius: 50%;
-  color: var(--nos-dorado);
+  /* El icono en el oro que le toque a la piedra de debajo: sobre el marmol de
+     Tratamientos el vivo se lavaba y el paso del proceso se quedaba sin oro. */
+  color: var(--oro-plano, var(--nos-dorado));
   font-size: clamp(1.4rem, 2vw, 1.85rem);
 }
 .pz-medallon__aro::after {

@@ -5,9 +5,11 @@
   --gm-superficie: #FFFFFF;
   --gm-negro:      #0A0A0A;
   --gm-negro-2:    #111111;
-  --gm-oro:        #D4AF37;
-  --gm-oro-vivo:   #D4AF37;
-  --gm-oro-hondo:  #A8801E;
+  /* Los mismos dos tonos del 01, no una copia: escritos aqui a mano se
+     desincronizaban con los de la portada y los de la Galeria. */
+  --gm-oro:        var(--oro-marca);
+  --gm-oro-vivo:   var(--oro-marca);
+  --gm-oro-hondo:  var(--oro-hondo);
   --gm-texto:      #2B2B2B;
   --gm-texto-2:    #5A554E;
   --gm-borde:      rgba(212, 175, 55, .34);

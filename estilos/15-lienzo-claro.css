@@ -4,7 +4,10 @@
   --nos-texto: #2E2E2E;
   --nos-dorado: #B8942A;
   --nos-dorado-claro: #D4AF37;
-  --nos-dorado-texto: #9C7A1C;
+  /* Era #9C7A1C, un tercer oro que no usaba nadie mas: lo pintaba la pregunta
+     abierta del acordeon de FAQ y el icono de la manija del comparador, y en
+     las dos el resto de la pagina ya iba en #A8801E. */
+  --nos-dorado-texto: var(--oro-hondo);
   --nos-linea: rgba(212, 175, 55, .55);
   --texto: #2E2E2E;
   --texto-suave: #2E2E2E;
@@ -28,7 +31,7 @@
   --turquesa-claro: rgba(10, 10, 10, .12);
   --acento-legible: #9C7A1C;
   --acento-legible-hover: #0A0A0A;
-  --gradiente-oro: var(--gradiente-oro-profundo);
+  --gradiente-oro: var(--gradiente-oro-hondo);
   --gradiente-oro-menudo: var(--gradiente-oro-hondo);
   --neutral-300: #6F6F6F;
   background: var(--nos-blanco);
@@ -258,6 +261,13 @@
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado,
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado a { color: rgba(255, 255, 255, .7); }
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado span { color: #FFFFFF; }
+/* La casita se quedaba en el gris #4A4A4A que le toca sobre marmol: ese gris
+   sobre la madera del hero no se ve. Hace falta nombrarla aparte porque la
+   linea de arriba solo alcanza al `nav` y a su enlace, y `i.fa-house` pesa
+   mas (0,2,1) que cualquiera de las dos. Se midio en las tres paginas. */
+.pagina-clara .banner-pagina--hero .breadcrumb-personalizado i.fa-house {
+  color: rgba(255, 255, 255, .7);
+}
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado a:hover,
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado a:focus-visible {
   border-bottom-color: rgba(212, 175, 55, .5);
@@ -287,11 +297,11 @@
   color: var(--nos-negro);
 }
 .pagina-clara .titulo-seccion [class*="texto-"] {
-  background: var(--gradiente-oro-profundo);
+  background: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #B8942A;
+  color: var(--oro-hondo);
   font-weight: 500;
 }
 
@@ -1011,7 +1021,12 @@
   justify-items: center;
   gap: clamp(.9rem, 2vw, 1.5rem);
   background: #050505;
-  animation: ns-umbral-sale .85s cubic-bezier(.65, 0, .25, 1) 2s both;
+  /* El reloj del umbral, y esta es la cuenta entera: la palabra entra en
+     .8s, el filo la alcanza en .9s, y a 1s empieza a irse con .6s de
+     desvanecido. Total 1,6s desde que se pincha hasta que la pagina esta
+     entera. Antes eran 2,85s —2s parado mas .85s de salida— y en la segunda
+     visita eso ya no es una entrada, es una espera. */
+  animation: ns-umbral-sale .6s cubic-bezier(.65, 0, .25, 1) 1s both;
 }
 .ns-umbral::before {
   content: "";
@@ -1024,22 +1039,35 @@
   margin: 0;
   font-family: var(--fuente-titulo);
   font-weight: 400;
+  max-width: min(92vw, 20ch);
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
   font-size: clamp(2.1rem, 8.5vw, 6.4rem);
-  line-height: 1;
+  line-height: 1.14;
   letter-spacing: .14em;
   text-transform: uppercase;
+  /* Centrada y equilibrada. «Preguntas frecuentes» es la unica de las cuatro
+     que no cabe en una linea, y sin esto la segunda quedaba pegada a la
+     izquierda debajo de la primera: la caja iba centrada por la rejilla, pero
+     el texto de dentro no. El `balance` reparte las dos lineas en vez de
+     llenar la primera hasta el borde. */
+  text-align: center;
+  text-wrap: balance;
   color: var(--oro-marca);
   background-image: var(--oro-marca-degradado);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ns-umbral-entra 1.5s cubic-bezier(.16, 1, .3, 1) both;
+  animation: ns-umbral-entra .8s cubic-bezier(.16, 1, .3, 1) both;
 }
+/* Dos palabras largas piden un cuerpo menor que una sola: a 8,5vw
+   «FRECUENTES» sola ya medía casi el ancho de la ventana, y con el
+   interletrado de .14em se salia. */
+.pagina-faq .ns-umbral__palabra { font-size: clamp(1.6rem, 6.2vw, 4.4rem); }
 .ns-umbral__filo {
   width: clamp(110px, 20vw, 260px);
   height: 1px;
   background: var(--oro-marca-degradado);
-  animation: ns-umbral-filo 1.5s cubic-bezier(.16, 1, .3, 1) .18s both;
+  animation: ns-umbral-filo .78s cubic-bezier(.16, 1, .3, 1) .12s both;
 }
 @keyframes ns-umbral-entra {
   from { opacity: 0; transform: translateY(15px); letter-spacing: .38em; }

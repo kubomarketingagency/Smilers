@@ -223,29 +223,10 @@
   filter: drop-shadow(0 6px 20px rgba(0, 0, 0, .78))
           drop-shadow(0 1px 3px rgba(0, 0, 0, .55));
 }
-.ns-ruta--filo {
-  display: inline-flex;
-  align-items: center;
-  gap: .7rem;
-  padding: 0 clamp(.6rem, 1.4vw, 1.2rem) clamp(.5rem, .9vw, .75rem);
-  border-bottom: 1px solid var(--gm-borde-vivo);
-  /* La misma letra que el indicador de Galeria, Tratamientos y FAQ: alli es
-     `.breadcrumb-personalizado` y aqui `.ns-ruta`, pero el lector ve una sola
-     pieza y tiene que leerse igual en las cuatro. Lo unico que se queda
-     distinto es el filo de oro de debajo, que es de la portada de cine. */
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: clamp(.72rem, .85vw, .78rem);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .72);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, .7);
-}
-.ns-ruta--filo a { color: rgba(255, 255, 255, .72); text-decoration: none; }
-.ns-ruta--filo a:hover,
-.ns-ruta--filo a:focus-visible { color: var(--gm-oro-vivo); }
-.ns-ruta--filo .ns-ruta__sep { color: var(--gm-oro-vivo); }
-.ns-ruta--filo > span:last-child { color: var(--gm-oro-vivo); }
+/* Aqui vivia `.ns-ruta--filo`, el indicador propio de la portada de Nosotros.
+   Se retira entero: esa pagina usa ya el mismo `.breadcrumb-personalizado`
+   que las otras tres, y lo que le hace falta de mas —la sombra contra el
+   carrusel— se lo pone el 24. */
 
 /* "TRATAMIENTOS" tiene doce letras y "NOSOTROS" ocho: la escala baja
    para que la palabra no se salga de la pantalla. */
@@ -409,8 +390,14 @@
   margin-bottom: 0;
   color: #FFFFFF;
 }
-/* Dentro de la tarjeta manda el oro vivo, no el hondo de la piedra clara. */
-.pagina-clara .ns-cifras-sec .ns-cta { --oro-vivo-degradado: var(--gradiente-oro); }
+/* Dentro de la tarjeta manda el oro vivo, no el hondo de la piedra clara.
+   Y va el de marca, no `--gradiente-oro`: en una pagina clara esa variable ya
+   viene redefinida al hondo desde el 15, asi que apuntando ahi la tarjeta se
+   quedaba con el mismo oro del que intentaba salir. */
+.pagina-clara .ns-cifras-sec .ns-cta {
+  --oro-vivo-degradado: var(--oro-marca-degradado);
+  --oro-plano: var(--oro-marca);
+}
 .ns-cifras-sec .ns-boton { color: var(--oro-marca); }
 
 /* Y el hover repetido aqui. La linea de arriba y `.ns-boton:hover` del 20
@@ -968,13 +955,20 @@
 
 /* La seccion es corta y el texto cae justo sobre la foto, asi que el lavado
    claro entra antes que en la de cifras. Y se retira con ella: donde ya no
-   hay foto no hay nada que lavar. */
+   hay foto no hay nada que lavar.
+
+   Carga mas que antes, y por una razon concreta: desde que el nombre de cada
+   paso va en oro —que era lo que le faltaba a esta seccion— hay tipografia
+   dorada pequena y muy espaciada cayendo justo sobre la banda donde la foto
+   se ve entera. El oro sobre una consulta con batas blancas y sombras no se
+   lee; sobre este lavado si. El parrafo de debajo, que va en tinta, tampoco
+   perdia nada por tener mas piedra debajo. */
 .pz-proceso .ns-fondo--degradado::after {
   background: linear-gradient(180deg,
-    rgba(250, 248, 245, .22) 0%,
-    rgba(250, 248, 245, .48) 36%,
-    rgba(250, 248, 245, .56) 60%,
-    rgba(250, 248, 245, .24) 82%,
+    rgba(250, 248, 245, .34) 0%,
+    rgba(250, 248, 245, .70) 30%,
+    rgba(250, 248, 245, .76) 58%,
+    rgba(250, 248, 245, .34) 82%,
     transparent 93%);
 }
 

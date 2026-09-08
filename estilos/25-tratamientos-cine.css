@@ -212,46 +212,39 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   height: 100%;
   object-fit: cover;
 }
+/* El velo. La piedra que hay ahora es hormigon claro —177 de gris de media,
+   plano y frio—, asi que aqui no hay nada que aclarar: lo unico que hace
+   falta es quitarle el frio para que no pelee con el oro. Por eso el velo va
+   en tierra tostada y a opacidad baja, y no en negro: un velo negro sobre una
+   piedra clara no da piedra oscura, da gris sucio, y ademas borraria el grano
+   que es todo lo que esta superficie tiene.
+
+   El resultado es una alternancia de dos claros —crema a 238 y hormigon a
+   170— que se distinguen sin que ninguno de los dos sea un agujero negro en
+   mitad de la pagina. */
 .trat-piedra::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .07), transparent 62%),
-    linear-gradient(180deg, rgba(8, 8, 8, .58) 0%, rgba(8, 8, 8, .34) 45%, rgba(8, 8, 8, .62) 100%);
+    radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .10), transparent 62%),
+    linear-gradient(180deg,
+      rgba(120, 96, 56, .12) 0%, rgba(120, 96, 56, .05) 44%, rgba(96, 78, 48, .14) 100%);
 }
 
-/* Dentro de un bloque de piedra el panel no puede llevar su propio marmol:
-   piedra sobre piedra no se distingue. Se queda en negro translucido, que
-   deja ver la veta de detras y separa igual. */
-.pagina-tratamientos .bloque-tratamiento--piedra .pz-panel .tarjeta-piedra { display: none; }
-.pagina-tratamientos .bloque-tratamiento--piedra .pz-panel {
-  background: rgba(8, 7, 6, .52);
-  -webkit-backdrop-filter: blur(3px);
-          backdrop-filter: blur(3px);
-  border-color: rgba(212, 175, 55, .42);
-  box-shadow: inset 0 1px 0 rgba(212, 175, 55, .2), 0 26px 60px rgba(6, 6, 6, .38);
+/* Las dos costuras. La piedra clara y el marmol claro se tocan sin escalon,
+   asi que la juntura la marca un filo de oro —y con dos grosores, no uno: el
+   de arriba a 2px porque es el que anuncia el cambio de superficie, el de
+   abajo a 1px porque solo lo cierra. */
+.pagina-tratamientos .bloque-tratamiento--piedra {
+  border-top: 2px solid rgba(212, 175, 55, .55);
+  border-bottom: 1px solid rgba(212, 175, 55, .3);
 }
-.pagina-tratamientos .bloque-tratamiento--piedra .comparador-nota { color: rgba(255, 255, 255, .58); }
 
-@media (max-width: 767.98px) {
-  /* En movil el bloque es un acordeon cerrado: la piedra solo tiene que
-     vestir el titulo, asi que basta con que llegue hasta donde llega el
-     bloque, sin la altura de pantalla que no existe aqui. */
-  .trat-piedra::after {
-    background: linear-gradient(180deg, rgba(8, 8, 8, .62) 0%, rgba(8, 8, 8, .5) 100%);
-  }
-
-  /* Y el nombre del acordeon, que en la pagina clara va en negro, sobre la
-     piedra no se veria. Es lo unico de estos bloques que vive FUERA del
-     panel oscuro, asi que es lo unico que hay que girar a blanco. */
-  .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-nombre {
-    color: #FFFFFF;
-  }
-  .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-boton {
-    border-top-color: rgba(212, 175, 55, .34);
-  }
-}
+/* El panel se queda como en los bloques de marmol: su tarjeta de piedra negra
+   ya lo separa de lo que tenga debajo, y sobre hormigon claro separa incluso
+   mejor que sobre crema. Antes habia aqui una version en negro translucido
+   porque la piedra era oscura; con la piedra clara sobra. */
 
 /* ---------------------------------------------------------------------------
    Sin animaciones.

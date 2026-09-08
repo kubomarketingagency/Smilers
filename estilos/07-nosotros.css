@@ -853,9 +853,11 @@
 .pn-escena {
   --gold-500: #D4AF37;
   --gold-700: #B08D22;
-  --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
+  /* El oro de marca, escrito una sola vez en el 01: aqui habia una copia
+     literal de la misma formula. */
+  --gradiente-oro: var(--oro-marca-degradado);
   --gradiente-oro-menudo: var(--gradiente-oro);
-  --oro-vivo-degradado: var(--gradiente-oro);
+  --oro-vivo-degradado: var(--oro-marca-degradado);
   position: relative;
   z-index: 1;
 }
@@ -1162,12 +1164,21 @@
   .pn-escena--viva .ns-clave { font-size: .66rem; margin-bottom: .18rem; }
   .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .83rem; line-height: 1.42; }
 
-  .pn-escena--viva .nosotros-acciones { gap: .5rem; }
+  /* Los dos botones, uno debajo del otro. En el telefono el texto de esta
+     pantalla acaba antes de llegar al filo del pin y debajo quedaba una
+     franja vacia, con los dos botones apretados en media fila cada uno y el
+     rotulo cortado a .61rem para que cupieran. Apilados ocupan ese hueco, se
+     leen a un cuerpo normal y cada uno recibe el dedo entero. */
+  .pn-escena--viva .nosotros-acciones {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .55rem;
+  }
   .pn-escena--viva .nosotros-acciones .btn {
-    width: auto;
-    flex: 1 1 auto;
-    padding: .78rem .9rem;
-    font-size: .61rem;
+    width: 100%;
+    flex: 0 0 auto;
+    padding: .82rem 1rem;
+    font-size: .68rem;
   }
 
   /* La pantalla negra: los cuatro pilares y las cuatro cifras, en dos
@@ -1224,5 +1235,23 @@
   .pn-escena--viva .nosotros-sedes { margin: .55rem 0 .6rem; }
   .pn-escena--viva .nosotros-sedes li { padding: .32rem 0; }
 
-  .pn-escena--viva .nosotros-acciones .btn { padding: .66rem .8rem; font-size: .58rem; }
+  /* Los botones siguen apilados: lo que se aprieta aqui es su relleno, no su
+     disposicion. Se midio cuanto sobra por debajo de ellos dentro del pin —el
+     filo del pin recorta sin avisar— y a 588px de ventana quedan 64px
+     libres con los dos uno encima del otro. */
+  .pn-escena--viva .nosotros-acciones .btn { padding: .62rem .8rem; font-size: .6rem; }
+}
+
+/* Y solo por debajo de 560px de ventana los dos vuelven a su fila: ahi
+   apilados cuestan 51px que ya no hay y el segundo se iria por debajo del
+   filo. Entre 560 y 700 caben apilados de sobra, que es donde vive casi todo
+   telefono en vertical. */
+@media (max-width: 991.98px) and (max-height: 560px) {
+  .pn-escena--viva .nosotros-acciones { flex-direction: row; gap: .5rem; }
+  .pn-escena--viva .nosotros-acciones .btn {
+    width: auto;
+    flex: 1 1 auto;
+    padding: .66rem .8rem;
+    font-size: .58rem;
+  }
 }
