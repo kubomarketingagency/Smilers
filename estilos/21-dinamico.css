@@ -229,10 +229,14 @@
   gap: .7rem;
   padding: 0 clamp(.6rem, 1.4vw, 1.2rem) clamp(.5rem, .9vw, .75rem);
   border-bottom: 1px solid var(--gm-borde-vivo);
-  font-family: var(--fuente-cuerpo);
-  font-weight: 700;
-  font-size: .68rem;
-  letter-spacing: .28em;
+  /* La misma letra que el indicador de Galeria, Tratamientos y FAQ: alli es
+     `.breadcrumb-personalizado` y aqui `.ns-ruta`, pero el lector ve una sola
+     pieza y tiene que leerse igual en las cuatro. Lo unico que se queda
+     distinto es el filo de oro de debajo, que es de la portada de cine. */
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: clamp(.72rem, .85vw, .78rem);
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, .72);
   text-shadow: 0 1px 10px rgba(0, 0, 0, .7);

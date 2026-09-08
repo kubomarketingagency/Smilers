@@ -114,7 +114,8 @@
 .pagina-clara .pz-panel,
 .pagina-clara .pz-cita,
 .pagina-clara .ag-panel,
-.pagina-clara .banda-cta--onyx,
+/* La banda de onix ya no esta en esta lista: desde que va retroiluminada es
+   piedra clara, y el 23 le devuelve el degradado hondo. */
 .pagina-clara .banner-pagina--hero,
 .pagina-clara .filtros-galeria,
 .pagina-clara .franja-nav,

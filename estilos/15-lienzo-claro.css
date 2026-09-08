@@ -476,15 +476,8 @@
 @media (min-width: 992px) {
   .pagina-tratamientos .seccion .row.justify-content-center { justify-content: flex-start !important; }
   .pagina-tratamientos .seccion .col-lg-8 { width: 58%; }
-  .pagina-tratamientos #estetica-dental        > .container { max-width: 1120px; margin-left: clamp(2rem, 6vw, 7rem);   margin-right: auto; }
-  .pagina-tratamientos #ortodoncia             > .container { max-width: 1080px; margin-left: auto; margin-right: clamp(2rem, 5vw, 6rem); }
-  .pagina-tratamientos #implantologia          > .container { max-width: 1160px; margin-left: clamp(4rem, 11vw, 13rem); margin-right: auto; }
-  .pagina-tratamientos #cirugia-oral           > .container { max-width: 1040px; margin-left: auto; margin-right: clamp(4rem, 10vw, 12rem); }
-  .pagina-tratamientos #rehabilitacion-oral    > .container { max-width: 1100px; margin-left: clamp(3rem, 8vw, 9rem);   margin-right: auto; }
-  .pagina-tratamientos #endodoncia             > .container { max-width: 1140px; margin-left: auto; margin-right: clamp(2rem, 6vw, 7rem); }
-  .pagina-tratamientos #periodoncia            > .container { max-width: 1060px; margin-left: clamp(5rem, 12vw, 14rem); margin-right: auto; }
-  .pagina-tratamientos #odontopediatria        > .container { max-width: 1180px; margin-left: auto; margin-right: clamp(3rem, 7vw, 8rem); }
-  .pagina-tratamientos #armonizacion-orofacial > .container { max-width: 1100px; margin-left: clamp(2rem, 5vw, 6rem);   margin-right: auto; }
+  /* La deriva de contenedores que habia aqui —un ancho y un margen por cada
+     especialidad— la sustituye la pantalla completa del 25. */
   .pagina-tratamientos .bloque-tratamiento > .container::before {
     content: '';
     display: block;

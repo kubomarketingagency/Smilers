@@ -20,9 +20,11 @@
   overflow: hidden;
   min-height: 0;
   padding: clamp(2rem, 3.6vw, 3.4rem) 0;
-  background: #0A0A0A;
-  border-top: 1px solid rgba(212, 175, 55, .22);
-  border-bottom: 1px solid rgba(212, 175, 55, .22);
+  /* Color de respaldo del onix, no del negro que habia antes: si la piedra
+     tarda en llegar, lo que se ve es una banda de miel, no un agujero. */
+  background: #F3E3CB;
+  border-top: 1px solid rgba(212, 175, 55, .38);
+  border-bottom: 1px solid rgba(212, 175, 55, .38);
 }
 .banda-cta--onyx > .container { position: relative; z-index: 1; }
 
@@ -33,21 +35,27 @@
   overflow: hidden;
   pointer-events: none;
 }
-/* La piedra va entera: opacidad 1 y sin filtro que la apague. Antes iba al
-   50% y bajada de brillo porque encima habia un recuadro negro que ponia el
-   contraste, y con la piedra a plena luz los dos juntos ensuciaban la banda.
-   Fuera el recuadro, el trabajo de hacer legible el texto vuelve al velo.
+/* El onix va retroiluminado, que es como se pone de verdad: una plancha
+   fina con la luz detras. Aqui eso son dos cosas y no una.
 
-   Y el velo no es un lavado plano —eso es lo que dejaba la foto turbia—: es
-   un degradado que carga a la izquierda, que es donde va la pregunta, y se
-   abre hacia la derecha, que es donde el onix tiene su veta de miel y donde
-   solo hay un boton. La piedra se lee como piedra y el texto se lee. */
+   La primera, que la piedra este encendida. Antes llevaba encima un velo
+   negro al 82% para que el texto blanco se leyera, y eso apagaba justo lo
+   que hace bonita a esta piedra: la miel. Fuera el velo.
+
+   La segunda, que se note DE DONDE viene la luz. Una plancha retroiluminada
+   no es un rectangulo de brillo parejo: tiene un foco —aqui a media altura,
+   escorado a la derecha, donde el onix ya tiene su veta clara— y se apaga
+   hacia los bordes. Ese apagado es tierra caliente, no gris: una piedra con
+   luz detras nunca se va al negro por los cantos, se va al ambar.
+
+   Con la piedra encendida el texto blanco deja de servir, claro. Pasa a
+   negro, que es lo mismo que hace el sitio sobre el marmol blanco. */
 .banda-cta--onyx .ns-fondo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 1;
-  filter: none;
+  filter: brightness(1.05) saturate(1.06) contrast(1.03);
   transform: none;
 }
 .banda-cta--onyx .ns-fondo::after {
@@ -55,25 +63,29 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg,
-      rgba(6, 6, 6, .82) 0%,
-      rgba(6, 6, 6, .68) 38%,
-      rgba(6, 6, 6, .34) 72%,
-      rgba(6, 6, 6, .26) 100%),
-    linear-gradient(180deg,
-      rgba(6, 6, 6, .34) 0%,
-      rgba(6, 6, 6, .12) 44%,
-      rgba(6, 6, 6, .42) 100%);
+    radial-gradient(76% 130% at 64% 44%,
+      rgba(255, 248, 232, .52) 0%,
+      rgba(255, 238, 206, .2) 40%,
+      transparent 70%),
+    radial-gradient(128% 108% at 50% 50%,
+      transparent 48%,
+      rgba(104, 62, 14, .16) 82%,
+      rgba(84, 48, 10, .3) 100%);
 }
 
-/* En el movil la banda se apila —pregunta arriba, boton abajo— y el degradado
-   lateral deja de servir: ahi el texto cruza todo el ancho. */
+/* En el movil la banda se apila —pregunta arriba, boton abajo— y el foco se
+   centra: ahi el texto cruza todo el ancho. */
 @media (max-width: 991.98px) {
   .banda-cta--onyx .ns-fondo::after {
-    background: linear-gradient(180deg,
-      rgba(6, 6, 6, .74) 0%,
-      rgba(6, 6, 6, .6) 46%,
-      rgba(6, 6, 6, .74) 100%);
+    background:
+      radial-gradient(90% 120% at 50% 40%,
+        rgba(255, 248, 232, .5) 0%,
+        rgba(255, 238, 206, .18) 44%,
+        transparent 74%),
+      radial-gradient(130% 110% at 50% 50%,
+        transparent 46%,
+        rgba(104, 62, 14, .18) 84%,
+        rgba(84, 48, 10, .32) 100%);
   }
 }
 
@@ -83,19 +95,25 @@
   font-weight: 400;
   font-size: clamp(1.5rem, 3.2vw, 2.1rem);
   line-height: 1.35;
-  color: #FFFFFF;
+  color: #16110A;
 }
 .banda-cta--onyx p,
 .pagina-clara .banda-cta--onyx p {
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
   line-height: 1.9;
-  color: rgba(255, 255, 255, .82);
+  color: rgba(22, 17, 10, .82);
 }
 
 /* El boton de la banda es el de 16-oro.css, sin retoques: alli el oro sale
    de `--oro-marca`, que no cambia de tono segun la piedra de debajo. */
 
-/* Dentro de la banda manda el degradado vivo: es una pieza oscura aunque
-   viva en una pagina clara. */
-.pagina-clara .banda-cta--onyx { --oro-vivo-degradado: var(--gradiente-oro); }
+/* La banda ya no es una pieza oscura: con la piedra encendida se comporta
+   como el marmol blanco, asi que el oro vuelve al degradado hondo —el vivo
+   se pierde sobre claro— y el boton se rellena de negro. Sobre piedra clara
+   el oro no puede ser filo, letra y contraste a la vez. */
+.banda-cta--onyx,
+.pagina-clara .banda-cta--onyx {
+  --oro-vivo-degradado: var(--gradiente-oro-hondo);
+  --btn-relleno: var(--onix);
+}
