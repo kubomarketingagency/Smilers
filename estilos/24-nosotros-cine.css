@@ -253,13 +253,56 @@
 /* ---------------------------------------------------------------------------
    El elenco: un profesional cada vez.
 
-   El fondo es el de la pagina —el marmol del lienzo, que va fijo detras de
-   todo—, asi que aqui no se pinta ninguno. Lo que recorta al profesional es
-   una mascara ovalada sobre su foto: el fondo del retrato se apaga hacia los
-   cantos y lo que queda es la figura sobre la piedra. No es un recorte de
-   verdad, que pediria archivos con transparencia; es lo mas cerca que se
-   puede llegar con las fotos que hay.
+   La pantalla se parte en dos. La mitad del profesional va sobre madera y la
+   mitad de lo que se cuenta de el se queda sobre el marmol del lienzo, con un
+   filo de oro cosiendo la junta. No es solo decoracion: la madera es oscura,
+   asi que la figura recortada tiene contra que recortarse, cosa que sobre
+   marmol blanco no tenia.
+
+   Lo que recorta al profesional es una mascara ovalada sobre su foto: el
+   fondo del retrato se apaga hacia los cantos y lo que queda es la figura.
+   No es un recorte de verdad —eso pediria archivos con transparencia, y las
+   fotos que hay son rectangulos de gente en consulta—; es lo mas cerca que se
+   puede llegar sin ellos, y por eso la mascara aprieta todo lo que aguanta
+   antes de empezar a comerse hombros y pelo.
    --------------------------------------------------------------------------- */
+/* La media pantalla de madera. Va en la capa y no en la rejilla porque tiene
+   que llegar de canto a canto de la ventana: la rejilla vive dentro de
+   `.ns-envoltura`, que esta centrada y con aire a los lados. */
+.ns-fondo--elenco {
+  right: 50%;
+  z-index: 0;
+}
+.ns-fondo--elenco img {
+  opacity: 1;
+  filter: saturate(1.06) brightness(.88);
+  transform: none;
+}
+/* El velo de la madera y el filo de la junta, en la misma pieza: el filo es
+   el borde derecho de este pseudo, que cae justo en la mitad. */
+.ns-fondo--elenco::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-right: 2px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  background:
+    radial-gradient(84% 66% at 42% 40%, rgba(212, 175, 55, .12), transparent 66%),
+    linear-gradient(90deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .08) 58%, rgba(9, 7, 5, .2) 100%);
+}
+/* Apilado, la madera pasa a ser la mitad de arriba y el filo se tumba. */
+@media (max-width: 991.98px) {
+  .ns-fondo--elenco {
+    right: 0;
+    bottom: 52%;
+  }
+  .ns-fondo--elenco::after {
+    border-right: 0;
+    border-bottom: 2px solid transparent;
+    border-image: var(--oro-marca-degradado) 1;
+    background: linear-gradient(180deg, rgba(9, 7, 5, .42) 0%, rgba(9, 7, 5, .24) 100%);
+  }
+}
 /* Media pantalla para el profesional y media para lo que se cuenta de el.
    El titular ya no va encima de las dos: vive en la columna de la derecha,
    con la ficha, para que el retrato pueda medir la pantalla de arriba abajo. */
@@ -341,12 +384,17 @@
   height: 100%;
   object-fit: cover;
   object-position: center 20%;
-  filter: saturate(.94) contrast(1.03);
-  -webkit-mask-image: radial-gradient(54% 62% at 50% 40%,
-      #000 32%, rgba(0, 0, 0, .58) 60%, rgba(0, 0, 0, .14) 80%, transparent 93%);
-          mask-image: radial-gradient(54% 62% at 50% 40%,
-      #000 32%, rgba(0, 0, 0, .58) 60%, rgba(0, 0, 0, .14) 80%, transparent 93%);
+  filter: saturate(1.04) contrast(1.14) brightness(1.12);
+  /* Mas apretada y con caida mas seca que antes: el ovalo se estrecha —una
+     persona es alta, no ancha— y lo que sobra se apaga en la mitad de
+     recorrido. Lo que se gana es que el consultorio del fondo desaparece en
+     la madera; lo que se paga es que la mascara pasa cerca del hombro. */
+  -webkit-mask-image: radial-gradient(37% 52% at 50% 36%,
+      #000 26%, rgba(0, 0, 0, .66) 44%, rgba(0, 0, 0, .14) 62%, transparent 76%);
+          mask-image: radial-gradient(37% 52% at 50% 36%,
+      #000 26%, rgba(0, 0, 0, .66) 44%, rgba(0, 0, 0, .14) 62%, transparent 76%);
 }
+/* El nombre y las flechas viven ya sobre la madera, no sobre el marmol. */
 .ns-elenco__nombre {
   display: block;
   margin-top: clamp(.2rem, .8vw, .6rem);
@@ -356,7 +404,7 @@
   line-height: 1.25;
   letter-spacing: .03em;
   text-align: center;
-  color: var(--gm-negro);
+  color: #FFFFFF;
 }
 
 .ns-elenco__puntos {
@@ -435,7 +483,13 @@
 /* ---------------------------------------------------------------------------
    La escena viva.
    --------------------------------------------------------------------------- */
-.ns-cine--viva { height: 660vh; }
+/* 590vh y no 660: los 70 que faltan salian todos del final. Entre que el
+   texto de infraestructura acababa de entrar y que las hojas empezaban a
+   cerrarse habia mas de tres cuartos de pantalla de scroll en el que no se
+   movia nada, y el pin no suelta hasta el ultimo pixel de la escena. Lo que
+   se ha recortado es ese hueco muerto: los tramos de antes conservan la
+   distancia de scroll que tenian, solo cambia la fraccion que les toca. */
+.ns-cine--viva { height: 590vh; }
 .ns-cine--viva .ns-cine__pin {
   position: sticky;
   top: 0;
@@ -452,8 +506,21 @@
   padding-block: clamp(1rem, 2.2vw, 2.2rem);
   padding-top: calc(var(--alto-navbar) + clamp(.6rem, 1.6vw, 1.6rem));
 }
-.ns-cine--viva .ns-capa--historia { z-index: 0; opacity: var(--c-uno, 1); }
-.ns-cine--viva .ns-capa--elenco   { z-index: 1; opacity: var(--c-dos, 0); }
+/* El mismo interruptor que la portada, y por el mismo motivo: las dos capas
+   comparten el hueco, la que espera esta a opacidad 0 y el elenco va despues
+   en el documento, asi que tapaba a la historia y le robaba el raton. Ahi
+   vivia el «Inicio» de la ruta del hero, que por eso no llevaba a ninguna
+   parte. Una capa transparente sigue siendo una capa. */
+.ns-cine--viva .ns-capa--historia {
+  z-index: 0;
+  opacity: var(--c-uno, 1);
+  pointer-events: var(--c-ev-uno, auto);
+}
+.ns-cine--viva .ns-capa--elenco {
+  z-index: 1;
+  opacity: var(--c-dos, 0);
+  pointer-events: var(--c-ev-dos, none);
+}
 
 .ns-cine--viva .ns-capa--fundamentos {
   z-index: 3;

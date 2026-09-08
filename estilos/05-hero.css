@@ -103,9 +103,9 @@
   justify-content: center;
   position: relative;
   margin: 0;
-  font-size: clamp(4.5rem, 16vw, 13rem);
+  font-size: clamp(3.4rem, 12.4vw, 10.5rem);
   line-height: 1;
-  padding: .25em .3em .08em;
+  padding: .3em .34em .22em;
   max-width: 100%;
   border-radius: .18em 0 .18em 0;
   border: 1px solid rgba(212, 175, 55, .45);
@@ -135,15 +135,26 @@
   border: 1px solid rgba(212, 175, 55, .16);
 }
 
+/* La marca va en la misma letra con la que se presenta la clinica dos
+   pantallas mas abajo —la Bodoni de `.titulo-seccion`—, y en versales. Es la
+   misma voz diciendo el mismo nombre: no tenia sentido que el hero hablara en
+   Prata y el resto de la pagina en Bodoni.
+
+   En versales la palabra crece de ancho —siete caras en caja alta ocupan
+   bastante mas que en caja baja—, asi que el cuerpo baja de 16vw a 12,4vw y
+   el recuadro se le ajusta. El aire de abajo sube de .08em a .22em porque la
+   Bodoni en versales no tiene descendentes: sin ese aire la palabra se
+   quedaba pegada al filo inferior. */
 .hero-titulo__texto {
   display: block;
-  font-family: var(--fuente-banner);
+  font-family: var(--fuente-elegante);
   font-style: normal;
   font-weight: 400;
-  letter-spacing: .05em;
+  text-transform: uppercase;
+  letter-spacing: .06em;
   font-size: 1em;
   line-height: 1;
-  margin-right: -.05em;
+  margin-right: -.06em;
   background: var(--gradiente-oro);
   -webkit-background-clip: text;
   background-clip: text;

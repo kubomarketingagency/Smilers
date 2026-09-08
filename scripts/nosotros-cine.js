@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
-    var VARIABLES_CINE = ['--c-uno', '--c-dos',
+    var VARIABLES_CINE = ['--c-uno', '--c-dos', '--c-ev-uno', '--c-ev-dos',
                           '--f-der', '--f-op', '--f-desenfoque', '--f-x', '--f-filo', '--f-filo-op',
                           '--i-sube', '--i-op', '--i-desenfoque', '--i-y', '--i-filo', '--i-filo-op',
                           '--h-abre', '--h-filo'];
@@ -186,12 +186,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (viva && pCine !== ultimoCine) {
         ultimoCine = pCine;
 
-        var entra  = suave(tramo(pCine, .06, .19));
-        var texto  =       tramo(pCine, .20, .27);
-        var sale   = suave(tramo(pCine, .40, .53));
-        var sube   = suave(tramo(pCine, .68, .80));
-        var textoI =       tramo(pCine, .72, .82);
-        var cierra = suave(tramo(pCine, .93, 1));
+        /* Las fracciones estan reescaladas a los 590vh de la escena: hasta
+           que entra el texto de infraestructura cada tramo mide lo mismo en
+           pixeles que media antes. Lo unico que cambia de verdad es el final,
+           que ahora arranca en cuanto se acaba de leer el panel en vez de
+           hacer esperar tres cuartos de pantalla. */
+        var entra  = suave(tramo(pCine, .07, .21));
+        var texto  =       tramo(pCine, .22, .30);
+        var sale   = suave(tramo(pCine, .45, .59));
+        var sube   = suave(tramo(pCine, .74, .86));
+        var textoI =       tramo(pCine, .78, .89);
+        var cierra = suave(tramo(pCine, .92, 1));
 
         /* Un solo canto para las dos mitades del telon de fundamentos: entra
            de izquierda a derecha y se retira por donde vino, asi que mientras
@@ -215,13 +220,15 @@ document.addEventListener('DOMContentLoaded', function () {
         escena.style.setProperty('--h-filo', cierra > 0 && cierra < 1 ? '1' : '0');
 
         /* El cambiazo de fondo cae con el telon tapando la pantalla entera:
-           acaba de taparla en .19 y no empieza a retirarse hasta .40. */
-        var segundo = pCine >= .30 ? 1 : 0;
+           acaba de taparla en .21 y no empieza a retirarse hasta .45. */
+        var segundo = pCine >= .33 ? 1 : 0;
         escena.style.setProperty('--c-uno', String(1 - segundo));
         escena.style.setProperty('--c-dos', String(segundo));
+        escena.style.setProperty('--c-ev-uno', segundo ? 'none' : 'auto');
+        escena.style.setProperty('--c-ev-dos', segundo ? 'auto' : 'none');
 
         if (elenco) {
-          if (pCine > .28 && pCine < .72) elenco.despertar(pCine < .45);
+          if (pCine > .31 && pCine < .78) elenco.despertar(pCine < .50);
           else elenco.dormir();
         }
       }

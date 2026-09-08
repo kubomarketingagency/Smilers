@@ -122,14 +122,30 @@
 }
 
 /* La mamposteria no es un fondo liso: pasan por debajo batas blancas y caras
-   a plena luz, y sobre esas el titular en blanco se perdia. El velo baja el
-   conjunto un punto mas, pero lo que de verdad hace legible la pregunta es
-   el recuadro negro de encima —el mismo `.banda-cta__vidrio` que usan las
-   paginas interiores—, para que el cierre sea el mismo en todo el sitio. */
+   a plena luz, y sobre esas el titular en blanco se perdia. Antes eso lo
+   resolvia un recuadro negro encima del texto; quitado el recuadro, todo el
+   peso vuelve aqui.
+
+   Dos capas, no una. La vertical oscurece el conjunto, y la horizontal carga
+   la mitad izquierda —donde va la pregunta— y deja respirar la derecha, que
+   es donde solo hay un boton con su propio filo de oro. Asi el collage sigue
+   viendose collage en vez de una mancha uniforme. */
 .banda-cta-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(10, 8, 6, .64) 0%, rgba(10, 8, 6, .84) 100%);
+  background:
+    linear-gradient(90deg,
+      rgba(10, 8, 6, .58) 0%,
+      rgba(10, 8, 6, .42) 46%,
+      rgba(10, 8, 6, .12) 74%,
+      rgba(10, 8, 6, .06) 100%),
+    linear-gradient(180deg, rgba(10, 8, 6, .62) 0%, rgba(10, 8, 6, .82) 100%);
+}
+/* Apilada, la pregunta cruza todo el ancho y el degradado lateral estorba. */
+@media (max-width: 991.98px) {
+  .banda-cta-overlay {
+    background: linear-gradient(180deg, rgba(10, 8, 6, .72) 0%, rgba(10, 8, 6, .88) 100%);
+  }
 }
 .banda-cta-contenido { position: relative; z-index: 2; }

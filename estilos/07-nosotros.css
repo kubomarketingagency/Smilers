@@ -241,9 +241,13 @@
   }
 }
 
+/* Este sello no se arrima al filo derecho como el otro al izquierdo: ahi
+   abajo esta el boton fijo de WhatsApp, con su anillo, ocupando los primeros
+   cien pixeles de la esquina. Asi que se corre hacia dentro lo justo para
+   dejarlo pasar por fuera. */
 .nm-sello--der {
   left: auto;
-  right: clamp(1rem, 2.4vw, 2.2rem);
+  right: clamp(6.6rem, 9vw, 8.5rem);
 }
 
 .nm-sello__num--liso::before { content: none; }
@@ -525,7 +529,7 @@
     gap: .55rem;
     padding: .5rem .8rem;
   }
-  .nm-sello--der { left: auto; right: .7rem; }
+  .nm-sello--der { left: auto; right: 5rem; }
   .nm-sello__num { font-size: 1.45rem; }
   .nm-sello__txt { font-size: .56rem; letter-spacing: .1em; line-height: 1.35; }
   .nosotros-acciones { gap: .6rem; }
@@ -902,6 +906,24 @@
 
 /* --- Modo escena: el pin y el barrido. Lo enciende el JS --- */
 
+/* Dentro del pin la ventana es la medida exacta: lo que sobre por arriba o
+   por abajo se lo come el `overflow: hidden` del pin, sin avisar. Fuera de la
+   escena `.nosotros-split` pide `min-height: 100svh` y la columna crece a su
+   antojo; aqui se le fija la altura del pin y se le descuenta la barra fija,
+   que es la que estaba tapando el titulo de la segunda pantalla. El
+   `align-items: center` de siempre reparte lo que sobra. */
+@media (min-width: 992px) {
+  .pn-escena--viva .pn-fondo .nosotros-split {
+    min-height: 0;
+    height: 100%;
+    padding-top: var(--alto-navbar);
+  }
+  /* Ese margen sirve fuera de la escena, donde la pantalla se lee entera;
+     dentro del pin se suma al alto y saca el sello de la segunda pantalla
+     tres pixeles por debajo del filo. */
+  .pn-escena--viva .pn-fondo .nosotros-split--invertido { margin-top: 0; }
+}
+
 .pn-escena--viva { height: 360vh; }
 
 .pn-escena--viva .pn-pin {
@@ -920,9 +942,23 @@
 }
 /* El cambiazo. Es un corte seco, sin transicion a proposito: se da con el
    telon tapando la pantalla entera, asi que no hay nada que suavizar y una
-   fundida solo podria asomar por un borde. */
-.pn-escena--viva .pn-fondo--uno { opacity: var(--pn-uno, 1); }
-.pn-escena--viva .pn-fondo--dos { opacity: var(--pn-dos, 0); }
+   fundida solo podria asomar por un borde.
+
+   El `pointer-events` no es adorno: las dos pantallas ocupan el mismo hueco y
+   la que espera turno esta a opacidad 0, pero una capa transparente sigue
+   recibiendo el raton. La segunda va despues en el documento, asi que estaba
+   por encima de la primera y se comia el hover y el clic de sus dos botones
+   —«Conoce la clinica» y «Ver tratamientos» no se encendian ni llevaban a
+   ningun sitio—. No se puede resolver con `opacity` sola: hace falta el
+   interruptor aparte, y lo escribe el mismo JS que ya escribe la opacidad. */
+.pn-escena--viva .pn-fondo--uno {
+  opacity: var(--pn-uno, 1);
+  pointer-events: var(--pn-ev-uno, auto);
+}
+.pn-escena--viva .pn-fondo--dos {
+  opacity: var(--pn-dos, 0);
+  pointer-events: var(--pn-ev-dos, none);
+}
 
 /* Dentro de la escena los dos collages van dibujados desde el principio: se
    les quita el revelado por scroll.

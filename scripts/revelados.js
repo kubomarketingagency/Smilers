@@ -149,7 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var VARIABLES = ['--pn-der', '--pn-izq', '--pn-op', '--pn-desenfoque',
-                     '--pn-x', '--pn-filo', '--pn-filo-op', '--pn-uno', '--pn-dos'];
+                     '--pn-x', '--pn-filo', '--pn-filo-op', '--pn-uno', '--pn-dos',
+                     '--pn-ev-uno', '--pn-ev-dos'];
 
     function revisarModo() {
       var quiere = cabe();
@@ -203,6 +204,11 @@ document.addEventListener('DOMContentLoaded', function () {
       var segundo = progreso >= .5 ? 1 : 0;
       escena.style.setProperty('--pn-uno', String(1 - segundo));
       escena.style.setProperty('--pn-dos', String(segundo));
+
+      /* Y con el fondo se cambia tambien quien recibe el raton: la pantalla
+         que no se ve no puede quedarse robando el clic de la que si. */
+      escena.style.setProperty('--pn-ev-uno', segundo ? 'none' : 'auto');
+      escena.style.setProperty('--pn-ev-dos', segundo ? 'auto' : 'none');
     }
 
     revisarModo();

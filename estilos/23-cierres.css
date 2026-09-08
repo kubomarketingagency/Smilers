@@ -33,19 +33,21 @@
   overflow: hidden;
   pointer-events: none;
 }
-/* El onix no es el jardin: donde aquel era verde y medio oscuro, este es
-   piedra de miel casi blanca en la mitad de su superficie. Con el velo que
-   llevaba el jardin la banda salia encendida y se comia el recuadro negro y
-   el pie que viene debajo. Asi que la piedra baja de intensidad y el velo
-   sube; lo que queda es el veteado caliente asomando en penumbra, que es lo
-   que le pega al oro. Lo que hace legible el texto sigue sin ser el velo:
-   es el recuadro negro de encima. */
+/* La piedra va entera: opacidad 1 y sin filtro que la apague. Antes iba al
+   50% y bajada de brillo porque encima habia un recuadro negro que ponia el
+   contraste, y con la piedra a plena luz los dos juntos ensuciaban la banda.
+   Fuera el recuadro, el trabajo de hacer legible el texto vuelve al velo.
+
+   Y el velo no es un lavado plano —eso es lo que dejaba la foto turbia—: es
+   un degradado que carga a la izquierda, que es donde va la pregunta, y se
+   abre hacia la derecha, que es donde el onix tiene su veta de miel y donde
+   solo hay un boton. La piedra se lee como piedra y el texto se lee. */
 .banda-cta--onyx .ns-fondo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .5;
-  filter: saturate(.92) brightness(.86);
+  opacity: 1;
+  filter: none;
   transform: none;
 }
 .banda-cta--onyx .ns-fondo::after {
@@ -53,17 +55,26 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .12), transparent 62%),
-    linear-gradient(180deg, rgba(8, 8, 8, .5) 0%, rgba(8, 8, 8, .3) 46%, rgba(8, 8, 8, .58) 100%);
+    linear-gradient(90deg,
+      rgba(6, 6, 6, .82) 0%,
+      rgba(6, 6, 6, .68) 38%,
+      rgba(6, 6, 6, .34) 72%,
+      rgba(6, 6, 6, .26) 100%),
+    linear-gradient(180deg,
+      rgba(6, 6, 6, .34) 0%,
+      rgba(6, 6, 6, .12) 44%,
+      rgba(6, 6, 6, .42) 100%);
 }
 
-.banda-cta__vidrio {
-  margin-inline: 0;
-  padding: clamp(1.2rem, 2.2vw, 1.9rem) clamp(1.3rem, 2.4vw, 2.2rem);
-  border: 1px solid rgba(212, 175, 55, .55);
-  border-radius: 4px;
-  background: rgba(8, 9, 7, .78);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 30px 70px rgba(4, 6, 3, .45);
+/* En el movil la banda se apila —pregunta arriba, boton abajo— y el degradado
+   lateral deja de servir: ahi el texto cruza todo el ancho. */
+@media (max-width: 991.98px) {
+  .banda-cta--onyx .ns-fondo::after {
+    background: linear-gradient(180deg,
+      rgba(6, 6, 6, .74) 0%,
+      rgba(6, 6, 6, .6) 46%,
+      rgba(6, 6, 6, .74) 100%);
+  }
 }
 
 .banda-cta--onyx h2,
