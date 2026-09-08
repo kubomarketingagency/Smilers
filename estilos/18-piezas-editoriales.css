@@ -26,6 +26,20 @@
 /* El triptico ya no se sube sobre la portada: se separa de ella. */
 .pagina-tratamientos .pz-triptico { margin-top: clamp(1.8rem, 3.6vw, 3.4rem); }
 
+/* Las tres tarjetas iban sueltas, sin nada que dijera que son un grupo ni
+   por que estan ahi. La cabeza va centrada y no arrimada a la izquierda como
+   el resto de los rotulos de la pagina: encabeza tres columnas, no una. */
+.pz-triptico__cabeza {
+  max-width: 46ch;
+  margin-inline: auto;
+  text-align: center;
+}
+/* El rotulo lleva una linea que sale hacia la derecha y crece: centrado
+   quedaria colgando de un lado. Aqui se cae y manda el centrado. */
+.pz-triptico__cabeza .nos-rotulo { justify-content: center; }
+.pz-triptico__cabeza .nos-rotulo::after { content: none; }
+.pz-triptico__cabeza .nos-lead { margin-bottom: 0; }
+
 .pz-tarjeta {
   position: relative;
   display: flex;

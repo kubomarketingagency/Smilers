@@ -209,6 +209,43 @@
       rgba(8, 6, 4, .42) 0%, rgba(8, 6, 4, .06) 30%,
       rgba(8, 6, 4, .04) 66%, rgba(8, 6, 4, .4) 100%);
 }
+/* ---------------------------------------------------------------------------
+   La variante de cine del hero: en vez de una piedra quieta, el carrusel de
+   fotos de la clinica pasando por detras. Lo usa Tratamientos.
+
+   El velo aqui pesa mas que sobre la madera y por un motivo distinto: la
+   madera es una superficie de tono parejo y la cinta son fotos de consulta,
+   con batas blancas y ventanas a plena luz que van cambiando cada cinco
+   segundos. Sobre eso el texto en blanco no aguanta si el velo no carga.
+   Sigue siendo un degradado y no un lavado plano, para que la foto se siga
+   viendo por la derecha, que es donde no hay ni una letra.
+   --------------------------------------------------------------------------- */
+.pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
+.pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
+.pagina-clara .banner-pagina--cine .bp-velo {
+  background:
+    linear-gradient(90deg,
+      rgba(6, 5, 4, .76) 0%, rgba(6, 5, 4, .6) 42%,
+      rgba(6, 5, 4, .3) 76%, rgba(6, 5, 4, .2) 100%),
+    linear-gradient(180deg,
+      rgba(6, 5, 4, .5) 0%, rgba(6, 5, 4, .22) 32%,
+      rgba(6, 5, 4, .2) 64%, rgba(6, 5, 4, .58) 100%);
+}
+/* En el movil el titular cruza todo el ancho, asi que ya no hay una mitad
+   sin letra que dejar limpia y el velo tiene que cargar parejo: la cinta pasa
+   fotos con paredes blancas a plena luz y el titular en blanco se perdia
+   contra ellas justo en el centro. */
+/* Las dos clases juntas y no `--cine` a secas: el velo movil del hero de
+   madera vive mas abajo en esta misma hoja y pesa lo mismo (0,3,0), asi que
+   ganaba por ir despues y este no pintaba nada. Se midio. */
+@media (max-width: 991.98px) {
+  .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
+    background: linear-gradient(180deg,
+      rgba(6, 5, 4, .6) 0%, rgba(6, 5, 4, .48) 38%,
+      rgba(6, 5, 4, .5) 66%, rgba(6, 5, 4, .64) 100%);
+  }
+}
+
 .pagina-clara .banner-pagina--hero > .container { position: relative; z-index: 2; }
 
 .pagina-clara .banner-pagina--hero h1 {
@@ -858,7 +895,7 @@
   background: linear-gradient(90deg,
     rgba(8, 8, 8, .58) 0%, rgba(8, 8, 8, .3) 50%, rgba(8, 8, 8, .58) 100%);
 }
-.pagina-clara :is(.filtros-galeria, .faq-categoria-titulo)::after {
+.pagina-clara :is(.filtros-galeria, .franja-nav, .faq-categoria-titulo)::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -868,7 +905,8 @@
   border-image: var(--oro-marca-degradado) 1;
 }
 
-.pagina-clara .filtros-galeria {
+.pagina-clara .filtros-galeria,
+.pagina-clara .franja-nav {
   position: relative;
   isolation: isolate;
   display: flex;
@@ -878,6 +916,46 @@
   padding: clamp(.85rem, 1.7vw, 1.25rem) clamp(1.1rem, 3vw, 2.4rem);
   border: 0;
 }
+
+/* La misma franja de piedra que los filtros de la Galeria, pero con enlaces
+   en vez de botones: nueve especialidades y cada una baja a su bloque. Sale
+   en el sitio de la cinta que pasaba sola, que decia los mismos nueve
+   nombres sin llevar a ninguno.
+
+   Nueve nombres largos no caben en una linea salvo en pantallas anchas, asi
+   que la franja envuelve; el hueco entre filas es menor que el de las
+   columnas para que se lean como una reja y no como parrafos sueltos. */
+.pagina-clara .franja-nav {
+  row-gap: clamp(.5rem, 1vw, .8rem);
+  margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
+  margin-bottom: clamp(.5rem, 1vw, .9rem);
+}
+.pagina-clara .franja-nav a {
+  position: relative;
+  z-index: 1;
+  padding: .35rem 0;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .68rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(255, 255, 255, .62);
+  transition: color .35s ease;
+}
+.pagina-clara .franja-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--nos-dorado);
+  transition: width .45s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .franja-nav a:hover,
+.pagina-clara .franja-nav a:focus-visible { color: #FFFFFF; }
+.pagina-clara .franja-nav a:hover::after,
+.pagina-clara .franja-nav a:focus-visible::after { width: 100%; }
 .pagina-clara .filtro-btn {
   position: relative;
   z-index: 1;
@@ -913,3 +991,81 @@
 
 .pagina-clara .item-galeria-grande { transform: none; }
 .pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
+
+/* ---------------------------------------------------------------------------
+   El umbral: la palabra de la seccion sola sobre negro, dos segundos.
+
+   Lo llevan las cuatro paginas interiores —Nosotros, Tratamientos, Galeria y
+   FAQ—, cada una con su palabra. La portada no: alli ese trabajo ya lo hace
+   el video de bienvenida.
+
+   La animacion va en CSS puro y no en JS a proposito. Si dependiera de un
+   script y el script fallara, la pagina se quedaria tapada de negro para
+   siempre; asi lo peor que puede pasar es que no se vea el umbral.
+
+   Quien decide si sale es un guion de tres lineas en el `<head>` de cada
+   pagina, y solo puede APAGARLO —nunca encenderlo—, que es lo que mantiene
+   en pie esa garantia: si el guion no corre, el umbral sale y se va solo.
+   Sale cuando se pincha la seccion entera en el menu; si se pincha un
+   apartado suelto —que llega con ancla— se lo salta, porque ahi no vienes a
+   entrar en la seccion, vienes a un sitio concreto de ella. */
+.ns-umbral {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(.9rem, 2vw, 1.5rem);
+  background: #050505;
+  animation: ns-umbral-sale .85s cubic-bezier(.65, 0, .25, 1) 2s both;
+}
+.ns-umbral::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(72% 58% at 50% 46%, rgba(212, 175, 55, .12), transparent 68%);
+  pointer-events: none;
+}
+.ns-umbral__palabra {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 8.5vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--oro-marca);
+  background-image: var(--oro-marca-degradado);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ns-umbral-entra 1.5s cubic-bezier(.16, 1, .3, 1) both;
+}
+.ns-umbral__filo {
+  width: clamp(110px, 20vw, 260px);
+  height: 1px;
+  background: var(--oro-marca-degradado);
+  animation: ns-umbral-filo 1.5s cubic-bezier(.16, 1, .3, 1) .18s both;
+}
+@keyframes ns-umbral-entra {
+  from { opacity: 0; transform: translateY(15px); letter-spacing: .38em; }
+  to   { opacity: 1; transform: none;             letter-spacing: .14em; }
+}
+@keyframes ns-umbral-filo {
+  from { opacity: 0; transform: scaleX(0); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+/* El fotograma del 99% esta para que `visibility` cambie al final y no a
+   medio camino: interpolada a secas, salta en el 50% y el umbral se cortaria
+   en seco por la mitad del desvanecido. */
+@keyframes ns-umbral-sale {
+  from { opacity: 1; }
+  99%  { opacity: 0; visibility: visible; }
+  to   { opacity: 0; visibility: hidden; }
+}
+html.sin-umbral .ns-umbral { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-umbral { display: none; }
+}

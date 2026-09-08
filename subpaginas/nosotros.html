@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <script>
+    /* Solo puede apagar el umbral, nunca encenderlo: si esto falla, el umbral
+       sale igual y se retira solo. Con ancla no sale — se viene a un apartado
+       concreto, no a entrar en la seccion. */
+    try { if (location.hash) document.documentElement.classList.add('sin-umbral'); } catch (e) {}
+  </script>
+
   <title>Nosotros | Smilers Dental Clinique</title>
   <meta name="description" content="Conoce la historia, misión, valores y equipo de especialistas de Smilers Dental Clinique: más de 15 años transformando sonrisas con tecnología de vanguardia.">
   <meta name="keywords" content="clínica dental, sobre nosotros, equipo odontológico, historia, misión, valores">
@@ -30,16 +37,16 @@
   <link rel="stylesheet" href="../estilos/12-interiores.css?v=ecf78cecee">
   <link rel="stylesheet" href="../estilos/13-testimonios.css?v=7428acd300">
   <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=3164edbb99">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=86506b33c8">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=974a4595ff">
   <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=2547f1f60c">
-  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=a022e3017b">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=a9355e6a38">
   <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=bd016e87af">
   <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=a171789cb8">
   <link rel="stylesheet" href="../estilos/21-dinamico.css?v=7933abaa1e">
-  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=68bb6ce826">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=46c80203e7">
   <link rel="stylesheet" href="../estilos/23-cierres.css?v=95c466e0fd">
-  <link rel="stylesheet" href="../estilos/24-nosotros-cine.css?v=6aa81d2bff">
+  <link rel="stylesheet" href="../estilos/24-nosotros-cine.css?v=4d22fecbfe">
 </head>
 
 <body class="pagina-clara pagina-cubierta pagina-nosotros">

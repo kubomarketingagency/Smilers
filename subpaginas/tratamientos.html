@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <script>
+    /* Solo puede apagar el umbral, nunca encenderlo: si esto falla, el umbral
+       sale igual y se retira solo. Con ancla no sale — se viene a un apartado
+       concreto, no a entrar en la seccion. */
+    try { if (location.hash) document.documentElement.classList.add('sin-umbral'); } catch (e) {}
+  </script>
+
   <title>Tratamientos | Smilers Dental Clinique</title>
   <meta name="description" content="Estética dental, ortodoncia, implantología, cirugía oral, odontopediatría y periodoncia: conoce en detalle cada tratamiento de Smilers Dental Clinique.">
   <meta name="keywords" content="tratamientos dentales, estética dental, ortodoncia, implantes, cirugía oral, odontopediatría, periodoncia">
@@ -30,14 +37,14 @@
   <link rel="stylesheet" href="../estilos/12-interiores.css?v=ecf78cecee">
   <link rel="stylesheet" href="../estilos/13-testimonios.css?v=7428acd300">
   <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=3164edbb99">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=86506b33c8">
   <link rel="stylesheet" href="../estilos/16-oro.css?v=974a4595ff">
   <link rel="stylesheet" href="../estilos/17-detalle-lujo.css?v=2547f1f60c">
-  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=a022e3017b">
+  <link rel="stylesheet" href="../estilos/18-piezas-editoriales.css?v=a9355e6a38">
   <link rel="stylesheet" href="../estilos/19-guia-marca.css?v=bd016e87af">
   <link rel="stylesheet" href="../estilos/20-nosotros-editorial.css?v=a171789cb8">
   <link rel="stylesheet" href="../estilos/21-dinamico.css?v=7933abaa1e">
-  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=68bb6ce826">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=46c80203e7">
   <link rel="stylesheet" href="../estilos/23-cierres.css?v=95c466e0fd">
 </head>
 
@@ -90,6 +97,11 @@
     <symbol id="solid-user-doctor" viewBox="0 0 448 512"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-96 55.2C54 332.9 0 401.3 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7c0-81-54-149.4-128-171.1V362c27.6 7.1 48 32.2 48 62v40c0 8.8-7.2 16-16 16H336c-8.8 0-16-7.2-16-16s7.2-16 16-16V424c0-17.7-14.3-32-32-32s-32 14.3-32 32v24c8.8 0 16 7.2 16 16s-7.2 16-16 16H256c-8.8 0-16-7.2-16-16V424c0-29.8 20.4-54.9 48-62V304.9c-6-.6-12.1-.9-18.3-.9H178.3c-6.2 0-12.3 .3-18.3 .9v65.4c23.1 6.9 40 28.3 40 53.7c0 30.9-25.1 56-56 56s-56-25.1-56-56c0-25.4 16.9-46.8 40-53.7V311.2zM144 448a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></symbol>
     <symbol id="solid-wand-magic-sparkles" viewBox="0 0 576 512"><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></symbol>
   </svg>
+
+  <div class="ns-umbral" aria-hidden="true">
+    <span class="ns-umbral__palabra">Tratamientos</span>
+    <span class="ns-umbral__filo"></span>
+  </div>
 
   <nav class="navbar navbar-principal fixed-top" id="navbarPrincipal">
     <span class="navbar-marmol" aria-hidden="true">
@@ -171,7 +183,8 @@
     </nav>
   </div>
 
-  <header class="ns-portada ns-pantalla" id="portada" data-pantalla="Portada">
+  <header class="banner-pagina banner-pagina--hero banner-pagina--cine" id="portada">
+    <span class="bp-fondo" aria-hidden="true">
     <span class="ns-portada__cinta crsl" data-carrusel data-intervalo="5200" aria-hidden="true">
       <span class="crsl__pista">
         <span class="crsl__toma crsl__toma--activa" data-encuadre="bajo">
@@ -200,24 +213,27 @@
         </span>
       </span>
     </span>
-
-    <span class="ns-pantalla__velo" aria-hidden="true"></span>
-
-    <div class="ns-envoltura">
-      <div class="ns-portada__centro">
-        <h1 class="ns-portada__palabra">Tratamientos</h1>
-        <nav class="ns-ruta ns-ruta--filo" aria-label="Ruta de navegación">
-          <a href="../index.html">Inicio</a>
-          <span class="ns-ruta__sep" aria-hidden="true">&rsaquo;</span>
-          <span>Tratamientos</span>
-        </nav>
-      </div>
+    </span>
+    <span class="bp-velo" aria-hidden="true"></span>
+    <div class="container">
+      <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
+        <i class="fa-solid fa-house"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-house"></use></svg></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-right"></use></svg></i> <span>Tratamientos</span>
+      </nav>
+      <h1>Nueve especialidades, <span class="texto-naranja">un mismo plan</span></h1>
+      <p class="banner-subtitulo">
+        Diagnóstico digital, un especialista por área y el presupuesto por escrito antes
+        de empezar. Elige la que te trae hasta aquí.
+      </p>
     </div>
-
   </header>
 
   <section class="pz-seccion">
     <div class="container">
+      <div class="pz-triptico__cabeza revelar">
+        <p class="nos-rotulo">Antes de elegir tratamiento</p>
+        <h2 class="nos-lead">Tres cosas que aquí <em>no se negocian</em>.</h2>
+      </div>
+
       <div class="pz-triptico revelar">
 
         <article class="pz-tarjeta">
@@ -308,35 +324,24 @@
         </span>
       </div>
 
+      <nav class="franja-nav revelar" aria-label="Especialidades">
+        <span class="franja-piedra" aria-hidden="true">
+          <img src="../imagenes/fondos/marmol-negro-barra.webp?v=971a283533" width="1920" height="130"
+               alt="" loading="lazy" decoding="async">
+        </span>
+        <a href="#estetica-dental">Estética Dental</a>
+        <a href="#ortodoncia">Ortodoncia</a>
+        <a href="#implantologia">Implantología</a>
+        <a href="#cirugia-oral">Cirugía Oral</a>
+        <a href="#rehabilitacion-oral">Rehabilitación Oral</a>
+        <a href="#endodoncia">Endodoncia</a>
+        <a href="#periodoncia">Periodoncia</a>
+        <a href="#odontopediatria">Odontopediatría</a>
+        <a href="#armonizacion-orofacial">Armonización Orofacial</a>
+      </nav>
+
     </div>
   </section>
-
-  <aside class="cinta-trat" aria-label="Tratamientos que hacemos">
-    <div class="cinta-trat__pista">
-      <ul class="cinta-trat__lista">
-        <li class="cinta-trat__pieza">Estética Dental</li>
-        <li class="cinta-trat__pieza">Ortodoncia</li>
-        <li class="cinta-trat__pieza">Implantología</li>
-        <li class="cinta-trat__pieza">Cirugía Oral</li>
-        <li class="cinta-trat__pieza">Rehabilitación Oral</li>
-        <li class="cinta-trat__pieza">Endodoncia</li>
-        <li class="cinta-trat__pieza">Periodoncia</li>
-        <li class="cinta-trat__pieza">Odontopediatría</li>
-        <li class="cinta-trat__pieza">Armonización Orofacial</li>
-      </ul>
-      <ul class="cinta-trat__lista" aria-hidden="true">
-        <li class="cinta-trat__pieza">Estética Dental</li>
-        <li class="cinta-trat__pieza">Ortodoncia</li>
-        <li class="cinta-trat__pieza">Implantología</li>
-        <li class="cinta-trat__pieza">Cirugía Oral</li>
-        <li class="cinta-trat__pieza">Rehabilitación Oral</li>
-        <li class="cinta-trat__pieza">Endodoncia</li>
-        <li class="cinta-trat__pieza">Periodoncia</li>
-        <li class="cinta-trat__pieza">Odontopediatría</li>
-        <li class="cinta-trat__pieza">Armonización Orofacial</li>
-      </ul>
-    </div>
-  </aside>
 
   <section class="bloque-tratamiento" id="estetica-dental">
     <div class="container">
