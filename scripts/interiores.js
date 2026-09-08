@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var reloj = null;
+    /* `dormido` lo pone la escena de Nosotros; `visible` lo pone el
+       observador de mas abajo. Hacen falta los dos y no uno: dentro del pin
+       las capas nunca salen de pantalla —lo que las esconde es la opacidad o
+       el recorte—, asi que el observador da por visibles los dos carruseles
+       de esa pagina a la vez y desde el primer fotograma. */
+    var dormido = false;
+    var visible = true;
 
     var previaToma = null;
 
@@ -65,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function arrancar() {
       parar();
-      if (quietud.matches) return;
+      if (dormido || !visible || quietud.matches) return;
       reloj = setInterval(function () { ir(actual + 1); }, intervalo);
     }
 
@@ -88,9 +95,11 @@ document.addEventListener('DOMContentLoaded', function () {
     pintar();
 
     if ('IntersectionObserver' in window) {
+      visible = false;
       new IntersectionObserver(function (entradas) {
         entradas.forEach(function (entrada) {
-          if (entrada.isIntersecting) arrancar();
+          visible = entrada.isIntersecting;
+          if (visible) arrancar();
           else parar();
         });
       }, { rootMargin: '80px 0px' }).observe(caja);
@@ -102,9 +111,37 @@ document.addEventListener('DOMContentLoaded', function () {
       if (quietud.matches) parar();
       else arrancar();
     });
+
+    return {
+      caja: caja,
+      dormir: function () {
+        if (dormido) return;
+        dormido = true;
+        parar();
+      },
+      despertar: function () {
+        if (!dormido) return;
+        dormido = false;
+        arrancar();
+      }
+    };
   }
 
-  document.querySelectorAll('[data-carrusel]').forEach(montarCarrusel);
+  /* El registro es para Nosotros. Alli las dos cintas viven dentro del pin y
+     el observador las da por visibles las dos a la vez durante toda la
+     escena: la del hero seguia pasando fotos cuando ya se veia el elenco, y
+     la de infraestructura las pasaba desde el primer fotograma detras de un
+     `clip-path: inset(100% 0 0 0)`. Dos cruces de imagenes a pantalla
+     completa corriendo a la vez, y una de ellas invisible.
+
+     Quien decide ahi es la escena, igual que con el elenco. En Tratamientos
+     no hay escena y manda el observador, que es lo correcto: su cinta si
+     entra y sale de pantalla de verdad. */
+  window.SmilersCarruseles = [];
+  document.querySelectorAll('[data-carrusel]').forEach(function (caja) {
+    var mando = montarCarrusel(caja);
+    if (mando) window.SmilersCarruseles.push(mando);
+  });
 
   (function () {
     /* `[data-pantalla]` ademas de la clase: en Tratamientos las paradas del

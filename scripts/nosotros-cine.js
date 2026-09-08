@@ -131,6 +131,33 @@ document.addEventListener('DOMContentLoaded', function () {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
+    /* Las dos cintas de fotos de la escena. `interiores.js` las monta y las
+       deja en `SmilersCarruseles`; aqui se les dice cuando corren, porque su
+       observador no puede saberlo: dentro del pin las dos estan siempre en
+       pantalla. Va despues en el orden de los guiones, asi que la lista ya
+       existe. */
+    function cintaDe(selector) {
+      var caja = document.querySelector(selector + ' [data-carrusel]');
+      var lista = window.SmilersCarruseles || [];
+      for (var i = 0; i < lista.length; i++) {
+        if (lista[i].caja === caja) return lista[i];
+      }
+      return null;
+    }
+    var cintaHistoria = cintaDe('.ns-capa--historia');
+    var cintaInfra = cintaDe('.ns-capa--infra');
+
+    function cintas(cualCorre) {
+      if (cintaHistoria) {
+        if (cualCorre === 'historia' || cualCorre === 'todas') cintaHistoria.despertar();
+        else cintaHistoria.dormir();
+      }
+      if (cintaInfra) {
+        if (cualCorre === 'infra' || cualCorre === 'todas') cintaInfra.despertar();
+        else cintaInfra.dormir();
+      }
+    }
+
     var VARIABLES_CINE = ['--c-uno', '--c-dos', '--c-ev-uno', '--c-ev-dos',
                           '--f-der', '--f-op', '--f-desenfoque', '--f-ent', '--f-filo', '--f-filo-op',
                           '--i-sube', '--i-op', '--i-desenfoque', '--i-y', '--i-filo', '--i-filo-op',
@@ -150,14 +177,42 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!viva) {
         VARIABLES_CINE.forEach(function (v) { escena.style.removeProperty(v); });
         if (cierre) VARIABLES_CIERRE.forEach(function (v) { cierre.style.removeProperty(v); });
+        escritoCine = {};
+        escritoCierre = {};
         if (elenco) elenco.despertar(false);
-      } else if (elenco) {
-        elenco.dormir();
+        /* Sin escena las capas estan apiladas en flujo y cada cinta entra y
+           sale de pantalla de verdad: vuelve a mandar su observador. */
+        cintas('todas');
+      } else {
+        if (elenco) elenco.dormir();
+        cintas('historia');
       }
     }
 
     function tramo(v, a, b) { return Math.min(1, Math.max(0, (v - a) / (b - a))); }
     function suave(t) { return t * t * (3 - 2 * t); }
+
+    /* Las variables se escribian las dieciocho en cada pixel de scroll,
+       cambiaran o no. Y una propiedad personalizada se hereda, asi que cada
+       escritura invalida el estilo de TODA la escena: las cuatro capas, los
+       cuatro retratos del elenco con sus mascaras y las fichas.
+
+       La mitad del recorrido no mueve ninguna —mientras se lee el elenco, de
+       .33 a .73, las dieciocho estan en su valor final—, y el ultimo cuarto
+       solo mueve seis. Guardando lo ultimo escrito, ese tramo pasa a costar
+       cero y el final baja de dieciocho escrituras por fotograma a seis. */
+    var escritoCine = {};
+    var escritoCierre = {};
+    function ponCine(nombre, valor) {
+      if (escritoCine[nombre] === valor) return;
+      escritoCine[nombre] = valor;
+      escena.style.setProperty(nombre, valor);
+    }
+    function ponCierre(nombre, valor) {
+      if (escritoCierre[nombre] === valor) return;
+      escritoCierre[nombre] = valor;
+      cierre.style.setProperty(nombre, valor);
+    }
 
     function progresoDe(bloque, ctx) {
       var caja = bloque.getBoundingClientRect();
@@ -202,42 +257,49 @@ document.addEventListener('DOMContentLoaded', function () {
            de izquierda a derecha y se retira por donde vino, asi que mientras
            sale manda `sale` y antes manda `entra`. No se solapan. */
         var der = sale > 0 ? sale : (1 - entra);
-        escena.style.setProperty('--f-der', (der * 100).toFixed(2) + '%');
-        escena.style.setProperty('--f-op', texto.toFixed(3));
-        escena.style.setProperty('--f-desenfoque', ((1 - texto) * 12).toFixed(1) + 'px');
-        escena.style.setProperty('--f-ent', (1 - texto).toFixed(3));
-        escena.style.setProperty('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
-        escena.style.setProperty('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
+        ponCine('--f-der', (der * 100).toFixed(2) + '%');
+        ponCine('--f-op', texto.toFixed(3));
+        ponCine('--f-desenfoque', ((1 - texto) * 12).toFixed(1) + 'px');
+        ponCine('--f-ent', (1 - texto).toFixed(3));
+        ponCine('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
+        ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 
-        escena.style.setProperty('--i-sube', ((1 - sube) * 100).toFixed(2) + '%');
-        escena.style.setProperty('--i-op', textoI.toFixed(3));
-        escena.style.setProperty('--i-desenfoque', ((1 - textoI) * 10).toFixed(1) + 'px');
-        escena.style.setProperty('--i-y', ((1 - textoI) * 42).toFixed(1) + 'px');
-        escena.style.setProperty('--i-filo', ((1 - sube) * 100).toFixed(2) + '%');
-        escena.style.setProperty('--i-filo-op', sube > 0 && sube < 1 ? '1' : '0');
+        ponCine('--i-sube', ((1 - sube) * 100).toFixed(2) + '%');
+        ponCine('--i-op', textoI.toFixed(3));
+        ponCine('--i-desenfoque', ((1 - textoI) * 10).toFixed(1) + 'px');
+        ponCine('--i-y', ((1 - textoI) * 42).toFixed(1) + 'px');
+        ponCine('--i-filo', ((1 - sube) * 100).toFixed(2) + '%');
+        ponCine('--i-filo-op', sube > 0 && sube < 1 ? '1' : '0');
 
-        escena.style.setProperty('--h-abre', (1 - cierra).toFixed(3));
-        escena.style.setProperty('--h-filo', cierra > 0 && cierra < 1 ? '1' : '0');
+        ponCine('--h-abre', (1 - cierra).toFixed(3));
+        ponCine('--h-filo', cierra > 0 && cierra < 1 ? '1' : '0');
 
         /* El cambiazo de fondo cae con el telon tapando la pantalla entera:
            acaba de taparla en .21 y no empieza a retirarse hasta .45. */
         var segundo = pCine >= .33 ? 1 : 0;
-        escena.style.setProperty('--c-uno', String(1 - segundo));
-        escena.style.setProperty('--c-dos', String(segundo));
-        escena.style.setProperty('--c-ev-uno', segundo ? 'none' : 'auto');
-        escena.style.setProperty('--c-ev-dos', segundo ? 'auto' : 'none');
+        ponCine('--c-uno', String(1 - segundo));
+        ponCine('--c-dos', String(segundo));
+        ponCine('--c-ev-uno', segundo ? 'none' : 'auto');
+        ponCine('--c-ev-dos', segundo ? 'auto' : 'none');
 
         if (elenco) {
           if (pCine > .31 && pCine < .78) elenco.despertar(pCine < .50);
           else elenco.dormir();
         }
+
+        /* Una cinta cada vez, y solo mientras su capa se ve. La del hero se
+           para en cuanto el telon de fundamentos la tapa del todo (.21), y la
+           de infraestructura no arranca hasta que su capa empieza a subir
+           (.74). Entre las dos hay medio recorrido en el que no corre
+           ninguna. */
+        cintas(pCine < .22 ? 'historia' : (pCine > .73 ? 'infra' : 'ninguna'));
       }
 
       if (viva && cierre && pCierre !== ultimoCierre) {
         ultimoCierre = pCierre;
         var abre = suave(tramo(pCierre, .08, .42));
-        cierre.style.setProperty('--h-abre', abre.toFixed(3));
-        cierre.style.setProperty('--h-filo', abre > 0 && abre < 1 ? '1' : '0');
+        ponCierre('--h-abre', abre.toFixed(3));
+        ponCierre('--h-filo', abre > 0 && abre < 1 ? '1' : '0');
 
         if (abre <= 0) contadosYa = false;
         else if (!contadosYa && abre > .12 && window.SmilersContadores) {
@@ -262,6 +324,10 @@ document.addEventListener('DOMContentLoaded', function () {
       revisarModo();
       ultimoCine = -1;
       ultimoCierre = -1;
+      /* Al redimensionar hay que volver a escribirlo todo: el cache guarda
+         cadenas y los porcentajes miden sobre una ventana que ya no es esa. */
+      escritoCine = {};
+      escritoCierre = {};
     });
 
     /* -------------------------------------------------------------------

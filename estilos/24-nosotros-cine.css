@@ -737,11 +737,36 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 .banda-cta--cine .ns-parrafo,
 .banda-cta--cine .ns-rotulo { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
 /* Las cifras van en oro recortado contra el fondo, y `text-shadow` no pinta
-   nada debajo de un texto transparente. La sombra tiene que ser del bloque,
-   no de la letra. */
-.banda-cta--cine .ns-cifra {
-  filter: drop-shadow(0 2px 14px rgba(4, 4, 4, .85));
+   nada debajo de un texto transparente: la sombra no puede ser de la letra.
+   Pero tampoco puede ser un `filter` del bloque, que es lo que habia aqui.
+
+   El motivo es que el numero cambia de texto en CADA fotograma mientras se
+   cuenta —`textContent` desde un `requestAnimationFrame`, en `footer.js`— y
+   un `drop-shadow` sobre un elemento que se repinta sesenta veces por
+   segundo se recalcula sesenta veces por segundo, en las cuatro cifras a la
+   vez y justo cuando las dos hojas se estan abriendo. Eso es lo que frenaba
+   el final de la escena en el movil.
+
+   Asi que el suelo se pinta una sola vez y debajo de todas: una plancha
+   oscura detras de la fila entera, que ademas hace mejor trabajo que cuatro
+   sombras sueltas —lo que hay que separar del collage es la fila, no cada
+   numero—. Va en `z-index: -1` y `.ns-cifras` no abre contexto de apilado,
+   asi que cae por detras de las cifras pero por delante del velo. */
+.banda-cta--cine .ns-cifras {
+  position: relative;
+  isolation: auto;
 }
+.banda-cta--cine .ns-cifras::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -.5rem -1rem;
+  pointer-events: none;
+  background: radial-gradient(64% 112% at 50% 50%,
+    rgba(4, 4, 4, .62) 0%, rgba(4, 4, 4, .34) 58%, rgba(4, 4, 4, 0) 100%);
+}
+/* La etiqueta si es texto normal y le basta su sombra. */
+.banda-cta--cine .ns-cifra__etq { text-shadow: 0 1px 10px rgba(4, 4, 4, .9); }
 
 
 /* ---------------------------------------------------------------------------
@@ -758,6 +783,16 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
    el telon se queda corto y asoma una franja por debajo.
    --------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {
+
+  /* Los dos paneles entran desenfocados y el desenfoque se va a cero con el
+     recorrido. En un ordenador eso es un `filter` mas; en un telefono es un
+     gaussiano a pantalla completa recalculado en cada fotograma de scroll, y
+     son dos —el de fundamentos a mitad de escena y el de infraestructura al
+     final—. Aqui se cae y la entrada se queda en lo que ya hacia el resto del
+     trabajo: la opacidad y el desplazamiento, que el compositor mueve solo.
+     A este tamano de letra el desenfoque no se echa de menos. */
+  .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura,
+  .ns-cine--viva .ns-capa--infra > .ns-envoltura { filter: none; }
 
   .ns-cine--viva { height: 520vh; }
   .ns-cine--viva .ns-cine__pin { height: 100dvh; }
