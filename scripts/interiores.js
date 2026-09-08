@@ -107,7 +107,13 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-carrusel]').forEach(montarCarrusel);
 
   (function () {
-    var pantallas = Array.prototype.slice.call(document.querySelectorAll('.ns-pantalla'));
+    /* `[data-pantalla]` ademas de la clase: en Tratamientos las paradas del
+       riel son secciones normales —la portada, el triptico, la franja de
+       especialidades, el proceso y el cierre—, que no llevan ni quieren
+       llevar la puesta en escena de `.ns-pantalla`. Basta con que digan
+       como se llaman. */
+    var pantallas = Array.prototype.slice.call(
+      document.querySelectorAll('.ns-pantalla, [data-pantalla]'));
     if (!pantallas.length || !('IntersectionObserver' in window)) {
       pantallas.forEach(function (p) { p.classList.add('en-pantalla'); });
       return;

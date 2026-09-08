@@ -18,9 +18,15 @@
   background: var(--gradiente-oro);
 }
 
+/* `grid-auto-rows: 1fr` y no la altura automatica de la rejilla: en tres
+   columnas las tres tarjetas ya salian iguales porque comparten fila, pero
+   apiladas en el telefono cada una media lo que media su parrafo —348, 321 y
+   321— y se veian como tres tarjetas de tres tamanos. Con las filas iguales
+   las tres miden lo que la mas alta en cualquier reparto. */
 .pz-triptico {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: clamp(.9rem, 1.6vw, 1.5rem);
 }
 /* El triptico ya no se sube sobre la portada: se separa de ella. */
@@ -49,11 +55,21 @@
   box-shadow: 0 24px 64px rgba(10, 10, 10, .12);
 }
 
+/* La foto pasa de 16/7 a 3/2. No es solo que se vea mas: las tres fotos que
+   entran aqui son 1200x800, 1000x750 y 800x552 —o sea 1.50, 1.33 y 1.45—, y
+   un marco de 1.50 las recorta casi nada, asi que las tres se ven completas,
+   al mismo tamano y por el centro. A 16/7 (2.29) se les cortaba mas de la
+   mitad del alto, y cada una por un sitio distinto.
+
+   En numeros: en una tarjeta de 399 de ancho la foto pasa de 174 a 266 de
+   alto, y la tarjeta entera de 393 a 485. Es la parte de "hacerlas medio
+   grandesitas" que se puede hacer sin tocar el cuerpo de letra. */
 .pz-tarjeta__foto {
   display: block;
+  position: relative;
   margin: 0;
   overflow: hidden;
-  aspect-ratio: 16 / 7;
+  aspect-ratio: 3 / 2;
   background: #EDE9E1;
 }
 .pz-tarjeta__foto img {
@@ -61,13 +77,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 50%;
   transition: filter .8s var(--pz-curva), transform .9s var(--pz-curva);
 }
 
 .pz-tarjeta__cuerpo {
   position: relative;
   flex: 1 1 auto;
-  padding: clamp(1.9rem, 3vw, 2.6rem) clamp(1.3rem, 2.1vw, 1.9rem) clamp(1.5rem, 2.4vw, 2.1rem);
+  padding: clamp(2rem, 3.2vw, 2.8rem) clamp(1.5rem, 2.4vw, 2.2rem) clamp(1.7rem, 2.6vw, 2.3rem);
 }
 
 .pz-tarjeta__sello {
@@ -110,14 +127,17 @@
   margin: clamp(.9rem, 1.6vw, 1.2rem) 0 0;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
-  font-size: .92rem;
-  line-height: 1.85;
+  font-size: .97rem;
+  line-height: 1.8;
   color: var(--nos-texto);
 }
 
 @media (max-width: 991.98px) {
   .pz-triptico { grid-template-columns: 1fr; }
-  .pz-tarjeta__foto { aspect-ratio: 16 / 6; }
+  /* Apilada la tarjeta cruza todo el ancho, y a 3/2 la foto se comeria media
+     pantalla de alto ella sola. 16/9 es el mismo encuadre por el centro con
+     menos alto. */
+  .pz-tarjeta__foto { aspect-ratio: 16 / 9; }
 }
 
 .pz-cita {

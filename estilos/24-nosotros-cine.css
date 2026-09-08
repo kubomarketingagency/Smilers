@@ -713,16 +713,34 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
           background-clip: text;
 }
 .banda-cta--cine .ns-cta { margin-top: clamp(1.6rem, 3vw, 2.6rem); }
+/* Lo mismo que el boton de la banda de la portada: con la mamposteria a la
+   vista, el filo y las letras de oro caen sobre retratos a plena luz. Un
+   suelo negro translucido debajo y siguen siendo un boton de oro. */
+.banda-cta--cine .ns-boton { --btn-relleno: rgba(6, 6, 6, .72); }
 
-/* En la portada la banda es baja y le basta un velo flojo. Aqui la
-   mamposteria ocupa la pantalla entera y la pregunta se perdia encima de las
-   fotos, asi que el velo pesa mas y cierra por el centro. */
+/* En la portada la banda es baja. Aqui la mamposteria ocupa la pantalla
+   entera, asi que el velo cierra por el centro —donde estan la pregunta y
+   las cifras— y suelta los cuatro cantos, que es por donde se ve que lo que
+   pasa por detras son fotos de la clinica y no una textura.
+
+   El radial sumado al lineal daba .93 en el centro: el collage no se veia.
+   Ahora suman .74 ahi y .34 en las esquinas. El texto recupera lo que le
+   falta con su propia sombra, que pesa solo donde hay letra. */
 .banda-cta--cine .banda-cta-overlay {
   background:
-    radial-gradient(78% 68% at 50% 50%,
-      rgba(6, 6, 6, .88) 0%, rgba(6, 6, 6, .78) 58%, rgba(6, 6, 6, .66) 100%),
+    radial-gradient(74% 64% at 50% 50%,
+      rgba(6, 6, 6, .62) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .26) 100%),
     linear-gradient(180deg,
-      rgba(6, 6, 6, .5) 0%, rgba(6, 6, 6, .34) 45%, rgba(6, 6, 6, .74) 100%);
+      rgba(6, 6, 6, .3) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .5) 100%);
+}
+.banda-cta--cine h2,
+.banda-cta--cine .ns-parrafo,
+.banda-cta--cine .ns-rotulo { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
+/* Las cifras van en oro recortado contra el fondo, y `text-shadow` no pinta
+   nada debajo de un texto transparente. La sombra tiene que ser del bloque,
+   no de la letra. */
+.banda-cta--cine .ns-cifra {
+  filter: drop-shadow(0 2px 14px rgba(4, 4, 4, .85));
 }
 
 

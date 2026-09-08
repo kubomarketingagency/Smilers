@@ -107,7 +107,10 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  filter: saturate(1.06) contrast(1.02) brightness(.62);
+  /* A .62 el collage era una silueta: se adivinaba que habia fotos, no que
+     fotos eran. Sube a .82 y el contraste que se pierde lo recupera el velo
+     de abajo, que ahora carga donde hay letra y suelta donde no. */
+  filter: saturate(1.06) contrast(1.02) brightness(.82);
 }
 @media (min-width: 992px) {
   .banda-cta-masonry__col { width: 220px; }
@@ -136,16 +139,27 @@
   z-index: 1;
   background:
     linear-gradient(90deg,
-      rgba(10, 8, 6, .58) 0%,
-      rgba(10, 8, 6, .42) 46%,
-      rgba(10, 8, 6, .12) 74%,
-      rgba(10, 8, 6, .06) 100%),
-    linear-gradient(180deg, rgba(10, 8, 6, .62) 0%, rgba(10, 8, 6, .82) 100%);
+      rgba(10, 8, 6, .62) 0%,
+      rgba(10, 8, 6, .44) 46%,
+      rgba(10, 8, 6, .08) 74%,
+      rgba(10, 8, 6, .02) 100%),
+    linear-gradient(180deg, rgba(10, 8, 6, .3) 0%, rgba(10, 8, 6, .12) 42%, rgba(10, 8, 6, .5) 100%);
 }
+/* El titular pierde el suelo plano que le daba el velo vertical, asi que se
+   lo lleva pegado: la sombra solo pesa donde hay letra. */
+.banda-cta h2,
+.banda-cta p { text-shadow: 0 2px 16px rgba(6, 5, 4, .72); }
+
+/* El boton va a la derecha, que es justo la mitad que el velo suelta, y por
+   ahi pasan retratos a plena luz: el filo y las letras de oro sobre una bata
+   blanca o un fondo de jardin dejaban de leerse. Una sombra no vale, porque
+   lo que hay que sostener no es solo la letra sino el filo; lo que vale es
+   devolverle el suelo negro que el resto de la pagina clara ya le da. */
+.banda-cta .btn { --btn-relleno: rgba(8, 6, 4, .72); }
 /* Apilada, la pregunta cruza todo el ancho y el degradado lateral estorba. */
 @media (max-width: 991.98px) {
   .banda-cta-overlay {
-    background: linear-gradient(180deg, rgba(10, 8, 6, .72) 0%, rgba(10, 8, 6, .88) 100%);
+    background: linear-gradient(180deg, rgba(10, 8, 6, .5) 0%, rgba(10, 8, 6, .68) 100%);
   }
 }
 .banda-cta-contenido { position: relative; z-index: 2; }

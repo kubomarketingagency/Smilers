@@ -192,13 +192,15 @@
   opacity: 1;
   filter: none;
 }
-/* El velo pesa a la izquierda, que es donde va el texto, y en los dos cantos
-   de arriba y abajo, que es donde el hero tiene que coserse con la barra y
-   con el marmol que viene despues.
+/* El velo casi se ha ido. La madera wengue mide 35 de luz de media —es de
+   por si mas oscura que cualquier velo razonable—, asi que el blanco encima
+   de ella se lee sin ayuda: lo que hacia el velo del .78 no era dar
+   contraste, era tapar la veta, que es justo lo que hay que ver.
 
-   Con la madera ya a plena luz, el contraste sale entero de aqui. Por eso la
-   franja izquierda sube y la derecha se suelta casi del todo: la veta tiene
-   que verse en la mitad donde no hay ni una letra. */
+   Queda un resto y tiene trabajo: la franja de arriba cose el hero con la
+   barra fija, que tambien es piedra oscura, y la de abajo con el marmol
+   claro que viene despues. Por el medio no pinta nada. El apoyo que el
+   titular pierde se lo lleva ahora pegado, en su propia sombra. */
 .bp-velo {
   position: absolute;
   inset: 0;
@@ -206,33 +208,38 @@
   pointer-events: none;
   background:
     linear-gradient(90deg,
-      rgba(8, 6, 4, .78) 0%, rgba(8, 6, 4, .62) 42%,
-      rgba(8, 6, 4, .22) 76%, rgba(8, 6, 4, .1) 100%),
+      rgba(8, 6, 4, .3) 0%, rgba(8, 6, 4, .18) 42%,
+      rgba(8, 6, 4, .04) 76%, rgba(8, 6, 4, 0) 100%),
     linear-gradient(180deg,
-      rgba(8, 6, 4, .42) 0%, rgba(8, 6, 4, .06) 30%,
-      rgba(8, 6, 4, .04) 66%, rgba(8, 6, 4, .4) 100%);
+      rgba(8, 6, 4, .34) 0%, rgba(8, 6, 4, 0) 26%,
+      rgba(8, 6, 4, 0) 70%, rgba(8, 6, 4, .34) 100%);
 }
 /* ---------------------------------------------------------------------------
    La variante de cine del hero: en vez de una piedra quieta, el carrusel de
    fotos de la clinica pasando por detras. Lo usa Tratamientos.
 
    El velo aqui pesa mas que sobre la madera y por un motivo distinto: la
-   madera es una superficie de tono parejo y la cinta son fotos de consulta,
-   con batas blancas y ventanas a plena luz que van cambiando cada cinco
-   segundos. Sobre eso el texto en blanco no aguanta si el velo no carga.
-   Sigue siendo un degradado y no un lavado plano, para que la foto se siga
-   viendo por la derecha, que es donde no hay ni una letra.
+   madera es una superficie de tono parejo y oscura de fabrica, y la cinta
+   son fotos de consulta, con batas blancas y ventanas a plena luz que van
+   cambiando cada cinco segundos. Sobre eso el texto en blanco no aguanta si
+   el velo no carga nada.
+
+   Pero cargaba de mas: .76 a la izquierda y .5 por arriba se sumaban a .88
+   justo donde esta el titular, y la foto de debajo dejaba de existir. Ahora
+   la izquierda baja a .58 y el techo a .3 —suman .71 donde hay letra, .12 en
+   la mitad derecha— y el titular se apoya ademas en su propia sombra, que a
+   diferencia del velo no tapa mas que lo que hay detras de las letras.
    --------------------------------------------------------------------------- */
 .pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
 .pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
 .pagina-clara .banner-pagina--cine .bp-velo {
   background:
     linear-gradient(90deg,
-      rgba(6, 5, 4, .76) 0%, rgba(6, 5, 4, .6) 42%,
-      rgba(6, 5, 4, .3) 76%, rgba(6, 5, 4, .2) 100%),
+      rgba(6, 5, 4, .58) 0%, rgba(6, 5, 4, .42) 42%,
+      rgba(6, 5, 4, .14) 76%, rgba(6, 5, 4, .06) 100%),
     linear-gradient(180deg,
-      rgba(6, 5, 4, .5) 0%, rgba(6, 5, 4, .22) 32%,
-      rgba(6, 5, 4, .2) 64%, rgba(6, 5, 4, .58) 100%);
+      rgba(6, 5, 4, .3) 0%, rgba(6, 5, 4, .08) 32%,
+      rgba(6, 5, 4, .06) 64%, rgba(6, 5, 4, .4) 100%);
 }
 /* En el movil el titular cruza todo el ancho, asi que ya no hay una mitad
    sin letra que dejar limpia y el velo tiene que cargar parejo: la cinta pasa
@@ -244,13 +251,23 @@
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
     background: linear-gradient(180deg,
-      rgba(6, 5, 4, .6) 0%, rgba(6, 5, 4, .48) 38%,
-      rgba(6, 5, 4, .5) 66%, rgba(6, 5, 4, .64) 100%);
+      rgba(6, 5, 4, .46) 0%, rgba(6, 5, 4, .32) 38%,
+      rgba(6, 5, 4, .34) 66%, rgba(6, 5, 4, .5) 100%);
   }
 }
 
 .pagina-clara .banner-pagina--hero > .container { position: relative; z-index: 2; }
 
+/* Lo que antes daba el velo lo dan ahora estas tres sombras. La diferencia
+   es donde: el velo apagaba la piedra entera y esto solo apaga los pocos
+   pixeles que hay detras de cada letra. El radio es grande y la opacidad
+   alta a proposito —una sombra dura se veria como un relieve—. */
+.pagina-clara .banner-pagina--hero h1,
+.pagina-clara .banner-pagina--hero .banner-subtitulo,
+.pagina-clara .banner-pagina--hero .etiqueta-seccion,
+.pagina-clara .banner-pagina--hero .breadcrumb-personalizado {
+  text-shadow: 0 2px 18px rgba(4, 3, 2, .85), 0 1px 3px rgba(4, 3, 2, .5);
+}
 .pagina-clara .banner-pagina--hero h1 {
   margin-top: 0;
   font-size: clamp(1.9rem, 4.4vw, 3.4rem);
@@ -280,8 +297,8 @@
   }
   .pagina-clara .banner-pagina--hero .bp-velo {
     background: linear-gradient(180deg,
-      rgba(8, 6, 4, .6) 0%, rgba(8, 6, 4, .46) 38%,
-      rgba(8, 6, 4, .48) 66%, rgba(8, 6, 4, .66) 100%);
+      rgba(8, 6, 4, .38) 0%, rgba(8, 6, 4, .16) 38%,
+      rgba(8, 6, 4, .18) 66%, rgba(8, 6, 4, .42) 100%);
   }
 }
 
@@ -745,8 +762,13 @@
   box-shadow: none;
   font-family: var(--fuente-menu);
   font-weight: 500;
-  font-size: clamp(.95rem, 1.2vw, 1.1rem);
-  line-height: 1.55;
+  /* Pregunta y respuesta suben un punto largo: .95 -> 1.08 y .95 -> 1.04.
+     Eran las dos unicas piezas de texto de leer del sitio que bajaban de un
+     rem, y en una pagina que es solo texto eso se nota. La interlinea de la
+     respuesta baja de 1.95 a 1.82 para que el bloque no crezca de mas: con
+     el cuerpo mayor, ese aire ya no hace falta. */
+  font-size: clamp(1.08rem, 1.3vw, 1.22rem);
+  line-height: 1.5;
   letter-spacing: .02em;
   color: var(--nos-negro);
 }
@@ -771,8 +793,8 @@
   background: none;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
-  font-size: .95rem;
-  line-height: 1.95;
+  font-size: 1.04rem;
+  line-height: 1.82;
   color: var(--nos-texto);
 }
 
@@ -925,40 +947,109 @@
    en el sitio de la cinta que pasaba sola, que decia los mismos nueve
    nombres sin llevar a ninguno.
 
-   Nueve nombres largos no caben en una linea salvo en pantallas anchas, asi
-   que la franja envuelve; el hueco entre filas es menor que el de las
-   columnas para que se lean como una reja y no como parrafos sueltos. */
+   Era una fila que envolvia, y ahi estaba el problema: nueve nombres de dos
+   palabras separados solo por un hueco: en el telefono no se sabia donde
+   acababa "Rehabilitacion Oral" y empezaba "Cirugia Oral", y se leian como
+   una lista de cuatro cosas raras en vez de nueve especialidades.
+
+   La reja lo resuelve por construccion. Tres columnas fijas —nueve entre
+   tres da un cuadro exacto, sin fila coja— y una linea de oro en cada
+   juntura. Con las columnas contadas se sabe cual es el primero de cada
+   fila, que es lo unico que hace falta para que ninguna linea quede colgando
+   del borde: la de la izquierda se cae en 3n+1, la de arriba en los tres
+   primeros. En el telefono son dos columnas y el noveno ocupa las dos, asi
+   que tampoco queda hueco.
+
+   Las dos lineas no pesan igual: la vertical separa dos nombres de la misma
+   fila —el corte que se estaba perdiendo— y va a .38 con las puntas
+   desvanecidas; la horizontal solo marca el cambio de fila, que ya se ve por
+   la posicion, y va a .26 y plana. Las dos por debajo del filo de oro que
+   rodea la franja entera, que sigue mandando. */
 .pagina-clara .franja-nav {
-  row-gap: clamp(.5rem, 1vw, .8rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  padding: 0;
   margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
   margin-bottom: clamp(.5rem, 1vw, .9rem);
 }
 .pagina-clara .franja-nav a {
   position: relative;
   z-index: 1;
-  padding: .35rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(.7rem, 1.5vw, 1.05rem) clamp(.6rem, 1.6vw, 1.4rem);
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .68rem;
   letter-spacing: .24em;
   text-transform: uppercase;
+  text-align: center;
   text-decoration: none;
   color: rgba(255, 255, 255, .62);
-  transition: color .35s ease;
+  transition: color .35s ease, background .35s ease;
 }
+/* La juntura vertical. La lleva cada enlace y se apaga en el primero de
+   cada fila; escrito al reves —dibujarla solo en los que no son primeros—
+   el movil no podria devolverla, porque alli el primero de fila es otro.
+
+   No llega a los cantos de la celda a proposito: una linea de borde a borde
+   convertiria la franja en una tabla. */
+.pagina-clara .franja-nav a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent, rgba(212, 175, 55, .38) 22%, rgba(212, 175, 55, .38) 78%, transparent);
+  pointer-events: none;
+}
+.pagina-clara .franja-nav a:nth-of-type(3n + 1)::before { display: none; }
+.pagina-clara .franja-nav a:nth-of-type(n + 4) {
+  border-top: 1px solid rgba(212, 175, 55, .26);
+}
+/* El subrayado del hover ya no puede ir de canto a canto: la celda tiene
+   relleno y la linea se saldria por debajo del nombre. Sale del centro. */
 .pagina-clara .franja-nav a::after {
   content: '';
   position: absolute;
-  left: 0; bottom: 0;
+  left: 50%;
+  bottom: clamp(.35rem, .8vw, .6rem);
   width: 0;
   height: 1px;
+  transform: translateX(-50%);
   background: var(--nos-dorado);
   transition: width .45s cubic-bezier(.22, 1, .36, 1);
 }
 .pagina-clara .franja-nav a:hover,
-.pagina-clara .franja-nav a:focus-visible { color: #FFFFFF; }
+.pagina-clara .franja-nav a:focus-visible {
+  color: #FFFFFF;
+  background: rgba(212, 175, 55, .07);
+}
 .pagina-clara .franja-nav a:hover::after,
-.pagina-clara .franja-nav a:focus-visible::after { width: 100%; }
+.pagina-clara .franja-nav a:focus-visible::after { width: 62%; }
+
+@media (max-width: 575.98px) {
+  .pagina-clara .franja-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pagina-clara .franja-nav a {
+    font-size: .62rem;
+    letter-spacing: .16em;
+    padding-inline: .5rem;
+  }
+  /* Las reglas de arriba cuentan de tres en tres; aqui se cuenta de dos en
+     dos. El orden importa: primero se devuelve la juntura a los 3n+1, y
+     despues se quita a los que aqui abren fila. El 7 cae en los dos y gana
+     la segunda, que va detras. */
+  .pagina-clara .franja-nav a:nth-of-type(3n + 1)::before { display: block; }
+  .pagina-clara .franja-nav a:nth-of-type(2n + 1)::before { display: none; }
+  .pagina-clara .franja-nav a:nth-of-type(n + 3) {
+    border-top: 1px solid rgba(212, 175, 55, .26);
+  }
+  .pagina-clara .franja-nav a:last-child { grid-column: 1 / -1; }
+}
 .pagina-clara .filtro-btn {
   position: relative;
   z-index: 1;

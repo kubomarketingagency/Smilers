@@ -247,6 +247,67 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
    porque la piedra era oscura; con la piedra clara sobra. */
 
 /* ---------------------------------------------------------------------------
+   Mas oro en la pagina, con la misma escala de grosores que Nosotros.
+
+   La escala no es decorativa: dice de que es cada linea. 2px la que abre una
+   pieza que sostiene una afirmacion —las tres tarjetas del triptico son eso,
+   las tres cosas que aqui no se negocian—; 1px el contorno y las divisiones
+   de dentro; y nada por debajo de 1px, que a media opacidad una linea de oro
+   deja de ser una linea y se vuelve una mancha.
+
+   Todo sale de `--oro-vivo-degradado` y `--oro-plano`, que el 22 ya deja
+   apuntando al oro vivo dentro de estas piezas: son negras, aunque vivan en
+   una pagina clara.
+   --------------------------------------------------------------------------- */
+.pagina-tratamientos .pz-tarjeta::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 2px;
+  background: var(--oro-vivo-degradado);
+  opacity: .82;
+  pointer-events: none;
+}
+/* La juntura entre la foto y el texto. Es el unico corte que la tarjeta tiene
+   dentro, y sin nada que lo marque la foto se derramaba sobre el marmol negro
+   del cuerpo, que es casi igual de oscuro que sus sombras. */
+.pagina-tratamientos .pz-tarjeta__foto::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent, rgba(212, 175, 55, .55) 18%, rgba(212, 175, 55, .55) 82%, transparent);
+  pointer-events: none;
+}
+/* El aro del sello y las cuatro esquinas del comparador iban en `--gold-200`
+   (#E6C95F), que es un tono de dentro del degradado y no uno de los dos
+   planos del sitio. Sobre negro la diferencia se ve: el #E6C95F sale
+   amarillo al lado del #D4AF37 de su propio filo. */
+.pagina-tratamientos .pz-tarjeta__sello {
+  border-color: rgba(212, 175, 55, .62);
+  color: var(--oro-plano);
+}
+.pagina-tratamientos .comparador-marco::before,
+.pagina-tratamientos .comparador-marco::after { border-color: var(--oro-plano); }
+
+/* El panel de cada especialidad sube de 1px a 2px por la misma razon que el
+   filo de las tarjetas: es la pieza que sostiene la afirmacion de su
+   pantalla —el nombre de la especialidad y lo que incluye—, y en la escala
+   de grosores eso son 2px. El 21 se lo da a el, a la ficha de mision y a las
+   tarjetas de valores a la vez; aqui solo cambia el suyo.
+
+   Y hasta aqui el oro de esta pagina. Se probo tambien una regla debajo del
+   numero de cada bloque y se quito: el numero ya lleva una a la izquierda
+   desde el 17, y dos rayas de oro alrededor de dos digitos no es un detalle,
+   es un adorno. */
+.pagina-tratamientos .pz-panel::before {
+  height: 2px;
+  opacity: .82;
+}
+
+/* ---------------------------------------------------------------------------
    Sin animaciones.
 
    `clip-path: inset(0 0 100% 0)` no es solo invisible: tampoco recibe clics.
