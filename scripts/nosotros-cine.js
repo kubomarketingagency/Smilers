@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var VARIABLES_CINE = ['--c-uno', '--c-dos', '--c-ev-uno', '--c-ev-dos',
-                          '--f-der', '--f-op', '--f-desenfoque', '--f-x', '--f-filo', '--f-filo-op',
+                          '--f-der', '--f-op', '--f-desenfoque', '--f-ent', '--f-filo', '--f-filo-op',
                           '--i-sube', '--i-op', '--i-desenfoque', '--i-y', '--i-filo', '--i-filo-op',
                           '--h-abre', '--h-filo'];
     var VARIABLES_CIERRE = ['--h-abre', '--h-filo'];
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
         escena.style.setProperty('--f-der', (der * 100).toFixed(2) + '%');
         escena.style.setProperty('--f-op', texto.toFixed(3));
         escena.style.setProperty('--f-desenfoque', ((1 - texto) * 12).toFixed(1) + 'px');
-        escena.style.setProperty('--f-x', ((1 - texto) * 4).toFixed(2) + 'vw');
+        escena.style.setProperty('--f-ent', (1 - texto).toFixed(3));
         escena.style.setProperty('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
         escena.style.setProperty('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 

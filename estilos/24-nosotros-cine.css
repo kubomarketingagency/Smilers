@@ -531,10 +531,14 @@
   clip-path: inset(var(--i-sube, 100%) 0 0 0);
 }
 
+/* El desplazamiento de entrada iba en `vw` y crecia sin tope: a 1440 son 58px
+   y a 2560 pasan de 100, y con ellos la columna de la derecha se salia por el
+   canto mientras el panel entraba. El JS escribe ahora solo el factor de 1 a
+   0 y la distancia la pone aqui, acotada. */
 .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura {
   opacity: var(--f-op, 0);
   filter: blur(var(--f-desenfoque, 12px));
-  transform: translate3d(var(--f-x, 4vw), 0, 0);
+  transform: translate3d(calc(var(--f-ent, 1) * min(4vw, 56px)), 0, 0);
 }
 .ns-cine--viva .ns-capa--infra > .ns-envoltura {
   opacity: var(--i-op, 0);

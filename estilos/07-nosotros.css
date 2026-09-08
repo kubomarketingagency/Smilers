@@ -236,8 +236,10 @@
   .nosotros-split--invertido .nosotros-cuerpo {
     order: 1;
     margin-left: auto;
-    padding-left: clamp(1.5rem, 4vw, 4rem);
-    padding-right: clamp(2.5rem, 4.5vw, 5rem);
+    --ns-aire-izq: clamp(1.5rem, 4vw, 4rem);
+    --ns-aire-der: clamp(2.5rem, 4.5vw, 5rem);
+    padding-left: var(--ns-aire-izq);
+    padding-right: var(--ns-aire-der);
   }
 }
 
@@ -252,15 +254,34 @@
 
 .nm-sello__num--liso::before { content: none; }
 
+/* La medida de lectura son los 640px de TEXTO, no de caja.
+
+   Con `border-box` el `max-width` incluye el relleno, y el relleno de esta
+   columna crece con el ancho de la ventana — asi que cuanto mas grande era la
+   pantalla, mas estrecha salia la columna: 524px de texto a 1366, 518 a 1440,
+   499 a 1707. Y en ese ultimo los dos botones ya no cabian en una fila, se
+   apilaban, el bloque crecia 69px de golpe y el segundo boton se iba por
+   debajo del filo del pin. Justo al reves de lo que tiene que pasar.
+
+   Sumando el relleno al tope, la columna mide lo mismo en toda pantalla. Y a
+   partir de 1800px la medida crece un poco: ahi la mitad de la pagina es
+   marmol vacio y 640px de texto se quedan perdidos en medio. */
 .nosotros-cuerpo {
+  --ns-medida: 640px;
   perspective: 1200px;
-  max-width: 640px;
+  max-width: var(--ns-medida);
 }
 @media (min-width: 992px) {
   .nosotros-cuerpo {
-    padding-left: clamp(2.5rem, 4.5vw, 5rem);
-    padding-right: clamp(1.5rem, 4vw, 4rem);
+    --ns-aire-izq: clamp(2.5rem, 4.5vw, 5rem);
+    --ns-aire-der: clamp(1.5rem, 4vw, 4rem);
+    padding-left: var(--ns-aire-izq);
+    padding-right: var(--ns-aire-der);
+    max-width: calc(var(--ns-medida) + var(--ns-aire-izq) + var(--ns-aire-der));
   }
+}
+@media (min-width: 1800px) {
+  .nosotros-cuerpo { --ns-medida: 700px; }
 }
 
 /* El texto de esta columna comparte pantalla con el collage, asi que tiene que
@@ -922,6 +943,67 @@
      dentro del pin se suma al alto y saca el sello de la segunda pantalla
      tres pixeles por debajo del filo. */
   .pn-escena--viva .pn-fondo .nosotros-split--invertido { margin-top: 0; }
+  /* Y el collage al alto que de verdad le queda, no al de la ventana entera:
+     `100svh` no descuenta la barra fija, asi que se salia 62px por los dos
+     cantos —a cualquier tamano de pantalla, no solo en las grandes— y con el
+     se iba el sello de abajo.
+
+     Va la resta explicita y no `height: 100%`: esto es una celda de rejilla
+     de fila automatica, y ahi el 100% no tiene contra que medirse, asi que
+     cae al alto del contenido y el collage se disparaba a 1600px. */
+  .pn-escena--viva .pn-fondo .nosotros-media {
+    height: calc(100svh - var(--alto-navbar));
+    min-height: 0;
+  }
+}
+
+/* Ventanas de escritorio bajas: un portatil pequeno, una ventana que no ocupa
+   toda la pantalla, o un monitor grande con el escalado de Windows subido.
+   Ahi la escena tiene el ancho de siempre pero menos alto del que necesita —a
+   1024x600 al cuerpo le faltaban 69px y el segundo boton se iba por debajo
+   del filo del pin, que lo recorta sin avisar—.
+
+   Se aprieta en el mismo orden que en el movil: primero los aires, despues el
+   interlineado. El cuerpo de letra no se toca, que es lo que hay que leer. */
+@media (min-width: 992px) and (max-height: 720px) {
+  .pn-escena--viva .nosotros-cuerpo .etiqueta-editorial { margin-bottom: .55rem; }
+  .pn-escena--viva .nosotros-cuerpo .titulo-seccion { margin-bottom: .55rem; }
+  .pn-escena--viva .nosotros-cuerpo .parrafo {
+    margin-bottom: .7rem;
+    line-height: 1.58;
+  }
+  .pn-escena--viva .nosotros-cuerpo .parrafo-lead { line-height: 1.55; }
+  .pn-escena--viva .nosotros-checks {
+    margin-block: .75rem;
+    padding-top: .7rem;
+  }
+  .pn-escena--viva .nosotros-checks li { padding-block: .24rem; line-height: 1.5; }
+  .pn-escena--viva .nc-icono { top: 1rem; }
+  .pn-escena--viva .nosotros-sedes { margin-block: .75rem; }
+  .pn-escena--viva .nosotros-sedes li { padding-block: .26rem; }
+  .pn-escena--viva .ns-clave { margin-bottom: .15rem; }
+  .pn-escena--viva .nosotros-acciones { gap: .6rem; }
+  .pn-escena--viva .nosotros-acciones .btn { padding-block: .85rem; }
+}
+
+
+/* Por debajo de 640px de alto apretar ya no basta: la primera pantalla pide
+   624px para caber. Asi que ahi se cae el parrafo de acompanamiento, igual
+   que en el movil y por la misma razon: es el unico texto sin dato de esa
+   pantalla, el resumen esta en la entradilla y lo concreto en la lista de al
+   lado. Sigue en el HTML para las ventanas con alto de sobra, que son casi
+   todas: un portatil de 1366x768 deja 657 y no llega a entrar aqui. */
+@media (min-width: 992px) and (max-height: 640px) {
+  .pn-escena--viva .nosotros-cuerpo .parrafo:not(.parrafo-lead) { display: none; }
+}
+
+/* Entre 992 y 1200 la columna de texto es estrecha y los dos botones no caben
+   en una fila: se apilan, y apilados cuestan 69px de alto que en una ventana
+   baja no hay. Sale mas barato quitarles aire a los lados que a todo lo
+   demas, asi que ahi se aprieta el relleno lateral y se quedan en su fila. */
+@media (min-width: 992px) and (max-width: 1200px) {
+  .pn-escena--viva .nosotros-acciones { gap: .6rem; }
+  .pn-escena--viva .nosotros-acciones .btn { padding-inline: 1.35rem; }
 }
 
 .pn-escena--viva { height: 360vh; }
