@@ -121,10 +121,15 @@
   .banda-cta-masonry__cinta { animation: none; }
 }
 
+/* La mamposteria no es un fondo liso: pasan por debajo batas blancas y caras
+   a plena luz, y sobre esas el titular en blanco se perdia. El velo baja el
+   conjunto un punto mas, pero lo que de verdad hace legible la pregunta es
+   el recuadro negro de encima —el mismo `.banda-cta__vidrio` que usan las
+   paginas interiores—, para que el cierre sea el mismo en todo el sitio. */
 .banda-cta-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(10, 8, 6, .58) 0%, rgba(10, 8, 6, .80) 100%);
+  background: linear-gradient(180deg, rgba(10, 8, 6, .64) 0%, rgba(10, 8, 6, .84) 100%);
 }
 .banda-cta-contenido { position: relative; z-index: 2; }

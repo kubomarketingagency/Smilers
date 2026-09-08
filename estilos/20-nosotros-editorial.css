@@ -106,7 +106,7 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
-  background: transparent;
+  background: var(--btn-relleno, transparent);
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .72rem;

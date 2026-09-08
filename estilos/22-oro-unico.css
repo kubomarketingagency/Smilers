@@ -114,8 +114,44 @@
 .pagina-clara .pz-panel,
 .pagina-clara .pz-cita,
 .pagina-clara .ag-panel,
-.pagina-clara .banda-cta--jardin,
+.pagina-clara .banda-cta--onyx,
+.pagina-clara .banner-pagina--hero,
 .pagina-clara .ns-portada {
   --oro-vivo-degradado: var(--gradiente-oro);
 }
+
+/* ---------------------------------------------------------------------------
+   El relleno del boton, por la misma via.
+
+   Sobre marmol blanco el boton en reposo va relleno de negro: el filo y las
+   letras siguen siendo de oro, y al pasar por encima se invierte —oro de
+   fondo, letras negras—. Sobre piedra oscura no se rellena nada, que ahi el
+   filo ya se ve.
+
+   Se hereda, asi que basta con nombrar la piedra clara una vez y devolver la
+   variable a su sitio dentro de las piezas oscuras que viven en esas mismas
+   paginas. La lista de abajo es casi la de arriba, y lo es a proposito: son
+   las mismas piezas.
+   --------------------------------------------------------------------------- */
+.seccion-piedra,
+.seccion-clara,
+.pagina-clara { --btn-relleno: var(--onix); }
+
+.pagina-clara .navbar-principal,
+.pagina-clara .menu-panel,
+.pagina-clara .footer,
+.pagina-clara .cinta-trat,
+.pagina-clara .ns-bloque,
+.pagina-clara .ns-doble,
+.pagina-clara .ns-ficha,
+.pagina-clara .ns-valor,
+.pagina-clara .pz-tarjeta,
+.pagina-clara .pz-panel,
+.pagina-clara .pz-cita,
+.pagina-clara .ag-panel,
+.pagina-clara .ns-cine,
+.pagina-clara .ns-cierre,
+.banda-cta,
+.footer,
+.seccion-piedra .pn-telon { --btn-relleno: transparent; }
 

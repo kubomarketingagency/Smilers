@@ -77,11 +77,15 @@
   height: 100svh;
 }
 
+/* El rotulo va pegado al techo de la seccion, y el techo de la seccion esta
+   debajo de la barra fija: con 42px la palabra "Tratamientos" quedaba
+   partida por la mitad. El aire de arriba se cuenta desde donde acaba la
+   barra, no desde donde empieza la seccion. */
 .acordeon-etiqueta {
   position: absolute;
   top: 0; left: 0; right: 0;
   z-index: 3;
-  padding: 42px 2rem 22px;
+  padding: calc(var(--alto-navbar) + clamp(.9rem, 2vw, 1.5rem)) 2rem 22px;
   text-align: center;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);

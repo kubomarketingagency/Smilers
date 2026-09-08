@@ -27,13 +27,32 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
+    /* Las entradas del menu —Galeria > Instalaciones, Equipo…— no son anclas:
+       no hay ningun elemento con esos identificadores. Son el nombre del
+       filtro, y quien lo aplica es esto.
+
+       Y ademas hay que bajar hasta la reja. Antes la pagina empezaba con una
+       franja de titulo y el filtro caia casi en pantalla; con el hero de
+       madera delante, quien llega desde el menu se queda mirando el hero y no
+       ve que su filtro ya esta puesto. Se baja solo cuando la orden viene de
+       la direccion; pulsando el filtro a mano no se mueve nada, que ahi ya
+       se esta mirando la reja. */
     function filtrarSegunDireccion() {
       const marca = decodeURIComponent(window.location.hash.slice(1));
       if (!marca) return;
       const boton = Array.prototype.find.call(botonesFiltro, function (b) {
         return b.dataset.filtro === marca;
       });
-      if (boton) boton.click();
+      if (!boton) return;
+      boton.click();
+
+      const reja = document.querySelector('.filtros-galeria');
+      if (!reja) return;
+      const suave = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      const alto = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--alto-navbar')) || 62;
+      const destino = reja.getBoundingClientRect().top + window.scrollY - alto - 20;
+      window.scrollTo({ top: Math.max(0, destino), behavior: suave ? 'smooth' : 'auto' });
     }
 
     filtrarSegunDireccion();

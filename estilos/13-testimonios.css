@@ -48,6 +48,29 @@
       var(--onix) 100%);
 }
 
+/* ---------------------------------------------------------------------------
+   La madera.
+
+   El jardin era una foto que mirar, y por eso iba tenue —.62 sobre el onix— y
+   aclarada. La madera no: es una superficie, la veta es todo lo que tiene, y
+   con aquellos ajustes se apagaba hasta quedar en negro. Va entera y sin
+   aclarar; lo unico que se le pone encima es el halo de oro y el negro de los
+   cantos, que la cose con las secciones vecinas.
+   --------------------------------------------------------------------------- */
+.testimonios-fondo--madera img {
+  opacity: 1;
+  filter: saturate(1.04) brightness(.92);
+}
+.testimonios-fondo--madera::after {
+  background:
+    radial-gradient(70% 56% at 50% 46%, rgba(212, 175, 55, .13) 0%, transparent 66%),
+    linear-gradient(180deg,
+      var(--onix) 0%,
+      rgba(10, 8, 6, .30) 17%,
+      rgba(10, 8, 6, .30) 83%,
+      var(--onix) 100%);
+}
+
 .testimonios-etiqueta {
   position: relative;
   z-index: 3;

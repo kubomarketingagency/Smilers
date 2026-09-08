@@ -419,11 +419,11 @@
   .ns-cifras-sec .ns-boton:focus-visible { color: var(--onix); }
 }
 
-/* El jardin de Fundamentos: con el velo de antes la hoja quedaba tan negra
-   que no se distinguia del marmol. Sube la foto y afloja el velo hasta donde
-   el texto blanco de encima aguanta. */
-.ns-fondo--jardin img { opacity: .68; filter: saturate(.82); }
-.ns-fondo--jardin::after {
+/* Este modificador se lo lleva `.ns-fondo` cuando la piedra es el onix de la
+   banda de cierre. El ajuste fino de esa banda esta en el 23, que va
+   despues; aqui solo queda el punto de partida. */
+.ns-fondo--onyx img { opacity: .68; filter: saturate(.82); }
+.ns-fondo--onyx::after {
   background:
     radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .1), transparent 62%),
     linear-gradient(180deg, rgba(8, 8, 8, .42) 0%, rgba(8, 8, 8, .24) 44%, rgba(8, 8, 8, .5) 100%);

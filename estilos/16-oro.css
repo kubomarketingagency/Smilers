@@ -53,7 +53,13 @@
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
-  background: transparent;
+  /* Sobre piedra negra el boton es solo filo y letras; sobre marmol blanco
+     se rellena de negro. Quien decide es `--btn-relleno`, que ponen los
+     contextos al final del 22 —igual que `--oro-vivo-degradado`— y no una
+     regla suelta por cada sitio donde aparece un boton. El motivo: en blanco
+     el oro no puede ser filo, letra y contraste a la vez; relleno el negro,
+     el oro se queda solo con lo suyo. */
+  background: var(--btn-relleno, transparent);
   box-shadow: none;
   font-family: var(--fuente-menu);
   font-weight: 600;

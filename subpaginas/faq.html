@@ -23,17 +23,17 @@
   <link rel="stylesheet" href="../estilos/05-hero.css?v=7b4f3c23e2">
   <link rel="stylesheet" href="../estilos/06-secciones.css?v=1503d46c14">
   <link rel="stylesheet" href="../estilos/07-nosotros.css?v=bef904a66f">
-  <link rel="stylesheet" href="../estilos/08-especialidades.css?v=4cb259abb4">
-  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=af736e030d">
+  <link rel="stylesheet" href="../estilos/08-especialidades.css?v=593b33cc06">
+  <link rel="stylesheet" href="../estilos/09-cierre-cta.css?v=37aa21bf34">
   <link rel="stylesheet" href="../estilos/10-footer.css?v=dd32ae6d1e">
   <link rel="stylesheet" href="../estilos/11-animaciones.css?v=d6eade0649">
   <link rel="stylesheet" href="../estilos/12-interiores.css?v=ecf78cecee">
-  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=bfd8fcd036">
+  <link rel="stylesheet" href="../estilos/13-testimonios.css?v=7428acd300">
   <link rel="stylesheet" href="../estilos/14-pagina-nosotros.css?v=2d00bc6196">
-  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=a23493deb8">
-  <link rel="stylesheet" href="../estilos/16-oro.css?v=b84ca0f870">
-  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=002ec5afe8">
-  <link rel="stylesheet" href="../estilos/23-cierres.css?v=af2b62056d">
+  <link rel="stylesheet" href="../estilos/15-lienzo-claro.css?v=c61bc8e77a">
+  <link rel="stylesheet" href="../estilos/16-oro.css?v=974a4595ff">
+  <link rel="stylesheet" href="../estilos/22-oro-unico.css?v=3d37bb02ef">
+  <link rel="stylesheet" href="../estilos/23-cierres.css?v=74546706c1">
 </head>
 
 <body class="pagina-clara pagina-faq">
@@ -165,14 +165,13 @@
     </nav>
   </div>
 
-  <header class="banner-pagina">
-    <div class="forma forma-durazno forma-flotante" style="width:280px;height:280px;top:-60px;left:6%;"></div>
-    <div class="forma forma-naranja forma-blob" style="width:240px;height:240px;bottom:-70px;right:-60px;"></div>
-    <div class="acento-anillo blanco d-none d-lg-block" style="width:80px;height:80px;top:18%;right:10%;" aria-hidden="true"></div>
-    <div class="acento-puntos blanco d-none d-lg-grid" style="bottom:20%;left:9%;" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <span class="acento-mas blanco d-none d-md-block" style="top:16%;left:20%;" aria-hidden="true">+</span>
+  <header class="banner-pagina banner-pagina--hero">
+    <span class="bp-fondo" aria-hidden="true">
+      <img src="../imagenes/fondos/madera.webp?v=ab977d4e70"
+           srcset="../imagenes/fondos/madera-960.webp?v=d18f2268bc 960w, ../imagenes/fondos/madera.webp?v=ab977d4e70 1920w"
+           sizes="100vw" width="1920" height="1280" alt="" fetchpriority="high" decoding="async">
+    </span>
+    <span class="bp-velo" aria-hidden="true"></span>
     <div class="container">
       <nav class="breadcrumb-personalizado" aria-label="breadcrumb">
         <i class="fa-solid fa-house"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-house"></use></svg></i> <a href="../index.html">Inicio</a> <i class="fa-solid fa-chevron-right"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-chevron-right"></use></svg></i> <span>Preguntas Frecuentes</span>
@@ -205,7 +204,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqG1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqG1" aria-expanded="true" aria-controls="faqG1">
                   ¿Qué hace diferente a Smilers Dental Clinique?
                 </button>
               </h3>
@@ -221,7 +220,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqG2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqG2" aria-expanded="false" aria-controls="faqG2">
                   ¿Atienden emergencias dentales?
                 </button>
               </h3>
@@ -236,7 +235,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqG3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqG3" aria-expanded="false" aria-controls="faqG3">
                   ¿Necesito una remisión médica para agendar mi primera cita?
                 </button>
               </h3>
@@ -257,7 +256,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC1" aria-expanded="false" aria-controls="faqC1">
                   ¿Cómo agendo una cita?
                 </button>
               </h3>
@@ -272,7 +271,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC2" aria-expanded="false" aria-controls="faqC2">
                   ¿Qué métodos de pago aceptan?
                 </button>
               </h3>
@@ -287,7 +286,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC3" aria-expanded="false" aria-controls="faqC3">
                   ¿Cuál es la política de cancelación?
                 </button>
               </h3>
@@ -301,7 +300,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqC4" aria-expanded="false" aria-controls="faqC4">
                   ¿Trabajan con seguros dentales?
                 </button>
               </h3>
@@ -322,7 +321,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT1" aria-expanded="false" aria-controls="faqT1">
                   ¿Cuánto dura un tratamiento de ortodoncia con alineadores?
                 </button>
               </h3>
@@ -337,7 +336,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT2" aria-expanded="false" aria-controls="faqT2">
                   ¿Los implantes dentales duelen?
                 </button>
               </h3>
@@ -352,7 +351,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT3" aria-expanded="false" aria-controls="faqT3">
                   ¿A partir de qué edad puede mi hijo visitar al odontopediatra?
                 </button>
               </h3>
@@ -367,7 +366,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqT4" aria-expanded="false" aria-controls="faqT4">
                   ¿El blanqueamiento dental daña el esmalte?
                 </button>
               </h3>
@@ -389,7 +388,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCu1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCu1" aria-expanded="false" aria-controls="faqCu1">
                   ¿Qué cuidados debo tener después de una extracción?
                 </button>
               </h3>
@@ -404,7 +403,7 @@
 
             <div class="accordion-item">
               <h3 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCu2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCu2" aria-expanded="false" aria-controls="faqCu2">
                   ¿Cada cuánto debo hacerme una limpieza dental?
                 </button>
               </h3>
@@ -423,11 +422,11 @@
     </div>
   </section>
 
-  <section class="banda-cta banda-cta--jardin">
-    <span class="ns-fondo ns-fondo--jardin" aria-hidden="true">
-      <img src="../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115"
-           srcset="../imagenes/fondos/jardin-mosaico-720.webp?v=5f4f2c8cbd 720w, ../imagenes/fondos/jardin-mosaico.webp?v=230d0a0115 1440w"
-           sizes="100vw" width="1440" height="600" alt="" loading="lazy" decoding="async">
+  <section class="banda-cta banda-cta--onyx">
+    <span class="ns-fondo ns-fondo--onyx" aria-hidden="true">
+      <img src="../imagenes/fondos/onyx.webp?v=b186ce4837"
+           srcset="../imagenes/fondos/onyx-960.webp?v=4d5b5e04fc 960w, ../imagenes/fondos/onyx.webp?v=b186ce4837 1920w"
+           sizes="100vw" width="1920" height="1074" alt="" loading="lazy" decoding="async">
     </span>
     <div class="container">
       <div class="banda-cta__vidrio row align-items-center g-4">
@@ -569,7 +568,7 @@
   <script src="../scripts/navegacion.js?v=9b20285423"></script>
   <script src="../scripts/revelados.js?v=4bb5a0412a"></script>
   <script src="../scripts/footer.js?v=90dfd81995"></script>
-  <script src="../scripts/subpaginas.js?v=08d2c6193e"></script>
+  <script src="../scripts/subpaginas.js?v=4a0c3f48e2"></script>
   <script src="../scripts/secciones.js?v=6ba098c107"></script>
   <script src="../scripts/hero.js?v=d637ef3740"></script>
 </body>

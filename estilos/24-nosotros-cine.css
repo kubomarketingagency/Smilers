@@ -127,7 +127,28 @@
 .ns-capa--infra { padding-top: calc(var(--alto-navbar) + clamp(1.4rem, 3vw, 3rem)); }
 
 .ns-capa--panel { color: #FFFFFF; }
-.ns-capa--fundamentos { background: #070707; }
+
+/* Fundamentos va sobre madera, no sobre marmol negro. La razon es de fondo y
+   no de gusto: es la unica pantalla del recorrido que no ensena la clinica
+   —no hay foto que valga para lo que se dice en ella— y la piedra negra la
+   dejaba indistinguible del hueco entre escenas. La madera le pone
+   temperatura y la separa de las otras cuatro sin sacar una foto de la
+   manga. Y es la misma madera de Testimonios en la portada, para que las dos
+   superficies calidas del sitio sean una sola.
+
+   La veta va tenue: detras hay dos columnas de texto largo, y una madera a
+   plena intensidad les come el contraste. */
+.ns-capa--fundamentos { background: #0B0805; }
+.ns-fondo--madera img {
+  opacity: .44;
+  filter: saturate(1.02) brightness(.95);
+  transform: none;
+}
+.ns-fondo--madera::after {
+  background:
+    radial-gradient(112% 84% at 78% 6%, rgba(212, 175, 55, .13), transparent 62%),
+    linear-gradient(180deg, rgba(9, 7, 5, .58) 0%, rgba(9, 7, 5, .4) 46%, rgba(9, 7, 5, .74) 100%);
+}
 
 /* Las dos mitades, una al lado de la otra: apiladas no caben en una pantalla
    y lo que sobraba habia que quitarlo del contenido. */

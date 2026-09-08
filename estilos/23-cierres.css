@@ -1,9 +1,9 @@
 /* ===========================================================================
    El cierre de las paginas interiores: una sola pieza.
 
-   La pregunta final se apoya sobre el jardin y se lee dentro de un recuadro
+   La pregunta final se apoya sobre el onix y se lee dentro de un recuadro
    negro con filo de oro. Nacio en Tratamientos y ahora es la misma en
-   Galeria y en FAQ.
+   Galeria, en FAQ y —con su mamposteria en vez de la piedra— en la portada.
 
    Esta hoja va la ultima y la cargan las cinco paginas: tiene que poder
    pisar el fondo claro que el 15 le pone a `.banda-cta` en las paginas
@@ -12,9 +12,9 @@
 
 /* Dos clases y no una: el 15 le pone `background: transparent` a
    `.pagina-galeria .banda-cta` y a `.pagina-tratamientos .banda-cta`, y esos
-   selectores pesan mas que `.banda-cta--jardin` a secas. Con el fondo
-   transparente se veia el marmol blanco del lienzo en vez del jardin. */
-.banda-cta.banda-cta--jardin {
+   selectores pesan mas que `.banda-cta--onyx` a secas. Con el fondo
+   transparente se veia el marmol blanco del lienzo en vez del onix. */
+.banda-cta.banda-cta--onyx {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -24,33 +24,37 @@
   border-top: 1px solid rgba(212, 175, 55, .22);
   border-bottom: 1px solid rgba(212, 175, 55, .22);
 }
-.banda-cta--jardin > .container { position: relative; z-index: 1; }
+.banda-cta--onyx > .container { position: relative; z-index: 1; }
 
-.banda-cta--jardin .ns-fondo {
+.banda-cta--onyx .ns-fondo {
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
 }
-/* La banda es corta, asi que el velo tiene que ser flojo: si no, los dos
-   extremos oscuros se juntan y el jardin se pierde. Lo que hace legible el
-   texto no es el velo, es el recuadro negro de encima. */
-.banda-cta--jardin .ns-fondo img {
+/* El onix no es el jardin: donde aquel era verde y medio oscuro, este es
+   piedra de miel casi blanca en la mitad de su superficie. Con el velo que
+   llevaba el jardin la banda salia encendida y se comia el recuadro negro y
+   el pie que viene debajo. Asi que la piedra baja de intensidad y el velo
+   sube; lo que queda es el veteado caliente asomando en penumbra, que es lo
+   que le pega al oro. Lo que hace legible el texto sigue sin ser el velo:
+   es el recuadro negro de encima. */
+.banda-cta--onyx .ns-fondo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .78;
-  filter: saturate(.88);
+  opacity: .5;
+  filter: saturate(.92) brightness(.86);
   transform: none;
 }
-.banda-cta--jardin .ns-fondo::after {
+.banda-cta--onyx .ns-fondo::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .1), transparent 62%),
-    linear-gradient(180deg, rgba(8, 8, 8, .34) 0%, rgba(8, 8, 8, .12) 46%, rgba(8, 8, 8, .4) 100%);
+    radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .12), transparent 62%),
+    linear-gradient(180deg, rgba(8, 8, 8, .5) 0%, rgba(8, 8, 8, .3) 46%, rgba(8, 8, 8, .58) 100%);
 }
 
 .banda-cta__vidrio {
@@ -62,16 +66,16 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 30px 70px rgba(4, 6, 3, .45);
 }
 
-.banda-cta--jardin h2,
-.pagina-clara .banda-cta--jardin h2 {
+.banda-cta--onyx h2,
+.pagina-clara .banda-cta--onyx h2 {
   font-family: var(--fuente-titulo);
   font-weight: 400;
   font-size: clamp(1.5rem, 3.2vw, 2.1rem);
   line-height: 1.35;
   color: #FFFFFF;
 }
-.banda-cta--jardin p,
-.pagina-clara .banda-cta--jardin p {
+.banda-cta--onyx p,
+.pagina-clara .banda-cta--onyx p {
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
   line-height: 1.9;
@@ -83,4 +87,4 @@
 
 /* Dentro de la banda manda el degradado vivo: es una pieza oscura aunque
    viva en una pagina clara. */
-.pagina-clara .banda-cta--jardin { --oro-vivo-degradado: var(--gradiente-oro); }
+.pagina-clara .banda-cta--onyx { --oro-vivo-degradado: var(--gradiente-oro); }
