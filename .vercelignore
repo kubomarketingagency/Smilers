@@ -2,5 +2,9 @@
 # commitear, y no las pide ninguna página. Fuera del despliegue para que no
 # queden publicadas en el dominio del cliente.
 CACHE.md
+ESTRUCTURA.md
 scripts/sellar-version.js
 scripts/convert-to-webp.js
+scripts/podar-bootstrap.js
+vendor/bootstrap/bootstrap.min.css
+vendor/bootstrap/bootstrap.bundle.min.js

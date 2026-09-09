@@ -24,12 +24,8 @@
 .ns-rotulo--claro,
 .ns-rotulo--claro i,
 .ns-mvo__num,
-.ns-sede__nombre,
-.ns-portada__sello span,
 .ns-cifra__num i,
 .ns-ficha__esp,
-.ns-ruta--claro span,
-.crsl__pie i,
 .ag-panel__titulo,
 .ag-panel__ir,
 .cl-num,
@@ -67,21 +63,11 @@
           background-clip: text;
 }
 
-/* Los botones se quedan fuera a proposito. Un boton necesita su relleno, y
-   `background-clip: text` recorta el fondo contra las letras: no se pueden
-   tener las dos cosas. Ni con sombra interior ni con un pseudo detras —
-   ambos se pintan DESPUES del fondo recortado y lo tapan—. Su oro es plano. */
 
 /* Los enlaces que solo se ponen dorados al pasar por encima: el oro que
    aparece es el mismo degradado, no un color plano. */
 .footer-contacto a:hover,
 .footer-bottom a:hover,
-.nos-ruta a:hover,
-.nos-ruta a:focus-visible,
-.ns-ruta a:hover,
-.ns-ruta a:focus-visible,
-.ns-sede a:hover,
-.ns-sede a:focus-visible,
 .pagina-clara .breadcrumb-personalizado a:hover,
 .pagina-clara .breadcrumb-personalizado a:focus-visible {
   background-image: var(--oro-vivo-degradado, var(--gradiente-oro));

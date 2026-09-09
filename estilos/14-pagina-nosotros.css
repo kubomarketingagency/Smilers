@@ -1,24 +1,4 @@
 
-.nos-ruta {
-  margin: 0;
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: clamp(.72rem, .85vw, .78rem);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: #4A4A4A;
-}
-.nos-ruta a {
-  color: #4A4A4A;
-  padding-bottom: 2px;
-  border-bottom: 1px solid transparent;
-}
-.nos-ruta a:hover,
-.nos-ruta a:focus-visible {
-  color: var(--nos-dorado-texto);
-  border-bottom-color: var(--nos-linea);
-}
-.nos-ruta span { color: var(--nos-negro); font-weight: 700; }
 
 .nos-rotulo {
   display: flex;
@@ -67,8 +47,4 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--nos-dorado);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pagina-clara .revelar { transform: none; transition: none; }
 }

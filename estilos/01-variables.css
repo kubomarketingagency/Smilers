@@ -70,7 +70,10 @@
   --fuente-elegante: 'Bodoni Moda', serif;
   --fuente-menu:   'Bodoni Moda', serif;
   --fuente-cuerpo: 'Lato', sans-serif;
-  --fuente-banner: 'Prata', 'Bodoni Moda', serif;
+  /* Aqui vivia `--fuente-banner`, que era Prata. Solo la pedian dos reglas
+     —`.ns-portada__palabra` y `.ns-portada__marca`— de una portada de
+     Nosotros que ya no existe, asi que el sitio se descargaba una tercera
+     familia entera para no escribir nada con ella. */
   --radio:    18px;
   --radio-sm: 12px;
   --radio-btn: 14px;

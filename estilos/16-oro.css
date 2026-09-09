@@ -31,7 +31,6 @@
 }
 
 .tst-firma__linea,
-.nos-regla,
 .pagina-clara .banner-pagina h1::after {
   background: var(--gradiente-oro);
 }

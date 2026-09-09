@@ -1,6 +1,5 @@
 .seccion { padding: 100px 0; }
 
-.seccion-intima { padding: 64px 0; }
 
 .fondo-suave {
   position: relative;
@@ -83,17 +82,37 @@
   -webkit-text-fill-color: currentColor;
 }
 
-.subtitulo-seccion {
-  color: var(--silver-500);
-  max-width: 620px;
-  margin: 0 auto;
-  font-family: var(--fuente-menu);
-  font-weight: 500;
-  font-size: .85rem;
-  text-transform: uppercase;
-  letter-spacing: .14em;
-}
 
 .seccion-clara .subtitulo-seccion { color: var(--silver-900); }
 
 .parrafo { color: var(--texto-suave); margin-bottom: 1.5rem; }
+
+/* El marmol de fondo de una seccion: una foto a sangre debajo del contenido.
+   Vivia en el 15, que es la hoja de las paginas claras, y era lo unico que la
+   portada sacaba de sus 41 KB. Aqui esta en su sitio y la portada deja de
+   cargar la hoja entera por tres reglas. */
+.seccion-marmol {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.seccion-marmol img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Igual que la piedra de la barra: la blanca va sin lavado de oro, solo el
+   velo claro que la asienta. */
+.seccion-marmol::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, .34) 0%,
+      rgba(255, 255, 255, .1) 42%,
+      rgba(255, 255, 255, .32) 100%);
+}
+/* Y la seccion que se apoya en la piedra no pinta fondo, para que se vea. */
+.seccion-clara.seccion-piedra { background: transparent; }

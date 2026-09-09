@@ -197,36 +197,6 @@
       rgba(8, 8, 8, .58) 100%);
 }
 
-.ns-portada__centro {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  justify-items: center;
-  gap: clamp(.8rem, 1.6vw, 1.3rem);
-  text-align: center;
-}
-.ns-portada__palabra {
-  margin: 0;
-  font-family: var(--fuente-banner);
-  /* Es un h1: sin esto hereda la negrita y el asta engorda de mas. */
-  font-weight: 400;
-  font-size: min(var(--palabra-escala, 9.2vw), 6.6rem);
-  line-height: .96;
-  letter-spacing: .1em;
-  text-indent: .1em;
-  text-transform: uppercase;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gm-oro-vivo);
-  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, .78))
-          drop-shadow(0 1px 3px rgba(0, 0, 0, .55));
-}
-/* Aqui vivia `.ns-ruta--filo`, el indicador propio de la portada de Nosotros.
-   Se retira entero: esa pagina usa ya el mismo `.breadcrumb-personalizado`
-   que las otras tres, y lo que le hace falta de mas —la sombra contra el
-   carrusel— se lo pone el 24. */
 
 /* "TRATAMIENTOS" tiene doce letras y "NOSOTROS" ocho: la escala baja
    para que la palabra no se salga de la pantalla. */
@@ -234,8 +204,7 @@
 
 @media (max-width: 767.98px) {
   .ns-portada.ns-pantalla { min-height: max(400px, calc(var(--alto-navbar) + 48svh)); }
-  .ns-portada__palabra { font-size: min(11.6vw, 3.4rem); }
-  .pagina-tratamientos .ns-portada__palabra { font-size: min(8vw, 2.4rem); }
+    .pagina-tratamientos .ns-portada__palabra { font-size: min(8vw, 2.4rem); }
 }
 .ns-pantalla > .ns-envoltura {
   position: relative;
@@ -290,21 +259,10 @@
   transform: translateX(-50%) scaleX(1);
 }
 
-.ns-pantalla__velo {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: var(--dn-velo, var(--gm-negro));
-  opacity: .34;
-  transform: translate3d(0, 0, 0);
-  transition: opacity 1.05s var(--gm-curva), transform 1.15s var(--gm-curva);
-}
 .ns-pantalla.en-pantalla .ns-pantalla__velo {
   opacity: 0;
   transform: translate3d(0, -101%, 0);
 }
-.ns-pantalla--clara { --dn-velo: var(--gm-crema); }
 
 .ns-fondo {
   position: absolute;
@@ -331,15 +289,7 @@
     linear-gradient(180deg, rgba(8, 8, 8, .82) 0%, rgba(8, 8, 8, .66) 44%, rgba(8, 8, 8, .93) 100%);
 }
 
-.ns-fondo--marmol img { opacity: .85; }
-.ns-fondo--marmol::after {
-  background:
-    radial-gradient(118% 88% at 82% 0%, rgba(212, 175, 55, .14), transparent 62%),
-    linear-gradient(180deg, rgba(10, 10, 10, .5) 0%, rgba(10, 10, 10, .3) 46%, rgba(10, 10, 10, .8) 100%);
-}
 
-/* La foto de "En cifras": se ve entera pero entra y sale en degradado,
-   asi que arriba y abajo se funde con las secciones vecinas. */
 /* En cifras la foto emerge del marmol: arriba no esta —se ve la piedra
    del lienzo— y va apareciendo hacia abajo. La mascara sobre la imagen es
    la que la desvanece; el lavado claro de encima solo entra donde la foto
@@ -515,43 +465,12 @@
   background: linear-gradient(180deg, transparent, rgba(8, 8, 8, .78));
   pointer-events: none;
 }
-.crsl__pie {
-  position: absolute;
-  z-index: 1;
-  left: clamp(14px, 1.6vw, 22px);
-  bottom: clamp(12px, 1.4vw, 18px);
-  font-family: var(--fuente-cuerpo);
-  font-weight: 700;
-  font-size: .64rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, .85);
-}
-.crsl__pie i {
-  font-style: normal;
-  color: var(--gm-oro-vivo);
-}
 
 .crsl__mandos {
   display: flex;
   align-items: center;
   gap: clamp(.7rem, 1.2vw, 1.1rem);
   margin-top: clamp(.9rem, 1.6vw, 1.3rem);
-}
-.crsl__flecha {
-  display: grid;
-  place-items: center;
-  width: clamp(34px, 2.8vw, 40px);
-  aspect-ratio: 1;
-  padding: 0;
-  border: 1px solid var(--gm-borde);
-  border-radius: 50%;
-  background: rgba(10, 10, 10, .55);
-  color: var(--gm-oro-vivo);
-  cursor: pointer;
-  transition: background .45s var(--gm-curva), color .45s var(--gm-curva),
-              border-color .45s var(--gm-curva);
 }
 .crsl__flecha .icono { width: .8em; height: .8em; }
 .crsl__flecha--previa .icono { transform: rotate(180deg); }
@@ -587,12 +506,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .crsl__flecha:hover {
-    background: var(--gradiente-oro);
-    border-color: transparent;
-    color: var(--gm-negro);
-  }
-  .crsl__punto:hover { background: rgba(212, 175, 55, .45); }
+    .crsl__punto:hover { background: rgba(212, 175, 55, .45); }
 }
 
 .nos-portada__ambiente.crsl {
@@ -616,7 +530,6 @@
 
 /* Equipo cabe en una pantalla: el rotulo, la galeria, la ficha y el pie
    suman menos que el alto util, y por eso el scroll para justo aqui. */
-.ns-equipo { padding-inline: 0; }
 .ns-equipo.ns-pantalla { padding-block: clamp(1.5rem, 2.4vw, 2.2rem); }
 .ns-seccion.ns-pantalla + .ns-equipo.ns-pantalla { padding-top: clamp(1.5rem, 2.4vw, 2.2rem); }
 .ns-equipo > .ns-envoltura { position: relative; z-index: 1; }
@@ -762,27 +675,6 @@
   .cinta-trat__pista { animation: none; }
 }
 
-/* Al elegir un especialista ya no se abre su retrato: los cuatro se quedan
-   igual y lo que se despliega, a su derecha, es la ficha. */
-.ns-equipo__reparto {
-  display: grid;
-  gap: clamp(1rem, 1.8vw, 1.6rem);
-  margin-top: clamp(1rem, 1.8vw, 1.5rem);
-}
-@media (min-width: 992px) {
-  .ns-equipo__reparto {
-    grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
-    align-items: stretch;
-  }
-}
-.ns-equipo__galeria {
-  position: relative;
-  z-index: 1;
-  height: clamp(340px, 50svh, 520px);
-  margin-top: 0;
-  border: 1px solid var(--gm-borde-vivo);
-  box-shadow: 0 24px 60px rgba(43, 35, 20, .18);
-}
 /* Los retratos reparten el ancho a partes iguales y el activo no crece. */
 .pagina-nosotros .ns-equipo__galeria .ag-panel,
 .pagina-nosotros .ns-equipo__galeria .ag-panel.ag-panel--activo { flex: 1 1 0%; }
@@ -893,37 +785,21 @@
   background: var(--gm-oro-vivo);
   box-shadow: 0 0 12px rgba(212, 175, 55, .55);
 }
-.ns-equipo__pie {
-  margin: clamp(.6rem, 1vw, .9rem) 0 0;
-  font-family: var(--fuente-cuerpo);
-  font-weight: 300;
-  font-size: .74rem;
-  letter-spacing: .14em;
-  color: var(--gm-texto-2);
-}
 
-
-
-.ns-ruta--claro { color: rgba(255, 255, 255, .55); }
-.ns-ruta--claro a { color: rgba(255, 255, 255, .55); }
-.ns-ruta--claro span { color: var(--gm-oro-vivo); }
 
 .pagina-tratamientos .pz-tarjeta__foto { background: transparent; }
 .pagina-tratamientos .pz-cita { background: rgba(10, 10, 10, .9); }
 
 @media (prefers-reduced-motion: reduce) {
-  .ns-pantalla__velo,
   .ns-pantalla + .ns-pantalla::before,
-  .pagina-tratamientos .bloque-tratamiento + .bloque-tratamiento::before,
-  .ns-fondo img,
-  .crsl__toma,
-  .crsl__toma img,
-  .ns-riel__boton,
-  .ns-riel__boton::after,
-  .crsl__flecha { transition: none; }
+.pagina-tratamientos .bloque-tratamiento + .bloque-tratamiento::before,
+.ns-fondo img,
+.crsl__toma,
+.crsl__toma img,
+.ns-riel__boton,
+.ns-riel__boton::after { transition: none; }
   .crsl__punto--activo::after { animation: none; }
-  .ns-pantalla__velo { opacity: 0; }
-  .crsl__toma img { transform: none; }
+    .crsl__toma img { transform: none; }
 }
 
 
@@ -999,9 +875,6 @@
   border-left-color: var(--gm-oro-vivo);
   border-bottom-color: var(--gm-oro-vivo);
 }
-
-/* El boton de la tarjeta es el de siempre (16-oro.css). Esta regla lo
-   repintaba con mas peso (0,3,0) y era una copia que se podia desincronizar. */
 
 
 /* La ficha del especialista: se rellena al elegir un retrato del acordeon

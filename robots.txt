@@ -1,0 +1,11 @@
+# Smilers Dental Clinique — https://smilersdental.vercel.app
+
+User-agent: *
+Allow: /
+
+# Las direcciones definitivas son las limpias, sin `.html`. Las viejas siguen
+# abiertas a proposito: el servidor manda un 301 desde ellas, y un buscador
+# solo puede recogerlo si le dejas entrar a verlo. Cerrarlas aqui dejaria las
+# antiguas colgadas en el indice para siempre.
+
+Sitemap: https://smilersdental.vercel.app/sitemap.xml

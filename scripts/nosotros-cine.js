@@ -450,8 +450,16 @@ document.addEventListener('DOMContentLoaded', function () {
       var trozos = enlace.getAttribute('href').split('#');
       if (trozos.length < 2 || !trozos[1]) return;
 
+      /* El enlace puede venir escrito de tres maneras y las tres son esta
+         misma pagina: `#historia`, `nosotros#historia` y
+         `/subpaginas/nosotros#historia`. Y en local la direccion todavia
+         acaba en `.html`. */
       var primero = trozos[0];
-      if (primero && primero !== location.pathname.split('/').pop()) return;
+      if (primero) {
+        var suyo = location.pathname.replace(/\.html$/, '');
+        var otro = primero.replace(/\.html$/, '');
+        if (otro !== suyo && otro !== suyo.split('/').pop()) return;
+      }
 
       for (var i = 0; i < paradas.length; i++) {
         if (paradas[i].id === trozos[1]) {

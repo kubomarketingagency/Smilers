@@ -659,30 +659,6 @@
       rgba(255, 255, 255, .34) 100%);
 }
 
-.seccion-marmol {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.seccion-marmol img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-/* Igual que la piedra de la barra: la blanca va sin lavado de oro, solo el
-   velo claro que la asienta. */
-.seccion-marmol::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-      rgba(255, 255, 255, .34) 0%,
-      rgba(255, 255, 255, .1) 42%,
-      rgba(255, 255, 255, .32) 100%);
-}
-
 /* Las secciones claras no pintan fondo: lo que se ve por debajo es el
    marmol. Si aqui se le devuelve un color, se tapa la piedra. */
 .pagina-faq,
@@ -697,8 +673,7 @@
 .pagina-galeria .fondo-suave,
 .pagina-galeria .seccion-clara,
 .pagina-galeria .banda-cta,
-.pagina-tratamientos .banda-cta,
-.seccion-clara.seccion-piedra { background: transparent; }
+.pagina-tratamientos .banda-cta { background: transparent; }
 
 .pagina-faq .container { max-width: 1480px; }
 

@@ -394,21 +394,18 @@
   vertical-align: middle;
   transform: translateY(-1px);
 }
-.ns-valor {
+/* `.ns-valor` es un nombre compartido: en Nosotros son las fichas de valores,
+   que las viste el 20; aqui es la lista de sedes de la portada, que comparte
+   pantalla con el collage y necesita la misma tinta que el resto de la
+   columna. Por eso va con el apellido puesto y no suelto: suelto alcanzaba a
+   las fichas de la otra pagina y obligaba a esta hoja —44 KB de portada— a
+   viajar tambien alli para nada. */
+.nosotros-sedes .ns-valor {
   display: block;
   flex: none;
   padding-left: calc(5px + .8rem);
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
-  font-size: .95rem;
-  line-height: 1.75;
-  color: var(--texto);
-}
-/* `.ns-valor` es un nombre compartido: en Nosotros son las fichas de valores,
-   que las viste el 20. Esto solo toca la lista de sedes de la portada, que
-   comparte pantalla con el collage y necesita la misma tinta que el resto de
-   la columna. */
-.nosotros-sedes .ns-valor {
   font-size: .97rem;
   line-height: 1.62;
   color: #1A1A1A;
@@ -582,92 +579,7 @@
   background: radial-gradient(circle, rgba(212, 175, 55, .32) 0%, rgba(212, 175, 55, .12) 45%, transparent 72%);
 }
 
-.marco-imagen {
-  position: relative;
-  isolation: isolate;
-  border-radius: var(--radio-tag);
-  overflow: visible;
-}
-.marco-imagen img {
-  border-radius: var(--radio-tag);
-  box-shadow: var(--sombra);
-  width: 100%;
-  aspect-ratio: 4 / 3.2;
-  object-fit: cover;
-  transition: transform .6s cubic-bezier(.16, 1, .3, 1);
-}
-.marco-imagen:hover img { transform: scale(1.04); }
 
-.tarjeta-flotante {
-  position: absolute;
-  right: -14px;
-  bottom: -18px;
-  background: rgba(16, 16, 16, .92);
-  border: 1px solid var(--gold-500);
-  color: var(--marmol);
-  padding: .9rem 1.3rem;
-  border-radius: var(--radio-sm);
-  display: flex;
-  align-items: center;
-  gap: .7rem;
-}
-.tarjeta-flotante .numero {
-  font-family: var(--fuente-elegante);
-  font-size: 2rem;
-  line-height: 1;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
-}
-.tarjeta-flotante .texto { font-size: .78rem; line-height: 1.3; color: var(--silver-300); }
-
-.lista-caracteristicas { list-style: none; padding: 0; margin: 1.6rem 0 0; }
-.lista-caracteristicas li {
-  display: flex;
-  align-items: center;
-  gap: .9rem;
-  margin-bottom: 1.1rem;
-}
-.lista-caracteristicas h3 {
-  font-size: 1.05rem;
-  margin-bottom: .2rem;
-  color: var(--texto);
-}
-.lista-caracteristicas p {
-  font-size: .92rem;
-  color: var(--texto-suave);
-  margin: 0;
-}
-
-.icono-cuadro {
-  flex: 0 0 42px;
-  width: 42px; height: 42px;
-  background: transparent;
-  color: var(--gold-700);
-  border: 1px solid var(--gold-500);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 1rem;
-}
-.lista-caracteristicas li { position: relative; z-index: 1; }
-
-.franja-stats {
-  position: relative;
-  overflow: hidden;
-  background: var(--onix);
-  padding: 80px 0;
-}
-.franja-stats::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
-  opacity: .6;
-}
 @media (min-width: 992px) {
   .franja-stats .col-lg-3 { position: relative; }
   .franja-stats .col-lg-3::after {
@@ -679,25 +591,6 @@
     background: rgba(212, 175, 55, .3);
   }
   .franja-stats .row > div:last-child::after { display: none; }
-}
-.stat-numero {
-  font-family: var(--fuente-elegante);
-  font-size: clamp(2.4rem, 5.6vw, 3.6rem);
-  line-height: 1;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
-}
-.stat-texto {
-  font-family: var(--fuente-menu);
-  font-size: .78rem;
-  text-transform: uppercase;
-  letter-spacing: .16em;
-  color: var(--silver-300);
-  margin: .6rem 0 0;
-  font-weight: 500;
 }
 
 .seccion-clara .stat-texto { color: var(--texto-suave); }
@@ -795,50 +688,6 @@
 .contador-lujo.visible .cl-linea { width: 68px; }
 
 
-
-
-/* ===========================================================================
-   La escena de la pantalla negra: un telon que se abre y se cierra con el
-   scroll, no con el reloj.
-
-   Es la misma mecanica que el cierre cine (`.cierre-cine`, en el 09): un
-   envoltorio alto —`.pn-escena`— con un `position: sticky` dentro que se queda
-   clavado ocupando la pantalla entera mientras el envoltorio le pasa por
-   delante. Lo que se mueve no es el telon, es la pagina; de ese recorrido sale
-   un progreso de 0 a 1 que `scripts/revelados.js` escribe en las variables
-   `--pn-*`. **Aqui no hay ni una `transition`**: cada fotograma lo manda el
-   scroll, y por eso se puede ir y volver a mitad del barrido.
-
-   El reparto del recorrido:
-
-     0   -> .05   quieto: se ve el primer collage, que es lo que hay debajo
-     .05 -> .32   el negro cruza de izquierda a derecha y tapa la pantalla
-     .34 -> .46   aparecen los pilares y el contador, saliendo del desenfoque
-     .46 -> .70   se sostiene: es cuando toca leer
-     .70 -> .97   el negro se retira por la izquierda y descubre Instalaciones
-     .97 -> 1     cola, para que la segunda seccion se vea entera antes de
-                  soltarse el pin
-
-   **Los dos collages viven dentro del pin**, uno detras del telon todo el
-   rato: `.pn-fondo--uno` es el primero y `.pn-fondo--dos` el segundo, y el
-   cambiazo se da a mitad de recorrido, **cuando el negro tapa la pantalla
-   entera y no se ve nada**. De ahi que la secuencia se lea como toca: esta el
-   primer collage, le pasa el telon por encima, y al retirarse lo que hay
-   debajo ya es el segundo. Si el segundo se dejara puesto desde el principio
-   —que es como estaba— se veia antes de que entrara el negro y se destripaba
-   la transicion.
-
-   Por eso tambien el filo dorado que viaja con el canto (`.pn-filo`) va fuera
-   del telon: dentro se lo comeria su propio recorte.
-
-   En el HTML van en el orden en que se leen —collage uno, telon, collage
-   dos—, y no es casualidad: sin la clase `.pn-escena--viva` —que solo pone el
-   JS cuando hay ancho de sobra y el visitante no ha pedido menos movimiento—
-   nada de esto se activa y los tres bloques se quedan apilados en flujo
-   normal, en ese mismo orden. Es la red: sin JS, en movil o con
-   `prefers-reduced-motion`, la seccion se sigue leyendo entera; lo unico que
-   falta es el telon.
-   =========================================================================== */
 /* Sin esto el pin no se pega a nada. `.seccion-decorada` (en el 11) le pone
    `overflow: hidden` a la seccion, y eso la convierte en contenedor de scroll:
    dentro de una caja que no se desplaza, un `position: sticky` no tiene contra
@@ -927,7 +776,6 @@
 .pn-telon .cl-item { opacity: 1; transform: none; transition: none; }
 .pn-telon .cl-linea { width: 68px; transition: none; }
 
-/* --- Modo escena: el pin y el barrido. Lo enciende el JS --- */
 
 /* Dentro del pin la ventana es la medida exacta: lo que sobre por arriba o
    por abajo se lo come el `overflow: hidden` del pin, sin avisar. Fuera de la
