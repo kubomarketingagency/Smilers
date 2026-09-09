@@ -78,7 +78,7 @@
 }
 
 /* El rotulo va pegado al techo de la seccion, y el techo de la seccion esta
-   debajo de la barra fija: con 42px la palabra "Tratamientos" quedaba
+   debajo de la barra fija: con 42px la palabra "Especialidades" quedaba
    partida por la mitad. El aire de arriba se cuenta desde donde acaba la
    barra, no desde donde empieza la seccion. */
 .acordeon-etiqueta {

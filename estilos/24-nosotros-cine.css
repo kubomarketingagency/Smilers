@@ -30,6 +30,23 @@
 .ns-cierre,
 .ns-cierre__pin { position: relative; }
 
+/* El suelo de la pagina, en negro, mientras hay escena.
+
+   Esto es lo que quitaba la raya blanca del movil. Las dos piezas de la
+   escena son bloques altisimos con un pin de `100dvh` dentro, y el pin no
+   siempre mide un numero redondo de pixeles: entre lo que el navegador
+   redondea y lo que la barra de direcciones hace crecer y encoger al vuelo,
+   por el canto del pin asoma de vez en cuando media linea de lo que hay
+   debajo. Y lo que hay debajo es la pagina, que en Nosotros es crema.
+
+   Con el suelo en negro esa media linea sigue estando —no hay forma de que
+   no este— pero es negra, del mismo color que el telon que la tapa, asi que
+   no se ve. Va en `:has()` para que solo pase con la escena encendida: sin
+   ella la pagina es clara y su fondo tiene que serlo. */
+main:has(.ns-cine--viva) { background: #050505; }
+.ns-cine--viva,
+.ns-cierre--viva { background: #050505; }
+
 .ns-capa {
   position: relative;
   display: flex;
@@ -73,13 +90,14 @@
    plena intensidad les come el contraste. */
 .ns-capa--fundamentos { background: #0B0805; }
 .ns-fondo--madera img {
-  opacity: .44;
+  opacity: .6;
   filter: saturate(1.02) brightness(.95);
   transform: none;
 }
+/* Sin halo de oro, igual que la madera de Testimonios: lo unico que va
+   encima de la veta es el negro que le da contraste al texto. */
 .ns-fondo--madera::after {
   background:
-    radial-gradient(112% 84% at 78% 6%, rgba(212, 175, 55, .13), transparent 62%),
     linear-gradient(180deg, rgba(9, 7, 5, .58) 0%, rgba(9, 7, 5, .4) 46%, rgba(9, 7, 5, .74) 100%);
 }
 
@@ -256,7 +274,6 @@
   border-left: 3px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   background:
-    radial-gradient(84% 66% at 58% 40%, rgba(212, 175, 55, .12), transparent 66%),
     linear-gradient(270deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .1) 58%, rgba(9, 7, 5, .34) 100%);
 }
 /* Apilado, el marmol es la mitad de arriba, la madera la de abajo, y el filo
@@ -796,8 +813,16 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 
   .ns-cine--viva { height: 520vh; }
   .ns-cine--viva .ns-cine__pin { height: 100dvh; }
-  .ns-cierre--viva { height: 190vh; }
-  .ns-cierre--viva .ns-cierre__pin { height: 100dvh; }
+
+  /* Aqui no hay reglas del cierre porque aqui el cierre no es una escena:
+     `nosotros-cine.js` no le pone `--viva` por debajo de 992px y la banda se
+     queda en flujo normal, que es su estado de partida —el mismo que con
+     `prefers-reduced-motion`—. El motivo esta escrito en el guion, junto a
+     `cierreCabe()`: dos pines seguidos se cobran una pantalla entera de
+     scroll entre el uno y el otro, y esa pantalla se recorria en negro. Sin
+     pin, quien descubre la pregunta es el propio telon del cine al terminar
+     de subir, que es movimiento que ya estaba pagado. */
+  .banda-cta--cine { border-top-width: 2px; }
 
   .ns-cine--viva .ns-capa {
     padding-block: clamp(.7rem, 2.4vw, 1.2rem);

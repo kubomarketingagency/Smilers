@@ -1,0 +1,187 @@
+/* ===========================================================================
+   Las entradas.
+
+   El sitio ya tenia una: `.revelar` sube el bloque entero cuando entra en
+   pantalla (11-animaciones.css). Lo que no tenia es lo de dentro. Un bloque
+   con rotulo, titular, parrafo y boton llegaba de una pieza, y una pieza que
+   llega de golpe se lee como una diapositiva; lo que la hace cara es que
+   llegue por orden, y que el orden sea el de lectura.
+
+   Asi que aqui hay dos capas y nada mas:
+
+     1. Cada texto se descubre de arriba abajo detras de su propia mascara, y
+        arranca segun lo que ES —primero el rotulo, luego el titular, luego
+        el parrafo, luego la lista o el boton—, no segun donde este. Por eso
+        el retraso se reparte por clase y no por posicion: un bloque con
+        titular y parrafo, y otro con rotulo, titular, parrafo y boton, se
+        leen con el mismo ritmo.
+
+     2. Las fichas de una reja entran una detras de otra, no las tres a la
+        vez.
+
+   El movimiento es solo mascara y opacidad, sin `transform`. Es una decision
+   y no un descuido: media docena de estas piezas ya usan `transform` para su
+   propio hover —las tarjetas crecen un 2,2% al pasar el raton—, y pisarselo
+   desde aqui apagaria el hover para siempre en cuanto la pieza terminara de
+   entrar.
+
+   La mascara se cierra por abajo (`inset(0 -50% 102% -50%)`) y se abre a
+   `inset(-50%)`, negativa por los cuatro costados: si acabara en `inset(0)`
+   se quedaria recortando para siempre lo que sobresale de la caja, que en
+   estas tarjetas es la sombra —54px de difuminado— y en los titulares su
+   filo de oro.
+
+   La hoja entera vive dentro de `prefers-reduced-motion: no-preference`. Sin
+   eso habria que desandarlo todo en un bloque de excepciones, y lo que se
+   quiere es que quien pide menos movimiento no llegue siquiera a tener el
+   estado escondido.
+   =========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- 1. la secuencia del texto ---------------------------------------- */
+
+  .revelar :is(
+    .nos-rotulo, .ns-rotulo, .etiqueta-seccion, .pz-tarjeta__sello,
+    .pz-medallon__aro,
+    h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo, .pz-tarjeta__titulo,
+    .pz-medallon__nombre,
+    p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion, .pz-tarjeta__texto,
+    .pz-medallon__texto, blockquote,
+    ul, ol, .btn, .ns-boton
+  ) {
+    opacity: 0;
+    clip-path: inset(0 -50% 102% -50%);
+    transition: opacity .72s cubic-bezier(.16, 1, .3, 1),
+                clip-path .92s cubic-bezier(.16, 1, .3, 1);
+    transition-delay: calc(var(--retraso, 0s) + var(--paso, 0s));
+  }
+  .revelar.visible :is(
+    .nos-rotulo, .ns-rotulo, .etiqueta-seccion, .pz-tarjeta__sello,
+    .pz-medallon__aro,
+    h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo, .pz-tarjeta__titulo,
+    .pz-medallon__nombre,
+    p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion, .pz-tarjeta__texto,
+    .pz-medallon__texto, blockquote,
+    ul, ol, .btn, .ns-boton
+  ) {
+    opacity: 1;
+    clip-path: inset(-50%);
+  }
+
+  /* El reparto. Tres escalones de 90ms: menos y no se distingue del golpe,
+     mas y el boton llega cuando ya has terminado de leer. */
+  .revelar :is(h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,
+               .pz-tarjeta__titulo, .pz-medallon__nombre) { --paso: .09s; }
+  .revelar :is(p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion,
+               .pz-tarjeta__texto, .pz-medallon__texto,
+               blockquote) { --paso: .18s; }
+  .revelar :is(ul, ol, .btn, .ns-boton) { --paso: .27s; }
+
+  /* Un parrafo dentro de una lista heredaria el escalon de la lista y le
+     sumaria el suyo. Se le vuelve a poner el de la lista, que es donde
+     esta. */
+  .revelar :is(ul, ol) :is(p, li) { --paso: .27s; }
+
+  /* --- 2. las fichas de una reja ---------------------------------------- */
+
+  .pz-triptico.revelar > .pz-tarjeta,
+  .pz-medallones.revelar > .pz-medallon {
+    opacity: 0;
+    clip-path: inset(0 -50% 102% -50%);
+    transition: opacity .8s cubic-bezier(.16, 1, .3, 1),
+                clip-path 1s cubic-bezier(.16, 1, .3, 1);
+    transition-delay: var(--paso, 0s);
+  }
+  .pz-triptico.revelar.visible > .pz-tarjeta,
+  .pz-medallones.revelar.visible > .pz-medallon {
+    opacity: 1;
+    clip-path: inset(-50%);
+  }
+  .pz-triptico > .pz-tarjeta:nth-child(2)  { --paso: .13s; }
+  .pz-triptico > .pz-tarjeta:nth-child(3)  { --paso: .26s; }
+  .pz-medallones > .pz-medallon:nth-child(2) { --paso: .09s; }
+  .pz-medallones > .pz-medallon:nth-child(3) { --paso: .18s; }
+  .pz-medallones > .pz-medallon:nth-child(4) { --paso: .27s; }
+  .pz-medallones > .pz-medallon:nth-child(5) { --paso: .36s; }
+
+  /* El texto de dentro de una ficha no puede volver a esperar su turno: la
+     ficha ya llega escalonada, y encadenar los dos retrasos dejaba el ultimo
+     parrafo del triptico entrando medio segundo tarde. Dentro de la ficha
+     todo entra con ella. */
+  .pz-triptico > .pz-tarjeta :is(.pz-tarjeta__sello, .pz-tarjeta__titulo,
+                                 .pz-tarjeta__texto),
+  .pz-medallones > .pz-medallon > * {
+    opacity: 1;
+    clip-path: none;
+    transition: none;
+  }
+
+  /* --- 3. el indice de especialidades ----------------------------------- */
+
+  /* Nueve enlaces que se encienden de uno en uno, en el orden en que estan
+     numerados. La mascara aqui abre de izquierda a derecha y no de arriba
+     abajo: son lineas de una sola altura, y sobre una linea el barrido
+     vertical no se ve. */
+  .franja-nav.revelar a {
+    opacity: 0;
+    clip-path: inset(0 102% 0 -50%);
+    transition: opacity .5s cubic-bezier(.16, 1, .3, 1),
+                clip-path .66s cubic-bezier(.16, 1, .3, 1),
+                color .35s ease, background .35s ease;
+    transition-delay: var(--paso, 0s);
+  }
+  .franja-nav.revelar.visible a { opacity: 1; clip-path: inset(-50%); }
+  .franja-nav a:nth-of-type(1) { --paso: .02s; }
+  .franja-nav a:nth-of-type(2) { --paso: .07s; }
+  .franja-nav a:nth-of-type(3) { --paso: .12s; }
+  .franja-nav a:nth-of-type(4) { --paso: .17s; }
+  .franja-nav a:nth-of-type(5) { --paso: .22s; }
+  .franja-nav a:nth-of-type(6) { --paso: .27s; }
+  .franja-nav a:nth-of-type(7) { --paso: .32s; }
+  .franja-nav a:nth-of-type(8) { --paso: .37s; }
+  .franja-nav a:nth-of-type(9) { --paso: .42s; }
+
+  /* --- 4. la bienvenida de cada pagina ---------------------------------- */
+
+  /* El hero de las interiores no es un `.revelar` —no entra en pantalla, ya
+     esta— asi que su entrada va en `animation` y arranca con la pagina. La
+     ruta, el titulo y la bajada suben con la misma mascara y el mismo
+     escalon que todo lo demas. */
+  .pagina-clara .banner-pagina--hero .breadcrumb-personalizado { --paso: 0s; }
+  .pagina-clara .banner-pagina--hero .etiqueta-seccion { --paso: .1s; }
+  .pagina-clara .banner-pagina--hero h1 { --paso: .2s; }
+  .pagina-clara .banner-pagina--hero .banner-subtitulo { --paso: .32s; }
+  .pagina-clara .banner-pagina--hero :is(.breadcrumb-personalizado,
+                                         .etiqueta-seccion, h1,
+                                         .banner-subtitulo) {
+    animation: entrada-velo .95s cubic-bezier(.16, 1, .3, 1) var(--paso, 0s) both;
+  }
+  @keyframes entrada-velo {
+    from { opacity: 0; clip-path: inset(0 -50% 102% -50%); }
+    to   { opacity: 1; clip-path: inset(-50%); }
+  }
+
+  /* --- 5. lo que queda fuera -------------------------------------------- */
+
+  /* Dentro del cine de Nosotros nadie pone nunca `.visible`: las capas viven
+     en un pin, el observador las da por vistas desde el primer fotograma y
+     quien las presenta es el barrido (24-nosotros-cine.css lo explica). Si
+     el texto de ahi dentro esperara a `.visible`, no llegaria nunca. */
+  .ns-cine--viva .revelar :is(
+    .nos-rotulo, .ns-rotulo, .etiqueta-seccion,
+    h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,
+    p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion, blockquote,
+    ul, ol, .btn, .ns-boton
+  ),
+  .ns-cierre--viva .revelar :is(
+    .nos-rotulo, .ns-rotulo, .etiqueta-seccion,
+    h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,
+    p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion, blockquote,
+    ul, ol, .btn, .ns-boton
+  ) {
+    opacity: 1;
+    clip-path: none;
+    transition: none;
+  }
+}

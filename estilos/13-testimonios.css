@@ -61,9 +61,13 @@
   opacity: 1;
   filter: saturate(1.04) brightness(.92);
 }
+/* Sin halo de oro. Lo llevaba encima al 13% y lo que hacia sobre una madera
+   wengue no era encenderla: le lavaba la veta del centro justo donde mas se
+   ve, y dejaba la superficie con aspecto de foto vieja. La madera se pinta
+   sola. Lo unico que queda encima es el negro de los cantos, que la cose con
+   las secciones vecinas. */
 .testimonios-fondo--madera::after {
   background:
-    radial-gradient(70% 56% at 50% 46%, rgba(212, 175, 55, .13) 0%, transparent 66%),
     linear-gradient(180deg,
       var(--onix) 0%,
       rgba(10, 8, 6, .30) 17%,

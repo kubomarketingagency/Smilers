@@ -131,6 +131,27 @@ document.addEventListener('DOMContentLoaded', function () {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
+    /* El cierre es una escena clavada solo en pantalla grande.
+
+       En el telefono costaba lo que no vale. Las dos escenas son dos pines
+       seguidos, y entre que el telon acaba de cerrarse al final del cine y
+       que el cierre llega a clavarse hay, por construccion, el alto entero de
+       una pantalla de scroll: el pin del cine tiene que terminar de salir
+       antes de que el del cierre pueda empezar. Como las dos hojas estan
+       cerradas a los dos lados de ese hueco, lo que se recorria ahi era una
+       pantalla de negro quieto, y solo despues empezaban a abrirse otro tanto
+       —y todavia quedaba media pantalla mas de banda clavada sin hacer nada
+       cuando ya estaban abiertas del todo—.
+
+       Aqui el cierre se lee como lo que es sin la escena: una seccion normal
+       con la pregunta y las cifras. El telon del cine sigue cerrandose, y al
+       seguir subiendo es el propio telon el que la descubre por abajo. La
+       apertura deja de costar scroll porque ya no es un tramo aparte: es el
+       mismo movimiento con el que la escena se despide. */
+    function cierreCabe() {
+      return window.matchMedia('(min-width: 992px)').matches;
+    }
+
     /* Las dos cintas de fotos de la escena. `interiores.js` las monta y las
        deja en `SmilersCarruseles`; aqui se les dice cuando corren, porque su
        observador no puede saberlo: dentro del pin las dos estan siempre en
@@ -165,14 +186,25 @@ document.addEventListener('DOMContentLoaded', function () {
     var VARIABLES_CIERRE = ['--h-abre', '--h-filo'];
 
     var viva = false;
+    var cierreVivo = false;
 
     function revisarModo() {
       var quiere = cabe();
-      if (quiere === viva) return;
+      var quiereCierre = quiere && cierreCabe();
+      if (quiere === viva && quiereCierre === cierreVivo) return;
       viva = quiere;
+      cierreVivo = quiereCierre;
 
       escena.classList.toggle('ns-cine--viva', viva);
-      if (cierre) cierre.classList.toggle('ns-cierre--viva', viva);
+      if (cierre) cierre.classList.toggle('ns-cierre--viva', cierreVivo);
+
+      if (cierre && !cierreVivo) {
+        VARIABLES_CIERRE.forEach(function (v) { cierre.style.removeProperty(v); });
+        escritoCierre = {};
+        ultimoCierre = -1;
+        pCierre = 0;
+        contadosYa = false;
+      }
 
       if (!viva) {
         VARIABLES_CINE.forEach(function (v) { escena.style.removeProperty(v); });
@@ -232,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function leer(ctx) {
       if (viva) {
         pCine = progresoDe(escena, ctx);
-        if (cierre) pCierre = progresoDe(cierre, ctx);
+        if (cierre && cierreVivo) pCierre = progresoDe(cierre, ctx);
       }
       rielMejor = paradaEnCurso(ctx);
     }
@@ -251,7 +283,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var sale   = suave(tramo(pCine, .45, .59));
         var sube   = suave(tramo(pCine, .74, .86));
         var textoI =       tramo(pCine, .78, .89);
-        var cierra = suave(tramo(pCine, .92, 1));
+        /* El telon se cierra en el ultimo 8% del recorrido, y en el 6%
+           cuando no hay apertura despues: sin un tramo de apertura al que
+           dar entrada, alargar el cierre es solo alargar el negro. */
+        var cierra = suave(tramo(pCine, cierreVivo ? .92 : .94, 1));
 
         /* Un solo canto para las dos mitades del telon de fundamentos: entra
            de izquierda a derecha y se retira por donde vino, asi que mientras
@@ -295,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
         cintas(pCine < .22 ? 'historia' : (pCine > .73 ? 'infra' : 'ninguna'));
       }
 
-      if (viva && cierre && pCierre !== ultimoCierre) {
+      if (viva && cierreVivo && cierre && pCierre !== ultimoCierre) {
         ultimoCierre = pCierre;
         var abre = suave(tramo(pCierre, .08, .42));
         ponCierre('--h-abre', abre.toFixed(3));
@@ -348,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function destinoDe(parada) {
-      if (!viva) {
+      if (!(parada.bloque === escena ? viva : cierreVivo)) {
         return Math.max(0, parada.destinoEl.getBoundingClientRect().top + window.scrollY - 90);
       }
       var caja = parada.bloque.getBoundingClientRect();
@@ -370,8 +405,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var mejor = 0;
       for (var i = 0; i < paradas.length; i++) {
         var parada = paradas[i];
-        if (viva) {
-          var suyo = parada.bloque === escena ? pCine : pCierre;
+        var esCine = parada.bloque === escena;
+        if (esCine ? viva : cierreVivo) {
+          var suyo = esCine ? pCine : pCierre;
           if (suyo >= parada.p - .04) mejor = i;
         } else if (parada.destinoEl.getBoundingClientRect().top < ctx.alto * .5) {
           mejor = i;

@@ -942,111 +942,126 @@
   border: 0;
 }
 
-/* La misma franja de piedra que los filtros de la Galeria, pero con enlaces
-   en vez de botones: nueve especialidades y cada una baja a su bloque. Sale
-   en el sitio de la cinta que pasaba sola, que decia los mismos nueve
-   nombres sin llevar a ninguno.
+/* La misma piedra que los filtros de la Galeria, pero esto ya no es una tira
+   de navegacion: es el indice de la seccion.
 
-   Era una fila que envolvia, y ahi estaba el problema: nueve nombres de dos
-   palabras separados solo por un hueco: en el telefono no se sabia donde
-   acababa "Rehabilitacion Oral" y empezaba "Cirugia Oral", y se leian como
-   una lista de cuatro cosas raras en vez de nueve especialidades.
+   Ese es el cambio. Antes eran nueve nombres sueltos repartidos en un cuadro
+   de tres por tres, centrados en su celda, y no se entendia que eran: ni una
+   lista, ni una tabla, ni un menu. Ahora cada uno lleva delante su numero
+   —el mismo 01..09 que preside su bloque mas abajo— y el nombre arranca
+   pegado a la izquierda, que es como se lee un indice. Con eso la franja
+   dice de una lo que es: aqui van nueve, esta es la tercera, y pinchandola
+   se llega a ella.
 
-   La reja lo resuelve por construccion. Tres columnas fijas —nueve entre
-   tres da un cuadro exacto, sin fila coja— y una linea de oro en cada
-   juntura. Con las columnas contadas se sabe cual es el primero de cada
-   fila, que es lo unico que hace falta para que ninguna linea quede colgando
-   del borde: la de la izquierda se cae en 3n+1, la de arriba en los tres
-   primeros. En el telefono son dos columnas y el noveno ocupa las dos, asi
-   que tampoco queda hueco.
+   El numero sale de un contador de CSS y no del HTML: la numeracion de los
+   bloques ya la lleva el documento, y duplicarla a mano seria pedir que las
+   dos listas no se despeguen nunca.
 
-   Las dos lineas no pesan igual: la vertical separa dos nombres de la misma
-   fila —el corte que se estaba perdiendo— y va a .38 con las puntas
-   desvanecidas; la horizontal solo marca el cambio de fila, que ya se ve por
-   la posicion, y va a .26 y plana. Las dos por debajo del filo de oro que
-   rodea la franja entera, que sigue mandando. */
+   Las junturas van en borde y no en pseudo, que es lo que deja el `::after`
+   libre para la flecha. En una tira centrada un borde de canto a canto la
+   habria convertido en una tabla; en un indice es justo lo que se quiere.
+
+   Tres columnas fijas —nueve entre tres da un cuadro exacto— y por eso se
+   sabe cual abre fila, que es lo unico que hace falta para que ninguna linea
+   quede colgando: la vertical se cae en 3n+1, la horizontal en los tres
+   primeros. En el telefono son dos columnas y el noveno ocupa las dos. */
 .pagina-clara .franja-nav {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
-  padding: 0;
+  padding: clamp(.3rem, .8vw, .6rem);
+  counter-reset: esp;
   margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
   margin-bottom: clamp(.5rem, 1vw, .9rem);
 }
 .pagina-clara .franja-nav a {
   position: relative;
   z-index: 1;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: center;
-  padding: clamp(.7rem, 1.5vw, 1.05rem) clamp(.6rem, 1.6vw, 1.4rem);
+  gap: clamp(.55rem, 1.2vw, .95rem);
+  padding: clamp(.9rem, 1.9vw, 1.35rem) clamp(.9rem, 1.9vw, 1.5rem);
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: .68rem;
-  letter-spacing: .24em;
+  font-size: .76rem;
+  letter-spacing: .19em;
+  line-height: 1.35;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   text-decoration: none;
-  color: rgba(255, 255, 255, .62);
+  color: rgba(255, 255, 255, .68);
   transition: color .35s ease, background .35s ease;
 }
-/* La juntura vertical. La lleva cada enlace y se apaga en el primero de
-   cada fila; escrito al reves —dibujarla solo en los que no son primeros—
-   el movil no podria devolverla, porque alli el primero de fila es otro.
-
-   No llega a los cantos de la celda a proposito: una linea de borde a borde
-   convertiria la franja en una tabla. */
+/* El numero, en la letra de los titulares y no en la del menu: es una cifra
+   de indice, no una etiqueta. Va en oro y por debajo del blanco del nombre,
+   que es quien manda en la linea. */
 .pagina-clara .franja-nav a::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 18%;
-  bottom: 18%;
-  width: 1px;
-  background: linear-gradient(180deg,
-    transparent, rgba(212, 175, 55, .38) 22%, rgba(212, 175, 55, .38) 78%, transparent);
-  pointer-events: none;
+  counter-increment: esp;
+  content: counter(esp, decimal-leading-zero);
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  line-height: 1;
+  color: var(--oro-marca);
+  opacity: .6;
+  transition: opacity .35s ease;
 }
-.pagina-clara .franja-nav a:nth-of-type(3n + 1)::before { display: none; }
-.pagina-clara .franja-nav a:nth-of-type(n + 4) {
-  border-top: 1px solid rgba(212, 175, 55, .26);
-}
-/* El subrayado del hover ya no puede ir de canto a canto: la celda tiene
-   relleno y la linea se saldria por debajo del nombre. Sale del centro. */
+/* La flecha va siempre puesta, tenue, y se enciende al pasar por encima. Que
+   este siempre es lo que hace que la celda no parezca medio vacia: el nombre
+   ocupa un tercio del hueco y sin nada al otro lado la fila se quedaba
+   colgando en el aire. Con la flecha al canto hay principio —el numero— y
+   final, que es como se lee una linea de indice. */
 .pagina-clara .franja-nav a::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: clamp(.35rem, .8vw, .6rem);
-  width: 0;
-  height: 1px;
-  transform: translateX(-50%);
-  background: var(--nos-dorado);
-  transition: width .45s cubic-bezier(.22, 1, .36, 1);
+  content: '\203A';
+  font-family: var(--fuente-menu);
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--oro-marca);
+  opacity: .3;
+  transform: translateX(-4px);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+.pagina-clara .franja-nav a:nth-of-type(n + 2) {
+  border-left: 1px solid rgba(212, 175, 55, .3);
+}
+.pagina-clara .franja-nav a:nth-of-type(3n + 1) { border-left: 0; }
+.pagina-clara .franja-nav a:nth-of-type(n + 4) {
+  border-top: 1px solid rgba(212, 175, 55, .22);
 }
 .pagina-clara .franja-nav a:hover,
 .pagina-clara .franja-nav a:focus-visible {
   color: #FFFFFF;
-  background: rgba(212, 175, 55, .07);
+  background: linear-gradient(90deg, rgba(212, 175, 55, .13), rgba(212, 175, 55, .02));
 }
+.pagina-clara .franja-nav a:hover::before,
+.pagina-clara .franja-nav a:focus-visible::before { opacity: 1; }
 .pagina-clara .franja-nav a:hover::after,
-.pagina-clara .franja-nav a:focus-visible::after { width: 62%; }
+.pagina-clara .franja-nav a:focus-visible::after { opacity: .9; transform: none; }
 
 @media (max-width: 575.98px) {
   .pagina-clara .franja-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pagina-clara .franja-nav a {
-    font-size: .62rem;
-    letter-spacing: .16em;
-    padding-inline: .5rem;
+    gap: .5rem;
+    padding: .8rem .6rem;
+    font-size: .63rem;
+    letter-spacing: .12em;
   }
-  /* Las reglas de arriba cuentan de tres en tres; aqui se cuenta de dos en
-     dos. El orden importa: primero se devuelve la juntura a los 3n+1, y
-     despues se quita a los que aqui abren fila. El 7 cae en los dos y gana
-     la segunda, que va detras. */
-  .pagina-clara .franja-nav a:nth-of-type(3n + 1)::before { display: block; }
-  .pagina-clara .franja-nav a:nth-of-type(2n + 1)::before { display: none; }
+  .pagina-clara .franja-nav a::before { font-size: .78rem; }
+  /* La flecha se cae: sin raton no se enciende nunca y solo estaria
+     robandole ancho al nombre, que aqui va justo. */
+  .pagina-clara .franja-nav a { grid-template-columns: auto minmax(0, 1fr); }
+  .pagina-clara .franja-nav a::after { display: none; }
+  /* Arriba se cuenta de tres en tres; aqui de dos en dos. Primero se le
+     devuelve la juntura a los 3n+1 y despues se le quita a los que abren
+     fila aqui. El 7 cae en los dos y gana la segunda, que va detras. */
+  .pagina-clara .franja-nav a:nth-of-type(3n + 1) {
+    border-left: 1px solid rgba(212, 175, 55, .3);
+  }
+  .pagina-clara .franja-nav a:nth-of-type(2n + 1) { border-left: 0; }
   .pagina-clara .franja-nav a:nth-of-type(n + 3) {
-    border-top: 1px solid rgba(212, 175, 55, .26);
+    border-top: 1px solid rgba(212, 175, 55, .22);
   }
   .pagina-clara .franja-nav a:last-child { grid-column: 1 / -1; }
 }
@@ -1119,13 +1134,11 @@
      visita eso ya no es una entrada, es una espera. */
   animation: ns-umbral-sale .6s cubic-bezier(.65, 0, .25, 1) 1s both;
 }
-.ns-umbral::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(72% 58% at 50% 46%, rgba(212, 175, 55, .12), transparent 68%);
-  pointer-events: none;
-}
+/* El fondo va negro y nada mas. Llevaba un halo de oro encima —un radial al
+   12% saliendo del centro— y sobre negro puro eso no se lee como luz, se lee
+   como una mancha: la palabra ya es de oro, y el oro sobre oro deslavado le
+   quita el filo en vez de darselo. El unico oro de la bienvenida es la
+   palabra y su rayita. */
 .ns-umbral__palabra {
   margin: 0;
   font-family: var(--fuente-titulo);
