@@ -81,16 +81,10 @@
   padding: 0 2rem 1.4rem;
   text-align: center;
   pointer-events: none;
-}
-.testimonios-etiqueta span {
+  --tracking: .04em;
   font-family: var(--fuente-elegante);
   font-size: clamp(1.3rem, 2.6vw, 2rem);
   letter-spacing: .04em;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
 }
 
 .testimonios-escena { display: none; }
@@ -479,7 +473,7 @@
 @media (max-width: 991.98px) {
   .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
   .esfera-activa .testimonios-etiqueta { padding: 84px 1.2rem 14px; }
-  .testimonios-etiqueta span { font-size: clamp(1.6rem, 7vw, 2.3rem); }
+  .testimonios-etiqueta { font-size: clamp(1.6rem, 7vw, 2.3rem); }
   .esfera-activa .testimonios-escena {
     flex-direction: column;
     gap: clamp(.6rem, 2vh, 1.4rem);

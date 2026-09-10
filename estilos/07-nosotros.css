@@ -488,12 +488,16 @@
 }
 .pilar:hover::before { width: 100%; height: 1px; }
 
+/* El numero de cada pilar va grande y en la Bodoni de los titulares, no en
+   la letra de los rotulos: a .7rem se leia como una nota al margen, y es lo
+   primero que ordena la fila. */
 .pilar__num {
   display: block;
-  font-family: var(--fuente-menu);
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .22em;
+  font-family: var(--fuente-elegante);
+  font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: .02em;
 }
 
 .pilar__icono {
@@ -509,14 +513,25 @@
   color: var(--gold-500);
 }
 
+/* El titulo de cada pilar, enmarcado: filo de oro, letra blanca y un poco de
+   aire, sin fondo propio —el pilar ya es negro—. Va a `fit-content` y no en
+   `inline-block` para que el marco se cina a la palabra sin abrir una linea
+   de texto alrededor, que le sumaria un hueco por debajo. El relleno de la
+   derecha descuenta el espaciado de la ultima letra; sin eso el marco sale
+   mas holgado de un lado que del otro. */
 .pilar h3 {
-  margin-bottom: .5rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: .6rem;
+  padding: .52em .58em .48em .8em;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .78rem;
   letter-spacing: .22em;
   text-transform: uppercase;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #F5F2EC;
 }
 .pilar p {
@@ -714,11 +729,13 @@
 /* --- Modo estatico: el de serie, el que se ve si el JS no entra --- */
 
 .pn-telon {
+  --pn-pad-y: clamp(1.6rem, 3.4vw, 3.4rem);
+  --pn-pad-x: clamp(1.1rem, 3vw, 3rem);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1.6rem, 3.4vw, 3.4rem) clamp(1.1rem, 3vw, 3rem);
+  padding: var(--pn-pad-y) var(--pn-pad-x);
   background:
     radial-gradient(ellipse 75% 130% at 14% 0%, rgba(212, 175, 55, .16) 0%, transparent 62%),
     linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
@@ -748,9 +765,52 @@
 .pn-filo { display: none; }
 
 .pn-grupo > .etiqueta-editorial { margin-bottom: clamp(.8rem, 1.6vw, 1.3rem); }
-.pn-grupo + .pn-grupo {
-  padding-top: clamp(1.3rem, 2.6vw, 2.4rem);
-  border-top: 1px solid rgba(212, 175, 55, .22);
+/* Las cifras van sobre madera: la misma de Testimonios y de los heros de
+   Galeria y FAQ, entera y sin halo. Es una franja que baja desde la raya de
+   oro hasta el canto del telon, de lado a lado —por eso los margenes
+   negativos, que se comen el relleno del telon, y por eso ese relleno vive en
+   variables—, y encima de ella los pilares se quedan centrados en lo que
+   queda de negro.
+
+   Va FUERA del `.pn-contenido` de los pilares a proposito. Ese bloque se
+   desenfoca y se desvanece mientras entra, y un filtro sobre una madera de
+   pantalla entera se recalcula en cada fotograma del barrido. Asi la madera
+   llega con el telon, igual que su negro, y lo unico que entra desenfocado
+   son las cifras, que llevan su propio `.pn-contenido`. La raya de arriba es
+   de 2px, que es lo que el sitio da a la linea que separa dos superficies. */
+.pn-telon > .pn-contenido { margin-block: auto; }
+
+.pn-madera {
+  position: relative;
+  isolation: isolate;
+  margin: clamp(1.1rem, 2.2vw, 2rem) calc(-1 * var(--pn-pad-x)) calc(-1 * var(--pn-pad-y));
+  padding: clamp(1.3rem, 2.6vw, 2.4rem) var(--pn-pad-x) var(--pn-pad-y);
+}
+.pn-madera::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 1;
+  height: 2px;
+  background: var(--oro-marca-degradado);
+}
+.pn-madera__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.pn-madera__fondo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pn-madera__fondo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .12) 36%, rgba(0, 0, 0, .1) 70%, rgba(0, 0, 0, .36) 100%);
 }
 
 .pn-telon .pilares-editorial,
@@ -817,6 +877,7 @@
    interlineado. El cuerpo de letra no se toca, que es lo que hay que leer. */
 @media (min-width: 992px) and (max-height: 720px) {
   .pn-escena--viva .nosotros-cuerpo .etiqueta-editorial { margin-bottom: .55rem; }
+  .pn-escena--viva .nosotros-cuerpo .caja-oro { padding-block: .38em .32em; }
   .pn-escena--viva .nosotros-cuerpo .titulo-seccion { margin-bottom: .55rem; }
   .pn-escena--viva .nosotros-cuerpo .parrafo {
     margin-bottom: .7rem;
@@ -915,10 +976,16 @@
   #nosotros .pn-escena--viva .pn-fondo .nm-figura:hover img { transform: scale(1.06); }
 }
 
+/* Clavado, el telon ocupa la pantalla entera y la barra fija le tapa el
+   techo, asi que el negro de los pilares se cuenta desde donde acaba la
+   barra. Con el numero grande y los titulos enmarcados los pilares ya no
+   caben sobrados en un telefono de 640 de alto, y centrados en la pantalla
+   entera el rotulo se metia 25px debajo de la barra. */
 .pn-escena--viva .pn-telon {
   position: absolute;
   inset: 0;
   z-index: 2;
+  padding-top: calc(var(--alto-navbar) + .5rem);
   clip-path: inset(0 var(--pn-der, 100%) 0 var(--pn-izq, 0%));
 }
 
@@ -985,6 +1052,9 @@
     letter-spacing: .2em;
     margin-bottom: .5rem;
   }
+  /* La caja de oro de los rotulos, cenida: con el aire de escritorio cada una
+     sumaba 6px, y en esta escena cada pantalla va medida al pixel. */
+  #nosotros .pn-escena--viva .caja-oro { padding-block: .36em .3em; }
   #nosotros .pn-escena--viva .titulo-seccion {
     font-size: clamp(1.22rem, 5.4vw, 1.6rem);
     line-height: 1.28;
@@ -1031,19 +1101,23 @@
 
   /* La pantalla negra: los cuatro pilares y las cuatro cifras, en dos
      columnas cada bloque, cabiendo de una vez. */
-  .pn-telon { padding: clamp(1rem, 4vw, 1.8rem) clamp(.9rem, 4vw, 1.6rem); }
+  .pn-telon {
+    --pn-pad-y: clamp(1rem, 4vw, 1.8rem);
+    --pn-pad-x: clamp(.9rem, 4vw, 1.6rem);
+  }
   .pn-contenido { gap: clamp(.8rem, 3vw, 1.2rem); }
   .pn-grupo > .etiqueta-editorial { margin-bottom: .45rem; }
-  .pn-grupo + .pn-grupo { padding-top: clamp(.7rem, 2.6vw, 1.1rem); }
+  .pn-madera { margin-top: clamp(.6rem, 2.4vw, 1rem); padding-top: clamp(.7rem, 2.6vw, 1.1rem); }
 
   .pn-telon .pilar { padding: .5rem .45rem .45rem; }
-  .pn-telon .pilar__num { font-size: .58rem; }
+  .pn-telon .pilar__num { font-size: 1.3rem; }
   .pn-telon .pilar__icono { margin: .28rem 0 .22rem; font-size: .88rem; }
   .pn-telon .pilar h3 {
+    padding: .4em .49em .36em .6em;
     font-size: .64rem;
     letter-spacing: .11em;
     line-height: 1.32;
-    margin-bottom: .22rem;
+    margin-bottom: .3rem;
   }
   .pn-telon .pilar p { font-size: .73rem; line-height: 1.48; }
 
@@ -1064,6 +1138,21 @@
    bajando el collage al tercio justo. El cuerpo de letra no se toca. */
 @media (max-width: 991.98px) and (max-height: 700px) {
   .pn-escena--viva .pn-fondo .nosotros-media { height: 33vh; height: 33svh; }
+
+  /* En el telon, el numero y el icono de cada pilar comparten fila. Con el
+     numero a su tamano nuevo, apilados costaban 44px que en un telefono
+     corto no hay: a 588 de alto el rotulo se metia 18px debajo de la barra. */
+  .pn-escena--viva .pn-telon .pilar {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: .5rem;
+  }
+  .pn-escena--viva .pn-telon .pilar > h3,
+  .pn-escena--viva .pn-telon .pilar > p { grid-column: 1 / -1; }
+  .pn-escena--viva .pn-telon .pilar > h3 { justify-self: start; padding-block: .32em .28em; }
+  .pn-escena--viva .pn-telon .pilar__icono { margin: 0; }
+  .pn-escena--viva .pn-madera { padding-top: .6rem; }
 
   #nosotros .pn-escena--viva .titulo-seccion {
     font-size: clamp(1.12rem, 5vw, 1.4rem);
@@ -1095,6 +1184,11 @@
    filo. Entre 560 y 700 caben apilados de sobra, que es donde vive casi todo
    telefono en vertical. */
 @media (max-width: 991.98px) and (max-height: 560px) {
+  /* Y por debajo de 560 las cuatro cifras van en una sola fila: en dos
+     filas se llevaban 45px del hueco, y era lo unico que quedaba por
+     apretar sin tocar la letra. */
+  .pn-escena--viva .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
+
   .pn-escena--viva .nosotros-acciones { flex-direction: row; gap: .5rem; }
   .pn-escena--viva .nosotros-acciones .btn {
     width: auto;

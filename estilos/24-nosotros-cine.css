@@ -831,6 +831,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 
   #nsCine .ns-titulo { font-size: clamp(1.28rem, 5.4vw, 1.75rem); line-height: 1.24; }
   #nsCine .ns-rotulo { margin-bottom: .45rem; }
+  /* La caja de oro del rotulo, mas cenida: en el panel de Fundamentos van dos
+     y en un telefono de 640 de alto sumaban 23px que ya no habia. */
+  #nsCine .caja-oro { padding-block: .38em .32em; }
   #nsCine .ns-parrafo { font-size: .88rem; line-height: 1.58; }
 
   /* --- el hero --- */

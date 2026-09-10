@@ -26,7 +26,6 @@
 .ns-mvo__num,
 .ns-cifra__num i,
 .ns-ficha__esp,
-.ag-panel__titulo,
 .ag-panel__ir,
 .cl-num,
 .nm-sello__num,
@@ -171,3 +170,69 @@
 .footer,
 .seccion-piedra .pn-telon { --btn-relleno: transparent; }
 
+
+/* ===========================================================================
+   La cabecera de cada seccion, en su caja.
+
+   Recuadro negro, filo de oro y letra de oro, un poco mas grande que la
+   letra. Lo llevan los rotulos que encabezan cada seccion —`.etiqueta-
+   editorial` en la portada, `.ns-rotulo` en Nosotros, `.nos-rotulo` en
+   Especialidades—, las dos palabras grandes de la portada (Especialidades y
+   Testimonios), el nombre de cada una de las nueve especialidades y las
+   cabeceras del pie.
+
+   Son DOS piezas y no una, y no por gusto. El oro del texto es un fondo
+   recortado contra las letras (`background-clip: text`), y ese recorte se
+   lleva por delante cualquier otro fondo de la misma caja, el negro
+   incluido. Asi que la caja pinta el negro y el filo, y el texto de dentro
+   (`.caja-oro__txt`) pinta el oro. Y como el rotulo de fuera ya viene
+   recortado en oro desde el 16 o desde arriba en esta hoja, la caja tapa ese
+   oro con su negro y el texto de dentro lo vuelve a poner: por eso lleva su
+   propio degradado en vez de heredarlo.
+
+   El oro es el vivo aunque la caja caiga en una pagina clara: dentro de la
+   caja el fondo es negro, y el hondo sobre negro se apaga. Por eso tambien se
+   reescriben aqui las variables de oro para lo que va dentro, como el numero
+   de los rotulos de Nosotros.
+
+   `--tracking` es el espaciado entre letras del rotulo que la contiene. El
+   navegador lo pone tambien detras de la ultima letra, y sin descontarlo la
+   caja sale mas holgada por la derecha que por la izquierda. Se descuenta
+   del relleno de la derecha, no con un margen negativo en el texto: con el
+   margen, el navegador decide donde partir la linea antes de aplicarlo, la
+   ultima palabra nunca cabia y «Como trabajamos» salia en dos lineas.
+
+   `flex-shrink: 0` porque casi todos los rotulos son una fila flexible con
+   la raya de oro detras: sin eso la raya le quitaba ancho a la caja y el
+   rotulo se partia en dos lineas. Solo se parte si no cabe en la fila entera.
+   =========================================================================== */
+.etiqueta-editorial,
+.ns-rotulo,
+.nos-rotulo { --tracking: .28em; }
+
+.caja-oro {
+  --gradiente-oro: var(--oro-marca-degradado);
+  --gradiente-oro-menudo: var(--oro-marca-degradado);
+  --oro-vivo-degradado: var(--oro-marca-degradado);
+  flex-shrink: 0;
+  display: inline-block;
+  max-width: 100%;
+  padding: .5em calc(.9em - var(--tracking, 0em)) .44em .9em;
+  background: #0A0A0A;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+.caja-oro__txt {
+  background-image: var(--oro-marca-degradado);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--oro-marca);
+}
+
+/* Las dos palabras grandes de la portada van en la Bodoni de titular: ahi el
+   mismo aire en `em` saldria el doble de holgado, asi que la caja se aprieta. */
+.acordeon-etiqueta .caja-oro,
+.testimonios-etiqueta .caja-oro { padding: .34em calc(.72em - var(--tracking, 0em)) .3em .72em; }

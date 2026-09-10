@@ -21,16 +21,10 @@
   text-align: center;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
-}
-.acordeon-etiqueta span {
+  --tracking: .04em;
   font-family: var(--fuente-elegante);
   font-size: clamp(1.3rem, 2.6vw, 2rem);
   letter-spacing: .04em;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
 }
 
 .acordeon-intro .cortina-panel {
@@ -127,10 +121,21 @@
   background: var(--gold-500);
   box-shadow: 0 0 12px rgba(212, 175, 55, .6);
 }
+/* El nombre de cada especialidad va en su caja negra con filo y letra de oro
+   (`.caja-oro`, en el 22). El recorte con puntos suspensivos baja a la letra
+   de dentro: puesto en el titulo, recortaria tambien el filo de la caja. */
 .ag-panel__titulo {
+  display: flex;
+  min-width: 0;
   font-family: var(--fuente-elegante);
   font-size: clamp(1.05rem, 1.6vw, 1.5rem);
-  color: var(--gold-200);
+}
+.ag-panel__titulo .caja-oro {
+  min-width: 0;
+  padding: .36em .7em .3em;
+}
+.ag-panel__titulo .caja-oro__txt {
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -195,10 +200,6 @@
                 rgba(6, 5, 4, 0) 0%,
                 rgba(6, 5, 4, .55) 42%,
                 rgba(6, 5, 4, .88) 100%);
-  }
-  .ag-panel__titulo {
-    color: var(--gold-200);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, .8);
   }
   .ag-panel__overlay {
     background: linear-gradient(180deg, transparent 18%, rgba(10, 8, 6, .55) 62%, rgba(10, 8, 6, .92) 100%);

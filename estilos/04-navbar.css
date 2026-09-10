@@ -57,68 +57,32 @@
   .navbar-principal { transition: padding .35s ease; }
 }
 
-.pagina-clara .navbar-principal .marca-nombre {
-  background: linear-gradient(100deg, #B08D22 0%, #F7E7A6 32%, #D4AF37 64%, #E6C95F 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: #D4AF37;
-}
-.pagina-clara .navbar-principal .marca-slogan { color: var(--neutral-300); }
-
+/* La marca es el logo de la clinica, el archivo tal cual: el diente en plata
+   y «Smilers» en oro sobre transparente, asi que va igual sobre la piedra
+   negra de la barra que sobre la del pie. Se mide por alto y no por ancho,
+   que es lo que la barra tiene contado, y siempre por debajo de los 48px del
+   boton de menu: ese boton es quien decide el alto de la barra, y un logo
+   mas alto la haria crecer y dejaria corto todo lo que se mide desde
+   `--alto-navbar`. Por eso tambien se le quita a la marca el relleno de
+   `.navbar-brand` que pone Bootstrap: 5px arriba y abajo sumados a los 44 del
+   logo pasaban de 48, y la barra crecia 6px. */
 .marca {
   display: flex;
   align-items: center;
-  gap: .7rem;
+  padding-block: 0;
   transition: opacity .3s ease, visibility .3s ease;
 }
-
-.marca-icono {
-  flex: 0 0 auto;
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  background: var(--onix);
-  color: var(--neutral-300);
-  border: 1px solid rgba(192, 192, 192, .4);
-  border-radius: 12px 4px 12px 4px;
-  font-size: 1rem;
-  box-shadow: 0 6px 16px rgba(22, 19, 15, .4);
-  transition: var(--transicion);
+.marca-logo {
+  display: block;
+  width: auto;
+  height: 44px;
+  transition: height .35s ease;
 }
-.marca-texto { display: flex; flex-direction: column; line-height: 1; }
-.marca-nombre {
-  font-family: var(--fuente-titulo);
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: .01em;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
-}
-.marca-slogan {
-  font-family: var(--fuente-cuerpo);
-  font-weight: 500;
-  font-size: .62rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-top: 2px;
-  color: var(--neutral-300);
-}
-.navbar-principal.con-scroll .marca-icono { width: 29px; height: 29px; font-size: .95rem; }
-.navbar-principal.con-scroll .marca-nombre { font-size: 1.15rem; }
-.navbar-principal.con-scroll .marca-slogan { font-size: .54rem; letter-spacing: 1.2px; }
+.navbar-principal.con-scroll .marca-logo { height: 40px; }
 
 @media (max-width: 767.98px) {
-  .marca-icono { width: 32px; height: 32px; font-size: .95rem; }
-  .marca-nombre { font-size: 1.15rem; }
-  .marca-slogan { font-size: .58rem; letter-spacing: 1.2px; }
-  .navbar-principal.con-scroll .marca-icono { width: 29px; height: 29px; font-size: .9rem; }
-  .navbar-principal.con-scroll .marca-nombre { font-size: 1.08rem; }
-  .navbar-principal.con-scroll .marca-slogan { font-size: .5rem; }
+  .marca-logo { height: 40px; }
+  .navbar-principal.con-scroll .marca-logo { height: 36px; }
 }
 
 .navbar-toggler {
@@ -217,6 +181,8 @@
 .menu-abierto .menu-panel { transform: translateX(0); }
 
 .menu-columnas {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -317,9 +283,91 @@
   .menu-col__titulo { font-size: 1rem; letter-spacing: .22em; }
 }
 
+/* ===========================================================================
+   Las lineas de oro del menu, sacadas de la pieza grafica de la clinica: dos
+   esquinas con cintas negras cruzadas por hilos de oro en diagonal, y tres
+   hilos rectos que enmarcan el hueco —uno que baja por la derecha y dobla
+   hacia dentro al final, y otro que sube por la izquierda desde el suelo—.
+
+   Van donde el panel tiene sitio y no debajo del texto. En el telefono el
+   panel es una columna con los cinco nombres en el centro: las esquinas van
+   arriba a la izquierda (debajo de la barra, que tapa lo de mas arriba) y
+   abajo a la derecha, y los hilos por los lados. En escritorio el panel se
+   abre a lo ancho con las cinco columnas arriba, asi que las dos esquinas
+   bajan a los dos cantos de abajo, que es donde las columnas cortas dejan
+   hueco, y los hilos rectos se quedan fuera: ahi ya hay filos de oro entre
+   columna y columna.
+
+   La esquina es un solo dibujo (`#deco-esquina`, en el sprite de cada
+   pagina) que se usa dos veces, girado. Los hilos son de `currentColor`, asi
+   que el oro lo pone esta hoja. Al abrir, las esquinas se descubren con un
+   barrido y los hilos se dibujan desde su punta.
+   =========================================================================== */
+.menu-deco {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.menu-deco__esquina {
+  position: absolute;
+  width: clamp(170px, 62%, 290px);
+  height: auto;
+  aspect-ratio: 300 / 128;
+  color: var(--oro-marca);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1s cubic-bezier(.22, 1, .36, 1) .2s;
+}
+.menu-abierto .menu-deco__esquina { clip-path: inset(0); }
+.menu-deco__esquina--a { top: var(--alto-navbar); left: 0; }
+.menu-deco__esquina--b { right: 0; bottom: 0; transform: rotate(180deg); }
+
+.menu-deco__linea {
+  position: absolute;
+  background: linear-gradient(180deg, #B08D22 0%, #F7E7A6 38%, #D4AF37 70%, #B08D22 100%);
+  transition: transform 1.1s cubic-bezier(.22, 1, .36, 1) .35s;
+}
+.menu-deco__linea--alta {
+  top: calc(var(--alto-navbar) + 9%);
+  right: clamp(1rem, 5vw, 1.75rem);
+  width: 1px;
+  height: 58%;
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.menu-deco__linea--pie {
+  top: calc(var(--alto-navbar) + 67%);
+  right: clamp(1rem, 5vw, 1.75rem);
+  width: clamp(44px, 16%, 72px);
+  height: 1px;
+  background: linear-gradient(90deg, #B08D22 0%, #F7E7A6 50%, #D4AF37 100%);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition-delay: 1.05s;
+}
+.menu-deco__linea--baja {
+  left: clamp(1rem, 5vw, 1.75rem);
+  bottom: 0;
+  width: 1px;
+  height: 16%;
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+.menu-abierto .menu-deco__linea { transform: none; }
+
+@media (min-width: 992px) {
+  .menu-deco__esquina { width: 290px; }
+  .menu-deco__esquina--a { top: auto; bottom: 0; transform: scaleY(-1); }
+  .menu-deco__linea { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .menu-panel,
   .menu-velo,
   .menu-sub a,
-  .menu-col__titulo::after { transition: none; }
+  .menu-col__titulo::after,
+  .menu-deco__esquina,
+  .menu-deco__linea { transition: none; }
 }

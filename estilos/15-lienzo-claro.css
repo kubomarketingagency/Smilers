@@ -488,7 +488,6 @@
 .pagina-clara .footer h2,
 .pagina-clara .footer h3,
 .pagina-clara .footer h4,
-.pagina-clara .footer .footer-titulo { color: var(--marmol); }
 
 /* El boton de la banda ya no se pinta aqui: hay uno solo en todo el sitio y
    vive en 16-oro.css. */

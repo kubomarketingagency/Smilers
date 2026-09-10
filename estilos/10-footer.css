@@ -1,4 +1,3 @@
-.footer .marca-icono,
 .footer [class*="icono"] {
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
 }
@@ -24,30 +23,23 @@
 }
 
 .marca-footer { display: inline-flex; }
-.marca-footer .marca-slogan { color: var(--plata); text-transform: none; letter-spacing: .5px; font-weight: 500; }
+.marca-footer .marca-logo { height: 72px; }
 
+/* Las cabeceras del pie van en su caja de oro, como las de cada seccion
+   (`.caja-oro`, en el 22). La rayita de oro que llevaban debajo se fue con
+   ella: debajo de un recuadro con filo de oro, otra raya es repetir. */
 .footer-titulo {
+  --tracking: .14em;
   display: block;
   font-family: var(--fuente-elegante);
   font-weight: 400;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--marmol);
   font-size: 1.3rem;
+  line-height: 1;
   margin-bottom: 1.5rem;
-  position: relative;
-  padding-bottom: .8rem;
 }
-
-.footer-titulo::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  width: 34px;
-  height: 1px;
-  background: var(--gradiente-oro);
-  border-radius: 0;
-}
+.footer-titulo .caja-oro { padding: .48em calc(.8em - var(--tracking, 0em)) .42em .8em; }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
 

@@ -1,5 +1,4 @@
 .hero-etapa2-tagline strong,
-.ag-panel__titulo,
 .ag-panel__ir,
 .tst-comillas,
 .tst-firma__nombre {
@@ -122,7 +121,6 @@
 
 .redes-sociales a { border-color: rgba(192, 192, 192, .55); color: var(--plata); }
 .redes-sociales a:hover { border-color: transparent; }
-.marca-footer .marca-slogan { color: var(--plata); }
 .footer-bottom { border-top-color: rgba(212, 175, 55, .22); }
 .footer-bottom a { color: var(--gold-200); }
 .mapa-tab { border-color: rgba(212, 175, 55, .3); }

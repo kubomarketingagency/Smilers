@@ -408,7 +408,7 @@
 @media (max-height: 480px) and (orientation: landscape) {
   .hero { min-height: 100vh; }
   .hero-contenido { padding: 90px 0 50px; }
-  .hero-titulo { font-size: clamp(2.2rem, 10vw, 4rem); }
+  .hero-titulo { width: min(44vw, 340px); }
   .banner-pagina { padding: 100px 0 40px; min-height: 0; }
   .banner-pagina h1 { font-size: clamp(1.3rem, 4vw, 1.9rem); margin: .4rem 0 0; }
   .banner-pagina .etiqueta-seccion { margin-bottom: .5rem; }
