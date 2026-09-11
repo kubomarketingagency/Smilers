@@ -59,8 +59,22 @@
   align-items: flex-start;
 }
 .footer-contacto i { color: var(--gold-500); margin-top: 5px; flex: 0 0 auto; }
+/* Cada linea son dos piezas y solo dos: el icono y un `<span>` con todo el
+   texto. Con el texto suelto dentro del `li` flexible, cada trozo era una
+   columna aparte: en el iPhone Safari mete la direccion que detecta en un
+   enlace suyo, y «Matriz:» quedaba a un lado y la direccion al otro, con un
+   hueco en medio; y los tres telefonos salian separados por el `gap` en vez
+   de por un espacio. La deteccion ademas se apaga en el `<head>`. */
+.footer-contacto li > span { min-width: 0; overflow-wrap: anywhere; }
 .footer-contacto a { color: rgba(255, 255, 255, .78); }
 .footer-contacto a:hover { color: var(--gold-200); }
+/* Por si algun navegador sigue detectando: lo que convierta en enlace se
+   queda con la letra de la linea. */
+.footer a[x-apple-data-detectors] {
+  color: inherit !important;
+  font: inherit !important;
+  text-decoration: none !important;
+}
 
 .redes-sociales { display: flex; flex-wrap: wrap; gap: .6rem; }
 .redes-sociales a {

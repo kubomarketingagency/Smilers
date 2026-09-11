@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* En el telefono cada especialidad es un acordeon cerrado, y quien llega a
-     una desde un enlace —el indice de las nueve, el menu, la portada— viene a
+     una desde un enlace —el indice de las diez, el menu, la portada— viene a
      leerla: se abre sola. Antes solo pasaba al entrar en la pagina con el
      ancla puesta; pulsando el indice ya dentro, la pagina bajaba hasta la
      especialidad y la dejaba cerrada, con solo su nombre a la vista.

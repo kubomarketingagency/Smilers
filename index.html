@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no, address=no">
 
   <script>
     try {
@@ -53,13 +54,13 @@
   <link rel="stylesheet" href="estilos/07-nosotros.css?v=7d54741252">
   <link rel="stylesheet" href="estilos/08-especialidades.css?v=a1083e38e9">
   <link rel="stylesheet" href="estilos/09-cierre-cta.css?v=0bbb8ec9c4">
-  <link rel="stylesheet" href="estilos/10-footer.css?v=b0feca067e">
+  <link rel="stylesheet" href="estilos/10-footer.css?v=9f03c80184">
   <link rel="stylesheet" href="estilos/11-animaciones.css?v=dd944c64c6">
   <link rel="stylesheet" href="estilos/12-interiores.css?v=ae8956e14b">
   <link rel="stylesheet" href="estilos/13-testimonios.css?v=118cdb9855">
   <link rel="stylesheet" href="estilos/16-oro.css?v=82d520bd72">
-  <link rel="stylesheet" href="estilos/22-oro-unico.css?v=ee9818d233">
-  <link rel="stylesheet" href="estilos/26-entradas.css?v=53747e1a11">
+  <link rel="stylesheet" href="estilos/22-oro-unico.css?v=2e1ec376d9">
+  <link rel="stylesheet" href="estilos/26-entradas.css?v=ce23cc0ef0">
 
   <link rel="preload" as="image" href="imagenes/hero-1-720.webp?v=44baaaa35a" media="(max-width: 767.98px)" fetchpriority="high">
   <link rel="preload" as="image" href="imagenes/hero-1.webp?v=9bd092de88" media="(min-width: 768px)" fetchpriority="high">
@@ -76,7 +77,7 @@
         "url": "https://smilersdental.vercel.app/",
         "image": "https://smilersdental.vercel.app/imagenes/og-smilers.png",
         "logo": "https://smilersdental.vercel.app/imagenes/logo-smilers-oro.webp",
-        "description": "Clínica dental de alta especialidad en Quito: estética dental, ortodoncia, implantología, cirugía oral, rehabilitación oral, endodoncia, periodoncia, odontopediatría y armonización orofacial.",
+        "description": "Clínica dental de alta especialidad en Quito: odontología general, estética dental, ortodoncia, implantología, cirugía oral, rehabilitación oral, endodoncia, periodoncia, odontopediatría y armonización orofacial.",
         "telephone": "+593997556002",
         "email": "smilersdentalclinique@gmail.com",
         "address": {
@@ -120,6 +121,11 @@
         "currenciesAccepted": "USD",
         "medicalSpecialty": "Dentistry",
         "availableService": [
+          {
+            "@type": "MedicalProcedure",
+            "name": "Odontología General",
+            "url": "https://smilersdental.vercel.app/subpaginas/tratamientos#odontologia-general"
+          },
           {
             "@type": "MedicalProcedure",
             "name": "Estética Dental",
@@ -354,6 +360,7 @@
         <div class="menu-col">
           <a class="menu-col__titulo" href="/subpaginas/tratamientos">Especialidades</a>
           <ul class="menu-sub">
+            <li><a href="/subpaginas/tratamientos#odontologia-general">Odontología General</a></li>
             <li><a href="/subpaginas/tratamientos#estetica-dental">Estética Dental</a></li>
             <li><a href="/subpaginas/tratamientos#ortodoncia">Ortodoncia</a></li>
             <li><a href="/subpaginas/tratamientos#implantologia">Implantología</a></li>
@@ -747,6 +754,17 @@
     <div class="acordeon-galeria" id="acordeonEspecialidades"
          role="list" aria-label="Especialidades de Smilers Dental Clinique">
 
+        <a href="/subpaginas/tratamientos#odontologia-general" class="ag-panel" role="listitem" tabindex="0" aria-label="Odontología General">
+          <span class="ag-panel__media"><img src="imagenes/hero-2.webp?v=41a603a5d5" srcset="imagenes/hero-2-480.webp?v=f64e90b09f 480w, imagenes/hero-2-720.webp?v=4385b8c0f3 720w, imagenes/hero-2.webp?v=41a603a5d5 1920w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
+          <span class="ag-panel__overlay" aria-hidden="true"></span>
+          <span class="ag-panel__texto">
+            <span class="ag-panel__barra" aria-hidden="true"></span>
+            <span class="ag-panel__titulo"><span class="caja-oro"><span class="caja-oro__txt">Odontología General</span></span></span>
+            <span class="ag-panel__desc">Revisiones, limpieza profesional y tratamiento de caries</span>
+            <span class="ag-panel__ir">Ir <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-arrow-right"></use></svg></span>
+          </span>
+        </a>
+
         <a href="/subpaginas/tratamientos#rehabilitacion-oral" class="ag-panel" role="listitem" tabindex="0" aria-label="Rehabilitación Oral">
           <span class="ag-panel__media"><img src="imagenes/antes-despues.webp?v=648419eb81" srcset="imagenes/antes-despues-480.webp?v=324657b905 480w, imagenes/antes-despues-720.webp?v=d0a75c3314 720w, imagenes/antes-despues.webp?v=648419eb81 1400w" sizes="(min-width: 992px) 42vw, 96vw" alt="" loading="lazy" decoding="async"></span>
           <span class="ag-panel__overlay" aria-hidden="true"></span>
@@ -1087,11 +1105,11 @@
           </p>
 
           <ul class="footer-contacto">
-            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Matriz: General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB, Quito, Ecuador</li>
-            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</li>
-            <li><i class="fa-solid fa-phone"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg></i> <a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+5932909990">2909-990</a></li>
-            <li><i class="fa-solid fa-envelope"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-envelope"></use></svg></i> <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;tf=1&amp;to=smilersdentalclinique@gmail.com&amp;su=Consulta%20desde%20la%20web%20de%20Smilers&amp;body=Hola%2C%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%3A%20" target="_blank" rel="noopener">smilersdentalclinique@gmail.com</a></li>
-            <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg></i> Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</li>
+            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> <span>Matriz: General Camilo Destruge N24-633 y Francisco Salazar, Edificio InLuxor PB, Quito, Ecuador</span></li>
+            <li><i class="fa-solid fa-location-dot"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-location-dot"></use></svg></i> <span>Sucursal: Valparaíso N2158 y José Aguirre, Quito, Ecuador</span></li>
+            <li><i class="fa-solid fa-phone"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-phone"></use></svg></i> <span><a href="tel:+593997556002">099-755-6002</a> / <a href="tel:+593998113383">099-811-3383</a> / <a href="tel:+5932909990">2909-990</a></span></li>
+            <li><i class="fa-solid fa-envelope"><svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-envelope"></use></svg></i> <span><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;tf=1&amp;to=smilersdentalclinique@gmail.com&amp;su=Consulta%20desde%20la%20web%20de%20Smilers&amp;body=Hola%2C%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%3A%20" target="_blank" rel="noopener">smilersdentalclinique@gmail.com</a></span></li>
+            <li><i class="fa-regular fa-clock"><svg class="icono" aria-hidden="true" focusable="false"><use href="#regular-clock"></use></svg></i> <span>Lun a Vie 9:00 – 19:00 · Sáb 9:00 – 14:00</span></li>
           </ul>
 
           <div class="redes-sociales">

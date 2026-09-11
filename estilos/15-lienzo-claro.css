@@ -717,17 +717,25 @@
   text-transform: uppercase;
 }
 
-/* Cada pregunta, en su tarjeta negra. Iban sueltas sobre el marmol blanco,
+/* Cada pregunta, en su recuadro. Iban sueltas sobre el marmol blanco,
    separadas por una raya de oro hondo, y sobre una piedra con vetas grises el
-   texto negro de la pregunta y el gris de la respuesta se leian a trozos. Aqui
-   son la misma pieza negra con filo de oro que las franjas que abren cada
-   bloque, asi que la pagina alterna dos cosas: la piedra clara de fondo y el
-   negro de lo que se lee.
+   texto negro de la pregunta y el gris de la respuesta se leian a trozos.
+   Despues fueron tarjetas negras macizas, y pesaban: la pagina entera se
+   volvia una pila de losas. Ahora es negro con opacidad —el recuadro
+   oscurecido de las cifras de Nosotros y de la pregunta de la portada—, que
+   deja pasar la veta del marmol, con el filo entero en el oro de la marca.
+
+   El negro va al 66%: con eso el punto mas claro del marmol (245) queda en
+   91 de gris debajo de la letra, y la pregunta da 6,1:1 y la respuesta, en
+   blanco al 80%, 5:1. Al 62% la respuesta bajaba de 4,5:1 justo donde el
+   marmol es mas blanco. Sin `backdrop-filter`: el marmol va fijo detras de la
+   pagina, y un desenfoque sobre un fondo fijo se recalcula en cada
+   fotograma de scroll, por cada pregunta que haya en pantalla.
 
    La pregunta va en blanco y la respuesta en blanco al 80%: son texto de
    leer, y el texto de leer no va en oro. Lo que dice que una esta abierta es
-   el filo —de oro entero y con la raya de 2px arriba, la de la pieza que
-   sostiene lo que se esta leyendo— y la flecha, que da la vuelta. */
+   la raya de 2px arriba —la de la pieza que sostiene lo que se esta
+   leyendo—, un negro un punto mas cerrado y la flecha, que da la vuelta. */
 /* Cantos vivos, como toda pieza del sitio: el 12 le pone a la tarjeta el
    radio de `--radio-sm` con `!important`, y la unica forma de ganarle sin
    otro `!important` es dejar esa variable a cero aqui. Y sin su `overflow`,
@@ -737,11 +745,12 @@
   position: relative;
   overflow: visible;
   margin: 0 0 clamp(.55rem, 1vw, .8rem);
-  background: linear-gradient(135deg, #0B0B0B 0%, #121212 52%, #0A0A0A 100%);
-  border: 1px solid rgba(212, 175, 55, .3);
+  background: rgba(12, 11, 9, .66);
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
-  box-shadow: 0 12px 30px rgba(6, 6, 6, .16);
-  transition: border-color .35s ease, box-shadow .35s ease;
+  box-shadow: 0 12px 30px rgba(6, 6, 6, .1);
+  transition: background-color .35s ease, box-shadow .35s ease;
 }
 .pagina-clara .acordeon-faq .accordion-item::before {
   content: '';
@@ -755,9 +764,8 @@
   pointer-events: none;
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
-  background: linear-gradient(135deg, #0B0B0B 0%, #121212 52%, #0A0A0A 100%);
-  border-color: rgba(212, 175, 55, .7);
-  box-shadow: 0 22px 54px rgba(6, 6, 6, .26);
+  background: rgba(12, 11, 9, .74);
+  box-shadow: 0 22px 54px rgba(6, 6, 6, .2);
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::before { opacity: 1; }
 .pagina-clara .acordeon-faq .accordion-button,
@@ -815,6 +823,15 @@
   font-size: 1.04rem;
   line-height: 1.82;
   color: rgba(255, 255, 255, .8);
+}
+/* El telefono de la respuesta de citas es un enlace: con los detectores de
+   Safari apagados, sin el no se podria tocar para llamar. En blanco con el
+   subrayado en oro, que es un enlace y no texto de leer. */
+.pagina-clara .acordeon-faq .accordion-body a {
+  color: #FFFFFF;
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 175, 55, .8);
+  text-underline-offset: .22em;
 }
 
 .pagina-galeria .seccion > .container { max-width: 1480px; }
@@ -964,13 +981,12 @@
 /* La misma piedra que los filtros de la Galeria, pero esto ya no es una tira
    de navegacion: es el indice de la seccion.
 
-   Ese es el cambio. Antes eran nueve nombres sueltos repartidos en un cuadro
-   de tres por tres, centrados en su celda, y no se entendia que eran: ni una
-   lista, ni una tabla, ni un menu. Ahora cada uno lleva delante su numero
-   —el mismo 01..09 que preside su bloque mas abajo— y el nombre arranca
-   pegado a la izquierda, que es como se lee un indice. Con eso la franja
-   dice de una lo que es: aqui van nueve, esta es la tercera, y pinchandola
-   se llega a ella.
+   Ese es el cambio. Antes eran nombres sueltos repartidos en un cuadro,
+   centrados en su celda, y no se entendia que eran: ni una lista, ni una
+   tabla, ni un menu. Ahora cada uno lleva delante su numero —el mismo 01..10
+   que preside su bloque mas abajo— y el nombre arranca pegado a la
+   izquierda, que es como se lee un indice. Con eso la franja dice de una lo
+   que es: aqui van diez, esta es la tercera, y pinchandola se llega a ella.
 
    El numero sale de un contador de CSS y no del HTML: la numeracion de los
    bloques ya la lleva el documento, y duplicarla a mano seria pedir que las
@@ -980,13 +996,15 @@
    libre para la flecha. En una tira centrada un borde de canto a canto la
    habria convertido en una tabla; en un indice es justo lo que se quiere.
 
-   Tres columnas fijas —nueve entre tres da un cuadro exacto— y por eso se
-   sabe cual abre fila, que es lo unico que hace falta para que ninguna linea
-   quede colgando: la vertical se cae en 3n+1, la horizontal en los tres
-   primeros. En el telefono son dos columnas y el noveno ocupa las dos. */
+   Columnas fijas que dividen a diez —dos filas de cinco en pantalla ancha,
+   cinco de dos por debajo— y por eso se sabe cual abre fila, que es lo unico
+   que hace falta para que ninguna linea quede colgando. Eran tres columnas
+   cuando habia nueve; con la decima, la ultima fila se quedaba con un solo
+   nombre y dos huecos. Las junturas van en cada tramo por separado, sin
+   pisarse. */
 .pagina-clara .franja-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
   padding: clamp(.3rem, .8vw, .6rem);
   counter-reset: esp;
@@ -1042,12 +1060,26 @@
   transform: translateX(-4px);
   transition: opacity .35s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
 }
-.pagina-clara .franja-nav a:nth-of-type(n + 2) {
-  border-left: 1px solid rgba(212, 175, 55, .3);
+/* De dos en dos: la vertical en los pares, la horizontal de la segunda fila
+   para abajo. */
+@media (max-width: 1199.98px) {
+  .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 1px solid rgba(212, 175, 55, .3); }
+  .pagina-clara .franja-nav a:nth-of-type(n + 3) { border-top: 1px solid rgba(212, 175, 55, .22); }
 }
-.pagina-clara .franja-nav a:nth-of-type(3n + 1) { border-left: 0; }
-.pagina-clara .franja-nav a:nth-of-type(n + 4) {
-  border-top: 1px solid rgba(212, 175, 55, .22);
+/* De cinco en cinco. La celda se estrecha a una quinta parte, asi que la
+   letra baja un punto y se abre menos, y la flecha se cae: con la celda
+   estrecha el nombre ya la llena, que es para lo que estaba la flecha, y el
+   ancho le hace falta a «Odontopediatría», que es una sola palabra. */
+@media (min-width: 1200px) {
+  .pagina-clara .franja-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pagina-clara .franja-nav a {
+    grid-template-columns: auto minmax(0, 1fr);
+    font-size: .72rem;
+    letter-spacing: .15em;
+  }
+  .pagina-clara .franja-nav a::after { display: none; }
+  .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .3); }
+  .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .22); }
 }
 .pagina-clara .franja-nav a:hover,
 .pagina-clara .franja-nav a:focus-visible {
@@ -1060,7 +1092,6 @@
 .pagina-clara .franja-nav a:focus-visible::after { opacity: .9; transform: none; }
 
 @media (max-width: 575.98px) {
-  .pagina-clara .franja-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pagina-clara .franja-nav a {
     gap: .5rem;
     padding: .8rem .6rem;
@@ -1072,17 +1103,22 @@
      robandole ancho al nombre, que aqui va justo. */
   .pagina-clara .franja-nav a { grid-template-columns: auto minmax(0, 1fr); }
   .pagina-clara .franja-nav a::after { display: none; }
-  /* Arriba se cuenta de tres en tres; aqui de dos en dos. Primero se le
-     devuelve la juntura a los 3n+1 y despues se le quita a los que abren
-     fila aqui. El 7 cae en los dos y gana la segunda, que va detras. */
-  .pagina-clara .franja-nav a:nth-of-type(3n + 1) {
-    border-left: 1px solid rgba(212, 175, 55, .3);
+}
+/* Por debajo de 390 «Odontopediatria», que es una sola palabra, se salia de
+   su celda por 8px: se abre menos la letra y se estrecha el relleno. */
+@media (max-width: 389.98px) {
+  .pagina-clara .franja-nav a {
+    padding-inline: .45rem;
+    letter-spacing: .07em;
   }
-  .pagina-clara .franja-nav a:nth-of-type(2n + 1) { border-left: 0; }
-  .pagina-clara .franja-nav a:nth-of-type(n + 3) {
-    border-top: 1px solid rgba(212, 175, 55, .22);
-  }
-  .pagina-clara .franja-nav a:last-child { grid-column: 1 / -1; }
+}
+/* Y por debajo de 360 ni asi: a 320 las dos columnas dejan menos ancho del
+   que piden «Rehabilitacion» y «Odontopediatria». Ahi el indice va en una
+   sola columna. */
+@media (max-width: 359.98px) {
+  .pagina-clara .franja-nav { grid-template-columns: minmax(0, 1fr); }
+  .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 0; }
+  .pagina-clara .franja-nav a:nth-of-type(n + 2) { border-top: 1px solid rgba(212, 175, 55, .22); }
 }
 .pagina-clara .filtro-btn {
   position: relative;

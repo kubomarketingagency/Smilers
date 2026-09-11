@@ -1,7 +1,7 @@
 /* ===========================================================================
    Tratamientos, una especialidad por pantalla.
 
-   Hasta aqui los nueve bloques se apilaban con una deriva editorial: cada
+   Hasta aqui los bloques se apilaban con una deriva editorial: cada
    uno con su ancho y su margen, unos escorados a la izquierda y otros a la
    derecha. Se leia bien de corrido, pero no era lo que hacia falta cuando el
    lector llega desde la franja de especialidades: llega a UNA, y esa una
@@ -46,7 +46,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     scroll-snap-align: start;
   }
 
-  /* Un solo ancho para los nueve. La deriva de contenedores que habia antes
+  /* Un solo ancho para los diez. La deriva de contenedores que habia antes
      —un `max-width` y un margen distintos por cada id— vivia en el 15 y ya
      no esta: con la pantalla completa, escorar el contenido solo dejaba un
      hueco muerto a un lado. */
@@ -212,39 +212,65 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   height: 100%;
   object-fit: cover;
 }
-/* El velo. La piedra que hay ahora es hormigon claro —177 de gris de media,
-   plano y frio—, asi que aqui no hay nada que aclarar: lo unico que hace
-   falta es quitarle el frio para que no pelee con el oro. Por eso el velo va
-   en tierra tostada y a opacidad baja, y no en negro: un velo negro sobre una
-   piedra clara no da piedra oscura, da gris sucio, y ademas borraria el grano
-   que es todo lo que esta superficie tiene.
+/* El velo. La piedra es pizarra en bruto: roca gris oscura, 70 de gris de
+   media, con crestas que se encienden hasta 227. Sin nada encima esas
+   crestas pelean con la foto y con el oro, asi que el velo va en negro —aqui
+   si, que la piedra ya es oscura y el negro no la ensucia, la hunde— y no
+   parejo: mas cerrado arriba y abajo, donde se junta con el marmol claro, y
+   mas abierto en medio, que es donde tiene que verse la veta. Arriba un
+   punto de luz de oro, el mismo que llevan las bandas de piedra del sitio.
 
-   El resultado es una alternancia de dos claros —crema a 238 y hormigon a
-   170— que se distinguen sin que ninguno de los dos sea un agujero negro en
-   mitad de la pagina. */
+   Las crestas quedan en 150 como mucho: dentro del panel la letra va sobre
+   su marmol negro, y lo unico que se lee directamente sobre la piedra es la
+   nota del comparador, que lleva su sombra. */
 .trat-piedra::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .10), transparent 62%),
+    radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .08), transparent 62%),
     linear-gradient(180deg,
-      rgba(120, 96, 56, .12) 0%, rgba(120, 96, 56, .05) 44%, rgba(96, 78, 48, .14) 100%);
+      rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .34) 45%, rgba(8, 8, 8, .58) 100%);
 }
 
-/* Las dos costuras. La piedra clara y el marmol claro se tocan sin escalon,
-   asi que la juntura la marca un filo de oro —y con dos grosores, no uno: el
-   de arriba a 2px porque es el que anuncia el cambio de superficie, el de
-   abajo a 1px porque solo lo cierra. */
+/* Las dos costuras. La pizarra y el marmol claro se tocan con un escalon
+   enorme de luz, y ahi un filo de oro es lo que convierte ese corte en una
+   junta —con dos grosores, no uno: el de arriba a 2px porque es el que
+   anuncia el cambio de superficie, el de abajo a 1px porque solo lo cierra. */
 .pagina-tratamientos .bloque-tratamiento--piedra {
-  border-top: 2px solid rgba(212, 175, 55, .55);
-  border-bottom: 1px solid rgba(212, 175, 55, .3);
+  border-top: 2px solid rgba(212, 175, 55, .6);
+  border-bottom: 1px solid rgba(212, 175, 55, .36);
 }
 
-/* El panel se queda como en los bloques de marmol: su tarjeta de piedra negra
-   ya lo separa de lo que tenga debajo, y sobre hormigon claro separa incluso
-   mejor que sobre crema. Antes habia aqui una version en negro translucido
-   porque la piedra era oscura; con la piedra clara sobra. */
+/* El panel se queda con su marmol negro: es liso y mas oscuro que la
+   pizarra, y con el filo de oro se despega de la roca sin tener que volverse
+   translucido. Lo que vive fuera del panel es lo que cambia: la nota del
+   comparador pasa a claro, con una sombra que la separa de las crestas. */
+.pagina-tratamientos .bloque-tratamiento--piedra .comparador-nota {
+  color: rgba(255, 255, 255, .74);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .85);
+}
+
+@media (max-width: 767.98px) {
+  /* En el movil el bloque es un acordeon cerrado y la piedra solo viste el
+     titulo, asi que el velo va mas parejo y mas cerrado: el nombre de la
+     especialidad va en letra pequena directamente sobre la roca. */
+  .trat-piedra::after {
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .08), transparent 62%),
+      linear-gradient(180deg, rgba(8, 8, 8, .6) 0%, rgba(8, 8, 8, .5) 100%);
+  }
+
+  /* El nombre del acordeon, que en la pagina clara va en negro, sobre la
+     pizarra pasa a blanco; la flecha, al oro vivo; y la raya de arriba del
+     boton, que es tinta sobre claro, se retira: la costura de oro ya esta. */
+  .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-nombre {
+    color: #FFFFFF;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, .7);
+  }
+  .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-icono { color: var(--oro-plano); }
+  .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-boton { border-top-color: transparent; }
+}
 
 /* ---------------------------------------------------------------------------
    Mas oro en la pagina, con la misma escala de grosores que Nosotros.
@@ -312,7 +338,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
 
    `clip-path: inset(0 0 100% 0)` no es solo invisible: tampoco recibe clics.
    Si alguien navega con las animaciones apagadas y esto no se deshiciera,
-   los nueve comparadores estarian ahi, en blanco y sin responder.
+   los diez comparadores estarian ahi, en blanco y sin responder.
    --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .pagina-tratamientos .bloque-tratamiento .comparador-marco {

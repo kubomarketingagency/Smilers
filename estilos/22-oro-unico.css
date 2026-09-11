@@ -128,7 +128,10 @@
 .pagina-clara .filtros-galeria,
 .pagina-clara .franja-nav,
 .pagina-clara .faq-categoria-titulo,
-.pagina-clara .ns-portada {
+.pagina-clara .ns-portada,
+/* Las especialidades pares van sobre pizarra: el numero del acordeon, la
+   flecha y las esquinas del comparador caen sobre roca oscura. */
+.pagina-clara .bloque-tratamiento--piedra {
   --oro-vivo-degradado: var(--oro-marca-degradado);
   --oro-plano: var(--oro-marca);
 }
@@ -166,6 +169,7 @@
 .pagina-clara .ag-panel,
 .pagina-clara .ns-cine,
 .pagina-clara .ns-cierre,
+.pagina-clara .bloque-tratamiento--piedra,
 .banda-cta,
 .footer,
 .seccion-piedra .pn-telon { --btn-relleno: transparent; }
@@ -178,7 +182,7 @@
    letra. Lo llevan los rotulos que encabezan cada seccion —`.etiqueta-
    editorial` en la portada, `.ns-rotulo` en Nosotros, `.nos-rotulo` en
    Especialidades—, las dos palabras grandes de la portada (Especialidades y
-   Testimonios) y el nombre de cada una de las nueve especialidades. Las
+   Testimonios) y el nombre de cada una de las diez especialidades. Las
    cabeceras del pie la llevaron y ya no: van sueltas y en plata (en el 10).
 
    Son DOS piezas y no una, y no por gusto. El oro del texto es un fondo

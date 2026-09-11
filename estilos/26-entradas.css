@@ -119,7 +119,7 @@
 
   /* --- 3. el indice de especialidades ----------------------------------- */
 
-  /* Nueve enlaces que se encienden de uno en uno, en el orden en que estan
+  /* Diez enlaces que se encienden de uno en uno, en el orden en que estan
      numerados. La mascara aqui abre de izquierda a derecha y no de arriba
      abajo: son lineas de una sola altura, y sobre una linea el barrido
      vertical no se ve. */
@@ -141,6 +141,7 @@
   .franja-nav a:nth-of-type(7) { --paso: .32s; }
   .franja-nav a:nth-of-type(8) { --paso: .37s; }
   .franja-nav a:nth-of-type(9) { --paso: .42s; }
+  .franja-nav a:nth-of-type(10) { --paso: .47s; }
 
   /* --- 4. la bienvenida de cada pagina ---------------------------------- */
 
