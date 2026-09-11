@@ -167,6 +167,16 @@ Cada página lleva, detrás de su descripción:
 - `format-detection` con `telephone=no, address=no`: en el iPhone Safari convertía en enlace
   la dirección del pie y la partía en dos columnas. Todos los teléfonos del sitio ya son
   enlaces `tel:` escritos a mano.
+- El icono de la pestaña: el diente de plata del logo, tal como lo pasó la clínica, en PNG a
+  16, 32 y 48 (`imagenes/favicon-smilers-*.png`), cada uno con su `sizes` para que el
+  navegador elija —16 en una pantalla normal, 32 en una de alta densidad, 48 para los accesos
+  directos de Windows y para Google, que en los resultados pide un múltiplo de 48—. El de 32
+  va el último: quien no mire `sizes` se queda con el último que entienda. Van en PNG porque es
+  el formato de icono que entienden todos; llegaron en WebP y se convirtieron con los mismos
+  píxeles. En la raíz va además `favicon.ico` con los tres tamaños, sin enlazar: es lo que piden
+  por su cuenta los navegadores viejos, los lectores de noticias y algunos rastreadores, que
+  hasta ahora recibían un 404. La plata es clara, así que en una pestaña blanca el diente se ve
+  suave. Antes el icono era una S dibujada en SVG dentro del propio HTML.
 
 Y datos estructurados en `application/ld+json`, uno por página:
 
