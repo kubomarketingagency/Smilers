@@ -513,26 +513,28 @@
   color: var(--gold-500);
 }
 
-/* El titulo de cada pilar, enmarcado: filo de oro, letra blanca y un poco de
-   aire, sin fondo propio —el pilar ya es negro—. Va a `fit-content` y no en
-   `inline-block` para que el marco se cina a la palabra sin abrir una linea
-   de texto alrededor, que le sumaria un hueco por debajo. El relleno de la
-   derecha descuenta el espaciado de la ultima letra; sin eso el marco sale
-   mas holgado de un lado que del otro. */
+/* El titulo de cada pilar, en una placa de oro: el degradado de marca de
+   fondo y la letra en negro, que es lo que hace el sitio siempre que rellena
+   algo de oro —el boton al pasar por encima, la pestana del mapa—. En blanco
+   no se leia: el tramo claro del degradado es casi crema, y ahi el blanco da
+   1,3:1. Va a `fit-content` y no en `inline-block` para que la placa se cina
+   a la palabra sin abrir una linea de texto alrededor, que le sumaria un
+   hueco por debajo. El relleno de la derecha descuenta el espaciado de la
+   ultima letra; sin eso la placa sale mas holgada de un lado que del otro. */
 .pilar h3 {
   width: fit-content;
   max-width: 100%;
   margin-bottom: .6rem;
-  padding: .52em .58em .48em .8em;
-  border: 1px solid transparent;
-  border-image: var(--oro-marca-degradado) 1;
+  padding: .58em .64em .54em .86em;
+  border: 0;
+  background: var(--oro-marca-degradado);
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .78rem;
   letter-spacing: .22em;
   text-transform: uppercase;
   line-height: 1.4;
-  color: #F5F2EC;
+  color: #0A0806;
 }
 .pilar p {
   margin: 0;
@@ -765,31 +767,44 @@
 .pn-filo { display: none; }
 
 .pn-grupo > .etiqueta-editorial { margin-bottom: clamp(.8rem, 1.6vw, 1.3rem); }
-/* Las cifras van sobre madera: la misma de Testimonios y de los heros de
-   Galeria y FAQ, entera y sin halo. Es una franja que baja desde la raya de
-   oro hasta el canto del telon, de lado a lado —por eso los margenes
-   negativos, que se comen el relleno del telon, y por eso ese relleno vive en
-   variables—, y encima de ella los pilares se quedan centrados en lo que
-   queda de negro.
+/* Los pilares y las cifras son UN bloque, y va centrado en la pantalla.
+
+   Las cifras iban en una franja de madera pegada al canto de abajo, de lado a
+   lado, y los pilares centrados en el negro que quedaba encima: con eso habia
+   media pantalla de negro vacio alrededor de los pilares, las cifras se
+   quedaban al fondo como un pie de pagina y en el telefono les caian encima
+   los dos botones fijos, el de subir y el de WhatsApp. Ahora las cifras van
+   justo debajo de los pilares, en su propia placa, y el conjunto se centra
+   entero; el aire que sobra se reparte arriba y abajo por igual.
+
+   `safe` porque en una ventana baja el bloque puede no caber: centrado a
+   secas se saldria por los dos cantos y el rotulo quedaria debajo de la
+   barra; con `safe` se arrima arriba y lo que sobre sale por abajo. */
+.pn-telon { justify-content: safe center; }
+
+/* La placa de las cifras: la madera de Testimonios, entera y sin halo, con
+   filo de oro alrededor y la raya de 2px arriba, que es lo que el sitio da a
+   la linea que abre una pieza. Mide lo mismo que la fila de pilares, asi que
+   cada cifra cae debajo de un pilar.
 
    Va FUERA del `.pn-contenido` de los pilares a proposito. Ese bloque se
-   desenfoca y se desvanece mientras entra, y un filtro sobre una madera de
-   pantalla entera se recalcula en cada fotograma del barrido. Asi la madera
-   llega con el telon, igual que su negro, y lo unico que entra desenfocado
-   son las cifras, que llevan su propio `.pn-contenido`. La raya de arriba es
-   de 2px, que es lo que el sitio da a la linea que separa dos superficies. */
-.pn-telon > .pn-contenido { margin-block: auto; }
-
+   desenfoca y se desvanece mientras entra, y un filtro sobre una madera se
+   recalcula en cada fotograma del barrido. Asi la madera llega con el telon,
+   igual que su negro, y lo unico que entra desenfocado son las cifras, que
+   llevan su propio `.pn-contenido`. */
 .pn-madera {
   position: relative;
   isolation: isolate;
-  margin: clamp(1.1rem, 2.2vw, 2rem) calc(-1 * var(--pn-pad-x)) calc(-1 * var(--pn-pad-y));
-  padding: clamp(1.3rem, 2.6vw, 2.4rem) var(--pn-pad-x) var(--pn-pad-y);
+  width: min(100%, 1560px);
+  margin: clamp(1.2rem, 3.6vh, 2.8rem) auto 0;
+  padding: clamp(1rem, 2vw, 1.8rem) clamp(1rem, 2.4vw, 2.2rem) clamp(1.1rem, 2vw, 1.8rem);
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
 }
 .pn-madera::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: -1px; left: -1px; right: -1px;
   z-index: 1;
   height: 2px;
   background: var(--oro-marca-degradado);
@@ -806,12 +821,15 @@
   height: 100%;
   object-fit: cover;
 }
+/* Solo un poco de negro arriba, que es donde va el rotulo, y en los cantos:
+   lo que cose la placa con el negro del telon. */
 .pn-madera__fondo::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .12) 36%, rgba(0, 0, 0, .1) 70%, rgba(0, 0, 0, .36) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, .36) 0%, rgba(0, 0, 0, .1) 40%, rgba(0, 0, 0, .1) 72%, rgba(0, 0, 0, .3) 100%);
 }
+.pn-madera > .pn-contenido { width: 100%; }
 
 .pn-telon .pilares-editorial,
 .pn-telon .contador-lujo {
@@ -976,17 +994,48 @@
   #nosotros .pn-escena--viva .pn-fondo .nm-figura:hover img { transform: scale(1.06); }
 }
 
+/* Las variables del barrido, registradas y SIN herencia.
+
+   Una propiedad personalizada normal se hereda, asi que escribirla en la
+   escena invalidaba el estilo de todo lo que cuelga de ella —los dos
+   collages, los pilares, las cifras: 160 elementos— en cada fotograma del
+   barrido. Se midio en un telefono simulado: el recalculo se comia 16ms de
+   los 16,7 que tiene un fotograma y el telon cruzaba a 30 imagenes por
+   segundo. Ahora `revelados.js` escribe cada una en la pieza que la usa, y
+   como no se hereda, cambiarla solo toca a esa pieza.
+
+   Sin herencia, el valor de partida lo pone `initial-value` y no el respaldo
+   del `var()`: una propiedad registrada siempre tiene valor, asi que ese
+   respaldo ya no se usa nunca. Por eso los dos dicen lo mismo. Las de raton
+   van sin tipo (`*`), que es la unica forma de que puedan valer `none`. */
+@property --pn-der { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --pn-izq { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --pn-op { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --pn-desenfoque { syntax: '<length>'; inherits: false; initial-value: 14px; }
+@property --pn-x { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --pn-uno { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --pn-dos { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --pn-ev-uno { syntax: '*'; inherits: false; }
+@property --pn-ev-dos { syntax: '*'; inherits: false; }
+
 /* Clavado, el telon ocupa la pantalla entera y la barra fija le tapa el
    techo, asi que el negro de los pilares se cuenta desde donde acaba la
-   barra. Con el numero grande y los titulos enmarcados los pilares ya no
-   caben sobrados en un telefono de 640 de alto, y centrados en la pantalla
-   entera el rotulo se metia 25px debajo de la barra. */
+   barra: centrados en la pantalla entera, el rotulo se metia debajo de ella.
+
+   Y por los lados deja sitio a los dos botones fijos de la esquina de abajo
+   —WhatsApp y subir, que ocupan los 81px del canto derecho—: con el
+   relleno de siempre la placa de las cifras llegaba hasta ellos y, en una
+   ventana baja, la ultima cifra quedaba debajo del boton. El relleno va igual
+   a los dos lados para que el bloque siga centrado. */
 .pn-escena--viva .pn-telon {
   position: absolute;
   inset: 0;
   z-index: 2;
   padding-top: calc(var(--alto-navbar) + .5rem);
   clip-path: inset(0 var(--pn-der, 100%) 0 var(--pn-izq, 0%));
+}
+@media (min-width: 992px) {
+  .pn-escena--viva .pn-telon { --pn-pad-x: max(5.6rem, 4vw); }
 }
 
 .pn-escena--viva .pn-contenido {
@@ -1099,15 +1148,26 @@
     font-size: .68rem;
   }
 
-  /* La pantalla negra: los cuatro pilares y las cuatro cifras, en dos
-     columnas cada bloque, cabiendo de una vez. */
+  /* La pantalla negra: los cuatro pilares en dos columnas y la placa de las
+     cifras debajo, cabiendo de una vez.
+
+     Por abajo el telon deja libre la esquina de los dos botones fijos. En el
+     telefono no hay canto lateral que darles —cada pixel de ancho es de los
+     pilares—, asi que se les da el pie: WhatsApp y subir ocupan los 131px de
+     abajo, y el bloque se centra en lo que queda por encima. Antes la franja
+     de las cifras caia justo ahi y los dos botones tapaban la segunda
+     columna. */
   .pn-telon {
     --pn-pad-y: clamp(1rem, 4vw, 1.8rem);
     --pn-pad-x: clamp(.9rem, 4vw, 1.6rem);
   }
+  .pn-escena--viva .pn-telon { padding-bottom: 140px; }
   .pn-contenido { gap: clamp(.8rem, 3vw, 1.2rem); }
   .pn-grupo > .etiqueta-editorial { margin-bottom: .45rem; }
-  .pn-madera { margin-top: clamp(.6rem, 2.4vw, 1rem); padding-top: clamp(.7rem, 2.6vw, 1.1rem); }
+  .pn-madera {
+    margin-top: clamp(.9rem, 3.4vw, 1.4rem);
+    padding: .7rem clamp(.6rem, 2.6vw, 1rem) .75rem;
+  }
 
   .pn-telon .pilar { padding: .5rem .45rem .45rem; }
   .pn-telon .pilar__num { font-size: 1.3rem; }
@@ -1131,6 +1191,25 @@
   }
   .pn-telon .cl-linea { bottom: .05rem; }
 }
+/* Con ancho de tableta las cuatro cifras caben en una fila, igual que los
+   cuatro pilares no: ahi cada cifra es un numero y dos palabras. */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
+}
+/* Y en una tableta en vertical la letra del telefono dejaba el bloque en
+   380px en mitad de una pantalla de 1024: sobra alto, asi que la letra sube
+   hacia la de escritorio y el bloque ocupa lo que le toca. */
+@media (min-width: 576px) and (max-width: 991.98px) and (min-height: 760px) {
+  .pn-telon .pilar { padding: 1rem .9rem .9rem; }
+  .pn-telon .pilar__num { font-size: 2rem; }
+  .pn-telon .pilar__icono { margin: .55rem 0 .45rem; font-size: 1.05rem; }
+  .pn-telon .pilar h3 { margin-bottom: .5rem; font-size: .74rem; letter-spacing: .18em; }
+  .pn-telon .pilar p { font-size: .9rem; line-height: 1.7; }
+  .pn-grupo > .etiqueta-editorial { margin-bottom: .8rem; }
+  .pn-madera { margin-top: 2rem; padding: 1.2rem 1.4rem 1.3rem; }
+  .pn-telon .cl-num { font-size: 2.2rem; }
+  .pn-telon .cl-etiqueta { margin-top: .5rem; font-size: .62rem; letter-spacing: .18em; }
+}
 
 /* Y en las pantallas cortas —un telefono de 640px de alto— el collage a algo
    mas de un tercio deja al texto sin sitio: el segundo boton se salia por
@@ -1152,7 +1231,14 @@
   .pn-escena--viva .pn-telon .pilar > p { grid-column: 1 / -1; }
   .pn-escena--viva .pn-telon .pilar > h3 { justify-self: start; padding-block: .32em .28em; }
   .pn-escena--viva .pn-telon .pilar__icono { margin: 0; }
-  .pn-escena--viva .pn-madera { padding-top: .6rem; }
+  .pn-escena--viva .pn-madera { margin-top: .75rem; padding-block: .55rem .6rem; }
+
+  /* Y las cuatro cifras en una sola fila: en dos filas la placa se llevaba
+     60px, y era lo unico que quedaba por apretar sin tocar la letra. */
+  .pn-escena--viva .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
+  .pn-escena--viva .pn-telon .cl-item { padding-inline: .15rem; }
+  .pn-escena--viva .pn-telon .cl-num { font-size: 1.3rem; }
+  .pn-escena--viva .pn-telon .cl-etiqueta { font-size: .5rem; letter-spacing: .06em; }
 
   #nosotros .pn-escena--viva .titulo-seccion {
     font-size: clamp(1.12rem, 5vw, 1.4rem);
@@ -1179,16 +1265,23 @@
   .pn-escena--viva .nosotros-acciones .btn { padding: .62rem .8rem; font-size: .6rem; }
 }
 
+/* Por debajo de 640 de alto —un iPhone SE con las barras del navegador— la
+   placa de las cifras llegaba 22px dentro del hueco de los botones fijos y
+   el de subir tapaba la ultima cifra. Se recuperan los aires de dentro de los
+   pilares y de la placa; la letra no se toca. */
+@media (max-width: 991.98px) and (max-height: 640px) {
+  .pn-escena--viva .pn-telon .pilar { padding-block: .35rem .3rem; }
+  .pn-escena--viva .pn-telon .pilar p { line-height: 1.4; }
+  .pn-escena--viva .pn-telon .pn-grupo > .etiqueta-editorial { margin-bottom: .3rem; }
+  .pn-escena--viva .pn-madera { margin-top: .5rem; padding-block: .45rem .5rem; }
+  .pn-escena--viva .pn-telon .cl-etiqueta { margin-top: .2rem; }
+}
+
 /* Y solo por debajo de 560px de ventana los dos vuelven a su fila: ahi
    apilados cuestan 51px que ya no hay y el segundo se iria por debajo del
    filo. Entre 560 y 700 caben apilados de sobra, que es donde vive casi todo
    telefono en vertical. */
 @media (max-width: 991.98px) and (max-height: 560px) {
-  /* Y por debajo de 560 las cuatro cifras van en una sola fila: en dos
-     filas se llevaban 45px del hueco, y era lo unico que quedaba por
-     apretar sin tocar la letra. */
-  .pn-escena--viva .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
-
   .pn-escena--viva .nosotros-acciones { flex-direction: row; gap: .5rem; }
   .pn-escena--viva .nosotros-acciones .btn {
     width: auto;

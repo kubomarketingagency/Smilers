@@ -131,27 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
-    /* El cierre es una escena clavada solo en pantalla grande.
-
-       En el telefono costaba lo que no vale. Las dos escenas son dos pines
-       seguidos, y entre que el telon acaba de cerrarse al final del cine y
-       que el cierre llega a clavarse hay, por construccion, el alto entero de
-       una pantalla de scroll: el pin del cine tiene que terminar de salir
-       antes de que el del cierre pueda empezar. Como las dos hojas estan
-       cerradas a los dos lados de ese hueco, lo que se recorria ahi era una
-       pantalla de negro quieto, y solo despues empezaban a abrirse otro tanto
-       —y todavia quedaba media pantalla mas de banda clavada sin hacer nada
-       cuando ya estaban abiertas del todo—.
-
-       Aqui el cierre se lee como lo que es sin la escena: una seccion normal
-       con la pregunta y las cifras. El telon del cine sigue cerrandose, y al
-       seguir subiendo es el propio telon el que la descubre por abajo. La
-       apertura deja de costar scroll porque ya no es un tramo aparte: es el
-       mismo movimiento con el que la escena se despide. */
-    function cierreCabe() {
-      return window.matchMedia('(min-width: 992px)').matches;
-    }
-
     /* Las dos cintas de fotos de la escena. `interiores.js` las monta y las
        deja en `SmilersCarruseles`; aqui se les dice cuando corren, porque su
        observador no puede saberlo: dentro del pin las dos estan siempre en
@@ -179,18 +158,70 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    var VARIABLES_CINE = ['--c-uno', '--c-dos', '--c-ev-uno', '--c-ev-dos',
-                          '--f-der', '--f-op', '--f-desenfoque', '--f-ent', '--f-filo', '--f-filo-op',
-                          '--i-sube', '--i-op', '--i-desenfoque', '--i-y', '--i-filo', '--i-filo-op',
-                          '--h-abre', '--h-filo'];
-    var VARIABLES_CIERRE = ['--h-abre', '--h-filo'];
+    /* Cada variable va en la pieza que la usa, no en la escena: el 24 las
+       registra sin herencia, asi que escrita ahi solo toca a esa pieza. En la
+       escena invalidaba el estilo de sus 200 elementos en cada fotograma. */
+    function pieza(bloque, selector) { return bloque ? bloque.querySelector(selector) : null; }
+    var capaFund = pieza(escena, '.ns-capa--fundamentos');
+    var capaInfra = pieza(escena, '.ns-capa--infra');
+    var DESTINOS_CINE = {
+      '--c-uno': pieza(escena, '.ns-capa--historia'),
+      '--c-ev-uno': pieza(escena, '.ns-capa--historia'),
+      '--c-dos': pieza(escena, '.ns-capa--elenco'),
+      '--c-ev-dos': pieza(escena, '.ns-capa--elenco'),
+      '--f-der': capaFund,
+      '--f-op': pieza(capaFund, ':scope > .ns-envoltura'),
+      '--f-desenfoque': pieza(capaFund, ':scope > .ns-envoltura'),
+      '--f-ent': pieza(capaFund, ':scope > .ns-envoltura'),
+      '--f-filo': pieza(escena, '.ns-filo--vertical'),
+      '--f-filo-op': pieza(escena, '.ns-filo--vertical'),
+      '--i-sube': capaInfra,
+      '--i-op': pieza(capaInfra, ':scope > .ns-envoltura'),
+      '--i-desenfoque': pieza(capaInfra, ':scope > .ns-envoltura'),
+      '--i-y': pieza(capaInfra, ':scope > .ns-envoltura'),
+      '--i-filo': pieza(escena, '.ns-filo--horizontal'),
+      '--i-filo-op': pieza(escena, '.ns-filo--horizontal'),
+      '--h-abre': pieza(escena, '.ns-hojas'),
+      '--h-filo': pieza(escena, '.ns-hojas')
+    };
+    var DESTINOS_CIERRE = {
+      '--h-abre': pieza(cierre, '.ns-hojas'),
+      '--h-filo': pieza(cierre, '.ns-hojas')
+    };
+    function borrar(destinos) {
+      Object.keys(destinos).forEach(function (nombre) {
+        if (destinos[nombre]) destinos[nombre].style.removeProperty(nombre);
+      });
+    }
 
+    /* El cierre es una escena clavada en todas las pantallas, tambien en el
+       telefono: las hojas se cierran al final del cine y se abren sobre la
+       pregunta, que ocupa la pantalla entera.
+
+       En el telefono estuvo apagado una temporada por lo que costaba. Dos
+       pines seguidos se cobran, por construccion, el alto entero de una
+       pantalla de scroll entre el uno y el otro —el del cine tiene que
+       terminar de salir antes de que el del cierre pueda clavarse—, y como
+       las hojas estaban cerradas a los dos lados de ese hueco, lo que se
+       recorria ahi era una pantalla de negro quieto. Sin el pin, la banda
+       subia en flujo normal detras del telon, sin cierre ni apertura y sin
+       llenar la pantalla.
+
+       El hueco ya no existe: el 24 monta el cierre sobre la ultima pantalla
+       del cine con un margen negativo del alto del pin, asi que su pin se
+       clava justo en el pixel en el que el del cine deja de estarlo. Mientras
+       sube por encima de esa ultima pantalla va escondido (sin `--clavado`) y
+       el cine se sigue viendo entero; al clavarse aparece con las hojas
+       cerradas, que es exactamente lo que el cine esta ensenando en ese
+       momento, y el relevo no se ve. */
     var viva = false;
     var cierreVivo = false;
+    var clavado = false;
+    var clavadoPintado = false;
 
     function revisarModo() {
       var quiere = cabe();
-      var quiereCierre = quiere && cierreCabe();
+      var quiereCierre = quiere && !!cierre;
       if (quiere === viva && quiereCierre === cierreVivo) return;
       viva = quiere;
       cierreVivo = quiereCierre;
@@ -199,7 +230,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (cierre) cierre.classList.toggle('ns-cierre--viva', cierreVivo);
 
       if (cierre && !cierreVivo) {
-        VARIABLES_CIERRE.forEach(function (v) { cierre.style.removeProperty(v); });
+        borrar(DESTINOS_CIERRE);
+        cierre.classList.remove('ns-cierre--clavado');
+        clavado = clavadoPintado = false;
         escritoCierre = {};
         ultimoCierre = -1;
         pCierre = 0;
@@ -207,8 +240,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       if (!viva) {
-        VARIABLES_CINE.forEach(function (v) { escena.style.removeProperty(v); });
-        if (cierre) VARIABLES_CIERRE.forEach(function (v) { cierre.style.removeProperty(v); });
+        borrar(DESTINOS_CINE);
+        borrar(DESTINOS_CIERRE);
         escritoCine = {};
         escritoCierre = {};
         if (elenco) elenco.despertar(false);
@@ -224,26 +257,21 @@ document.addEventListener('DOMContentLoaded', function () {
     function tramo(v, a, b) { return Math.min(1, Math.max(0, (v - a) / (b - a))); }
     function suave(t) { return t * t * (3 - 2 * t); }
 
-    /* Las variables se escribian las dieciocho en cada pixel de scroll,
-       cambiaran o no. Y una propiedad personalizada se hereda, asi que cada
-       escritura invalida el estilo de TODA la escena: las cuatro capas, los
-       cuatro retratos del elenco con sus mascaras y las fichas.
-
-       La mitad del recorrido no mueve ninguna —mientras se lee el elenco, de
-       .33 a .73, las dieciocho estan en su valor final—, y el ultimo cuarto
-       solo mueve seis. Guardando lo ultimo escrito, ese tramo pasa a costar
-       cero y el final baja de dieciocho escrituras por fotograma a seis. */
+    /* Y solo cuando cambian de valor. La mitad del recorrido no mueve
+       ninguna —mientras se lee el elenco, de .33 a .73, las dieciocho estan en
+       su valor final— y el ultimo cuarto solo mueve seis; guardando lo ultimo
+       escrito, ese tramo cuesta cero. */
     var escritoCine = {};
     var escritoCierre = {};
     function ponCine(nombre, valor) {
       if (escritoCine[nombre] === valor) return;
       escritoCine[nombre] = valor;
-      escena.style.setProperty(nombre, valor);
+      if (DESTINOS_CINE[nombre]) DESTINOS_CINE[nombre].style.setProperty(nombre, valor);
     }
     function ponCierre(nombre, valor) {
       if (escritoCierre[nombre] === valor) return;
       escritoCierre[nombre] = valor;
-      cierre.style.setProperty(nombre, valor);
+      if (DESTINOS_CIERRE[nombre]) DESTINOS_CIERRE[nombre].style.setProperty(nombre, valor);
     }
 
     function progresoDe(bloque, ctx) {
@@ -264,7 +292,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function leer(ctx) {
       if (viva) {
         pCine = progresoDe(escena, ctx);
-        if (cierre && cierreVivo) pCierre = progresoDe(cierre, ctx);
+        if (cierre && cierreVivo) {
+          pCierre = progresoDe(cierre, ctx);
+          /* Clavado es que el techo del cierre ya llego arriba: a partir de
+             ahi su pin tapa la pantalla y el del cine esta en su ultimo
+             fotograma, con las hojas cerradas. El pixel de holgura es por
+             el redondeo del alto en `dvh`. */
+          clavado = cierre.getBoundingClientRect().top <= 1;
+        }
       }
       rielMejor = paradaEnCurso(ctx);
     }
@@ -285,7 +320,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var textoI =       tramo(pCine, .78, .89);
         /* El telon se cierra en el ultimo 8% del recorrido, y en el 6%
            cuando no hay apertura despues: sin un tramo de apertura al que
-           dar entrada, alargar el cierre es solo alargar el negro. */
+           dar entrada, alargar el cierre es solo alargar el negro. Tiene que
+           acabar de cerrarse en el 1 justo: ahi es donde el cierre se clava
+           encima con sus hojas tambien cerradas. */
         var cierra = suave(tramo(pCine, cierreVivo ? .92 : .94, 1));
 
         /* Un solo canto para las dos mitades del telon de fundamentos: entra
@@ -330,9 +367,16 @@ document.addEventListener('DOMContentLoaded', function () {
         cintas(pCine < .22 ? 'historia' : (pCine > .73 ? 'infra' : 'ninguna'));
       }
 
+      if (viva && cierreVivo && clavado !== clavadoPintado) {
+        clavadoPintado = clavado;
+        cierre.classList.toggle('ns-cierre--clavado', clavado);
+      }
+
       if (viva && cierreVivo && cierre && pCierre !== ultimoCierre) {
         ultimoCierre = pCierre;
-        var abre = suave(tramo(pCierre, .08, .42));
+        /* La apertura arranca casi en cuanto se clava: ya no hay una
+           pantalla de negro por delante que dejar pasar. */
+        var abre = suave(tramo(pCierre, .03, .4));
         ponCierre('--h-abre', abre.toFixed(3));
         ponCierre('--h-filo', abre > 0 && abre < 1 ? '1' : '0');
 

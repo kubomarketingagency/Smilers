@@ -25,21 +25,28 @@
 .marca-footer { display: inline-flex; }
 .marca-footer .marca-logo { height: 72px; }
 
-/* Las cabeceras del pie van en su caja de oro, como las de cada seccion
-   (`.caja-oro`, en el 22). La rayita de oro que llevaban debajo se fue con
-   ella: debajo de un recuadro con filo de oro, otra raya es repetir. */
+/* Las cabeceras del pie, sueltas y en plata: el mismo degradado recortado
+   contra la letra que lleva la cinta de Especialidades, que es la otra pieza
+   de plata del sitio. Llevaron una temporada la caja de oro de las cabeceras
+   de seccion, y en el pie, que es todo negro, el recuadro pesaba mas que lo
+   que encabezaba. Los valores van escritos y no con `--silver-*`: las paginas
+   claras redefinen esa escala a grises de texto. */
 .footer-titulo {
-  --tracking: .14em;
   display: block;
+  width: fit-content;
   font-family: var(--fuente-elegante);
   font-weight: 400;
   letter-spacing: .14em;
   text-transform: uppercase;
   font-size: 1.3rem;
-  line-height: 1;
+  line-height: 1.2;
   margin-bottom: 1.5rem;
+  background: var(--gradiente-plata);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #C0C0C0;
 }
-.footer-titulo .caja-oro { padding: .48em calc(.8em - var(--tracking, 0em)) .42em .8em; }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
 

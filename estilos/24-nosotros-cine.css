@@ -557,6 +557,37 @@ main:has(.ns-cine--viva) { background: #050505; }
 /* ---------------------------------------------------------------------------
    La escena viva.
    --------------------------------------------------------------------------- */
+/* Las variables del barrido, registradas y SIN herencia.
+
+   Esto era lo que frenaba la entrada al equipo. Una propiedad personalizada
+   normal se hereda, y el guion las escribia todas en la escena: cada cambio
+   invalidaba el estilo de sus 200 elementos —las cuatro capas, los cuatro
+   retratos con sus mascaras, las fichas—, y mientras el panel de
+   fundamentos entra o se retira cambian dos o tres en cada fotograma. Se
+   midio en un telefono simulado: 16ms de recalculo por fotograma, de los
+   16,7 que hay, y el panel cruzaba a 26-31 imagenes por segundo. Ahora
+   `nosotros-cine.js` escribe cada una en la pieza que la usa y, como no se
+   hereda, cambiarla solo toca a esa pieza.
+
+   Registradas, el valor de partida lo pone `initial-value` y no el respaldo
+   del `var()` —una propiedad registrada siempre tiene valor—, asi que los dos
+   dicen lo mismo. Las del raton van sin tipo (`*`): es la unica forma de que
+   puedan valer `none`, y sin valor inicial el respaldo sigue mandando. Las
+   de los filos y las hojas no se registran: van en piezas sin hijos, o con
+   dos, y las hojas las necesitan heredadas para su `::after`. */
+@property --c-uno { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --c-dos { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --c-ev-uno { syntax: '*'; inherits: false; }
+@property --c-ev-dos { syntax: '*'; inherits: false; }
+@property --f-der { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --f-op { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --f-desenfoque { syntax: '<length>'; inherits: false; initial-value: 12px; }
+@property --f-ent { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --i-sube { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --i-op { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --i-desenfoque { syntax: '<length>'; inherits: false; initial-value: 10px; }
+@property --i-y { syntax: '<length>'; inherits: false; initial-value: 42px; }
+
 /* 590vh y no 660: los 70 que faltan salian todos del final. Entre que el
    texto de infraestructura acababa de entrar y que las hojas empezaban a
    cerrarse habia mas de tres cuartos de pantalla de scroll en el que no se
@@ -669,7 +700,23 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 /* ---------------------------------------------------------------------------
    El cierre: la pregunta sobre la mamposteria de la portada.
    --------------------------------------------------------------------------- */
-.ns-cierre--viva { height: 210vh; }
+/* Montado sobre la ultima pantalla del cine: el margen negativo es el alto
+   del pin, asi que este pin se clava en el mismo pixel en el que el del cine
+   deja de estarlo. Sin el, entre los dos quedaba una pantalla entera de
+   scroll con las hojas cerradas —negro quieto— antes de que empezaran a
+   abrirse.
+
+   Mientras sube por encima de esa ultima pantalla no se tiene que ver, ni
+   robar el dedo: el envoltorio va sin fondo y sin raton, y el pin escondido
+   hasta que `nosotros-cine.js` lo da por clavado. Entonces aparece con las
+   hojas cerradas encima de un cine que tambien las tiene cerradas. */
+.ns-cierre--viva {
+  height: 210vh;
+  margin-top: -100vh;
+  margin-top: -100svh;
+  background: transparent;
+  pointer-events: none;
+}
 .ns-cierre--viva .ns-cierre__pin {
   position: sticky;
   top: 0;
@@ -678,12 +725,28 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   overflow: hidden;
   isolation: isolate;
   background: #050505;
+  visibility: hidden;
 }
+.ns-cierre--viva.ns-cierre--clavado .ns-cierre__pin {
+  visibility: visible;
+  pointer-events: auto;
+}
+/* Las hojas de aqui arrancan cerradas, que es como las deja el cine. */
+.ns-cierre--viva .ns-hojas { --h-abre: 0; }
 .ns-cierre--viva .banda-cta--cine {
   position: absolute;
   inset: 0;
   height: 100%;
   min-height: 0;
+}
+/* Cada columna de la mamposteria son tres fotos a 3/4, y tres fotos a 3/4
+   miden lo que miden: en un telefono de 844 se quedaban en 771 y por debajo
+   asomaba una franja negra. Clavada a pantalla entera, las fotos se reparten
+   el alto de la columna en vez de traer el suyo. */
+.ns-cierre--viva .banda-cta-masonry__col img {
+  flex: 1 1 0;
+  min-height: 0;
+  aspect-ratio: auto;
 }
 
 /* Tres clases porque el 15 le apaga la mamposteria a toda `.banda-cta` de
@@ -814,14 +877,24 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-cine--viva { height: 520vh; }
   .ns-cine--viva .ns-cine__pin { height: 100dvh; }
 
-  /* Aqui no hay reglas del cierre porque aqui el cierre no es una escena:
-     `nosotros-cine.js` no le pone `--viva` por debajo de 992px y la banda se
-     queda en flujo normal, que es su estado de partida —el mismo que con
-     `prefers-reduced-motion`—. El motivo esta escrito en el guion, junto a
-     `cierreCabe()`: dos pines seguidos se cobran una pantalla entera de
-     scroll entre el uno y el otro, y esa pantalla se recorria en negro. Sin
-     pin, quien descubre la pregunta es el propio telon del cine al terminar
-     de subir, que es movimiento que ya estaba pagado. */
+  /* El cierre, clavado tambien aqui y a pantalla entera. Estuvo en flujo
+     normal una temporada —el porque esta en el guion, junto a
+     `revisarModo()`— y la banda subia detras del telon sin cierre ni
+     apertura y sin llenar la pantalla: media 608px en una de 844 y debajo
+     asomaba el pie. El pin va en `dvh`, como el del cine, y el margen que lo
+     monta sobre la ultima pantalla del cine tambien: los dos tienen que medir
+     lo mismo o el relevo se descuadra cuando la barra del navegador se
+     esconde. Algo menos de recorrido que en escritorio, que la banda del
+     telefono se lee de un vistazo.
+
+     El contenido se centra por debajo de la barra fija y no en la pantalla
+     entera, y con `safe`: en un telefono bajo el rotulo quedaria tapado. */
+  .ns-cierre--viva { height: 190vh; margin-top: -100dvh; }
+  .ns-cierre--viva .ns-cierre__pin { height: 100dvh; }
+  .ns-cierre--viva .banda-cta--cine {
+    align-items: safe center;
+    padding: calc(var(--alto-navbar) + .8rem) 0 1.2rem;
+  }
   .banda-cta--cine { border-top-width: 2px; }
 
   .ns-cine--viva .ns-capa {

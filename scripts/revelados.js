@@ -148,9 +148,35 @@ document.addEventListener('DOMContentLoaded', function () {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
-    var VARIABLES = ['--pn-der', '--pn-izq', '--pn-op', '--pn-desenfoque',
-                     '--pn-x', '--pn-filo', '--pn-filo-op', '--pn-uno', '--pn-dos',
-                     '--pn-ev-uno', '--pn-ev-dos'];
+    /* Cada variable va en la pieza que la usa, no en la escena. Escritas en
+       la escena, cada una invalidaba el estilo de sus 160 elementos en cada
+       fotograma del barrido —una propiedad personalizada se hereda—, y en un
+       telefono ese recalculo era el fotograma entero. El 07 las registra sin
+       herencia, asi que escribirlas aqui solo toca a su pieza. */
+    function piezas(selector) {
+      return Array.prototype.slice.call(escena.querySelectorAll(selector));
+    }
+    var telon = piezas('.pn-telon');
+    var contenidos = piezas('.pn-contenido');
+    var filo = piezas('.pn-filo');
+    var fondoUno = piezas('.pn-fondo--uno');
+    var fondoDos = piezas('.pn-fondo--dos');
+    var DESTINOS = {
+      '--pn-der': telon, '--pn-izq': telon,
+      '--pn-op': contenidos, '--pn-desenfoque': contenidos, '--pn-x': contenidos,
+      '--pn-filo': filo, '--pn-filo-op': filo,
+      '--pn-uno': fondoUno, '--pn-ev-uno': fondoUno,
+      '--pn-dos': fondoDos, '--pn-ev-dos': fondoDos
+    };
+
+    /* Y solo cuando cambian: el cambiazo de fondo y el interruptor del raton
+       cambian una vez en todo el recorrido y se escribian en cada pixel. */
+    var escrito = {};
+    function pon(nombre, valor) {
+      if (escrito[nombre] === valor) return;
+      escrito[nombre] = valor;
+      DESTINOS[nombre].forEach(function (pieza) { pieza.style.setProperty(nombre, valor); });
+    }
 
     function revisarModo() {
       var quiere = cabe();
@@ -159,7 +185,10 @@ document.addEventListener('DOMContentLoaded', function () {
       escena.classList.toggle('pn-escena--viva', viva);
 
       if (!viva) {
-        VARIABLES.forEach(function (v) { escena.style.removeProperty(v); });
+        Object.keys(DESTINOS).forEach(function (nombre) {
+          DESTINOS[nombre].forEach(function (pieza) { pieza.style.removeProperty(nombre); });
+        });
+        escrito = {};
       }
     }
 
@@ -187,28 +216,28 @@ document.addEventListener('DOMContentLoaded', function () {
       var entra = tramo(progreso, .34, .46);
       var abre = suave(tramo(progreso, .70, .97));
 
-      escena.style.setProperty('--pn-der', ((1 - tapa) * 100).toFixed(2) + '%');
-      escena.style.setProperty('--pn-izq', (abre * 100).toFixed(2) + '%');
-      escena.style.setProperty('--pn-op', entra.toFixed(3));
-      escena.style.setProperty('--pn-desenfoque', ((1 - entra) * 14).toFixed(1) + 'px');
-      escena.style.setProperty('--pn-x', (-abre * 12).toFixed(2) + 'vw');
+      pon('--pn-der', ((1 - tapa) * 100).toFixed(2) + '%');
+      pon('--pn-izq', (abre * 100).toFixed(2) + '%');
+      pon('--pn-op', entra.toFixed(3));
+      pon('--pn-desenfoque', ((1 - entra) * 14).toFixed(1) + 'px');
+      pon('--pn-x', (-abre * 12).toFixed(2) + 'vw');
 
       var cerrando = abre > 0;
       var canto = cerrando ? abre : tapa;
-      escena.style.setProperty('--pn-filo', (canto * 100).toFixed(2) + '%');
-      escena.style.setProperty('--pn-filo-op', canto > 0 && canto < 1 ? '1' : '0');
+      pon('--pn-filo', (canto * 100).toFixed(2) + '%');
+      pon('--pn-filo-op', canto > 0 && canto < 1 ? '1' : '0');
 
       /* El cambiazo de fondo, en el punto medio: ahi el telon tapa la pantalla
          entera (acaba de taparla en .32 y no empieza a abrirse hasta .70), asi
          que el corte no se ve. */
       var segundo = progreso >= .5 ? 1 : 0;
-      escena.style.setProperty('--pn-uno', String(1 - segundo));
-      escena.style.setProperty('--pn-dos', String(segundo));
+      pon('--pn-uno', String(1 - segundo));
+      pon('--pn-dos', String(segundo));
 
       /* Y con el fondo se cambia tambien quien recibe el raton: la pantalla
          que no se ve no puede quedarse robando el clic de la que si. */
-      escena.style.setProperty('--pn-ev-uno', segundo ? 'none' : 'auto');
-      escena.style.setProperty('--pn-ev-dos', segundo ? 'auto' : 'none');
+      pon('--pn-ev-uno', segundo ? 'none' : 'auto');
+      pon('--pn-ev-dos', segundo ? 'auto' : 'none');
     }
 
     revisarModo();

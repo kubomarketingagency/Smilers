@@ -178,8 +178,8 @@
    letra. Lo llevan los rotulos que encabezan cada seccion —`.etiqueta-
    editorial` en la portada, `.ns-rotulo` en Nosotros, `.nos-rotulo` en
    Especialidades—, las dos palabras grandes de la portada (Especialidades y
-   Testimonios), el nombre de cada una de las nueve especialidades y las
-   cabeceras del pie.
+   Testimonios) y el nombre de cada una de las nueve especialidades. Las
+   cabeceras del pie la llevaron y ya no: van sueltas y en plata (en el 10).
 
    Son DOS piezas y no una, y no por gusto. El oro del texto es un fondo
    recortado contra las letras (`background-clip: text`), y ese recorte se

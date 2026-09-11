@@ -133,18 +133,60 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  var acordeones = {};
   document.querySelectorAll('.acordeon-tratamiento-boton').forEach(function (boton) {
     var panel = document.getElementById(boton.getAttribute('aria-controls'));
     if (!panel) return;
 
-    boton.addEventListener('click', function () {
-      var abierto = panel.classList.toggle('abierta');
+    function poner(abierto) {
+      panel.classList.toggle('abierta', abierto);
       boton.setAttribute('aria-expanded', String(abierto));
-    });
-
-    if (window.location.hash && window.location.hash.slice(1) === panel.id.replace(/^panel-/, '')) {
-      panel.classList.add('abierta');
-      boton.setAttribute('aria-expanded', 'true');
     }
+    boton.addEventListener('click', function () { poner(!panel.classList.contains('abierta')); });
+    acordeones[panel.id.replace(/^panel-/, '')] = poner;
+  });
+
+  /* En el telefono cada especialidad es un acordeon cerrado, y quien llega a
+     una desde un enlace —el indice de las nueve, el menu, la portada— viene a
+     leerla: se abre sola. Antes solo pasaba al entrar en la pagina con el
+     ancla puesta; pulsando el indice ya dentro, la pagina bajaba hasta la
+     especialidad y la dejaba cerrada, con solo su nombre a la vista.
+
+     No hace falta mover el scroll: el ancla ya baja hasta el techo de la
+     seccion, y el panel se abre por debajo de su boton sin empujarlo. En
+     escritorio la clase no hace nada, que ahi los paneles se ven siempre.
+     El clic se escucha ademas del cambio de ancla porque pulsar la misma que
+     ya esta en la direccion no cambia nada y no avisa. */
+  function abrirSegun(ancla) {
+    var poner = acordeones[decodeURIComponent((ancla || '').replace(/^#/, ''))];
+    if (poner) poner(true);
+    return !!poner;
+  }
+
+  /* Y al llegar desde otra pagina con el ancla puesta —la portada, el menu—
+     el navegador decide hasta donde bajar antes de que carguen las letras de
+     la pagina, y con ellas lo de arriba encoge 113px: se pasaba de largo y el
+     nombre de la especialidad quedaba debajo de la barra. Cuando la pagina ya
+     esta entera, se vuelve a colocar la seccion justo debajo de ella. */
+  if (abrirSegun(window.location.hash)) {
+    var pedida = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    var colocar = function () {
+      if (!pedida) return;
+      var suave = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      pedida.scrollIntoView({ block: 'start', behavior: suave ? 'smooth' : 'auto' });
+    };
+    window.addEventListener('load', function () {
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+        requestAnimationFrame(colocar);
+      });
+    });
+  }
+  window.addEventListener('hashchange', function () { abrirSegun(window.location.hash); });
+  document.addEventListener('click', function (evento) {
+    var enlace = evento.target.closest && evento.target.closest('a[href*="#"]');
+    if (!enlace) return;
+    var destino = new URL(enlace.href, window.location.href);
+    var aqui = window.location.pathname.replace(/\.html$/, '');
+    if (destino.pathname.replace(/\.html$/, '') === aqui) abrirSegun(destino.hash);
   });
 });

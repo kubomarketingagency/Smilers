@@ -35,9 +35,14 @@
 /* Las tres tarjetas iban sueltas, sin nada que dijera que son un grupo ni
    por que estan ahi. La cabeza va centrada y no arrimada a la izquierda como
    el resto de los rotulos de la pagina: encabeza tres columnas, no una. */
+/* Y con aire por arriba: la seccion no trae relleno propio —el triptico se
+   separaba de la portada con su margen— y cuando llego la cabeza se quedo
+   pegada al canto de la portada, con el recuadro del rotulo tocando la foto,
+   que parecia cortada por ahi. */
 .pz-triptico__cabeza {
   max-width: 46ch;
   margin-inline: auto;
+  padding-top: clamp(2.4rem, 5vw, 4.4rem);
   text-align: center;
 }
 /* El rotulo lleva una linea que sale hacia la derecha y crece: centrado

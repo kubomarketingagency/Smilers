@@ -14,6 +14,14 @@
   height: 100%;
   min-height: 0;
 }
+/* Clavada a pantalla entera, las tres fotos de cada columna se reparten el
+   alto en vez de traer el suyo: a 3/4 se quedaban cortas en un telefono y
+   por debajo asomaba una franja negra. */
+.cierre-cine-pin .banda-cta-masonry__col img {
+  flex: 1 1 0;
+  min-height: 0;
+  aspect-ratio: auto;
+}
 
 .cierre-cine-negro {
   position: absolute;
@@ -125,41 +133,59 @@
 }
 
 /* La mamposteria no es un fondo liso: pasan por debajo batas blancas y caras
-   a plena luz, y sobre esas el titular en blanco se perdia. Antes eso lo
-   resolvia un recuadro negro encima del texto; quitado el recuadro, todo el
-   peso vuelve aqui.
+   a plena luz. La pregunta y el boton van en un recuadro oscurecido, el
+   mismo que sostiene las cifras del cierre de Nosotros —una raya fina arriba
+   y otra abajo, y entre las dos una plancha negra que carga en el centro y se
+   suelta hacia los cantos—, y el velo de la banda es tambien el de alli.
 
-   Dos capas, no una. La vertical oscurece el conjunto, y la horizontal carga
-   la mitad izquierda —donde va la pregunta— y deja respirar la derecha, que
-   es donde solo hay un boton con su propio filo de oro. Asi el collage sigue
-   viendose collage en vez de una mancha uniforme. */
+   Una temporada fueron sueltos sobre el collage, con un velo que cargaba la
+   mitad izquierda —donde iba la pregunta— y soltaba la derecha; con eso la
+   pregunta caia sobre batas blancas y el boton sobre retratos. El velo de
+   ahora cierra por el centro, que es donde esta el recuadro, y suelta los
+   cuatro cantos, que es por donde se ve que detras pasan fotos. */
 .banda-cta-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg,
-      rgba(10, 8, 6, .62) 0%,
-      rgba(10, 8, 6, .44) 46%,
-      rgba(10, 8, 6, .08) 74%,
-      rgba(10, 8, 6, .02) 100%),
-    linear-gradient(180deg, rgba(10, 8, 6, .3) 0%, rgba(10, 8, 6, .12) 42%, rgba(10, 8, 6, .5) 100%);
+    radial-gradient(74% 64% at 50% 50%,
+      rgba(6, 6, 6, .62) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .26) 100%),
+    linear-gradient(180deg,
+      rgba(6, 6, 6, .3) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .5) 100%);
 }
-/* El titular pierde el suelo plano que le daba el velo vertical, asi que se
-   lo lleva pegado: la sombra solo pesa donde hay letra. */
+/* Lo que la plancha no alcanza lo pone la letra: la sombra solo pesa donde
+   hay texto. La de la portada, la misma que en Nosotros. */
 .banda-cta h2,
 .banda-cta p { text-shadow: 0 2px 16px rgba(6, 5, 4, .72); }
+.cierre-cine .banda-cta h2,
+.cierre-cine .banda-cta p { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
 
-/* El boton va a la derecha, que es justo la mitad que el velo suelta, y por
-   ahi pasan retratos a plena luz: el filo y las letras de oro sobre una bata
-   blanca o un fondo de jardin dejaban de leerse. Una sombra no vale, porque
-   lo que hay que sostener no es solo la letra sino el filo; lo que vale es
-   devolverle el suelo negro que el resto de la pagina clara ya le da. */
+/* El boton cae sobre retratos a plena luz: el filo y las letras de oro sobre
+   una bata blanca dejan de leerse. Una sombra no vale, porque lo que hay que
+   sostener no es solo la letra sino el filo; lo que vale es devolverle el
+   suelo negro que el resto de la pagina clara ya le da. */
 .banda-cta .btn { --btn-relleno: rgba(8, 6, 4, .72); }
-/* Apilada, la pregunta cruza todo el ancho y el degradado lateral estorba. */
-@media (max-width: 991.98px) {
-  .banda-cta-overlay {
-    background: linear-gradient(180deg, rgba(10, 8, 6, .5) 0%, rgba(10, 8, 6, .68) 100%);
-  }
-}
 .banda-cta-contenido { position: relative; z-index: 2; }
+
+/* El recuadro. Arriba se descuenta el hueco de la rejilla de Bootstrap: cada
+   columna lleva ese hueco como margen por encima, tambien la primera, y sin
+   descontarlo salia con 24px mas de aire arriba que abajo.
+
+   La plancha va en `z-index: -1` y la fila no abre contexto de apilado, asi
+   que cae por detras del texto y por delante de la mamposteria: el contexto
+   lo abre `.banda-cta-contenido`. Se pinta una sola vez. */
+.cierre-cine .banda-cta-contenido > .row {
+  --caja-aire: clamp(1.5rem, 3vw, 2.4rem);
+  position: relative;
+  padding: max(0px, calc(var(--caja-aire) - var(--bs-gutter-y, 0px))) 0 var(--caja-aire);
+  border-block: 1px solid rgba(255, 255, 255, .16);
+}
+.cierre-cine .banda-cta-contenido > .row::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -.5rem -1rem;
+  pointer-events: none;
+  background: radial-gradient(64% 112% at 50% 50%,
+    rgba(4, 4, 4, .62) 0%, rgba(4, 4, 4, .34) 58%, rgba(4, 4, 4, 0) 100%);
+}
