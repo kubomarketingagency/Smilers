@@ -268,9 +268,15 @@
     align-items: flex-start;
     gap: clamp(1.5rem, 3vw, 3.2rem);
   }
+  /* Las cinco a partes iguales, pero ninguna mas estrecha que su palabra mas
+     larga. Con `min-width: 0` la columna podia encoger por debajo de su
+     titulo, y «Especialidades» —una sola palabra, en versales y espaciada—
+     se salia de la suya y pisaba la raya de Galeria: de 6px a 1280 a 41px a
+     992. Con `min-content` esa columna se queda con lo que mide su titulo y
+     las otras cuatro, que van sobradas, ceden lo que falta. */
   .menu-col {
     flex: 1 1 0;
-    min-width: 0;
+    min-width: min-content;
     display: flex;
     flex-direction: column;
     gap: .9rem;
