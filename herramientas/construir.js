@@ -92,7 +92,7 @@ function sellarUrl(url, quien) {
   return ruta + '?v=' + sello(rel);
 }
 
-const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-antes|data-despues)="([^"]*)"/g;
+const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues)="([^"]*)"/g;
 const ATRIBUTO_LISTA = /\b(srcset|imagesrcset|data-fotos)="([^"]*)"/g;
 
 function sellarHtml(html, pagina) {

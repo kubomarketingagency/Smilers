@@ -515,6 +515,13 @@ deshace, vuelve el problema.
   Chrome de escritorio, aunque emule un teléfono, sí lo arranca, así que las
   pruebas no lo ven. Si se cambia el vídeo por otro de otras proporciones, hay
   que cambiar esos números.
+- **El splash tiene plan B**: si el teléfono no deja arrancar el vídeo (el
+  iPhone con ahorro de batería, el navegador de algunas apps), si falla, o si
+  no ha arrancado a los 3 s de pedirlo, `hero.js` pone en su sitio la misma
+  animación como WebP animado (`video-hero/*.webp`, `data-anim-*`), que se ve
+  en todos esos casos y solo se descarga cuando hace falta. Los dos WebP ya
+  van a la duración del splash (`data-duracion`, 3,69 s). Si se cambia un
+  vídeo, hay que regenerar su WebP con todos sus fotogramas y esa duración.
 - **Las clases que encienden las escenas** (`pn-escena--viva`, `ns-cine--viva`,
   `ns-cierre--viva`) las pone un guion de una línea **dentro del propio
   elemento**, antes del primer pintado, y ese guion se borra a sí mismo (no

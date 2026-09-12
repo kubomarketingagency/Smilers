@@ -277,6 +277,32 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(function () { splash.remove(); }, 700);
     }
 
+    /* Plan B: la misma animacion como imagen animada (WebP, ya a la
+       duracion del splash). El iPhone no deja arrancar un video solo con el
+       ahorro de bateria puesto, ni dentro del navegador de algunas apps, y a
+       veces tarda mas de la cuenta en arrancarlo; una imagen animada se ve en
+       todos esos casos. Solo se pide cuando hace falta. */
+    var imagen = null;
+    function planB() {
+      if (retirado || imagen) return;
+      var src = window.matchMedia('(max-width: 767.98px)').matches
+        ? video.dataset.animMovil
+        : video.dataset.animEscritorio;
+      if (!src) { retirarSplash(); return; }
+      temporizadores.forEach(clearTimeout);
+      temporizadores = [];
+      imagen = new Image();
+      imagen.alt = '';
+      imagen.onload = function () {
+        esperar((parseFloat(video.dataset.duracion) || 3.69) * 1000, retirarSplash);
+      };
+      imagen.onerror = retirarSplash;
+      esperar(3000, function () { if (!imagen.complete) retirarSplash(); });
+      try { video.pause(); } catch (e) {}
+      imagen.src = src;
+      video.parentNode.replaceChild(imagen, video);
+    }
+
     if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       retirarSplash();
       return;
@@ -290,10 +316,10 @@ document.addEventListener('DOMContentLoaded', function () {
       video.playbackRate = 1.3;
     }
 
-    if (video.dataset.autoplayBloqueado) { retirarSplash(); return; }
+    if (video.dataset.autoplayBloqueado || video.error) { planB(); return; }
 
     video.addEventListener('ended', retirarSplash);
-    video.addEventListener('error', retirarSplash);
+    video.addEventListener('error', planB);
 
     function desdeLaApertura() {
       return (window.performance && performance.now) ? performance.now() : 0;
@@ -301,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var arranco = false;
     function marcarArranque() {
-      if (arranco) return;
+      if (arranco || imagen) return;
       arranco = true;
       var restante = isFinite(video.duration) ? Math.max(0, video.duration - video.currentTime) : 4;
       esperar(restante / (video.playbackRate || 1) * 1000 + 500, retirarSplash);
@@ -310,15 +336,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     video.addEventListener('timeupdate', marcarArranque);
 
-    esperar(Math.max(500, 2600 - desdeLaApertura()), function () {
-      if (!arranco) retirarSplash();
+    /* Tres segundos desde que el guion del splash pidio el video, no desde
+       que se abrio la pagina: en el iPhone el video pasa por su propio
+       reproductor, que tarda mas en arrancar. Si no ha arrancado, plan B. */
+    var desde = parseFloat(video.dataset.desde) || 0;
+    esperar(Math.max(500, desde + 3000 - desdeLaApertura()), function () {
+      if (!arranco) planB();
     });
 
     esperar(Math.max(1000, 9000 - desdeLaApertura()), retirarSplash);
 
     if (video.paused && !video.ended) {
       var intento = video.play();
-      if (intento && typeof intento.catch === 'function') intento.catch(retirarSplash);
+      if (intento && typeof intento.catch === 'function') intento.catch(planB);
     }
   })();
 });

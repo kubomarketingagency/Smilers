@@ -43,7 +43,7 @@ Lo importante es la doble garantía:
   el navegador reutiliza lo que ya tiene, sin pedir nada.
 
 El sello cubre `href`, `src`, `srcset`, `imagesrcset`, `data-fotos`,
-`data-antes`, `data-despues`, los `data-src-*` del vídeo del splash, **y las
+`data-antes`, `data-despues`, los `data-src-*` del vídeo del splash y los `data-anim-*` de su imagen animada, **y las
 `url()` de las hojas de estilo** (las tipografías, por ejemplo), que ahora
 pasan por la construcción. Es decir: guiones, imágenes, vídeo y tipografías.
 
