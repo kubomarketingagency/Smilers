@@ -1102,7 +1102,7 @@ void main() {
     }
 
     function yDeTestimonio(indice) {
-      var recorrido = seccion.offsetHeight - (window.innerHeight || 1);
+      var recorrido = seccion.offsetHeight - (window.SmilersScroll ? window.SmilersScroll.alto() : (window.innerHeight || 1));
       var tramos = items.length - 1;
       if (recorrido <= 0 || tramos <= 0) return null;
       var progreso = REPOSO_INICIO + (acotar(indice / tramos)) * TRAMO_GIRO;
@@ -1248,7 +1248,7 @@ void main() {
       esfera.arrancar();
     }
 
-    leerSeccion({ alto: window.innerHeight || 1 });
+    leerSeccion({ alto: window.SmilersScroll ? window.SmilersScroll.alto() : (window.innerHeight || 1) });
     actualizar();
   }
 

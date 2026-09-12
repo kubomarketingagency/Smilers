@@ -9,9 +9,24 @@ var entradas=[];
 var reinicios=[];
 var pedido=false;
 var ctx={y:0,alto:0,ancho:0};
+var sonda=null;
+var altoGrande=0;
+function medirAlto(){
+if(!sonda){
+sonda=document.createElement('div');
+sonda.setAttribute('aria-hidden','true');
+sonda.style.cssText='position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+document.body.appendChild(sonda);
+}
+altoGrande=sonda.offsetHeight||window.innerHeight||1;
+}
+function alto(){
+if(!altoGrande)medirAlto();
+return altoGrande;
+}
 function medir(){
 ctx.y=window.scrollY;
-ctx.alto=window.innerHeight||1;
+ctx.alto=alto();
 ctx.ancho=window.innerWidth||1;
 }
 function correr(){
@@ -112,6 +127,9 @@ idle=setTimeout(alDetenerse,220);
 }
 window.addEventListener('scroll',alScroll,{passive:true});
 window.addEventListener('resize',function(){
+var altoAntes=altoGrande,anchoAntes=ctx.ancho;
+medirAlto();
+if(altoGrande===altoAntes&&(window.innerWidth||1)===anchoAntes){pedir();return;}
 for(var i=0;i < reinicios.length;i++)reinicios[i]();
 pedir();
 });
@@ -138,6 +156,7 @@ if(opciones.alCambiarVisibilidad)opciones.alCambiarVisibilidad(dentro);
 },{rootMargin:'100% 0px'}).observe(guarda);
 },
 alDetenerse:function(fn){quietos.push(fn);},
+alto:alto,
 deslizarA:deslizarA,
 abortarDeslizamiento:abortar,
 pedir:pedir
@@ -1866,7 +1885,7 @@ fijarRevelado(!revelando);
 }
 }
 function yDeTestimonio(indice){
-var recorrido=seccion.offsetHeight -(window.innerHeight||1);
+var recorrido=seccion.offsetHeight -(window.SmilersScroll?window.SmilersScroll.alto():(window.innerHeight||1));
 var tramos=items.length - 1;
 if(recorrido <=0||tramos <=0)return null;
 var progreso=REPOSO_INICIO +(acotar(indice / tramos))*TRAMO_GIRO;
@@ -1988,7 +2007,7 @@ else{e.detener();}
 }else if(crearEsfera()){
 esfera.arrancar();
 }
-leerSeccion({alto:window.innerHeight||1});
+leerSeccion({alto:window.SmilersScroll?window.SmilersScroll.alto():(window.innerHeight||1)});
 actualizar();
 }
 document.addEventListener('DOMContentLoaded',function(){

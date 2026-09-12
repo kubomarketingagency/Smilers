@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       var caja = parada.bloque.getBoundingClientRect();
       var arriba = caja.top + window.scrollY;
-      var recorrido = Math.max(0, caja.height - window.innerHeight);
+      var recorrido = Math.max(0, caja.height - (window.SmilersScroll ? SmilersScroll.alto() : window.innerHeight));
       return Math.round(arriba + parada.p * recorrido);
     }
 

@@ -123,11 +123,17 @@
   position: relative;
   height: 460vh;
 }
+/* Los pines de las escenas miden la pantalla grande (`lvh`: la que queda
+   con la barra del navegador escondida). En el telefono la barra aparece y
+   se esconde con el scroll: con `svh` el pin se quedaba corto y asomaba una
+   franja por debajo, y con `dvh` crecia y encogia a mitad del gesto y la
+   escena se deformaba. En `lvh` llena siempre la pantalla y no cambia; los
+   guiones miden lo mismo con `SmilersScroll.alto()` (planificador.js). */
 .hero-cine-pin {
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100svh;
+  height: 100lvh;
   overflow: hidden;
   isolation: isolate;
 }

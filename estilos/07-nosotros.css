@@ -941,7 +941,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100svh;
+  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
   overflow: hidden;
   isolation: isolate;
 }
@@ -1069,14 +1069,16 @@
    resto, y lo que falta sale del interlineado y de los aires — nunca del
    cuerpo de letra, que es lo que hay que leer.
 
-   El pin va en `dvh` y no en `svh` a proposito: en el movil la barra del
-   navegador se esconde al bajar y la ventana crece, y con `svh` el telon se
-   quedaba corto y asomaba una franja de marmol por debajo.
+   El pin va en `lvh`, la pantalla grande: en el movil la barra del
+   navegador se esconde al bajar y la ventana crece. Con `svh` el telon se
+   quedaba corto y asomaba una franja de marmol por debajo, y con `dvh`, que
+   fue lo siguiente, crecia y encogia con la barra a mitad del gesto y la
+   escena se deformaba. `lvh` es ya lo mas que da la pantalla y no cambia.
    --------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {
 
   .pn-escena--viva { height: 300vh; }
-  .pn-escena--viva .pn-pin { height: 100dvh; }
+  .pn-escena--viva .pn-pin { height: 100lvh; }
 
   .pn-escena--viva .pn-fondo .nosotros-split {
     height: 100%;

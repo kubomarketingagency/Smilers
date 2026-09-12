@@ -521,6 +521,15 @@ deshace, vuelve el problema.
   queda ningún nodo de más). Si las pusiera solo el guion del paquete, llegarían
   tres segundos tarde y la escena se recolocaría a la vista. El paquete las
   sigue gestionando igual (las quita si se pide menos movimiento).
+- **Los pines de las escenas miden `100lvh`**, la pantalla grande (la que
+  queda con la barra del navegador escondida), y `SmilersScroll.alto()` mide
+  lo mismo para los guiones. En el teléfono la barra aparece y se esconde con
+  el scroll: con `svh` el pin se quedaba corto y asomaba una franja por debajo;
+  con `dvh` crecía y encogía con la barra y la escena se deformaba; y si los
+  guiones midieran con `innerHeight`, las escenas se recolocarían a mitad del
+  gesto. Un `resize` que solo es la barra no recalcula nada. El margen que
+  monta el cierre de Nosotros sobre el cine va en `lvh` por lo mismo, y la
+  sección de Especialidades, que es una pantalla justa, también.
 
 **La fluidez**
 

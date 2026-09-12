@@ -6,9 +6,34 @@ var SmilersScroll = (function () {
 
   var ctx = { y: 0, alto: 0, ancho: 0 };
 
+  /* El alto es el de la pantalla grande (con la barra del navegador
+     escondida), el mismo que el `100lvh` de los pines de las escenas. En el
+     telefono la barra aparece y se esconde con el scroll e innerHeight cambia
+     cada vez: medir con el descuadraba las escenas a mitad del gesto. Se
+     mide con una pieza de 100lvh (100vh donde no hay lvh, que ahi ya es la
+     pantalla grande), la primera vez que hace falta y cuando cambia la
+     ventana. */
+  var sonda = null;
+  var altoGrande = 0;
+
+  function medirAlto() {
+    if (!sonda) {
+      sonda = document.createElement('div');
+      sonda.setAttribute('aria-hidden', 'true');
+      sonda.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none';
+      document.body.appendChild(sonda);
+    }
+    altoGrande = sonda.offsetHeight || window.innerHeight || 1;
+  }
+
+  function alto() {
+    if (!altoGrande) medirAlto();
+    return altoGrande;
+  }
+
   function medir() {
     ctx.y = window.scrollY;
-    ctx.alto = window.innerHeight || 1;
+    ctx.alto = alto();
     ctx.ancho = window.innerWidth || 1;
   }
 
@@ -135,6 +160,11 @@ var SmilersScroll = (function () {
 
   window.addEventListener('scroll', alScroll, { passive: true });
   window.addEventListener('resize', function () {
+    /* Si solo se ha movido la barra del navegador, la pantalla grande sigue
+       igual y no hay nada que recalcular. */
+    var altoAntes = altoGrande, anchoAntes = ctx.ancho;
+    medirAlto();
+    if (altoGrande === altoAntes && (window.innerWidth || 1) === anchoAntes) { pedir(); return; }
     for (var i = 0; i < reinicios.length; i++) reinicios[i]();
     pedir();
   });
@@ -169,6 +199,7 @@ var SmilersScroll = (function () {
     },
 
     alDetenerse: function (fn) { quietos.push(fn); },
+    alto: alto,
     deslizarA: deslizarA,
     abortarDeslizamiento: abortar,
     pedir: pedir

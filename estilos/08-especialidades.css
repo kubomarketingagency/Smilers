@@ -6,7 +6,7 @@
   overflow: hidden;
   isolation: isolate;
   height: 100vh;
-  height: 100svh;
+  height: 100lvh; /* una pantalla justa, la grande, como los pines: ver 05-hero.css */
 }
 
 /* El rotulo va pegado al techo de la seccion, y el techo de la seccion esta
