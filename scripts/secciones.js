@@ -50,9 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
         lista.appendChild(li);
       });
 
-      ficha.classList.remove('ns-ficha--entra');
-
-      void ficha.offsetWidth;
+      if (ficha.classList.contains('ns-ficha--entra')) {
+        ficha.classList.remove('ns-ficha--entra');
+        void ficha.offsetWidth;
+      }
       ficha.classList.add('ns-ficha--entra');
     }
 
@@ -141,30 +142,48 @@ document.addEventListener('DOMContentLoaded', function () {
       return col;
     }
 
-    var anchoColumna = window.matchMedia('(min-width: 992px)').matches ? 226 : 196;
+    function armar() {
+      var anchoColumna = window.matchMedia('(min-width: 992px)').matches ? 226 : 196;
 
-    var anchoNecesario = window.innerWidth * 1.6;
+      var anchoNecesario = window.innerWidth * 1.6;
 
-    var set = [];
-    var anchoSet = 0;
-    var indice = 0;
-    while (anchoSet < anchoNecesario) {
-      set.push(grupos[indice % grupos.length]);
-      anchoSet += anchoColumna;
-      indice++;
+      var set = [];
+      var anchoSet = 0;
+      var indice = 0;
+      while (anchoSet < anchoNecesario) {
+        set.push(grupos[indice % grupos.length]);
+        anchoSet += anchoColumna;
+        indice++;
+      }
+
+      set.concat(set).forEach(function (grupo) {
+        cinta.appendChild(crearColumna(grupo));
+      });
     }
 
-    set.concat(set).forEach(function (grupo) {
-      cinta.appendChild(crearColumna(grupo));
-    });
-
+    /* La cinta se arma cuando la banda queda a tres pantallas, no al abrir la
+       pagina: son dos docenas de fotos al final del todo, y armarlas al
+       principio obligaba a leer el ancho de la ventana antes de que la pagina
+       estuviera maquetada. A tres pantallas sus fotos (diferidas) empiezan a
+       bajar a la vez que lo hacian antes. */
     if ('IntersectionObserver' in window) {
       cinta.style.animationPlayState = 'paused';
+      var caja = cinta.parentNode || cinta;
+      var armada = false;
+      var vigia = new IntersectionObserver(function (entradas) {
+        if (armada || !entradas[entradas.length - 1].isIntersecting) return;
+        armada = true;
+        vigia.disconnect();
+        armar();
+      }, { rootMargin: '300% 0px' });
+      vigia.observe(caja);
       new IntersectionObserver(function (entradas) {
         entradas.forEach(function (entrada) {
           cinta.style.animationPlayState = entrada.isIntersecting ? 'running' : 'paused';
         });
-      }, { rootMargin: '200px 0px' }).observe(cinta.parentNode || cinta);
+      }, { rootMargin: '200px 0px' }).observe(caja);
+    } else {
+      armar();
     }
   })();
 

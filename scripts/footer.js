@@ -4,6 +4,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const contadores = document.querySelectorAll('[data-contador]');
   const runIdContador = new WeakMap();
 
+  /* Un solo formateador para todas las cuentas. `toLocaleString('es-MX')`
+     construye uno nuevo en cada llamada, y la cuenta lo llamaba en cada
+     fotograma: en un telefono, el primero costaba cerca de 50ms (cargar los
+     datos del idioma) en mitad del telon. El texto que sale es el mismo. Se
+     crea en un rato libre, despues de la carga. */
+  let formato = null;
+  function formatear(n) {
+    if (!formato && window.Intl && Intl.NumberFormat) formato = new Intl.NumberFormat('es-MX');
+    return formato ? formato.format(n) : n.toLocaleString('es-MX');
+  }
+  if (contadores.length) {
+    window.addEventListener('load', function () {
+      const calentar = function () { formatear(0); };
+      if (window.requestIdleCallback) requestIdleCallback(calentar); else setTimeout(calentar, 1);
+    });
+  }
+
   function animarContador(elemento) {
     const idPropio = (runIdContador.get(elemento) || 0) + 1;
     runIdContador.set(elemento, idPropio);
@@ -19,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
          de dos lineas mas arriba. Cuando pasa, el progreso sale negativo y el
          contador enseña un numero en negativo antes de arrancar. */
       const progreso = Math.min(Math.max((ahora - inicio) / duracion, 0), 1);
-      elemento.textContent = Math.floor(progreso * objetivo).toLocaleString('es-MX');
+      elemento.textContent = formatear(Math.floor(progreso * objetivo));
       if (progreso < 1) requestAnimationFrame(paso);
     }
     requestAnimationFrame(paso);

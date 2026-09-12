@@ -5,7 +5,32 @@ cada archivo y con qué prefijo de clase buscarlo.
 
 Para encontrar algo, lo más rápido casi siempre es buscar la clase por todo
 el proyecto (`Ctrl+Mayús+F` en VS Code) — el prefijo dice de qué archivo
-sale.
+sale. Al buscar en los HTML, ojo: cada página lleva dentro, en una sola línea
+larguísima, todos sus estilos ya minificados; esa línea sale en cualquier
+búsqueda de una clase. Lo que se edita está en `estilos/`.
+
+## Las carpetas
+
+| Carpeta | Qué hay | ¿Se publica? |
+|---|---|---|
+| raíz | Las cinco páginas: `index.html`, `nosotros.html`, `tratamientos.html`, `galeria.html` y `faq.html`. Hasta septiembre de 2026 las cuatro interiores vivían en `subpaginas/`; ahora están en la raíz y sus direcciones son `/nosotros`, `/tratamientos`, `/galeria` y `/faq`. Las de antes (`/subpaginas/…`, con o sin `.html`) redirigen a las nuevas con un 308 permanente (`vercel.json`). | sí |
+| `estilos/` | Las hojas de estilo, **fuente**. Se editan aquí. | no |
+| `scripts/` | Los guiones del sitio, **fuente**. Se editan aquí. | no |
+| `herramientas/` | `construir.js` (la construcción y el sello: ver `CACHE.md`), `podar-bootstrap.js` y `convert-to-webp.js`. | no |
+| `paquetes/` | **Generado** por `construir.js`: un guion por página, ya junto y minificado. No se edita a mano. | sí |
+| `fuentes/` | Las tipografías (Bodoni Moda y Lato), servidas desde el propio sitio. `fuentes/hinting/` es la serie para Windows y Linux. | sí |
+| `imagenes/`, `video-hero/` | Fotos, fondos, logo y el vídeo de bienvenida. | sí |
+| `vendor/` | Bootstrap: el original y el recorte. El recorte viaja dentro de los estilos de cada página y su JS dentro de los paquetes. | no |
+
+**Las páginas no piden nada de `estilos/` ni de `scripts/`**: piden lo que
+genera `herramientas/construir.js`. Los estilos van *dentro* de cada HTML, en
+la `<style data-hojas="…">` de la cabecera, y los guiones en `paquetes/`. Así
+que **después de tocar una hoja o un guion hay que construir**, o el cambio no
+se ve en ninguna parte:
+
+```bash
+node herramientas/construir.js
+```
 
 **La seccion se llama Especialidades y el archivo se llama `tratamientos.html`.**
 De cara al lector no queda ni una «Tratamientos» suelta: ni en el menu, ni en el
@@ -46,6 +71,7 @@ apareciera en algún sitio, la regla se quedó. Los comentarios no se tocaron.
 
 | Archivo | Qué contiene | Prefijos |
 |---|---|---|
+| `00-fuentes.css` | Las `@font-face` de Bodoni Moda y Lato, apuntando a `fuentes/`. Son las mismas declaraciones y los mismos archivos que servía Google Fonts (la serie que manda a móvil y Mac); en Windows y Linux el guion `data-fuentes` de cada página las cambia por las de `fuentes/hinting/`, que es lo que Google manda ahí. Así cada plataforma recibe el archivo de siempre y la letra se ve igual. | `@font-face` |
 | `01-variables.css` | Colores, tipografías, sombras, transiciones. Todo lo que se reutiliza. Aquí viven los **dos tonos planos de oro** del sitio, `--oro-marca` para piedra oscura y `--oro-hondo` para piedra clara, y no en la guía de marca (19): esa hoja solo la cargan dos páginas y el oro tiene que ser el mismo en las cinco. | `:root`, `--*` |
 | `02-base.css` | Etiquetas base, imán de scroll, splash de bienvenida, foco de teclado. | `.splash-inicio` |
 | `03-botones.css` | La forma de los botones y sus dos adornos: el destello de oro que cruza al pasar el ratón y el filo interior. **El color no se decide aquí**: el 16 los iguala a todos. Las variantes viejas (`.btn-naranja`, `.btn-turquesa`, `.btn-blanco`, `.btn-contorno`, `.btn-fantasma`, `.btn-traslucido`, `.btn-sm-nav`) y el tamaño `.btn-lg` **ya no existen**: se borraron de aquí y del HTML, porque mientras estuvieran bastaba con que una de ellas trajese un `border:` o un `:hover` con más peso para volver a partir el conjunto. | `.btn` |
@@ -84,17 +110,24 @@ El retrato del elenco no es un recorte de verdad: es una mascara ovalada que apa
 
 ## Qué carga cada página
 
-Ni una hoja de estilo ni un guion viaja a una página que no lo use. El reparto
-sale de contar, selector por selector, cuáles alcanzan a algo en cada página, y
-está comprobado: **la huella de estilo calculado de los cinco documentos —cada
-elemento con cincuenta y tantas propiedades— es idéntica antes y después.** No
-se quitó nada que se vea; se quitó lo que viajaba sin pintar.
+Ni una hoja de estilo ni un guion viaja a una página que no lo use. **La lista
+de cada página vive en la propia página**: las hojas, en el atributo
+`data-hojas` de su `<style>` (en la cabecera); los guiones, en el
+`data-guiones` de su `<script defer src="paquetes/…">` (al final). El orden de
+cada lista es el de siempre —el de la cascada y el de ejecución—. Para añadir
+una hoja o un guion a una página se añade a su lista y se construye.
+
+El reparto sale de contar, selector por selector, cuáles alcanzan a algo en
+cada página, y está comprobado: **la huella de estilo calculado de los cinco
+documentos —cada elemento con sesenta y tantas propiedades, y sus `::before` y
+`::after`— es idéntica antes y después**, en teléfono y en escritorio. Se
+volvió a comprobar al pasar los estilos dentro del HTML (septiembre de 2026).
 
 | | portada | Nosotros | Especialidades | Galería | FAQ |
 |---|---|---|---|---|---|
-| **estilos** | 01-13, 16, 22, 26 | 01-04, 08-12, 15-17, 19-22, 24 | 01-04, 06, 09-12, 14-19, 21-23, 25, 26 | 01-04, 06, 08-12, 15, 16, 22, 23, 26 | igual que Galería |
+| **estilos** | 00-13, 16, 22, 26 | 00-04, 08-12, 15-17, 19-22, 24 | 00-04, 06, 09-12, 14-19, 21-23, 25, 26 | 00-04, 06, 08-12, 15, 16, 22, 23, 26 | igual que Galería |
 | **guiones** | bootstrap, planificador, navegación, revelados, footer, secciones, hero, testimonios | planificador, navegación, footer, secciones, interiores, nosotros-cine | planificador, navegación, revelados, footer, subpáginas, interiores | bootstrap, planificador, navegación, revelados, footer, subpáginas, secciones | bootstrap, planificador, navegación, revelados, footer, secciones |
-| **peso** | 580 → 308 KB | 672 → 275 KB | 629 → 249 KB | 540 → 250 KB | 540 → 244 KB |
+| **lo que baja al abrirla** (comprimido: HTML con sus estilos + paquete) | 39 + 31 KB | 40 + 7 KB | 41 + 7 KB | 32 + 21 KB | 33 + 20 KB |
 
 Dos cosas que conviene entender antes de tocar el reparto:
 
@@ -106,10 +139,12 @@ Dos cosas que conviene entender antes de tocar el reparto:
   donde hay acordeón (FAQ), carrusel (portada) o modal (Galería). Nosotros y
   Especialidades se traían 80 KB para no llamar a una sola función.
 
-Los guiones van todos con `defer`. Antes bloqueaban el análisis del documento
-al final del `<body>`; ahora se descargan mientras el navegador sigue leyendo y
-se ejecutan en orden justo antes de `DOMContentLoaded`, que es cuando todos
-esperaban de todas formas.
+Los guiones de cada página van en **un solo paquete con `defer`**: se descarga
+mientras el navegador sigue leyendo y se ejecuta justo antes de
+`DOMContentLoaded`, que es cuando todos esperaban de todas formas. Dentro del
+paquete cada archivo sigue siendo lo que era —cada uno registra su propio
+`DOMContentLoaded`, así que si uno fallara los demás siguen funcionando— y van
+en el orden de la lista.
 
 ---
 
@@ -120,8 +155,9 @@ el navegador descargaba, analizaba y guardaba en memoria en cada visita para no
 pintar absolutamente nada, y encima **antes que ninguna hoja propia**, porque va
 la primera y el CSS bloquea el pintado.
 
-`scripts/podar-bootstrap.js` lee `bootstrap.min.css` y escribe
-`bootstrap.recorte.css`, que es el que cargan las páginas: **227 KB → 37 KB**.
+`herramientas/podar-bootstrap.js` lee `bootstrap.min.css` y escribe
+`bootstrap.recorte.css`, que es el que va dentro de los estilos de cada
+página: **227 KB → 37 KB**.
 La regla es a propósito prudente: se conserva un selector si no nombra ninguna
 clase —todo el *reboot*, que va por etiqueta— o si **todas** las que nombra
 están en la lista de usadas. Esa lista sale de los cinco HTML, del CSS propio
@@ -137,7 +173,8 @@ se verá.
 El original se queda en el repo como fuente, fuera del despliegue
 (`.vercelignore`). El JavaScript pasó del `bundle` a `bootstrap.min.js`: el
 `bundle` es lo mismo más Popper, y Popper solo lo usan el desplegable, el
-*tooltip* y el *popover*, que aquí no existen.
+*tooltip* y el *popover*, que aquí no existen. Y va dentro del paquete de las
+tres páginas que lo usan, el primero de su lista.
 
 ---
 
@@ -145,13 +182,18 @@ El original se queda en el repo como fuente, fuera del despliegue
 
 **Las direcciones buenas son las limpias, sin `.html`.** `vercel.json` tiene
 `cleanUrls` encendido desde siempre, lo que significa que el servidor responde
-en `/subpaginas/nosotros` y manda un 301 a quien pida `/subpaginas/nosotros.html`
-— y los 181 enlaces internos del sitio llevaban `.html`. Cada salto entre
-páginas costaba dos viajes en vez de uno y cada enlace apuntaba a una dirección
-que no es la definitiva. Ahora van todos a la forma limpia, en raíz (`/`,
-`/subpaginas/faq#cuidados`), y los enlaces de una página a sí misma se quedan en
-el ancla pelada (`#historia`), que además es lo que `nosotros-cine.js` necesita
-para reconocerlos como suyos.
+en `/nosotros` y manda una redirección a quien pida `/nosotros.html`. Los
+enlaces internos van todos a la forma limpia, en raíz (`/`, `/faq#cuidados`), y
+los de una página a sí misma se quedan en el ancla pelada (`#historia`), que
+además es lo que `nosotros-cine.js` necesita para reconocerlos como suyos.
+
+**Las páginas interiores vivieron hasta septiembre de 2026 en `subpaginas/`**
+(`/subpaginas/nosotros`…). Al pasarlas a la raíz, `vercel.json` redirige las
+direcciones viejas —con y sin `.html`— a las nuevas con un 308 permanente: no
+se rompe ningún enlace guardado ni ninguna dirección indexada, y el buscador
+cambia la vieja por la nueva cuando recoge la redirección. El `canonical`, la
+tarjeta social, los datos estructurados y el `sitemap.xml` ya apuntan a las
+nuevas.
 
 **Contrapartida a saber:** abriendo los archivos a doble clic desde el disco,
 los enlaces del menú ya no navegan, porque `file://` no sabe de `cleanUrls`. Para
@@ -196,12 +238,19 @@ para siempre.
 Se cayó el `<meta name="keywords">` de las cinco páginas: no lo lee ningún
 buscador desde 2009.
 
-Las tipografías se piden ahora como `Bodoni+Moda:wght@400..800` en vez de los
-cinco pesos sueltos. Bodoni Moda es una fuente variable y los cinco pesos
-apuntaban al mismo archivo: pedirlos por separado solo multiplicaba por cinco
-las declaraciones `@font-face`, **23 KB → 6 KB de CSS que bloquea el pintado**.
-Y se cayó Prata: la pedían la portada y Nosotros, y las dos únicas reglas que la
-usaban eran de una portada de Nosotros que ya no existe.
+**Las tipografías ya no se piden a Google Fonts: se sirven desde `fuentes/`**
+(septiembre de 2026). La hoja de Google bloqueaba el primer pintado y obligaba
+a abrir conexión con dos dominios más; en un teléfono con 4G lenta eran casi
+0,9 s antes de ver nada. Los archivos son **los mismos que servía Google**, y
+por partida doble, porque Google no manda lo mismo a todos: a Android, iPhone y
+Mac les manda la serie sin *hinting* (`fuentes/`), y a Windows y Linux la que
+lo lleva (`fuentes/hinting/`, un 65 % más pesada en Lato). El guion
+`data-fuentes` de la cabecera de cada página hace ese mismo reparto, de modo
+que cada plataforma recibe exactamente el archivo que recibía y la letra se ve
+igual. Bodoni Moda va como fuente variable (`400 800`) y Lato en 300, 400 y
+700, con los cuatro juegos de caracteres que declara Google (solo se descarga
+el que haga falta). Se cayó Prata hace tiempo: la pedían la portada y Nosotros
+y las dos únicas reglas que la usaban eran de una portada que ya no existe.
 
 ---
 
@@ -365,12 +414,10 @@ que es quien pone la veladura para que el texto de encima se siga leyendo.
 
 ## Scripts — `scripts/`
 
-El orden de las etiquetas `<script>` también importa: `planificador.js`
-tiene que ir primero porque los demás lo usan. **Van todas con `defer`, y
-cada página carga solo las suyas** — el cuadro del reparto está en «Qué
-carga cada página». `defer` no cambia nada de lo que hacían: ya esperaban
-todas a `DOMContentLoaded`, y ahora se descargan mientras el navegador lee
-el documento en vez de después.
+El orden de la lista `data-guiones` también importa: `planificador.js` tiene
+que ir primero porque los demás lo usan (y Bootstrap antes que él donde lo
+haya). **Cada página lleva en su paquete solo los suyos** — el cuadro del
+reparto está en «Qué carga cada página».
 
 | Archivo | Qué hace |
 |---|---|
@@ -383,10 +430,15 @@ el documento en vez de después.
 | `hero.js` | Carrusel de portada, hero cine, imán de tratamientos, desenfoque, cierre cine y splash. |
 | `interiores.js` | El carrusel dorado (`[data-carrusel]`) y las pantallas completas de Nosotros: marca la sección visible y arma el riel de puntos lateral. Solo lo cargan Nosotros y Tratamientos. **Las paradas del riel salen de `.ns-pantalla` o de cualquier elemento con `[data-pantalla]`**, y esa segunda vía es la que usa Tratamientos: sus cinco paradas —portada, tríptico, especialidades, proceso y cierre— son secciones normales que no llevan ni quieren llevar la puesta en escena de `.ns-pantalla`; basta con que digan cómo se llaman. En Nosotros esta parte no corre: allí el riel lo arma `nosotros-cine.js` con sus propias paradas, y esa página no tiene ningún `[data-pantalla]`, así que no salen dos rieles. **Cada carrusel devuelve un mando (`dormir`/`despertar`) y todos quedan en `window.SmilersCarruseles`.** Hacía falta porque su observador de visibilidad no vale dentro de un pin: en Nosotros las dos cintas —la del hero y la de infraestructura— están siempre en pantalla aunque solo se vea una, así que las dos pasaban fotos a la vez durante toda la escena, y la de infraestructura las pasaba **desde el primer fotograma detrás de un `clip-path: inset(100% 0 0 0)`**. Dos cruces de imágenes a pantalla completa corriendo en paralelo, una de ellas invisible. Ahora manda la escena, igual que con el elenco. En Tratamientos no hay escena y sigue mandando el observador, que es lo correcto: allí la cinta sí entra y sale de pantalla de verdad. |
 | `nosotros-cine.js` | **Solo lo carga Nosotros, y va el último.** Corre igual en el movil que en el escritorio y lo unico que lo apaga es `prefers-reduced-motion` — y eso vale tambien para el cierre, que es escena clavada en todas las pantallas: el 24 lo monta sobre la ultima pantalla del cine y el guion lo deja escondido hasta que su techo llega arriba (`ns-cierre--clavado`), asi que se clava en el pixel en el que el del cine se suelta y el relevo, con las hojas cerradas a los dos lados, no se ve. La bandera `cierreVivo` decide si las paradas del riel de esa pieza se miden por progreso o por geometria; sin escena es falsa. Saca dos progresos de 0 a 1 —el de la escena y el del cierre— y los escribe en las variables `--c-*`, `--f-*`, `--i-*` y `--h-*` **solo cuando cambian de valor**, que no es un detalle: una propiedad personalizada se hereda, así que cada escritura invalida el estilo de toda la escena —las cuatro capas, los cuatro retratos del elenco con sus máscaras y las fichas—, y se escribían las dieciocho en cada píxel de scroll. **Y cada una en la pieza que la usa**, no en la escena: el 24 registra sin herencia (`@property`) las de las capas grandes, así que cambiarlas solo toca a su pieza. Era lo que frenaba la entrada al equipo: con las variables en la escena, cada fotograma del barrido recalculaba 291 elementos —16ms de los 16,7 que tiene un fotograma, en un teléfono simulado con la CPU cuatro veces más lenta— y el panel de fundamentos cruzaba a 26-31 imágenes por segundo; ahora todos los tramos van a 60. La mitad del recorrido no mueve ninguna (mientras se lee el elenco están todas en su valor final) y el último cuarto mueve seis. El caché se vacía al redimensionar, que ahí los porcentajes miden sobre otra ventana —incluidas `--c-ev-uno` y `--c-ev-dos`, el mismo interruptor de ratón que la portada: el elenco tapaba a la historia y le robaba el «Inicio» de la ruta—; acota el desplazamiento de entrada del panel de fundamentos escribiendo solo el factor (`--f-ent`) y dejando la distancia en el CSS, que en `vw` crecia sin tope y a 2560 sacaba la columna derecha por el canto; mueve el carrusel del elenco, que pasa solo cada tres segundos, tiene una flecha a cada lado del retrato y al que **duerme y despierta la propia escena**, porque dentro del pin la capa está siempre en pantalla aunque no se vea y un observador no serviría —y por lo mismo duerme y despierta **las dos cintas de fotos**, la del hero y la de infraestructura, que corrían las dos a la vez durante toda la escena: ahora corre una cada vez, la del hero hasta que el telón la tapa (.22) y la de infraestructura desde que su capa empieza a subir (.73), con medio recorrido por el medio en el que no corre ninguna—; y arma el riel lateral y reescribe los enlaces del menú, ya que dentro del pin `#historia`, `#fundamentos`, `#equipo` e `#infraestructura` apuntan todos al mismo punto del documento y hay que traducirlos a un sitio del recorrido. Lo mismo al llegar con `#equipo` en la dirección: el navegador ya ha saltado al arranque de la escena antes de que exista este guion, y hay que recolocarlo. |
-| `testimonios-esfera.js` | La esfera WebGL de testimonios. Solo la carga `index.html`. |
-| `sellar-version.js` | Herramienta. Ver `CACHE.md`. |
-| `podar-bootstrap.js` | Herramienta. Recorta Bootstrap a lo que el sitio usa. Ver «Bootstrap va recortado». |
-| `convert-to-webp.js` | Herramienta para convertir imágenes. |
+| `testimonios-esfera.js` | La esfera WebGL de testimonios. Solo la carga `index.html`. **La esfera no se crea al abrir la página** sino cuando la sección queda a dos pantallas y media: el contexto WebGL, sus sombreadores y los dos atlas de catorce fotos eran lo más caro de la portada (tres tareas largas y catorce fotos compitiendo con la de arriba) para algo que está al final del recorrido. La sección sí se monta desde el principio —su clase `esfera-activa` y su alto `--alto-cine`—, que de eso depende dónde cae todo lo de detrás. Las fotos se descodifican fuera del hilo principal antes de pasar al atlas, el bucle de cada fotograma reutiliza sus matrices (antes creaba unas trescientas por fotograma y el recolector de basura se notaba en el teléfono) y, cuando la esfera está quieta y ya pintada, deja de calcular hasta que algo la mueve. |
+
+Las herramientas viven aparte, en `herramientas/`, y no se publican:
+
+| Archivo | Qué hace |
+|---|---|
+| `construir.js` | La construcción: estilos dentro de cada HTML, paquetes de guiones, tipografías por plataforma y sello. Ver `CACHE.md`. |
+| `podar-bootstrap.js` | Recorta Bootstrap a lo que el sitio usa. Ver «Bootstrap va recortado». |
+| `convert-to-webp.js` | Para convertir imágenes. |
 
 Cada archivo registra su propio `DOMContentLoaded`. Eso además los aísla: si
 uno fallara, los demás siguen funcionando.
@@ -395,25 +447,93 @@ uno fallara, los demás siguen funcionando.
 
 ## Antes de commitear
 
-Si tocaste CSS, JS o imágenes:
+Si tocaste estilos, guiones, imágenes, tipografías o el HTML:
 
 ```bash
-node scripts/sellar-version.js
+node herramientas/construir.js
 ```
 
-Sin eso, quien ya visitó el sitio se queda con la versión vieja. El porqué
-está en `CACHE.md`.
+Sin eso, lo que hayas tocado en `estilos/` o `scripts/` no llega a ninguna
+página, y quien ya visitó el sitio se queda con las imágenes viejas. El porqué
+está en `CACHE.md`. `node herramientas/construir.js --verificar` comprueba sin
+escribir nada.
 
 Y si añadiste al HTML alguna **clase de Bootstrap** que no se usaba antes:
 
 ```bash
-node scripts/podar-bootstrap.js
-node scripts/sellar-version.js
+node herramientas/podar-bootstrap.js
+node herramientas/construir.js
 ```
 
 El recorte de Bootstrap solo lleva lo que el sitio nombraba cuando se
 generó. Si aparece una clase nueva y no se vuelve a podar, la regla que la
 pinta no está y no lo dice nadie.
+
+---
+
+## Rendimiento: lo que no hay que deshacer
+
+En septiembre de 2026 se optimizó la carga y la fluidez en teléfono **sin
+cambiar un píxel**: se comprobó con la huella de estilo calculado de las cinco
+páginas (idéntica en teléfono y escritorio) y con capturas de las escenas
+clavadas comparadas píxel a píxel (idénticas; las únicas diferencias, de menos
+de un 0,3 %, son el texto dentro del mapa de Google y la posición subpíxel del
+disco de la esfera). Cada punto de esta lista resuelve algo medido; si se
+deshace, vuelve el problema.
+
+**La carga**
+
+- **Los estilos van dentro del HTML** (`<style data-hojas>`, lo escribe
+  `herramientas/construir.js`). Eran 17-20 hojas y la de Google Fonts, todas
+  bloqueando el primer pintado: en 4G lenta, casi 2 s sin ver nada.
+- **Las tipografías se sirven desde `fuentes/`**, con la serie de cada
+  plataforma (ver «SEO» y `00-fuentes.css`).
+- **Un solo paquete de guiones por página** (`paquetes/`), minificado.
+- **Nosotros precarga sus cuatro tipografías** (`data-precargar` en su
+  `<script data-fuentes>`): sin eso, el bloque de la historia, que va centrado
+  en vertical, saltaba al cambiar la letra de reserva por la buena. Solo ahí:
+  en las otras páginas no salta nada y la precarga le quita ancho de banda a la
+  foto principal.
+- **Nosotros no pinta hasta tener entera la primera pantalla**
+  (`<link rel="expect" href="#equipo" blocking="render">`): con los estilos
+  dentro, el navegador pintaba la historia a medio leer y luego crecía.
+- **Las fotos de las capas que esperan turno** (las tomas 2 y siguientes de
+  las cintas, el elenco, infraestructura…) llevan `fetchpriority="low"`: dentro
+  de un pin todas cuentan como «en pantalla» y competían con la foto principal.
+- **La reja de Galería lleva `srcset`**: pedía la foto de 1920 px para
+  miniaturas de 200.
+
+**Lo que salta (CLS)**
+
+- **El vídeo de bienvenida no se ve hasta que se sabe su medida**
+  (`loadedmetadata`, en el guion del splash). Antes de tener datos un `<video>`
+  mide 300×150 y luego salta a su tamaño; como no pinta nada hasta entonces,
+  esconderlo no cambia lo que se ve. Un póster con la medida no bastaba: el
+  póster también llega tarde.
+- **Las clases que encienden las escenas** (`pn-escena--viva`, `ns-cine--viva`,
+  `ns-cierre--viva`) las pone un guion de una línea **dentro del propio
+  elemento**, antes del primer pintado, y ese guion se borra a sí mismo (no
+  queda ningún nodo de más). Si las pusiera solo el guion del paquete, llegarían
+  tres segundos tarde y la escena se recolocaría a la vista. El paquete las
+  sigue gestionando igual (las quita si se pide menos movimiento).
+
+**La fluidez**
+
+- **La esfera de testimonios se crea tarde y con la página quieta**: sus fotos
+  empiezan a bajar cuando la sección queda a dos pantallas y media, y la esfera
+  (WebGL) se crea en la siguiente parada del scroll. Ver el cuadro de guiones.
+- **La cinta de la banda final se arma a tres pantallas**, no al abrir.
+- **La cuenta de las cifras usa un solo `Intl.NumberFormat`**:
+  `toLocaleString` construía uno por fotograma.
+- **Reiniciar una animación con `void el.offsetWidth` solo cuando la clase ya
+  estaba** (ficha del elenco, puntos de las cintas): si no estaba, basta con
+  ponerla, y esa maquetación forzada costaba 85 ms al abrir Nosotros.
+- **`planificador.js` no lee `scrollY` al cargarse** (lo lee en el primer
+  scroll): leerlo antes de maquetar costaba 128 ms.
+
+**Cómo se midió**: Lighthouse 13 en local con el perfil de PageSpeed móvil, y
+trazas de Chrome bajando la página en un teléfono emulado con la CPU cuatro
+veces más lenta (tiempo propio de cada evento por tramo de la página).
 
 ---
 

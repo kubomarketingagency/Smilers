@@ -44,9 +44,15 @@ document.addEventListener('DOMContentLoaded', function () {
         lista.appendChild(li);
       });
 
-      ficha.classList.remove('ns-ficha--entra');
-
-      void ficha.offsetWidth;
+      /* Quitar y volver a poner la clase reinicia la entrada de la ficha, y
+         para eso hay que obligar al navegador a maquetar en medio. Solo hace
+         falta si la clase ya estaba: si no, ponerla basta para que la entrada
+         arranque. Al abrir la pagina no esta, y esa maquetacion a destiempo
+         costaba 85ms en un telefono. */
+      if (ficha.classList.contains('ns-ficha--entra')) {
+        ficha.classList.remove('ns-ficha--entra');
+        void ficha.offsetWidth;
+      }
       ficha.classList.add('ns-ficha--entra');
     }
 
@@ -496,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       /* El enlace puede venir escrito de tres maneras y las tres son esta
          misma pagina: `#historia`, `nosotros#historia` y
-         `/subpaginas/nosotros#historia`. Y en local la direccion todavia
+         `/nosotros#historia`. Y en local la direccion todavia
          acaba en `.html`. */
       var primero = trozos[0];
       if (primero) {

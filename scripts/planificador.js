@@ -85,7 +85,10 @@ var SmilersScroll = (function () {
   var idle = null;
   var direccion = 'down';
   var ultimaDireccionArriba = false;
-  var yPrevia = window.scrollY;
+  /* Se toma en el primer scroll y no aqui: leer scrollY mientras la pagina
+     aun no esta maquetada obliga al navegador a maquetarla entera a
+     destiempo, y en un telefono eso eran 128ms con la pagina congelada. */
+  var yPrevia = null;
 
   var SALTO_MAXIMO = .9;
 
@@ -115,6 +118,7 @@ var SmilersScroll = (function () {
 
   function alScroll() {
     var y = window.scrollY;
+    if (yPrevia === null) yPrevia = y;
     if (y > yPrevia + 1) direccion = 'down';
     else if (y < yPrevia - 1) direccion = 'up';
     yPrevia = y;

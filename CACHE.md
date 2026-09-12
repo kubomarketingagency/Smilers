@@ -1,37 +1,37 @@
 # Caché del sitio — cómo funciona y qué hacer al publicar
 
-Resumen en una línea: **los HTML nunca se cachean, todo lo demás se cachea
-un año y se le cambia la URL cuando cambia el archivo.**
+Resumen en una línea: **los HTML nunca se cachean y llevan dentro sus
+estilos; todo lo demás se cachea un año y cambia de URL cuando cambia el
+archivo.**
 
 ---
 
-## El problema que había
-
-La configuración anterior estaba justo al revés de como debe ir:
-
-| Tipo de archivo | Antes | Consecuencia |
-|---|---|---|
-| `estilos/*.css`, `scripts/*.js` | `max-age=0, must-revalidate` | Llevaban `?v=hash` en la URL — o sea que ya eran seguros de cachear — y aun así el navegador pedía permiso al servidor **en cada carga de cada página**. Un viaje de ida y vuelta por archivo, por visita, para nada. |
-| `imagenes/*`, `video-hero/*` | `immutable` a 1 año | Estas **no** llevaban hash. Reemplazar una foto por otra con el mismo nombre no llegaba a quien ya había visitado el sitio: se quedaba con la vieja hasta un año, sin forma de forzarlo salvo renombrar el archivo. |
-
-Es decir: se revalidaba lo que no hacía falta revalidar, y se congelaba lo
-que sí podía cambiar. De ahí la sensación de que la caché estaba
-desordenada y de que los cambios "a veces no se ven".
-
----
-
-## Cómo funciona ahora
+## Cómo funciona
 
 Son dos piezas que solo funcionan juntas.
 
-### 1. El sello por contenido — `scripts/sellar-version.js`
+### 1. La construcción y el sello — `herramientas/construir.js`
 
-Recorre los cinco HTML del sitio y le pone a cada recurso local un
-`?v=<primeros 10 del SHA-1 del archivo>`:
+Antes de publicar se corre una sola orden:
+
+```bash
+node herramientas/construir.js
+```
+
+Hace tres cosas en cada una de las cinco páginas (`index.html`,
+`nosotros.html`, `tratamientos.html`, `galeria.html`, `faq.html`):
+
+- **Mete los estilos dentro del HTML.** Junta, en el orden en que los lista
+  `<style data-hojas="…">`, las hojas de `estilos/` (y el Bootstrap recortado),
+  las minifica y las escribe dentro de esa etiqueta. La página no pide ninguna
+  hoja aparte: nada bloquea el primer pintado.
+- **Empaqueta los guiones.** Junta los que lista `data-guiones`, los minifica y
+  escribe `paquetes/<pagina>.js`, que la página pide con `defer`.
+- **Sella cada recurso** con `?v=<primeros 10 del SHA-1 del archivo>`:
 
 ```html
-<link rel="stylesheet" href="estilos/04-navbar.css?v=10f475c1e6">
-<img src="imagenes/nosotros.webp?v=7dadb1fd33" srcset="imagenes/nosotros-720.webp?v=1a077e1d09 720w, ...">
+<script defer src="paquetes/portada.js?v=5d03e7c848" …></script>
+<img src="imagenes/nosotros.webp?v=50efd7060f" srcset="imagenes/nosotros-720.webp?v=726b9e3483 720w, …">
 ```
 
 Lo importante es la doble garantía:
@@ -42,14 +42,15 @@ Lo importante es la doble garantía:
 - Si el archivo **no cambia**, el hash es idéntico → la URL es idéntica →
   el navegador reutiliza lo que ya tiene, sin pedir nada.
 
-Cubre `href`, `src`, `srcset`, `imagesrcset`, `data-fotos` y los
-`data-src-*` del vídeo del splash. Es decir: CSS, JS, imágenes, vídeo y
-tipografías locales.
+El sello cubre `href`, `src`, `srcset`, `imagesrcset`, `data-fotos`,
+`data-antes`, `data-despues`, los `data-src-*` del vídeo del splash, **y las
+`url()` de las hojas de estilo** (las tipografías, por ejemplo), que ahora
+pasan por la construcción. Es decir: guiones, imágenes, vídeo y tipografías.
 
 ### 2. Las cabeceras — `vercel.json`
 
 ```
-/estilos, /scripts, /vendor, /imagenes, /video-hero
+/paquetes, /fuentes, /imagenes, /video-hero
     → public, max-age=31536000, immutable      (un año, sin revalidar)
 
 todo lo demás (los HTML)
@@ -58,40 +59,52 @@ todo lo demás (los HTML)
 
 `immutable` es seguro **precisamente porque** la pieza 1 garantiza que una
 URL nunca cambia de contenido. Y los HTML se revalidan siempre porque son
-la puerta de entrada: son quienes traen las URLs nuevas con los hashes
-nuevos.
+la puerta de entrada: traen dentro los estilos y las URLs nuevas con los
+hashes nuevos. Si un HTML no ha cambiado, el servidor contesta «sigue igual»
+(304) y no se vuelve a descargar.
+
+`estilos/`, `scripts/`, `herramientas/` y `vendor/` **no se publican**
+(`.vercelignore`): son el código fuente. Las páginas solo piden lo que
+genera la construcción.
 
 ---
 
 ## Qué tienes que hacer al publicar
 
-Una sola cosa, siempre, antes de commitear:
+Una sola cosa, siempre, antes de commitear cualquier cambio en `estilos/`,
+`scripts/`, `imagenes/`, `fuentes/`, `video-hero/` o en el HTML:
 
 ```bash
-node scripts/sellar-version.js
+node herramientas/construir.js
 ```
 
 Y si quieres comprobar sin escribir nada (útil en CI o en un hook):
 
 ```bash
-node scripts/sellar-version.js --verificar   # sale con código 1 si falta algo
+node herramientas/construir.js --verificar   # sale con código 1 si falta algo
 ```
 
-Si se te olvida, el efecto es el de siempre: quien ya visitó el sitio se
-queda con la versión anterior de lo que hayas tocado.
+**Ojo, esto es más serio que antes.** Antes, olvidar el sello solo afectaba a
+quien ya había visitado el sitio. Ahora las páginas usan lo que genera la
+construcción: un cambio en `estilos/` o en `scripts/` **no se ve en ninguna
+parte** hasta que se construye.
 
 ---
 
 ## Reglas para cuando añadas cosas nuevas
 
-1. **Una foto o un script nuevo** → referéncialo desde el HTML y corre el
-   sello. Ya está.
-2. **Nunca escribas una URL de imagen dentro de un `.js`.** El sello recorre
-   los HTML, no el JavaScript: una URL escrita en el JS se queda sin `?v=` y
-   vuelve el problema de la foto congelada un año. Si el JS necesita una
-   lista de imágenes, pásasela por un atributo `data-` del HTML — así se
-   hace ya con la cinta del CTA (`data-fotos` en `index.html`).
-3. **No renombres archivos para "forzar" una actualización.** El sello lo
+1. **Una hoja o un guion nuevo** → añádelo a la lista de `data-hojas` o de
+   `data-guiones` de la página que lo use, en la posición que le toque (el
+   orden de la lista es el de la cascada o el de ejecución), y construye.
+2. **Una foto nueva** → referénciala desde el HTML (o desde una hoja con
+   `url()`) y construye. Ya está.
+3. **Nunca escribas una URL de imagen dentro de un `.js`.** La construcción
+   sella el HTML y las hojas, no las cadenas del JavaScript: una URL escrita
+   en el JS se queda sin `?v=` y vuelve el problema de la foto congelada un
+   año. Si el JS necesita una lista de imágenes, pásasela por un atributo
+   `data-` del HTML — así se hace con la cinta del CTA (`data-fotos`) y con
+   las fotos de la esfera de testimonios (`data-antes` / `data-despues`).
+4. **No renombres archivos para "forzar" una actualización.** El sello lo
    hace solo.
 
 ---
@@ -121,9 +134,12 @@ Service Worker no mejora eso, solo añade riesgo.
 ## Cómo comprobar que quedó bien, ya desplegado
 
 ```bash
-# Un asset: debe decir "max-age=31536000, immutable"
-curl -sI https://TU-DOMINIO/estilos/01-variables.css | grep -i cache-control
+# Un paquete: debe decir "max-age=31536000, immutable"
+curl -sI "https://smilersdental.vercel.app/paquetes/portada.js" | grep -i cache-control
 
 # La portada: debe decir "max-age=0, must-revalidate"
-curl -sI https://TU-DOMINIO/ | grep -i cache-control
+curl -sI https://smilersdental.vercel.app/ | grep -i cache-control
+
+# Las direcciones viejas redirigen a las nuevas (308)
+curl -sI https://smilersdental.vercel.app/subpaginas/nosotros | grep -i -E "^(HTTP|location)"
 ```

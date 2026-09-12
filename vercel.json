@@ -2,15 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/subpaginas/:pagina(nosotros|tratamientos|galeria|faq)", "destination": "/:pagina", "permanent": true },
+    { "source": "/subpaginas/:pagina(nosotros|tratamientos|galeria|faq)\\.html", "destination": "/:pagina", "permanent": true },
+    { "source": "/subpaginas", "destination": "/", "permanent": true }
+  ],
   "headers": [
     {
-      "source": "/(estilos|scripts|vendor|imagenes|video-hero)/(.*)",
+      "source": "/(paquetes|fuentes|imagenes|video-hero)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/((?!estilos/|scripts/|vendor/|imagenes/|video-hero/).*)",
+      "source": "/((?!paquetes/|fuentes/|imagenes/|video-hero/).*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]

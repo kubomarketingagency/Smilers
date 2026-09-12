@@ -1,10 +1,10 @@
-# Herramientas de mantenimiento y documentación: se usan en local, antes de
-# commitear, y no las pide ninguna página. Fuera del despliegue para que no
-# queden publicadas en el dominio del cliente.
-CACHE.md
-ESTRUCTURA.md
-scripts/sellar-version.js
-scripts/convert-to-webp.js
-scripts/podar-bootstrap.js
-vendor/bootstrap/bootstrap.min.css
-vendor/bootstrap/bootstrap.bundle.min.js
+# Lo que no se publica. Las paginas solo piden lo que genera
+# herramientas/construir.js (los estilos van dentro del HTML y los guiones en
+# paquetes/), las tipografias, las imagenes y el video. Todo lo demas es
+# codigo fuente, herramientas o documentacion: se usa en local, antes de
+# commitear, y no tiene por que quedar publicado en el dominio del cliente.
+*.md
+estilos/
+scripts/
+herramientas/
+vendor/

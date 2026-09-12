@@ -13,8 +13,9 @@
  * clases que nombra estan en la lista de usadas. Ante la duda, se queda.
  *
  * Correlo despues de tocar el HTML si has anadido alguna clase de Bootstrap:
- *     node scripts/podar-bootstrap.js
- * y luego `node scripts/sellar-version.js`, como siempre.
+ *     node herramientas/podar-bootstrap.js
+ * y luego `node herramientas/construir.js`, como siempre: el recorte viaja
+ * dentro de los estilos de cada pagina.
  */
 const fs = require('fs');
 const path = require('path');

@@ -103,6 +103,24 @@
       return o;
     },
     copiar: function (o, a) { o.set(a); return o; },
+
+    /* Las mismas matrices que desdeTraslacion y desdeEscala, escritas sobre
+       una que ya existe: el bucle de cada fotograma no crea ninguna. */
+    identidad: function (o) {
+      o.fill(0);
+      o[0] = 1; o[5] = 1; o[10] = 1; o[15] = 1;
+      return o;
+    },
+    traslacion: function (o, x, y, z) {
+      M4.identidad(o);
+      o[12] = x; o[13] = y; o[14] = z;
+      return o;
+    },
+    escala: function (o, s) {
+      M4.identidad(o);
+      o[0] = s; o[5] = s; o[10] = s;
+      return o;
+    },
     multiplicar: function (o, a, b) {
       var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
       var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
@@ -440,6 +458,20 @@ void main() {
       lejos: 40
     };
 
+    /* Piezas de trabajo que el bucle reutiliza en cada fotograma. Antes cada
+       fotograma creaba unas trescientas matrices y vectores nuevos, y en un
+       telefono el recolector de basura se notaba como tirones. */
+    this._dormida = false;
+    this._q1 = Q.crear();
+    this._q2 = Q.crear();
+    this._p = V3.crear();
+    this._m = M4.crear();
+    this._tmp = M4.crear();
+    this._ojo = V3.crear();
+    this._origen = V3.de(0, 0, 0);
+    this._arribaY = V3.de(0, 1, 0);
+    this._arribaX = V3.de(1, 0, 0);
+
     this._iniciar();
   }
 
@@ -577,7 +609,17 @@ void main() {
         return new Promise(function (resolver) {
           var img = new Image();
           img.crossOrigin = 'anonymous';
-          img.onload = function () { resolver(img); };
+          /* Como ImageBitmap: se descodifica fuera del hilo principal y se
+             queda descodificada, asi que drawImage ya no la descodifica ahi
+             mismo, en medio del scroll (eran tirones de 120-140ms en un
+             telefono). Se pinta en el atlas exactamente igual que antes. */
+          img.onload = function () {
+            if (window.createImageBitmap) {
+              createImageBitmap(img).then(resolver, function () { resolver(img); });
+            } else {
+              resolver(img);
+            }
+          };
           img.onerror = function () { resolver(null); };
           img.src = item[claveFuente];
         });
@@ -591,10 +633,13 @@ void main() {
           var sx = (img.width - lado) / 2;
           var sy = (img.height - lado) / 2;
           ctx.drawImage(img, sx, sy, lado, lado, x, y, CELDA, CELDA);
+          if (img.close) img.close();
         });
         gl.bindTexture(gl.TEXTURE_2D, textura);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, lienzo2d);
         gl.bindTexture(gl.TEXTURE_2D, null);
+        self._yaPinto = false;
+        self._dormida = false;
       });
     }
 
@@ -625,19 +670,26 @@ void main() {
       : 2 * Math.atan(altura / aspecto / zReposo);
     M4.perspectiva(this.camara.proyeccion, this.camara.fov, aspecto,
       this.camara.cerca, this.camara.lejos);
+    this._dormida = false;
   };
 
   EsferaTestimonios.prototype._actualizarCamara = function () {
-    M4.apuntarA(this.camara.matriz, V3.de(0, 0, this.camara.z), V3.de(0, 0, 0), V3.de(0, 1, 0));
+    var ojo = this._ojo;
+    ojo[0] = 0; ojo[1] = 0; ojo[2] = this.camara.z;
+    M4.apuntarA(this.camara.matriz, ojo, this._origen, this._arribaY);
     M4.invertir(this.camara.vista, this.camara.matriz);
   };
 
   EsferaTestimonios.prototype.irA = function (posicion) {
-    this.posicion = Math.min(this.items.length - 1, Math.max(0, posicion));
+    var nueva = Math.min(this.items.length - 1, Math.max(0, posicion));
+    if (nueva !== this.posicion) this._dormida = false;
+    this.posicion = nueva;
   };
 
   EsferaTestimonios.prototype.revelar = function (encendido) {
-    this.objetivoRevelado = encendido ? 1 : 0;
+    var objetivo = encendido ? 1 : 0;
+    if (objetivo !== this.objetivoRevelado) this._dormida = false;
+    this.objetivoRevelado = objetivo;
   };
 
   EsferaTestimonios.prototype._animar = function (delta) {
@@ -657,8 +709,8 @@ void main() {
       Math.min(1, 0.13 * escalaTiempo));
     Q.normalizar(this.orientacion, this.orientacion);
 
-    var deltaQ = Q.multiplicar(Q.crear(), this.orientacion,
-      Q.conjugar(Q.crear(), this._orientacionPrevia));
+    var deltaQ = Q.multiplicar(this._q1, this.orientacion,
+      Q.conjugar(this._q2, this._orientacionPrevia));
     if (deltaQ[3] < 0) {
       deltaQ[0] = -deltaQ[0]; deltaQ[1] = -deltaQ[1];
       deltaQ[2] = -deltaQ[2]; deltaQ[3] = -deltaQ[3];
@@ -686,14 +738,17 @@ void main() {
 
     this.revelado += (this.objetivoRevelado - this.revelado) * Math.min(1, this.velocidadRevelado * escalaTiempo);
 
-    var arribaY = V3.de(0, 1, 0);
-    var arribaX = V3.de(1, 0, 0);
-    var origen = V3.de(0, 0, 0);
+    var arribaY = this._arribaY;
+    var arribaX = this._arribaX;
+    var origen = this._origen;
     var ESC_DISCO = 0.25;
     var INTENSIDAD = 0.6;
+    var p = this._p;
+    var m = this._m;
+    var tmp = this._tmp;
 
     for (var i = 0; i < this.cantidadInstancias; i++) {
-      var p = V3.porCuaternion(V3.crear(), this.posicionesInstancia[i], this.orientacion);
+      V3.porCuaternion(p, this.posicionesInstancia[i], this.orientacion);
 
       var s = (Math.abs(p[2]) / RADIO_ESFERA) * INTENSIDAD + (1 - INTENSIDAD);
       var escFinal = s * ESC_DISCO;
@@ -701,11 +756,11 @@ void main() {
       var largo = Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]) || 1;
       var arriba = Math.abs(p[1] / largo) > 0.995 ? arribaX : arribaY;
 
-      var m = M4.crear();
-      M4.multiplicar(m, m, M4.desdeTraslacion(M4.crear(), V3.negar(V3.crear(), p)));
-      M4.multiplicar(m, m, M4.apuntarA(M4.crear(), origen, p, arriba));
-      M4.multiplicar(m, m, M4.desdeEscala(M4.crear(), escFinal));
-      M4.multiplicar(m, m, M4.desdeTraslacion(M4.crear(), V3.de(0, 0, -RADIO_ESFERA)));
+      M4.identidad(m);
+      M4.multiplicar(m, m, M4.traslacion(tmp, -p[0], -p[1], -p[2]));
+      M4.multiplicar(m, m, M4.apuntarA(tmp, origen, p, arriba));
+      M4.multiplicar(m, m, M4.escala(tmp, escFinal));
+      M4.multiplicar(m, m, M4.traslacion(tmp, 0, 0, -RADIO_ESFERA));
       M4.copiar(this.matrices[i], m);
     }
 
@@ -761,15 +816,23 @@ void main() {
     this.corriendo = true;
     this.tiempo = 0;
     this._yaPinto = false;
+    this._dormida = false;
     var self = this;
     var paso = function (t) {
       if (!self.corriendo) return;
       var delta = self.tiempo ? Math.min(32, t - self.tiempo) : DURACION_CUADRO;
       self.tiempo = t;
-      self._animar(delta);
-      if (self.necesitaPintar || !self._yaPinto) {
-        self._pintar();
-        self._yaPinto = true;
+      if (!self._dormida) {
+        self._animar(delta);
+        if (self.necesitaPintar || !self._yaPinto) {
+          self._pintar();
+          self._yaPinto = true;
+        } else {
+          /* Quieta y ya pintada: la imagen no va a cambiar hasta que algo la
+             mueva (irA, revelar, redimensionar o un atlas que llega), y cada
+             uno de esos la despierta. Mientras, no se calcula nada. */
+          self._dormida = true;
+        }
       }
       self.solicitud = requestAnimationFrame(paso);
     };
@@ -799,6 +862,7 @@ void main() {
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
 
     if (!lienzo || fichas.length < 2) return;
+    if (!window.WebGL2RenderingContext) return;
 
     var items = fichas.map(function (ficha) {
       var cita = ficha.querySelector('blockquote');
@@ -823,18 +887,33 @@ void main() {
       return window.innerWidth < 992 ? 0.232 : 0.285;
     }
 
-    var esfera;
-    try {
-      esfera = new EsferaTestimonios(lienzo, items, {
-        escala: escalaSegunPantalla(),
-        encuadre: encuadreSegunPantalla(),
+    /* La esfera —WebGL y sus dos atlas de catorce fotos— no se crea al abrir
+       la pagina sino cuando la seccion queda a dos pantallas y media. Era lo
+       mas caro de la portada: tres tareas largas y catorce fotos compitiendo
+       con la de arriba, para algo que esta al final del recorrido. La
+       seccion, en cambio, se monta desde el principio (su clase y su alto),
+       que de eso depende donde cae todo lo que va detras. */
+    var esfera = null;
+    var fallida = false;
+    var tActual = 0;
 
-        velocidadRevelado: hayHover ? 0.14 : 0.34
-      });
-    } catch (e) {
+    function crearEsfera() {
+      if (esfera || fallida) return esfera;
+      try {
+        esfera = new EsferaTestimonios(lienzo, items, {
+          escala: escalaSegunPantalla(),
+          encuadre: encuadreSegunPantalla(),
 
-      seccion.classList.remove('esfera-activa');
-      return;
+          velocidadRevelado: hayHover ? 0.14 : 0.34
+        });
+      } catch (e) {
+        fallida = true;
+        seccion.classList.remove('esfera-activa');
+        return null;
+      }
+      esfera.irA(tActual);
+      esfera.revelar(revelando);
+      return esfera;
     }
 
     var revelando = false;
@@ -870,7 +949,7 @@ void main() {
 
       if (encendido) apagarPista();
       revelando = encendido;
-      esfera.revelar(encendido);
+      if (esfera) esfera.revelar(encendido);
       if (boton) boton.setAttribute('aria-pressed', encendido ? 'true' : 'false');
       if (etiquetaEstado) etiquetaEstado.textContent = encendido ? 'Después' : 'Antes';
       seccion.classList.toggle('mostrando-despues', encendido);
@@ -922,10 +1001,12 @@ void main() {
     }
 
     function actualizar() {
+      if (fallida) return;
       var progreso = progresoSeccion;
 
       var t = conParadas(acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * (items.length - 1));
-      esfera.irA(t);
+      tActual = t;
+      if (esfera) esfera.irA(t);
 
       if (velo) {
 
@@ -1082,6 +1163,7 @@ void main() {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
 
         fijarAlto();
+        if (!esfera) return;
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
@@ -1111,21 +1193,58 @@ void main() {
       window.addEventListener('scroll', pedirActualizacion, { passive: true });
       window.addEventListener('resize', function () {
         fijarAlto();
-        esfera.escala = escalaSegunPantalla();
-        esfera.encuadre = encuadreSegunPantalla();
-        esfera.redimensionar();
+        if (esfera) {
+          esfera.escala = escalaSegunPantalla();
+          esfera.encuadre = encuadreSegunPantalla();
+          esfera.redimensionar();
+        }
         pedirActualizacion();
       });
     }
 
     if ('IntersectionObserver' in window) {
+      /* Con la seccion a dos pantallas y media: las fotos del atlas empiezan
+         a bajar ya (solo red, nada de trabajo en el hilo principal) y la
+         esfera se crea en cuanto el scroll se detiene. Crearla cuesta un
+         fotograma entero en un telefono, y con la pagina quieta no se pierde
+         ninguno. Si se llega sin parar, la crea el observador de abajo al
+         entrar, como antes. */
+      var pendiente = false;
+      var adelantadas = [];
+      var vigia = new IntersectionObserver(function (entradas) {
+        if (!entradas[entradas.length - 1].isIntersecting) return;
+        vigia.disconnect();
+        pendiente = true;
+        items.forEach(function (item) {
+          [item.antes, item.despues].forEach(function (src) {
+            var img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = img.onerror = function () { adelantadas.splice(adelantadas.indexOf(img), 1); };
+            adelantadas.push(img);
+            img.src = src;
+          });
+        });
+      }, { rootMargin: '250% 0px' });
+      vigia.observe(seccion);
+      if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
+        window.SmilersScroll.alDetenerse(function () {
+          if (pendiente) {
+            pendiente = false;
+            crearEsfera();
+          }
+          return null;
+        });
+      }
+
       new IntersectionObserver(function (entradas) {
         entradas.forEach(function (entrada) {
-          if (entrada.isIntersecting) { esfera.redimensionar(); esfera.arrancar(); }
-          else { esfera.detener(); }
+          var e = entrada.isIntersecting ? crearEsfera() : esfera;
+          if (!e) return;
+          if (entrada.isIntersecting) { e.redimensionar(); e.arrancar(); }
+          else { e.detener(); }
         });
       }, { rootMargin: '200px 0px' }).observe(seccion);
-    } else {
+    } else if (crearEsfera()) {
       esfera.arrancar();
     }
 

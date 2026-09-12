@@ -53,9 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var activo = indice === actual;
 
         if (activo) {
-          punto.classList.remove('crsl__punto--activo');
-
-          void punto.offsetWidth;
+          /* Reiniciar su barra obliga a maquetar en medio, y solo hace falta
+             si el punto ya estaba encendido; si no, encenderlo basta. */
+          if (punto.classList.contains('crsl__punto--activo')) {
+            punto.classList.remove('crsl__punto--activo');
+            void punto.offsetWidth;
+          }
           punto.classList.add('crsl__punto--activo');
         } else {
           punto.classList.remove('crsl__punto--activo');
