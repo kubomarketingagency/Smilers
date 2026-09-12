@@ -505,11 +505,16 @@ deshace, vuelve el problema.
 
 **Lo que salta (CLS)**
 
-- **El vídeo de bienvenida no se ve hasta que se sabe su medida**
-  (`loadedmetadata`, en el guion del splash). Antes de tener datos un `<video>`
-  mide 300×150 y luego salta a su tamaño; como no pinta nada hasta entonces,
-  esconderlo no cambia lo que se ve. Un póster con la medida no bastaba: el
-  póster también llega tarde.
+- **El vídeo de bienvenida tiene su caja desde el principio** (`02-base.css`):
+  16:9 en escritorio y 9:16 en el teléfono, dentro de los mismos topes, que es
+  justo la caja que tendría con sus datos. Sin eso, antes de tener datos un
+  `<video>` mide 300×150 y luego salta a su tamaño. Un póster con la medida no
+  bastaba (también llega tarde), y **esconderlo mientras tanto
+  (`visibility: hidden`) rompe el splash**: los teléfonos no arrancan un vídeo
+  que no se ve, y a los 2,6 s `hero.js` retira el splash sin haberlo mostrado.
+  Chrome de escritorio, aunque emule un teléfono, sí lo arranca, así que las
+  pruebas no lo ven. Si se cambia el vídeo por otro de otras proporciones, hay
+  que cambiar esos números.
 - **Las clases que encienden las escenas** (`pn-escena--viva`, `ns-cine--viva`,
   `ns-cierre--viva`) las pone un guion de una línea **dentro del propio
   elemento**, antes del primer pintado, y ese guion se borra a sí mismo (no

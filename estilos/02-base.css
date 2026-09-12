@@ -61,10 +61,18 @@ body::before {
   transition: opacity .6s cubic-bezier(.4, 0, .2, 1);
 }
 
+/* El video ocupa desde el principio la caja que tendria con sus datos
+   (1280x720 en escritorio y 720x1280 en el telefono, dentro de los mismos
+   topes): sin medida propia un <video> mide 300x150 hasta que carga y luego
+   salta, y ese salto cuenta como cambio de diseno. Esconderlo mientras tanto
+   no sirve: los telefonos no arrancan un video que no se ve, y el splash se
+   retira si a los 2,6 s no arranco. Si se cambia el video por otro de otras
+   proporciones, cambiar aqui los numeros. */
 .splash-inicio video {
   display: block;
-  width: auto;
+  width: min(52vw, 660px, 58vh * 16 / 9);
   height: auto;
+  aspect-ratio: 16 / 9;
   max-width: min(52vw, 660px);
   max-height: 58vh;
   object-fit: contain;
@@ -72,7 +80,12 @@ body::before {
   transition: transform .6s cubic-bezier(.4, 0, .2, 1), filter .6s ease, opacity .6s ease;
 }
 @media (max-width: 767.98px) {
-  .splash-inicio video { max-width: 86vw; max-height: 66vh; }
+  .splash-inicio video {
+    width: min(86vw, 66vh * 9 / 16);
+    aspect-ratio: 9 / 16;
+    max-width: 86vw;
+    max-height: 66vh;
+  }
 }
 
 .splash-inicio.oculto {
