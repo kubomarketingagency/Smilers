@@ -12,15 +12,22 @@
 /* El rotulo va pegado al techo de la seccion, y el techo de la seccion esta
    debajo de la barra fija: con 42px la palabra "Especialidades" quedaba
    partida por la mitad. El aire de arriba se cuenta desde donde acaba la
-   barra, no desde donde empieza la seccion. */
+   barra, no desde donde empieza la seccion.
+
+   Y va arrimado a la izquierda, no en el centro: en el centro se plantaba
+   sobre lo alto del panel abierto -la cara, la pantalla, las manos- que es lo
+   unico que esa pantalla tiene que ensenar. En el canto cae casi siempre
+   sobre las tiras apagadas de los paneles cerrados. Por lo mismo la fundida
+   de arriba pesa la mitad: estaba ahi para sostener una palabra centrada
+   sobre la foto. */
 .acordeon-etiqueta {
   position: absolute;
   top: 0; left: 0; right: 0;
   z-index: 3;
-  padding: calc(var(--alto-navbar) + clamp(.9rem, 2vw, 1.5rem)) 2rem 22px;
-  text-align: center;
+  padding: calc(var(--alto-navbar) + clamp(.9rem, 2vw, 1.5rem)) clamp(1.2rem, 4vw, 3.4rem) 22px;
+  text-align: left;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(10, 8, 6, .5) 0%, rgba(10, 8, 6, .14) 58%, transparent 100%);
   --tracking: .04em;
   font-family: var(--fuente-elegante);
   font-size: clamp(1.3rem, 2.6vw, 2rem);
@@ -90,11 +97,19 @@
   transform: scale(1.04);
 }
 
+/* La fundida del pie. Es la que sostiene el nombre de la especialidad y su
+   resumen, asi que empieza mas arriba y llega mas abajo que antes: el resumen
+   caia sobre el tramo claro de la foto -una bata, una encimera- y se leia a
+   tirones. Arriba no pinta nada: ahi esta la imagen. */
 .ag-panel__overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, transparent 40%, rgba(10, 8, 6, .85) 100%);
+  background: linear-gradient(180deg,
+              rgba(10, 8, 6, 0) 32%,
+              rgba(10, 8, 6, .38) 56%,
+              rgba(10, 8, 6, .78) 79%,
+              rgba(10, 8, 6, .95) 100%);
 }
 
 .ag-panel__texto {
@@ -172,10 +187,13 @@
 
 @media (max-width: 767.98px) {
   .acordeon-seccion { height: auto; }
+  /* Apilado el acordeon, el rotulo ya no cae sobre ninguna foto: vuelve al
+     centro, que es donde van los rotulos de seccion del telefono. */
   .acordeon-etiqueta {
     position: relative;
     top: auto; left: auto; right: auto;
     padding: 56px 1.5rem 20px;
+    text-align: center;
     background: none;
   }
   .acordeon-galeria {

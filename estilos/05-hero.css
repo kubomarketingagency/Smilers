@@ -143,11 +143,15 @@
   inset: 0;
 }
 
+/* La fila entra por debajo de la barra fija. La barra es opaca y la fila le
+   pasaba por detras: los 62px que tapaba se comian la frente de los retratos,
+   que es donde la foto de estudio deja su aire. */
 .hero-etapa2 {
   position: absolute;
   inset: 0;
   z-index: 1;
   display: flex;
+  padding-top: var(--alto-navbar);
   opacity: 0;
   background: var(--onix);
   pointer-events: none;
@@ -158,28 +162,44 @@
   min-width: 0;
   overflow: hidden;
 }
+/* Las cuatro van a plena luz. Son de estudio, sobre el mismo marmol y con la
+   misma luz: puestas en fila se leen como una sola foto de grupo, y eso es lo
+   que apagaba el velo plano que llevaban encima -un negro al 35% sobre la
+   columna entera, mas un brillo al 78%-, puesto cuando las fotos eran de
+   archivo y cada una traia su fondo.
+
+   Al lema lo sostiene ahora una fundida que solo pesa abajo, donde estan las
+   batas negras: la cara y el marmol se quedan como en la foto. */
 .hero-etapa2-col img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
-  filter: contrast(1.08) brightness(.78) saturate(1.05);
+  object-position: center top;
+  filter: contrast(1.02) saturate(1.03);
 }
 .hero-etapa2-col::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(10, 8, 6, .35);
+  background: linear-gradient(180deg,
+              rgba(10, 8, 6, .18) 0%,
+              rgba(10, 8, 6, 0) 24%,
+              rgba(10, 8, 6, 0) 44%,
+              rgba(10, 8, 6, .55) 76%,
+              rgba(10, 8, 6, .92) 100%);
 }
+/* El lema baja al pie de la fila. En el centro caia sobre las caras, que es
+   lo que hay que ver; abajo cae sobre las batas y sobre la parte pesada de la
+   fundida, que es donde se lee sin pedirle nada a la foto. */
 .hero-etapa2-tagline {
   position: absolute;
   inset: 0;
   z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   text-align: center;
-  padding: 0 1rem;
+  padding: 0 1rem clamp(2.2rem, 7vh, 5rem);
   pointer-events: none;
 }
 .hero-etapa2-tagline p {
@@ -199,12 +219,46 @@
 }
 @media (max-width: 767.98px) {
   .hero-cine { height: 380vh; }
+}
+
+/* Las dos filas llegan hasta la tableta de pie y no solo al telefono. En
+   vertical, cuatro columnas son tiras de 205px en las que cabe la cara y nada
+   mas -y a los de los cantos se les corta media cabeza-; en dos filas de dos
+   cada retrato recupera su ancho. */
+@media (max-width: 991.98px) {
   .hero-etapa2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
   }
   .hero-etapa2-col { min-width: 0; min-height: 0; }
+  /* Con cuatro retratos en dos filas, al pie no hay sitio: abajo estan los
+     botones flotantes -el de subir acaba a 135px del suelo- y subiendo el
+     lema para esquivarlos cae sobre las caras de la fila de abajo. Va en la
+     juntura de las dos filas, que es el unico tramo sin ninguna cara: el
+     pecho de los de arriba y el aire de los de abajo.
+
+     Y ahi se lleva su propia banda. La fundida de cada columna pesa abajo,
+     donde estan las batas; en la mitad de la pantalla la piedra esta a plena
+     luz y la linea de oro se perderia sobre ella. */
+  .hero-etapa2-tagline {
+    align-items: center;
+    padding-bottom: 0;
+  }
+  .hero-etapa2-tagline::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: clamp(8.5rem, 25vh, 13rem);
+    transform: translateY(-50%);
+    background: linear-gradient(180deg,
+                rgba(10, 8, 6, 0) 0%,
+                rgba(10, 8, 6, .74) 28%,
+                rgba(10, 8, 6, .74) 72%,
+                rgba(10, 8, 6, 0) 100%);
+  }
+  .hero-etapa2-tagline p { position: relative; }
 }
 
 @media (prefers-reduced-motion: reduce) {

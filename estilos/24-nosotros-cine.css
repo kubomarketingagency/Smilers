@@ -280,7 +280,16 @@ main:has(.ns-cine--viva) { background: #050505; }
 @media (max-width: 991.98px) {
   .ns-fondo--elenco {
     left: 0;
-    top: 48%;
+    top: 56%;
+  }
+  /* Dentro de la escena la juntura no va a ojo: se calcula. La piedra clara
+     llega hasta donde acaba el retrato -el aire de la barra fija, el alto del
+     marco y un dedo mas- y de ahi para abajo es madera, que es donde empieza
+     lo escrito. Con un porcentaje fijo no salia: el retrato mide en svh y la
+     ficha mide lo que mide su texto, asi que en una tableta la foto cruzaba la
+     juntura y en un telefono corto la juntura le caia dos dedos por debajo. */
+  .ns-cine--viva .ns-fondo--elenco {
+    top: calc(var(--alto-navbar) + clamp(.5rem, 2vw, 1rem) + var(--alto-retrato) + .85rem);
   }
   .ns-fondo--elenco::after {
     border-left: 0;
@@ -314,19 +323,20 @@ main:has(.ns-cine--viva) { background: #050505; }
   padding: 0;
   list-style: none;
 }
-/* El alto del marco lo manda la ficha de al lado, no la ventana.
+/* El retrato se lleva la mitad entera, que es la mitad que tiene.
 
-   Iba a `min(66svh, 600px)` —600px en una pantalla normal— mientras que la
-   columna de texto mide entre 365 y 390 haga lo que haga la ventana, porque
-   su alto lo pone su contenido y no la pantalla. Con eso el retrato sobresalia
-   118px por arriba y por abajo de la ficha y las dos mitades no cuadraban.
-   Estos 384 son los que igualan a la columna de texto; se midieron a 1920,
-   1440, 1366 y 1280, y en las cuatro la ficha cae entre 365 y 390.
+   Media `min(52svh, 384px)`: el alto exacto de la ficha de al lado, para que
+   las dos columnas empezaran y acabaran a la misma altura. Eso valia con la
+   foto recortada y fundida en el marco. Con las fotos de la clinica, que se
+   ven enteras, el alto del marco es tambien el alto de la figura: 384 dejaban
+   una persona de 288px de ancho en una mitad de pantalla de 720, mas pequena
+   que el parrafo que la acompana.
 
-   Y la figura no encoge por ello: lo que se retira del marco es el hueco que
-   ocupaba la placa, que pasa a ir encima de la foto. */
+   Manda ahora la pantalla y no la ficha, y la ficha se centra al lado. El
+   tope en px es para las pantallas muy altas, donde 80svh estiraria el
+   retrato hasta despegarlo de todo lo demas. */
 @media (min-width: 992px) {
-  .ns-elenco__retratos { height: min(52svh, 384px); }
+  .ns-elenco__retratos { height: min(80svh, 820px); }
 }
 
 /* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
@@ -934,8 +944,20 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad .ns-titulo { display: none; }
 
   /* --- el elenco --- */
-  .ns-elenco { gap: .8rem; }
-  .ns-elenco__retratos { height: 34svh; }
+  /* Y el bloque se arrima al techo en vez de centrarse: la juntura se calcula
+     desde el techo, asi que el retrato tiene que empezar donde dice la cuenta.
+     En un telefono no se nota -el bloque llena la pantalla- y en una tableta
+     es lo que mantiene la foto sobre su piedra. */
+  .ns-cine--viva .ns-capa--elenco { justify-content: flex-start; }
+  .ns-elenco { gap: 1.2rem; }
+  /* Apilado, el retrato es la mitad de arriba de la pantalla y la ficha la de
+     abajo. Media 34svh: la foto entera dentro de un marco de ese alto son 210
+     de ancho en una pantalla de 412 -una estampilla en medio del marmol- y de
+     propina se salia por la juntura con la madera, porque el marco acababa
+     mas abajo que la piedra. Con 46 la figura llena su mitad y la juntura se
+     baja a donde acaba. */
+  .ns-capa--elenco { --alto-retrato: min(46svh, 520px); }
+  .ns-elenco__retratos { height: var(--alto-retrato); }
   .ns-elenco__flecha { width: 34px; }
   .ns-elenco__placa { padding: .4rem .9rem .45rem; }
   .ns-elenco__area { font-size: .66rem; }
@@ -957,7 +979,7 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
    Aqui ya no queda aire que quitar: lo que sale es el titular de la ficha del
    especialista, que repite lo que dice el rotulo de encima. */
 @media (max-width: 991.98px) and (max-height: 700px) {
-  .ns-cine--viva .ns-elenco__retratos { height: 30svh; }
+  .ns-cine--viva .ns-capa--elenco { --alto-retrato: 43svh; }
   .ns-cine--viva .ns-elenco__lado .ns-titulo { display: none; }
   .ns-cine--viva .ns-capa--fundamentos .ns-mvo__texto { font-size: .72rem; line-height: 1.44; }
   #nsCine .ns-parrafo { font-size: .85rem; line-height: 1.5; }
