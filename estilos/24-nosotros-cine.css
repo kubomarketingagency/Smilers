@@ -282,15 +282,9 @@ main:has(.ns-cine--viva) { background: #050505; }
     left: 0;
     top: 56%;
   }
-  /* Dentro de la escena la juntura no va a ojo: se calcula. La piedra clara
-     llega hasta donde acaba el retrato -el aire de la barra fija, el alto del
-     marco y un dedo mas- y de ahi para abajo es madera, que es donde empieza
-     lo escrito. Con un porcentaje fijo no salia: el retrato mide en svh y la
-     ficha mide lo que mide su texto, asi que en una tableta la foto cruzaba la
-     juntura y en un telefono corto la juntura le caia dos dedos por debajo. */
-  .ns-cine--viva .ns-fondo--elenco {
-    top: calc(var(--alto-navbar) + clamp(.5rem, 2vw, 1rem) + var(--alto-retrato) + .85rem);
-  }
+  /* Dentro de la escena la juntura cae donde acaba la foto, que es a los tres
+     cuartos de la pantalla: la foto va a sangre y la rejilla reparte 3 a 1. */
+  .ns-cine--viva .ns-fondo--elenco { top: 75%; }
   .ns-fondo--elenco::after {
     border-left: 0;
     border-top: 3px solid transparent;
@@ -339,44 +333,56 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-elenco__retratos { height: min(80svh, 820px); }
 }
 
-/* Dentro de la escena, la foto ES la mitad: de canto a canto y de arriba
-   abajo, hasta la juntura de oro. Media la mitad menos el aire de la
-   envoltura y medio hueco de la rejilla -unos 100px de marmol alrededor-, y
-   ese marmol no aporta nada que no aporte ya el de la propia foto.
+/* Dentro de la escena la foto va a sangre: en escritorio es la mitad
+   izquierda, de canto a canto y de arriba abajo hasta la juntura de oro; en el
+   telefono, los tres cuartos de arriba de la pantalla, y el cuarto de abajo
+   queda para lo que se cuenta del profesional. Ni en uno ni en otro se ve el
+   marmol: la foto ya trae su consultorio, y el marmol alrededor era un marco
+   que no aportaba nada.
 
-   El aire no desaparece, cambia de sitio: lo pone ahora la columna de la
-   derecha, que es la que lleva texto. Y arriba la foto se mete por debajo de
-   la barra fija -los 62px que la barra tapa- para que la cabeza caiga siempre
-   por debajo del canto de la barra, mida lo que mida la ventana. */
+   El aire no desaparece, cambia de sitio: lo pone la parte que lleva texto.
+
+   Arriba la foto se mete bajo la barra fija, y 2px mas de lo que la barra
+   dice medir. --alto-navbar vale 62 pero la barra, con la pagina bajada, mide
+   60,78: con la foto empezando en 62 asomaba una raya de 1,2px de marmol
+   blanco -de 3px mientras entraba cada retrato, que subia 12px- entre la
+   barra y la cara. Por lo mismo el hueco que queda detras es negro y no
+   piedra, y aqui los retratos solo se funden, sin subir: una foto a sangre que
+   se desliza enseña el canto. */
+.ns-cine--viva .ns-capa.ns-capa--elenco { padding: 0; }
+.ns-cine--viva .ns-capa--elenco > .ns-envoltura {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-inline: 0;
+}
+.ns-cine--viva .ns-capa--elenco .ns-elenco {
+  gap: 0;
+  height: 100%;
+  align-items: stretch;
+}
+.ns-cine--viva .ns-elenco__escena {
+  overflow: hidden;
+  padding-top: calc(var(--alto-navbar) - 2px);
+  background: #050505;
+}
+.ns-cine--viva .ns-elenco__retratos { height: 100%; }
+.ns-cine--viva .ns-elenco__retrato { transform: none; }
+/* La foto llena y el marco recorta. El hueco es casi el de la foto, asi que lo
+   que se va son unos dedos de cintura o de consultorio; el 20% reparte ese
+   sobrante dejando la cabeza donde estaba. */
+.ns-cine--viva .ns-elenco__foto img {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+/* Las flechas se apoyan sobre la foto, que ya no tiene canto libre. */
+.ns-cine--viva .ns-elenco__flecha--previa { left: clamp(.6rem, 1.5vw, 1.5rem); }
+.ns-cine--viva .ns-elenco__flecha--siguiente { right: clamp(.6rem, 1.5vw, 1.5rem); }
+
 @media (min-width: 992px) {
-  .ns-cine--viva .ns-capa.ns-capa--elenco { padding: 0; }
-  .ns-cine--viva .ns-capa--elenco > .ns-envoltura {
-    flex: 1 1 auto;
-    min-height: 0;
-    padding-inline: 0;
-  }
-  .ns-cine--viva .ns-capa--elenco .ns-elenco {
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    height: 100%;
-    align-items: stretch;
-  }
-  .ns-cine--viva .ns-elenco__escena {
-    overflow: hidden;
-    padding-top: var(--alto-navbar);
-  }
-  .ns-cine--viva .ns-elenco__retratos { height: 100%; }
-  /* Aqui la foto llena y el marco recorta, que es lo contrario de lo que hace
-     en el telefono: el hueco es casi el de la foto -0,86 contra 0,75 de la
-     foto mas estrecha-, asi que lo que se va son unos dedos de cintura. El
-     20% reparte ese sobrante dejando la cabeza donde estaba. */
-  .ns-cine--viva .ns-elenco__foto img {
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 20%;
-  }
+  .ns-cine--viva .ns-capa--elenco .ns-elenco { grid-template-columns: 1fr 1fr; }
   .ns-cine--viva .ns-elenco__lado {
     display: flex;
     flex-direction: column;
@@ -385,10 +391,46 @@ main:has(.ns-cine--viva) { background: #050505; }
              clamp(1.2rem, 4.2vw, 4.5rem)
              clamp(1rem, 2.2vw, 2.2rem);
   }
-  /* Y las flechas se apoyan sobre la foto, que ya no tiene canto libre donde
-     ponerse. */
-  .ns-cine--viva .ns-elenco__flecha--previa { left: clamp(.7rem, 1.5vw, 1.5rem); }
-  .ns-cine--viva .ns-elenco__flecha--siguiente { right: clamp(.7rem, 1.5vw, 1.5rem); }
+}
+
+/* En el telefono: tres cuartos de foto y un cuarto de texto.
+
+   En el cuarto no cabe todo lo que va en escritorio -el titular de dos
+   lineas, el nombre de la especialidad, el parrafo y los tres puntos piden
+   el doble-, asi que se queda lo que dice algo que no este ya a la vista: el
+   rotulo de la seccion, el parrafo del profesional y los puntos del carrusel.
+   La especialidad ya va en la placa de la foto, y el titular y los tres
+   puntos siguen en el HTML para escritorio. La ficha pierde la caja: en un
+   cuarto de pantalla, la caja se come en bordes y rellenos una linea entera. */
+@media (max-width: 991.98px) {
+  .ns-cine--viva .ns-capa--elenco .ns-elenco {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 3fr) minmax(0, 1fr);
+  }
+  .ns-cine--viva .ns-elenco__lado {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    /* A la derecha, el hueco de los dos botones fijos -WhatsApp y subir, que
+       ocupan los 81px del canto y bajan justo por este cuarto-: sin el,
+       tapaban el final de cada linea del parrafo. */
+    padding: .7rem calc(81px + .7rem) .6rem clamp(1.1rem, 5vw, 2rem);
+  }
+  .ns-cine--viva .ns-elenco__lado .ns-titulo,
+  .ns-cine--viva .ns-elenco .ns-ficha__cabeza,
+  .ns-cine--viva .ns-elenco .ns-ficha__puntos { display: none; }
+  .ns-cine--viva .ns-elenco .ns-ficha {
+    margin-top: .1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .ns-cine--viva .ns-elenco .ns-ficha::before,
+  .ns-cine--viva .ns-elenco .ns-ficha > .tarjeta-piedra { display: none; }
+  .ns-cine--viva .ns-elenco__puntos { justify-content: flex-start; margin-top: .55rem; }
 }
 
 /* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
@@ -996,11 +1038,6 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad .ns-titulo { display: none; }
 
   /* --- el elenco --- */
-  /* Y el bloque se arrima al techo en vez de centrarse: la juntura se calcula
-     desde el techo, asi que el retrato tiene que empezar donde dice la cuenta.
-     En un telefono no se nota -el bloque llena la pantalla- y en una tableta
-     es lo que mantiene la foto sobre su piedra. */
-  .ns-cine--viva .ns-capa--elenco { justify-content: flex-start; }
   .ns-elenco { gap: 1.2rem; }
   /* Apilado, el retrato es la mitad de arriba de la pantalla y la ficha la de
      abajo. Media 34svh: la foto entera dentro de un marco de ese alto son 210

@@ -228,6 +228,31 @@
   /* Sin el acercamiento del 4% que lleva en escritorio: aqui se comeria justo
      el canto que se quiere ensenar. */
   .ag-panel.ag-panel--activo .ag-panel__media img { transform: none; }
+
+  /* La flecha de desplegable, la misma de FAQ: un angulo de 9px en oro, a la
+     altura del nombre de cada tira. Apilado, una lista de nombres no dice por
+     si sola que cada uno se abre; la flecha si, y es la que el sitio ya usa
+     para eso. En el panel abierto gira y se apaga: ahi lo que se hace es "Ir",
+     que ya lleva su propia flecha, y una que apuntara arriba prometeria
+     cerrarlo. */
+  .ag-panel::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: 25px;
+    right: 1.6rem;
+    width: 9px;
+    height: 9px;
+    border-right: 1.5px solid var(--oro-marca, #D4AF37);
+    border-bottom: 1.5px solid var(--oro-marca, #D4AF37);
+    transform: translateY(-50%) rotate(45deg);
+    pointer-events: none;
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .3s ease;
+  }
+  .ag-panel.ag-panel--activo::after {
+    opacity: 0;
+    transform: translateY(-50%) rotate(225deg);
+  }
   .ag-panel__texto { opacity: 1; transform: none; isolation: isolate; }
   .ag-panel__texto::before {
     content: '';
@@ -292,5 +317,8 @@
   opacity: 0;
   transition: var(--transicion);
 }
+/* Las fotos de pacientes son de cuerpo entero en la recepcion, con techo de
+   sobra: el 12% de las demas dejaba en el cuadrado lampara y cabezas. */
+.galeria-item--paciente img { object-position: center 42%; }
 .galeria-item:hover img { transform: scale(1.16) rotate(1deg); }
 .galeria-item:hover .galeria-overlay { opacity: 1; }
