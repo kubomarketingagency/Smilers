@@ -31,7 +31,7 @@ Hace tres cosas en cada una de las cinco páginas (`index.html`,
 
 ```html
 <script defer src="paquetes/portada.js?v=5d03e7c848" …></script>
-<img src="imagenes/nosotros.webp?v=50efd7060f" srcset="imagenes/nosotros-720.webp?v=726b9e3483 720w, …">
+<img src="imagenes/clinica/sillon.webp?v=e5590c112e" srcset="imagenes/clinica/sillon-720.webp?v=7cb6bc5a65 720w, …">
 ```
 
 Lo importante es la doble garantía:

@@ -457,6 +457,13 @@
   transition: transform 7.5s linear;
 }
 .crsl__toma--activa img { transform: scale(1); }
+/* Las fotos de pantalla completa llevan <picture>: con la pantalla en
+   vertical la foto es otra —un recorte 9:16 de la misma escena— y no la
+   franja del medio de la apaisada, estirada hasta llenar el alto. Son las
+   tomas de los carruseles y el fondo de "El proceso". La envoltura no
+   pinta nada: la foto sigue midiendo lo que mide su caja. */
+.crsl__toma > picture,
+.ns-fondo > picture { display: contents; }
 .crsl__toma::after {
   content: "";
   position: absolute;

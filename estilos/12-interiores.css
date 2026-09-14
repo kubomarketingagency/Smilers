@@ -316,7 +316,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 42%;
+  /* A lo ancho, donde diga cada comparador: en escritorio la caja es casi
+     cuadrada y una foto apaisada pierde los lados, asi que el que lo
+     necesita corre la suya con --foco-x en su .comparador. Por defecto, al
+     centro. */
+  object-position: var(--foco-x, 50%) 42%;
   -webkit-user-drag: none;
   user-select: none;
   pointer-events: none;
