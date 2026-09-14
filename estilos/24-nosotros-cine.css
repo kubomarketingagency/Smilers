@@ -379,47 +379,35 @@ main:has(.ns-cine--viva) { background: #050505; }
   display: block;
   flex: 1 1 auto;
   min-height: 0;
-  /* La figura va escalada dentro del marco, y el marco tiene que recortar lo
-     que se salga: sin esto la fundida de abajo cae encima de la placa. */
   overflow: hidden;
 }
+/* La foto entera: ni recorte ni fundida.
+
+   Antes la figura iba escalada a 1,2, recortada por el marco y con una
+   mascara ovalada que borraba el consultorio del fondo, porque las fotos
+   de archivo no estaban encuadradas para esto. Las de la clinica si lo
+   estan: la persona ya viene centrada sobre el fondo del consultorio, y
+   la foto luce mas completa que recortada.
+
+   El marco sigue mandando el alto (lo iguala con la ficha de al lado) y
+   el ancho lo pone la propia foto, que queda centrada en la columna. */
 .ns-elenco__foto img {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 16%;
-  /* La figura, mas grande dentro del mismo marco. El marco no crece —lo
-     limita la tarjeta de al lado, y una foto mas alta que ella descuadra la
-     fila—; quien crece es la persona dentro de el. De ahi la escala, con el
-     origen a la altura de la cara para que lo que se sale por abajo sea
-     cintura y no cabeza. */
-  transform: scale(1.2);
-  transform-origin: 50% 38%;
-  /* Sobre marmol claro ya no hace falta levantar la foto: el brillo de mas
-     estaba para despegarla de la madera. Lo que sigue haciendo falta es el
-     contraste, que es lo que separa a la persona de la pared del fondo. */
-  filter: saturate(1.04) contrast(1.12) brightness(1.02);
-  /* Y la mascara se abre. Antes apretaba todo lo que aguantaba porque tenia
-     que borrar el consultorio del fondo contra una madera oscura; contra el
-     marmol el fondo de la foto ya es casi del color de la piedra, asi que
-     puede soltarse: el ovalo crece de 37x52 a 46x63 y la caida se lleva al
-     final del recorrido. Se gana hombro, brazo y torso; la fundida sigue
-     terminando dentro del marco. */
-  -webkit-mask-image: radial-gradient(38% 37% at 50% 45%,
-      #000 42%, rgba(0, 0, 0, .76) 62%, rgba(0, 0, 0, .22) 80%, transparent 94%);
-          mask-image: radial-gradient(38% 37% at 50% 45%,
-      #000 42%, rgba(0, 0, 0, .76) 62%, rgba(0, 0, 0, .22) 80%, transparent 94%);
+  margin: 0 auto;
+  object-fit: contain;
 }
 
-/* La placa del nombre.
+/* La placa de la especialidad.
 
    Es nueva y hace falta desde que el retrato vive sobre marmol: el nombre iba
    en blanco porque debajo tenia madera, y sobre piedra clara habria
    desaparecido. En vez de girarlo a negro —que lo dejaria flotando sobre la
    fundida de la foto, sin nada que lo sostenga— se le pone su propia piedra
-   negra debajo, y con ella cabe la especialidad, que hasta ahora solo se leia
-   en la ficha de al lado.
+   negra debajo. Desde que las fotos son las de la clinica y se ven enteras,
+   en la placa va solo la especialidad.
 
    Tres grosores de oro en tres centimetros, y cada uno dice algo: el filo de
    arriba a 2px porque es el que corta la fundida de la foto y cierra la
@@ -456,24 +444,15 @@ main:has(.ns-cine--viva) { background: #050505; }
   height: 2px;
   background: var(--oro-marca-degradado);
 }
-.ns-elenco__nombre {
-  display: block;
-  font-family: var(--fuente-titulo);
-  font-weight: 400;
-  font-size: clamp(1.05rem, 1.7vw, 1.4rem);
-  line-height: 1.25;
-  letter-spacing: .03em;
-  color: #FFFFFF;
-}
+/* Va sola en la placa, asi que no lleva raya ni aire por arriba (eran el
+   corte con el nombre) y crece un punto: era el pie de un rotulo y ahora
+   es el rotulo. */
 .ns-elenco__area {
   display: block;
-  margin-top: .35rem;
-  padding-top: .35rem;
-  border-top: 1px solid rgba(212, 175, 55, .4);
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: clamp(.6rem, .78vw, .68rem);
-  letter-spacing: .2em;
+  font-size: clamp(.72rem, .95vw, .86rem);
+  letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--gm-oro-vivo);
 }
@@ -959,8 +938,7 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-elenco__retratos { height: 34svh; }
   .ns-elenco__flecha { width: 34px; }
   .ns-elenco__placa { padding: .4rem .9rem .45rem; }
-  .ns-elenco__nombre { font-size: 1rem; }
-  .ns-elenco__area { margin-top: .25rem; padding-top: .25rem; font-size: .56rem; }
+  .ns-elenco__area { font-size: .66rem; }
   .ns-elenco__lado .ns-rotulo { margin-bottom: .4rem; }
   .ns-elenco .ns-ficha { margin-top: .7rem; padding: .8rem .9rem; gap: .5rem; }
   #nsCine .ns-ficha__texto { font-size: .82rem; line-height: 1.55; }

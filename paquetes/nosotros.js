@@ -678,8 +678,7 @@ var puntos=retratos.map(function(retrato,indice){
 var boton=document.createElement('button');
 boton.type='button';
 boton.className='ns-elenco__punto';
-boton.setAttribute('aria-label',(retrato.dataset.espNombre||'Especialista')+
-', ' +(retrato.dataset.espArea||''));
+boton.setAttribute('aria-label',retrato.dataset.espArea||'Especialista');
 boton.addEventListener('click',function(){ir(indice,true);});
 if(puntera)puntera.appendChild(boton);
 return boton;
