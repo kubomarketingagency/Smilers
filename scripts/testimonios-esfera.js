@@ -855,9 +855,6 @@ void main() {
     var salidaCita = seccion.querySelector('[data-cita]');
     var salidaNombre = seccion.querySelector('[data-nombre]');
     var salidaTratamiento = seccion.querySelector('[data-tratamiento]');
-    var visor = seccion.querySelector('[data-foto-testimonio]');
-    var visorAntes = null;
-    var visorDespues = null;
     var velo = seccion.querySelector('[data-velo-testimonios]');
     var cierre = seccion.querySelector('[data-cierre-testimonios]');
     var hojas = Array.prototype.slice.call(seccion.querySelectorAll('.tc-hoja'));
@@ -882,39 +879,6 @@ void main() {
 
     var hayHover = window.matchMedia('(hover: hover)').matches;
 
-    /* En una pantalla de mano no hay esfera: la foto va entera, en su marco,
-       y de la esfera solo queda lo que la rodeaba -el velo, el obturador, la
-       cita y los pasos-, que no depende de ella. El corte es el mismo de la
-       hoja de estilos, 992, y se revisa al cambiar de tamano porque una
-       ventana de escritorio si cruza ese corte. */
-    function toca(pantalla) { return pantalla < 992; }
-    var modoFoto = toca(window.innerWidth);
-    seccion.classList.toggle('modo-foto', modoFoto);
-
-    /* Las dos fotos del visor no vienen en el HTML: un <img> sin src no es
-       HTML valido, y en escritorio no se usan. Se crean la primera vez que
-       hay que pintar una, que es ya en modo foto. */
-    function prepararVisor() {
-      if (!visor || visorAntes) return;
-      visorAntes = document.createElement('img');
-      visorAntes.className = 'tst-visor tst-visor--antes';
-      visorAntes.alt = '';
-      visorAntes.decoding = 'async';
-      visorDespues = document.createElement('img');
-      visorDespues.className = 'tst-visor tst-visor--despues';
-      visorDespues.alt = '';
-      visorDespues.decoding = 'async';
-      visor.appendChild(visorAntes);
-      visor.appendChild(visorDespues);
-    }
-
-    function pintarVisor(item) {
-      if (!visor || !item) return;
-      prepararVisor();
-      if (visorAntes.getAttribute('src') !== item.antes) visorAntes.src = item.antes;
-      if (visorDespues.getAttribute('src') !== item.despues) visorDespues.src = item.despues;
-    }
-
     function escalaSegunPantalla() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
@@ -934,7 +898,6 @@ void main() {
     var tActual = 0;
 
     function crearEsfera() {
-      if (modoFoto) return null;
       if (esfera || fallida) return esfera;
       try {
         esfera = new EsferaTestimonios(lienzo, items, {
@@ -1077,7 +1040,6 @@ void main() {
       if (indice !== ultimoIndice) {
         ultimoIndice = indice;
         var item = items[indice];
-        if (modoFoto) pintarVisor(item);
         if (salidaCita) salidaCita.textContent = item.cita;
         if (salidaNombre) salidaNombre.textContent = item.nombre;
         if (salidaTratamiento) salidaTratamiento.textContent = item.tratamiento;
@@ -1137,25 +1099,6 @@ void main() {
           fijarRevelado(!revelando);
         });
       }
-    }
-
-    /* Al cruzar el corte: se enciende o se apaga la clase, y con ella el
-       visor y el lienzo. Si entramos en escritorio la esfera se monta ahora
-       -no estaba- y si salimos se para, que ya no se ve. El indice se marca
-       como viejo para que la proxima vuelta repinte lo que toque. */
-    function revisarModo() {
-      var ahora = toca(window.innerWidth);
-      if (ahora === modoFoto) return;
-      modoFoto = ahora;
-      seccion.classList.toggle('modo-foto', modoFoto);
-      if (modoFoto) {
-        if (esfera) esfera.detener();
-      } else {
-        var e = crearEsfera();
-        if (e) { e.redimensionar(); e.arrancar(); }
-      }
-      ultimoIndice = -1;
-      actualizar();
     }
 
     function yDeTestimonio(indice) {
@@ -1220,7 +1163,6 @@ void main() {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
 
         fijarAlto();
-        revisarModo();
         if (!esfera) return;
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
@@ -1251,7 +1193,6 @@ void main() {
       window.addEventListener('scroll', pedirActualizacion, { passive: true });
       window.addEventListener('resize', function () {
         fijarAlto();
-        revisarModo();
         if (esfera) {
           esfera.escala = escalaSegunPantalla();
           esfera.encuadre = encuadreSegunPantalla();

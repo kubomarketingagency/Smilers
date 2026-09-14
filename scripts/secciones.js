@@ -67,6 +67,56 @@ document.addEventListener('DOMContentLoaded', function () {
       pintarFicha(panel);
     }
 
+    /* Apilado -en el telefono- abrir un panel es cerrar el que estaba
+       abierto, y desde que el abierto mide lo que su foto eso son hasta 470px
+       que desaparecen. Si el que se cierra queda por encima, todo lo de debajo
+       sube eso mismo, y el panel que se acaba de tocar se iba por arriba de la
+       pantalla: se tocaba a media altura y se abria con la cabeza debajo de
+       la barra.
+
+       Aqui se sostiene. Mientras dura la transicion, en cada fotograma se
+       corrige el scroll para que el panel tocado vaya a su sitio sin saltos:
+       donde estaba, salvo que ahi su foto no quepa entera -entonces sube lo
+       justo- o que quede debajo de la barra. El alto que va a tener es el
+       mismo que le pone la hoja: su --alto-foto por el ancho, con tope en el
+       86% de la pantalla. Si el dedo vuelve a la pantalla se suelta, que manda
+       quien toca. */
+    function apilado() {
+      return getComputedStyle(galeria).flexDirection === 'column';
+    }
+
+    function sostener(panel) {
+      var barra = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--alto-navbar')) || 62;
+      var proporcion = parseFloat(getComputedStyle(panel).getPropertyValue('--alto-foto')) || 4 / 3;
+      var alto = Math.min(panel.getBoundingClientRect().width * proporcion, window.innerHeight * 0.86);
+      var desde = panel.getBoundingClientRect().top;
+      var techo = barra + 10;
+      var suelo = Math.max(techo, window.innerHeight - alto - 12);
+      var hasta = Math.min(Math.max(desde, techo), suelo);
+      var inicio = performance.now();
+      var DURACION = 560;
+      var suelto = false;
+
+      function soltar() { suelto = true; }
+      window.addEventListener('touchstart', soltar, { passive: true });
+      window.addEventListener('wheel', soltar, { passive: true });
+
+      function paso(ahora) {
+        if (!suelto) {
+          var x = Math.min(1, (ahora - inicio) / DURACION);
+          var objetivo = desde + (hasta - desde) * (1 - Math.pow(1 - x, 4));
+          var desvio = panel.getBoundingClientRect().top - objetivo;
+          if (Math.abs(desvio) >= 1) {
+            window.scrollTo({ top: window.scrollY + desvio, behavior: 'instant' });
+          }
+          if (x < 1) { requestAnimationFrame(paso); return; }
+        }
+        window.removeEventListener('touchstart', soltar);
+        window.removeEventListener('wheel', soltar);
+      }
+      requestAnimationFrame(paso);
+    }
+
     var inicial = galeria.querySelector('.ag-panel--activo') || paneles[0];
     if (inicial) pintarFicha(inicial);
 
@@ -81,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!tieneHoverFino && !panel.classList.contains('ag-panel--activo')) {
           evento.preventDefault();
+          if (apilado()) sostener(panel);
           activar(panel);
         }
       });

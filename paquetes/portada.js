@@ -585,6 +585,38 @@ else p.removeAttribute('aria-current');
 });
 pintarFicha(panel);
 }
+function apilado(){
+return getComputedStyle(galeria).flexDirection==='column';
+}
+function sostener(panel){
+var barra=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--alto-navbar'))||62;
+var proporcion=parseFloat(getComputedStyle(panel).getPropertyValue('--alto-foto'))||4 / 3;
+var alto=Math.min(panel.getBoundingClientRect().width*proporcion,window.innerHeight*0.86);
+var desde=panel.getBoundingClientRect().top;
+var techo=barra + 10;
+var suelo=Math.max(techo,window.innerHeight - alto - 12);
+var hasta=Math.min(Math.max(desde,techo),suelo);
+var inicio=performance.now();
+var DURACION=560;
+var suelto=false;
+function soltar(){suelto=true;}
+window.addEventListener('touchstart',soltar,{passive:true});
+window.addEventListener('wheel',soltar,{passive:true});
+function paso(ahora){
+if(!suelto){
+var x=Math.min(1,(ahora - inicio)/ DURACION);
+var objetivo=desde +(hasta - desde)*(1 - Math.pow(1 - x,4));
+var desvio=panel.getBoundingClientRect().top - objetivo;
+if(Math.abs(desvio)>=1){
+window.scrollTo({top:window.scrollY + desvio,behavior:'instant'});
+}
+if(x < 1){requestAnimationFrame(paso);return;}
+}
+window.removeEventListener('touchstart',soltar);
+window.removeEventListener('wheel',soltar);
+}
+requestAnimationFrame(paso);
+}
 var inicial=galeria.querySelector('.ag-panel--activo')||paneles[0];
 if(inicial)pintarFicha(inicial);
 paneles.forEach(function(panel,indice){
@@ -595,6 +627,7 @@ panel.addEventListener('focus',function(){activar(panel);});
 panel.addEventListener('click',function(evento){
 if(!tieneHoverFino&&!panel.classList.contains('ag-panel--activo')){
 evento.preventDefault();
+if(apilado())sostener(panel);
 activar(panel);
 }
 });
@@ -1712,9 +1745,6 @@ var panel=seccion.querySelector('[data-panel-testimonio]');
 var salidaCita=seccion.querySelector('[data-cita]');
 var salidaNombre=seccion.querySelector('[data-nombre]');
 var salidaTratamiento=seccion.querySelector('[data-tratamiento]');
-var visor=seccion.querySelector('[data-foto-testimonio]');
-var visorAntes=null;
-var visorDespues=null;
 var velo=seccion.querySelector('[data-velo-testimonios]');
 var cierre=seccion.querySelector('[data-cierre-testimonios]');
 var hojas=Array.prototype.slice.call(seccion.querySelectorAll('.tc-hoja'));
@@ -1734,28 +1764,6 @@ cita:cita?cita.textContent.trim():''
 });
 seccion.classList.add('esfera-activa');
 var hayHover=window.matchMedia('(hover: hover)').matches;
-function toca(pantalla){return pantalla < 992;}
-var modoFoto=toca(window.innerWidth);
-seccion.classList.toggle('modo-foto',modoFoto);
-function prepararVisor(){
-if(!visor||visorAntes)return;
-visorAntes=document.createElement('img');
-visorAntes.className='tst-visor tst-visor--antes';
-visorAntes.alt='';
-visorAntes.decoding='async';
-visorDespues=document.createElement('img');
-visorDespues.className='tst-visor tst-visor--despues';
-visorDespues.alt='';
-visorDespues.decoding='async';
-visor.appendChild(visorAntes);
-visor.appendChild(visorDespues);
-}
-function pintarVisor(item){
-if(!visor||!item)return;
-prepararVisor();
-if(visorAntes.getAttribute('src')!==item.antes)visorAntes.src=item.antes;
-if(visorDespues.getAttribute('src')!==item.despues)visorDespues.src=item.despues;
-}
 function escalaSegunPantalla(){
 return window.innerWidth < 992?2.2:3.2;
 }
@@ -1766,7 +1774,6 @@ var esfera=null;
 var fallida=false;
 var tActual=0;
 function crearEsfera(){
-if(modoFoto)return null;
 if(esfera||fallida)return esfera;
 try{
 esfera=new EsferaTestimonios(lienzo,items,{
@@ -1881,7 +1888,6 @@ var suavizada=quietud*quietud*(3 - 2*quietud);
 if(indice !==ultimoIndice){
 ultimoIndice=indice;
 var item=items[indice];
-if(modoFoto)pintarVisor(item);
 if(salidaCita)salidaCita.textContent=item.cita;
 if(salidaNombre)salidaNombre.textContent=item.nombre;
 if(salidaTratamiento)salidaTratamiento.textContent=item.tratamiento;
@@ -1931,20 +1937,6 @@ if(yaTocado){yaTocado=false;return;}
 fijarRevelado(!revelando);
 });
 }
-}
-function revisarModo(){
-var ahora=toca(window.innerWidth);
-if(ahora===modoFoto)return;
-modoFoto=ahora;
-seccion.classList.toggle('modo-foto',modoFoto);
-if(modoFoto){
-if(esfera)esfera.detener();
-}else{
-var e=crearEsfera();
-if(e){e.redimensionar();e.arrancar();}
-}
-ultimoIndice=-1;
-actualizar();
 }
 function yDeTestimonio(indice){
 var recorrido=seccion.offsetHeight -(window.SmilersScroll?window.SmilersScroll.alto():(window.innerHeight||1));
@@ -1996,7 +1988,6 @@ return{y:destino,maximo:0.62};
 if(window.SmilersScroll){
 window.SmilersScroll.registrar(leerSeccion,actualizar,function(){
 fijarAlto();
-revisarModo();
 if(!esfera)return;
 esfera.escala=escalaSegunPantalla();
 esfera.encuadre=encuadreSegunPantalla();
@@ -2024,7 +2015,6 @@ actualizar();
 window.addEventListener('scroll',pedirActualizacion,{passive:true});
 window.addEventListener('resize',function(){
 fijarAlto();
-revisarModo();
 if(esfera){
 esfera.escala=escalaSegunPantalla();
 esfera.encuadre=encuadreSegunPantalla();

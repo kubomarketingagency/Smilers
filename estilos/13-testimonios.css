@@ -75,11 +75,6 @@
       var(--onix) 100%);
 }
 
-/* El rotulo es un rotulo, no un titular: va un punto por debajo del de las
-   otras secciones y pegado al canto de la barra fija. Media clamp(1.3, 2.6vw,
-   2) y arrancaba 22px por debajo de la barra, y con la caja de oro alrededor
-   eran 100px de cartel en lo alto de una pantalla que lo que tiene que ensenar
-   es una cara. */
 .testimonios-etiqueta {
   position: relative;
   z-index: 3;
@@ -88,7 +83,7 @@
   pointer-events: none;
   --tracking: .04em;
   font-family: var(--fuente-elegante);
-  font-size: clamp(1.05rem, 1.9vw, 1.5rem);
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
   letter-spacing: .04em;
 }
 
@@ -242,7 +237,7 @@
 .esfera-activa .testimonios-etiqueta {
   position: absolute;
   top: 0; left: 0; right: 0;
-  padding: calc(var(--alto-navbar) + 8px) 2rem 16px;
+  padding: calc(var(--alto-navbar) + 22px) 2rem 20px;
   background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
 }
 
@@ -377,41 +372,6 @@
   mask-image: radial-gradient(circle at 50% 50%, #000 0 38%, rgba(0, 0, 0, .85) 52%, rgba(0, 0, 0, .35) 68%, transparent 82%);
 }
 
-/* El visor del telefono.
-
-   La esfera ensena un disco: la foto recortada en cuadrado por el centro y
-   dentro de ese cuadrado, un circulo. Con fotos de media figura eso corta por
-   los hombros y deja a la persona metida en un ojo de buey. En una pantalla
-   de mano, donde la foto es lo unico que hay, se ve la foto entera y punto:
-   el marco se acomoda a ella -apaisada o de pie- y ninguna se recorta.
-
-   De paso el telefono se ahorra la esfera: nada de WebGL, ni sus dos atlas de
-   catorce fotos de 512px, ni un bucle de pintado. Lo que se descarga son las
-   mismas catorce fotos, que es lo que el visor necesita. */
-.testimonios-foto { display: none; }
-.modo-foto .testimonios-lienzo { display: none; }
-.modo-foto .testimonios-foto {
-  display: grid;
-  place-items: center;
-  width: 100%;
-}
-.tst-visor {
-  grid-area: 1 / 1;
-  display: block;
-  max-width: 100%;
-  max-height: min(44svh, 400px);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
-}
-/* El antes en blanco y negro y el despues en color, como en la esfera: ahi lo
-   hace el sombreador y aqui un filtro. */
-.tst-visor--antes { filter: grayscale(1) contrast(1.05); }
-.tst-visor--despues {
-  opacity: 0;
-  transition: opacity .38s ease;
-}
-.mostrando-despues .tst-visor--despues { opacity: 1; }
-
 .testimonios-revelar {
   position: absolute;
   top: 50%;
@@ -489,35 +449,6 @@
 .mostrando-despues .testimonios-revelar::before,
 .mostrando-despues .testimonios-revelar__chip { animation: none; }
 
-/* Con la foto entera, la chapa se mete dentro del retrato en vez de colgar
-   por debajo: debajo esta la cita, y ahi la chapa se le plantaba encima de
-   las comillas. Y la pista de toque deja de ser un anillo -lo era porque lo
-   que se tocaba era un disco- y pasa a ser un pulso en el canto de la propia
-   foto, que es lo que ahora se toca. */
-.modo-foto .testimonios-revelar__chip { transform: translateY(-.9rem); }
-.modo-foto .testimonios-revelar::before { display: none; }
-.modo-foto.tst-en-juego.tst-pista-toque .testimonios-revelar__chip {
-  animation-name: pistaChipFoto;
-}
-@keyframes pistaChipFoto {
-  0%, 100% { transform: translateY(-.9rem); }
-  22%      { transform: translateY(-1.7rem); }
-  48%      { transform: translateY(-.9rem); }
-}
-.modo-foto.tst-en-juego.tst-pista-toque .tst-visor--antes {
-  animation: pistaFoto 2.6s cubic-bezier(.16, 1, .3, 1) 5;
-}
-@keyframes pistaFoto {
-  0%   { box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 0 rgba(212, 175, 55, 0); }
-  30%  { box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 0 rgba(212, 175, 55, .75); }
-  72%  { box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 14px rgba(212, 175, 55, 0); }
-  100% { box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 0 rgba(212, 175, 55, 0); }
-}
-.mostrando-despues .tst-visor--antes { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .modo-foto.tst-en-juego.tst-pista-toque .tst-visor--antes { animation: none; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tst-en-juego.tst-pista-toque .testimonios-revelar::before,
   .tst-en-juego.tst-pista-toque .testimonios-revelar__chip { animation: none; }
@@ -541,34 +472,17 @@
 
 @media (max-width: 991.98px) {
   .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
-  .esfera-activa .testimonios-etiqueta { padding: 70px 1.2rem 12px; }
-  .testimonios-etiqueta { font-size: clamp(1.15rem, 4.4vw, 1.6rem); }
+  .esfera-activa .testimonios-etiqueta { padding: 84px 1.2rem 14px; }
+  .testimonios-etiqueta { font-size: clamp(1.6rem, 7vw, 2.3rem); }
   .esfera-activa .testimonios-escena {
     flex-direction: column;
     gap: clamp(.6rem, 2vh, 1.4rem);
-    padding: 92px clamp(1.2rem, 6vw, 2.5rem) 26px;
+    padding: 104px clamp(1.2rem, 6vw, 2.5rem) 26px;
   }
   .testimonios-esfera {
     order: -1;
     width: min(132vw, 48svh);
   }
-  /* Sin esfera no hay cuadrado que mantener: el marco mide lo que mida la
-     foto, y el boton de revelar la cubre entera -es el propio retrato el que
-     se toca- con su chapa colgando por debajo, como colgaba del disco. */
-  .modo-foto .testimonios-esfera {
-    width: 100%;
-    aspect-ratio: auto;
-  }
-  .modo-foto .testimonios-revelar {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
-    transform: none;
-    border-radius: 14px;
-  }
-  .modo-foto .testimonios-revelar::before { border-radius: 14px; }
   .testimonios-texto {
     flex: 0 0 auto;
     max-width: min(40ch, 100%);
@@ -584,9 +498,8 @@
 
 @media (max-width: 991.98px) and (max-height: 700px) {
   .testimonios-esfera { width: min(132vw, 42svh); }
-  .tst-visor { max-height: 38svh; }
-  .esfera-activa .testimonios-etiqueta { padding: 66px 1.2rem 8px; }
-  .esfera-activa .testimonios-escena { padding: 80px 1.2rem 18px; }
+  .esfera-activa .testimonios-etiqueta { padding: 74px 1.2rem 10px; }
+  .esfera-activa .testimonios-escena { padding: 88px 1.2rem 18px; }
   .tst-cita { font-size: 1rem; }
   .tst-pasos { margin-top: .2rem; }
 }
