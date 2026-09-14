@@ -339,6 +339,58 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-elenco__retratos { height: min(80svh, 820px); }
 }
 
+/* Dentro de la escena, la foto ES la mitad: de canto a canto y de arriba
+   abajo, hasta la juntura de oro. Media la mitad menos el aire de la
+   envoltura y medio hueco de la rejilla -unos 100px de marmol alrededor-, y
+   ese marmol no aporta nada que no aporte ya el de la propia foto.
+
+   El aire no desaparece, cambia de sitio: lo pone ahora la columna de la
+   derecha, que es la que lleva texto. Y arriba la foto se mete por debajo de
+   la barra fija -los 62px que la barra tapa- para que la cabeza caiga siempre
+   por debajo del canto de la barra, mida lo que mida la ventana. */
+@media (min-width: 992px) {
+  .ns-cine--viva .ns-capa.ns-capa--elenco { padding: 0; }
+  .ns-cine--viva .ns-capa--elenco > .ns-envoltura {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-inline: 0;
+  }
+  .ns-cine--viva .ns-capa--elenco .ns-elenco {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    height: 100%;
+    align-items: stretch;
+  }
+  .ns-cine--viva .ns-elenco__escena {
+    overflow: hidden;
+    padding-top: var(--alto-navbar);
+  }
+  .ns-cine--viva .ns-elenco__retratos { height: 100%; }
+  /* Aqui la foto llena y el marco recorta, que es lo contrario de lo que hace
+     en el telefono: el hueco es casi el de la foto -0,86 contra 0,75 de la
+     foto mas estrecha-, asi que lo que se va son unos dedos de cintura. El
+     20% reparte ese sobrante dejando la cabeza donde estaba. */
+  .ns-cine--viva .ns-elenco__foto img {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+  .ns-cine--viva .ns-elenco__lado {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: calc(var(--alto-navbar) + clamp(.6rem, 1.6vw, 1.6rem))
+             clamp(1.2rem, 4.2vw, 4.5rem)
+             clamp(1rem, 2.2vw, 2.2rem);
+  }
+  /* Y las flechas se apoyan sobre la foto, que ya no tiene canto libre donde
+     ponerse. */
+  .ns-cine--viva .ns-elenco__flecha--previa { left: clamp(.7rem, 1.5vw, 1.5rem); }
+  .ns-cine--viva .ns-elenco__flecha--siguiente { right: clamp(.7rem, 1.5vw, 1.5rem); }
+}
+
 /* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
    46% las deja a la altura del pecho, que es donde la mascara ya no pinta. */
 .ns-elenco__flecha {
