@@ -182,6 +182,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     var colocar = function () {
       if (!pedida || tocada || window.location.hash !== anclaPedida) return;
+      /* Ni si la seccion ya esta lejos de donde la dejo el navegador. Lo que
+         se corrige aqui son los 113px de las letras, no una pantalla entera:
+         mas lejos es que alguien la ha movido con algo que no pasa por la
+         rueda, el dedo, el raton ni el teclado —la barra de scroll
+         arrastrada, por ejemplo— y manda el. */
+      if (Math.abs(pedida.getBoundingClientRect().top) > window.innerHeight * .75) return;
       var suave = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       pedida.scrollIntoView({ block: 'start', behavior: suave ? 'smooth' : 'auto' });
     };

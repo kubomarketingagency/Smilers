@@ -182,8 +182,9 @@
    letra. Lo llevan los rotulos que encabezan cada seccion —`.etiqueta-
    editorial` en la portada, `.ns-rotulo` en Nosotros, `.nos-rotulo` en
    Especialidades—, las dos palabras grandes de la portada (Especialidades y
-   Testimonios) y el nombre de cada una de las diez especialidades. Las
-   cabeceras del pie la llevaron y ya no: van sueltas y en plata (en el 10).
+   Testimonios), el nombre de cada una de las diez especialidades y el de
+   cada paso de "El proceso". Las cabeceras del pie la llevaron y ya no: van
+   sueltas y en plata (en el 10).
 
    Son DOS piezas y no una, y no por gusto. El oro del texto es un fondo
    recortado contra las letras (`background-clip: text`), y ese recorte se
@@ -240,3 +241,13 @@
    mismo aire en `em` saldria el doble de holgado, asi que la caja se aprieta. */
 .acordeon-etiqueta .caja-oro,
 .testimonios-etiqueta .caja-oro { padding: .34em calc(.72em - var(--tracking, 0em)) .3em .72em; }
+
+/* El nombre de cada paso de "El proceso", en Especialidades. Cae sobre la
+   foto de la recepcion y, suelto, era oro pequeno y muy espaciado sobre
+   batas blancas, cristal y sombras: aunque el lavado claro le pusiera piedra
+   debajo, competia con la foto y no se leia. En la caja lleva su propio
+   negro. `--tracking` es el espaciado de la letra del paso (en el 18). */
+.pagina-tratamientos .pz-medallon__nombre {
+  --tracking: .22em;
+  margin-bottom: .85rem;
+}

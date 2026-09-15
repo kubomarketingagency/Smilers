@@ -652,6 +652,7 @@ window.addEventListener(tipo,function(){tocada=true;},{passive:true,once:true});
 });
 var colocar=function(){
 if(!pedida||tocada||window.location.hash !==anclaPedida)return;
+if(Math.abs(pedida.getBoundingClientRect().top)> window.innerHeight*.75)return;
 var suave=window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 pedida.scrollIntoView({block:'start',behavior:suave?'smooth':'auto'});
 };
