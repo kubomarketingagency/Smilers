@@ -363,6 +363,18 @@
 }
 .menu-abierto .menu-deco__linea { transform: none; }
 
+/* Cerrado, todo vuelve a su sitio de golpe. El menu se esconde al instante
+   —`visibility` no lleva transicion—, asi que la vuelta no se ve; pero con
+   las mismas transiciones que la ida, retrasos incluidos, las piezas seguian
+   recogiendose por detras: el hilo de pie espera 1,05s antes de moverse y
+   el dibujo entero tardaba mas de dos segundos en volver a cero. Quien lo
+   abria otra vez antes se encontraba ese hilo ya tendido y el resto a medio
+   recoger, y el menu aparecia de golpe en vez de dibujarse. Asi cada
+   apertura sale de cero, la primera y todas las demas. */
+.navbar-collapse:not(.menu-abierto) :is(.menu-velo, .menu-panel, .menu-deco__esquina, .menu-deco__linea) {
+  transition: none;
+}
+
 @media (min-width: 992px) {
   .menu-deco__esquina { width: 290px; }
   .menu-deco__esquina--a { top: auto; bottom: 0; transform: scaleY(-1); }

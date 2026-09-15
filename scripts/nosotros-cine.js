@@ -420,12 +420,24 @@ document.addEventListener('DOMContentLoaded', function () {
        de la escena. Aqui cada una dice en que punto del recorrido vive, y de
        ahi salen tanto el riel lateral como los enlaces del menu.
        ------------------------------------------------------------------- */
+    /* `p` es donde se deja la pantalla: el punto en que esa capa se ve
+       entera y quieta, a medio camino de lo que dura asi. Estaban en el
+       arranque de cada entrada —fundamentos en .27, con el texto todavia
+       desenfocado, e infraestructura en .86, a media subida— y el circulo
+       llevaba a una capa a oscuras o a medio llegar. Los tramos son los de
+       `escribir()`: fundamentos esta entera de .30 a .45, el elenco de .59
+       a .74 y la infraestructura de .89 hasta que empieza a cerrarse el
+       telon, en .92.
+
+       `desde` es a partir de donde cuenta como la capa que se esta viendo,
+       para encender su circulo: cuando ya ha tapado a la anterior, no cuando
+       se deja la pantalla en ella. */
     var paradas = [
-      { id: 'historia',        nombre: 'Historia',       bloque: escena, p: .01 },
-      { id: 'fundamentos',     nombre: 'Fundamentos',    bloque: escena, p: .27 },
-      { id: 'equipo',          nombre: 'Equipo',         bloque: escena, p: .60 },
-      { id: 'infraestructura', nombre: 'Infraestructura', bloque: escena, p: .86 },
-      { id: 'cifras',          nombre: 'En cifras',      bloque: cierre, p: .55 }
+      { id: 'historia',        nombre: 'Historia',        bloque: escena, p: .01,  desde: 0 },
+      { id: 'fundamentos',     nombre: 'Fundamentos',     bloque: escena, p: .37,  desde: .21 },
+      { id: 'equipo',          nombre: 'Equipo',          bloque: escena, p: .66,  desde: .52 },
+      { id: 'infraestructura', nombre: 'Infraestructura', bloque: escena, p: .905, desde: .80 },
+      { id: 'cifras',          nombre: 'En cifras',       bloque: cierre, p: .55,  desde: .15 }
     ].filter(function (parada) {
       parada.destinoEl = document.getElementById(parada.id);
       return parada.bloque && parada.destinoEl;
@@ -457,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var esCine = parada.bloque === escena;
         if (esCine ? viva : cierreVivo) {
           var suyo = esCine ? pCine : pCierre;
-          if (suyo >= parada.p - .04) mejor = i;
+          if (suyo >= parada.desde) mejor = i;
         } else if (parada.destinoEl.getBoundingClientRect().top < ctx.alto * .5) {
           mejor = i;
         }

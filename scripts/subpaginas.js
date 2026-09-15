@@ -170,8 +170,18 @@ document.addEventListener('DOMContentLoaded', function () {
      esta entera, se vuelve a colocar la seccion justo debajo de ella. */
   if (abrirSegun(window.location.hash)) {
     var pedida = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    /* Pero solo si sigue ahi. La pagina entera —fotos incluidas— tarda
+       segundos en cargar con una red lenta, y quien en ese rato ya se habia
+       ido a otra especialidad desde el menu o el indice, o habia bajado a
+       mano, se veia devuelto a la primera en cuanto acababa: el menu parecia
+       no llevar a ninguna parte. Cualquier gesto suyo cancela la vuelta. */
+    var anclaPedida = window.location.hash;
+    var tocada = false;
+    ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (tipo) {
+      window.addEventListener(tipo, function () { tocada = true; }, { passive: true, once: true });
+    });
     var colocar = function () {
-      if (!pedida) return;
+      if (!pedida || tocada || window.location.hash !== anclaPedida) return;
       var suave = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       pedida.scrollIntoView({ block: 'start', behavior: suave ? 'smooth' : 'auto' });
     };

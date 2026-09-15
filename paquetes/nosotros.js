@@ -988,11 +988,11 @@ escritoCine={};
 escritoCierre={};
 });
 var paradas=[
-{id:'historia',nombre:'Historia',bloque:escena,p:.01},
-{id:'fundamentos',nombre:'Fundamentos',bloque:escena,p:.27},
-{id:'equipo',nombre:'Equipo',bloque:escena,p:.60},
-{id:'infraestructura',nombre:'Infraestructura',bloque:escena,p:.86},
-{id:'cifras',nombre:'En cifras',bloque:cierre,p:.55}
+{id:'historia',nombre:'Historia',bloque:escena,p:.01,desde:0},
+{id:'fundamentos',nombre:'Fundamentos',bloque:escena,p:.37,desde:.21},
+{id:'equipo',nombre:'Equipo',bloque:escena,p:.66,desde:.52},
+{id:'infraestructura',nombre:'Infraestructura',bloque:escena,p:.905,desde:.80},
+{id:'cifras',nombre:'En cifras',bloque:cierre,p:.55,desde:.15}
 ].filter(function(parada){
 parada.destinoEl=document.getElementById(parada.id);
 return parada.bloque&&parada.destinoEl;
@@ -1021,7 +1021,7 @@ var parada=paradas[i];
 var esCine=parada.bloque===escena;
 if(esCine?viva:cierreVivo){
 var suyo=esCine?pCine:pCierre;
-if(suyo >=parada.p - .04)mejor=i;
+if(suyo >=parada.desde)mejor=i;
 }else if(parada.destinoEl.getBoundingClientRect().top < ctx.alto*.5){
 mejor=i;
 }

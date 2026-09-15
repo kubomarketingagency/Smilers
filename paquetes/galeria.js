@@ -651,8 +651,13 @@ return !!poner;
 }
 if(abrirSegun(window.location.hash)){
 var pedida=document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+var anclaPedida=window.location.hash;
+var tocada=false;
+['wheel','touchstart','pointerdown','keydown'].forEach(function(tipo){
+window.addEventListener(tipo,function(){tocada=true;},{passive:true,once:true});
+});
 var colocar=function(){
-if(!pedida)return;
+if(!pedida||tocada||window.location.hash !==anclaPedida)return;
 var suave=window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 pedida.scrollIntoView({block:'start',behavior:suave?'smooth':'auto'});
 };
