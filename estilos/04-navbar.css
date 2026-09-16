@@ -88,35 +88,51 @@
    misma altura pesaria mas que la marca de la casa. Acompana el encogido de
    la barra. */
 .marca-oad {
+  position: relative;
   display: flex;
   align-items: center;
-  margin-left: clamp(.55rem, 1.3vw, 1rem);
-  padding-left: clamp(.55rem, 1.3vw, 1rem);
-  border-left: 1px solid rgba(212, 175, 55, .32);
+  margin-left: clamp(.7rem, 1.6vw, 1.2rem);
+  padding-left: clamp(.7rem, 1.6vw, 1.2rem);
   /* Todo el hueco sobrante, a su derecha: la barra reparte el espacio
      entre sus hijos, y sin esto el aval se quedaba en el centro, suelto
      entre la marca y el boton del menu en vez de pegado a la marca. */
   margin-right: auto;
 }
+.marca-oad::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 52px;
+  transform: translateY(-50%);
+  background: var(--oro-marca-degradado);
+  transition: height .35s ease;
+}
+.navbar-principal.con-scroll .marca-oad::before { height: 47px; }
+/* Del mismo alto que el logo de la casa, y encoge con el. */
 .marca-oad img {
   display: block;
   width: auto;
-  height: 30px;
+  height: 44px;
   transition: height .35s ease;
 }
-.navbar-principal.con-scroll .marca-oad img { height: 27px; }
+.navbar-principal.con-scroll .marca-oad img { height: 40px; }
 
 @media (max-width: 767.98px) {
   .marca-logo { height: 40px; }
   .navbar-principal.con-scroll .marca-logo { height: 36px; }
-  /* En el telefono la barra es el logo, el aval y el boton del menu: el aval
-     baja a lo justo para que los tres quepan sin apretarse. */
+  /* En el telefono la barra es el logo, el aval y el boton del menu. El aval
+     mantiene el alto del logo de la casa; lo que se aprieta es el hueco que
+     los separa, para que los tres quepan. */
   .marca-oad {
-    margin-left: .5rem;
-    padding-left: .5rem;
+    margin-left: .45rem;
+    padding-left: .45rem;
   }
-  .marca-oad img { height: 22px; }
-  .navbar-principal.con-scroll .marca-oad img { height: 20px; }
+  .marca-oad::before { height: 46px; }
+  .navbar-principal.con-scroll .marca-oad::before { height: 42px; }
+  .marca-oad img { height: 40px; }
+  .navbar-principal.con-scroll .marca-oad img { height: 36px; }
 }
 
 .navbar-toggler {
