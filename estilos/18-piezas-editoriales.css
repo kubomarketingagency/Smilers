@@ -227,6 +227,12 @@
   text-transform: uppercase;
   color: var(--nos-negro);
 }
+/* El parrafo de cada paso cae sobre la foto de la recepcion, y ahi lo que se
+   pierde no es el contraste -esta medido, y sobra- sino el trazo: la 300 de
+   esta letra es un hilo, y un hilo sobre una textura con luces, cantos y
+   sombras se lee peor que un trazo normal sobre lo mismo. Va en la 400 y en
+   la tinta negra de los titulares, no en la gris del cuerpo. El resto de
+   medallones del sitio, sobre piedra lisa, se quedan como estaban. */
 .pz-medallon__texto {
   display: block;
   max-width: 26ch;
@@ -235,6 +241,10 @@
   font-size: .88rem;
   line-height: 1.75;
   color: var(--nos-texto);
+}
+.pagina-tratamientos .proceso .pz-medallon__texto {
+  font-weight: 400;
+  color: var(--nos-negro);
 }
 
 .pagina-tratamientos .pz-intro {

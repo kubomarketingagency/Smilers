@@ -434,10 +434,12 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 
 /* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
-   46% las deja a la altura del pecho, que es donde la mascara ya no pinta. */
+   54% las deja a la altura del pecho, que es donde la mascara ya no pinta, y
+   a la vez centradas de verdad en el marco. Estuvieron en el 46%, que en un
+   marco de pantalla completa las dejaba por encima del centro. */
 .ns-elenco__flecha {
   position: absolute;
-  top: 46%;
+  top: 54%;
   z-index: 3;
   display: grid;
   place-items: center;

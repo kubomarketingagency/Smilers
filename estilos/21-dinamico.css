@@ -855,8 +855,8 @@
   background: linear-gradient(180deg,
     rgba(250, 248, 245, .32) 0%,
     rgba(250, 248, 245, .62) 30%,
-    rgba(250, 248, 245, .64) 58%,
-    rgba(250, 248, 245, .38) 82%,
+    rgba(250, 248, 245, .66) 58%,
+    rgba(250, 248, 245, .46) 82%,
     transparent 94%);
 }
 
@@ -874,12 +874,12 @@
   .pz-proceso .ns-fondo--degradado img {
     -webkit-mask-image: linear-gradient(180deg,
       transparent 0%, rgba(0, 0, 0, .22) 9%, rgba(0, 0, 0, .66) 24%,
-      #000 42%, #000 64%, rgba(0, 0, 0, .45) 73%,
-      rgba(0, 0, 0, .14) 81%, transparent 88%);
+      #000 42%, #000 62%, rgba(0, 0, 0, .36) 71%,
+      rgba(0, 0, 0, .10) 79%, transparent 86%);
             mask-image: linear-gradient(180deg,
       transparent 0%, rgba(0, 0, 0, .22) 9%, rgba(0, 0, 0, .66) 24%,
-      #000 42%, #000 64%, rgba(0, 0, 0, .45) 73%,
-      rgba(0, 0, 0, .14) 81%, transparent 88%);
+      #000 42%, #000 62%, rgba(0, 0, 0, .36) 71%,
+      rgba(0, 0, 0, .10) 79%, transparent 86%);
   }
   .pz-proceso .ns-fondo--degradado::after {
     background: linear-gradient(180deg,
@@ -888,9 +888,10 @@
       rgba(250, 248, 245, .50) 30%,
       rgba(250, 248, 245, .20) 44%,
       rgba(250, 248, 245, .08) 58%,
-      rgba(250, 248, 245, .14) 72%,
-      rgba(250, 248, 245, .26) 84%,
-      transparent 94%);
+      rgba(250, 248, 245, .24) 72%,
+      rgba(250, 248, 245, .46) 82%,
+      rgba(250, 248, 245, .34) 91%,
+      transparent 97%);
   }
 }
 
