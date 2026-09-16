@@ -77,15 +77,15 @@
     height: 100svh;
     grid-template-rows: .78fr 1.12fr 1fr .78fr;
     -webkit-mask-image: linear-gradient(90deg,
-        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+        #000 0%, #000 74%, rgba(0, 0, 0, .58) 88%, transparent 100%);
             mask-image: linear-gradient(90deg,
-        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+        #000 0%, #000 74%, rgba(0, 0, 0, .58) 88%, transparent 100%);
   }
   .nosotros-split--invertido .nosotros-media {
     -webkit-mask-image: linear-gradient(270deg,
-        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+        #000 0%, #000 74%, rgba(0, 0, 0, .58) 88%, transparent 100%);
             mask-image: linear-gradient(270deg,
-        #000 0%, #000 56%, rgba(0, 0, 0, .5) 80%, transparent 100%);
+        #000 0%, #000 74%, rgba(0, 0, 0, .58) 88%, transparent 100%);
   }
   .nm-figura--cima { grid-column: 1 / -1; grid-row: 1; }
   .nm-figura--pie  { grid-column: 1; grid-row: 4; }
@@ -211,9 +211,9 @@
     height: 36vh;
     height: 36svh;
     -webkit-mask-image: linear-gradient(180deg,
-        #000 0%, #000 72%, rgba(0, 0, 0, .45) 89%, transparent 100%);
+        #000 0%, #000 84%, rgba(0, 0, 0, .5) 94%, transparent 100%);
             mask-image: linear-gradient(180deg,
-        #000 0%, #000 72%, rgba(0, 0, 0, .45) 89%, transparent 100%);
+        #000 0%, #000 84%, rgba(0, 0, 0, .5) 94%, transparent 100%);
   }
   .nm-sello { bottom: 26%; }
 }

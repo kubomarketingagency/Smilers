@@ -293,6 +293,67 @@
   font-size: .95rem;
 }
 
+/* ---------------------------------------------------------------------------
+   La vitrina de la FAQ: el hueco que dejaban las preguntas, ocupado.
+
+   Las preguntas viven en siete doceavos a la izquierda y aqui va la clinica
+   por dentro: tres fotos cuadradas con filo de oro, pegadas mientras se lee.
+   Se queda quieta a la altura de la barra y termina antes del pie.
+
+   Solo en escritorio: en el telefono las preguntas ya ocupan el ancho entero
+   y la columna la esconde el propio HTML, con las clases de Bootstrap
+   d-none d-lg-block.
+   --------------------------------------------------------------------------- */
+/* La reja de la pagina: las preguntas a la izquierda y la vitrina a la
+   derecha. Va aqui y no en clases de la rejilla de Bootstrap porque el
+   constructor incrusta de esa rejilla un conjunto fijo de clases, y las de
+   siete y cinco doceavos no estan: con ellas las dos columnas salian una
+   debajo de otra y la vitrina escondida. */
+.faq-reja { display: grid; }
+@media (min-width: 992px) {
+  .faq-reja {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(1.8rem, 3.4vw, 3.4rem);
+    align-items: start;
+  }
+}
+/* En el telefono las preguntas ya ocupan el ancho entero: la vitrina solo
+   alargaria la pagina. */
+@media (max-width: 991.98px) {
+  .faq-reja__vitrina { display: none; }
+}
+
+.faq-vitrina {
+  position: sticky;
+  top: calc(var(--alto-navbar) + 1.4rem);
+  display: grid;
+  gap: clamp(.9rem, 1.6vw, 1.3rem);
+}
+.faq-vitrina__foto {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  box-shadow: 0 22px 54px rgba(6, 6, 6, .18);
+}
+.faq-vitrina__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 1.1s var(--gm-curva, cubic-bezier(.22, 1, .36, 1));
+}
+/* La primera manda: es la que se ve entera junto a las primeras preguntas. */
+.faq-vitrina__foto:first-child img { aspect-ratio: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .faq-vitrina__foto:hover img { transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-vitrina__foto img { transition: none; }
+}
+
 @media (max-width: 767.98px) {
   .banner-pagina { padding: 130px 0 80px; }
   .bloque-tratamiento { padding: 60px 0; }

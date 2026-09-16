@@ -612,21 +612,28 @@
    muy baja para que el diente —que en sus brillos es casi blanco— no se
    funda con las vetas. */
 .ns-sello {
+  position: relative;
+  isolation: isolate;
   display: block;
   justify-self: center;
+  overflow: hidden;
+  padding: clamp(1.1rem, 2.2vw, 1.8rem) clamp(1.4rem, 2.8vw, 2.4rem);
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
 }
 .ns-sello__logo {
+  position: relative;
+  z-index: 1;
   display: block;
-  width: clamp(240px, 24vw, 360px);
+  width: clamp(220px, 22vw, 320px);
   height: auto;
-  filter: drop-shadow(0 4px 10px rgba(6, 6, 6, .14));
 }
 @media (min-width: 992px) {
   .pz-intro__reja { grid-template-columns: minmax(0, 1fr) auto; }
   .ns-sello { justify-self: end; }
 }
 @media (max-width: 767.98px) {
-  .ns-sello__logo { width: min(240px, 64vw); }
+  .ns-sello__logo { width: min(220px, 58vw); }
 }
 
 /* La cinta de tratamientos: una linea recta de texto en plata sobre negro
@@ -885,13 +892,12 @@
     background: linear-gradient(180deg,
       rgba(250, 248, 245, .56) 0%,
       rgba(250, 248, 245, .66) 15%,
-      rgba(250, 248, 245, .50) 30%,
-      rgba(250, 248, 245, .20) 44%,
-      rgba(250, 248, 245, .08) 58%,
-      rgba(250, 248, 245, .24) 72%,
-      rgba(250, 248, 245, .46) 82%,
-      rgba(250, 248, 245, .34) 91%,
-      transparent 97%);
+      rgba(250, 248, 245, .48) 30%,
+      rgba(250, 248, 245, .16) 44%,
+      rgba(250, 248, 245, .06) 62%,
+      rgba(250, 248, 245, .10) 80%,
+      rgba(250, 248, 245, .18) 92%,
+      transparent 99%);
   }
 }
 

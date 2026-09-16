@@ -247,7 +247,4 @@
    batas blancas, cristal y sombras: aunque el lavado claro le pusiera piedra
    debajo, competia con la foto y no se leia. En la caja lleva su propio
    negro. `--tracking` es el espaciado de la letra del paso (en el 18). */
-.pagina-tratamientos .pz-medallon__nombre {
-  --tracking: .22em;
-  margin-bottom: .85rem;
-}
+.pagina-tratamientos .pz-medallon__nombre { margin-bottom: .6rem; }

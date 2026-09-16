@@ -162,6 +162,9 @@
   min-width: 0;
   overflow: hidden;
 }
+/* El hueco es el marco y la foto va dentro, colocada por su borde de arriba;
+   lo que sobre por abajo lo recorta el marco. */
+.hero-etapa2-col > img { display: block; }
 /* Las cuatro van a plena luz. Son de estudio, sobre el mismo marmol y con la
    misma luz: puestas en fila se leen como una sola foto de grupo, y eso es lo
    que apagaba el velo plano que llevaban encima -un negro al 35% sobre la
@@ -176,7 +179,22 @@
   object-fit: cover;
   object-position: center top;
   filter: contrast(1.02) saturate(1.03);
+  /* Un 10% mas de alto que el hueco: ese sobrante es el margen donde cada
+     retrato se mueve para formar la V. No se escala nada -escalar agrandaba
+     a los cuatro y les comia la cabeza-, solo se desliza dentro del marco,
+     que recorta lo que sobra. En reposo el sobrante se reparte a partes
+     iguales, que es el -5%. */
+  position: absolute;
+  inset: auto 0 auto 0;
+  top: var(--dy, -5%);
+  height: 110%;
 }
+/* La V: los de los extremos, altos; los del centro, bajos. Subir un retrato
+   es tirar de el hacia arriba, o sea colocarlo mas arriba dentro del marco. */
+.hero-etapa2-col:nth-child(1) img { --dy: -9%; }
+.hero-etapa2-col:nth-child(2) img { --dy: -1%; }
+.hero-etapa2-col:nth-child(3) img { --dy: -1%; }
+.hero-etapa2-col:nth-child(4) img { --dy: -9%; }
 .hero-etapa2-col::after {
   content: '';
   position: absolute;
@@ -232,6 +250,11 @@
     grid-template-rows: 1fr 1fr;
   }
   .hero-etapa2-col { min-width: 0; min-height: 0; }
+  /* En dos filas de dos no hay V que hacer: lo que se ve de cada retrato es
+     su mitad de arriba, y ahi los cuatro ya caen a la misma altura -medido en
+     los archivos: 44,9%, 46,5%, 43,8% y 45,5% del alto de la foto-. Se quedan
+     a la par, cada uno llenando su hueco. */
+  .hero-etapa2-col img { top: 0; height: 100%; }
   /* Con cuatro retratos en dos filas, al pie no hay sitio: abajo estan los
      botones flotantes -el de subir acaba a 135px del suelo- y subiendo el
      lema para esquivarlos cae sobre las caras de la fila de abajo. Va en la

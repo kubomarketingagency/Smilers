@@ -75,6 +75,35 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-capa--historia,
 .ns-capa--infra { padding-top: calc(var(--alto-navbar) + clamp(1.4rem, 3vw, 3rem)); }
 
+/* Estas dos capas llevan el texto sobre la foto de la clinica, que no es un
+   fondo liso: tiene lamparas encendidas, cristal y vetas claras. El velo de
+   la capa sostiene el titular, pero el parrafo -tinta clara y fina- se perdia
+   en cuanto caia sobre una zona iluminada. Va en su recuadro: marmol negro
+   translucido con un filo de oro muy bajo, del mismo tono que las tarjetas de
+   fundamentos, para que la idea siga siendo la misma pieza de siempre y no un
+   cuadro pegado encima. El recuadro se cine al texto porque la columna ya
+   esta acotada; sobre el, la foto se sigue viendo entera alrededor. */
+.ns-capa--historia .ns-cine__texto,
+.ns-capa--infra .ns-cine__texto {
+  position: relative;
+  padding: clamp(1.1rem, 2.2vw, 2rem) clamp(1.1rem, 2.4vw, 2.2rem);
+  border: 1px solid rgba(212, 175, 55, .24);
+  border-radius: var(--gm-radio, 2px);
+  background: linear-gradient(180deg, rgba(8, 7, 6, .84) 0%, rgba(8, 7, 6, .74) 100%);
+  box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
+}
+/* El filo de oro de arriba, el mismo que llevan las fichas de fundamentos. */
+.ns-capa--historia .ns-cine__texto::before,
+.ns-capa--infra .ns-cine__texto::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gm-oro-vivo), transparent);
+  opacity: .5;
+  pointer-events: none;
+}
+
 .ns-capa--panel { color: #FFFFFF; }
 
 /* Fundamentos va sobre madera, no sobre marmol negro. La razon es de fondo y
@@ -87,7 +116,32 @@ main:has(.ns-cine--viva) { background: #050505; }
 
    La veta va tenue: detras hay dos columnas de texto largo, y una madera a
    plena intensidad les come el contraste. */
-.ns-capa--fundamentos { background: #0B0805; }
+/* Marmol blanco, no madera: esta capa es la unica clara del cine. El color
+   de debajo es el de la piedra por si la foto tarda. */
+.ns-capa--fundamentos { background: #EFEBE4; }
+
+/* La veta va entera -el fondo de serie la deja al 26%, que es lo que hace
+   falta cuando debajo hay negro y encima texto claro- y el velo que la cubre
+   es claro, para asentar la tinta oscura del titular sin apagar la piedra. */
+.ns-fondo--marmol img {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+.ns-fondo--marmol::after {
+  background: linear-gradient(180deg,
+    rgba(250, 248, 245, .34) 0%, rgba(250, 248, 245, .16) 48%, rgba(250, 248, 245, .4) 100%);
+}
+
+/* Sobre piedra clara manda el oro hondo, y el titular vuelve a la tinta. El
+   rotulo no se toca: va dentro de su caja negra y ahi el oro sigue siendo el
+   vivo. Dentro de las tarjetas negras tambien, que su regla del 22 pesa mas
+   que esta. */
+.ns-capa--fundamentos {
+  --oro-vivo-degradado: var(--gradiente-oro-hondo);
+  --oro-plano: var(--oro-hondo);
+}
+.ns-capa--fundamentos .ns-titulo--claro { color: var(--nos-negro); }
 .ns-fondo--madera img {
   opacity: .6;
   filter: saturate(1.02) brightness(.95);
@@ -855,8 +909,11 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   --oro-plano: var(--oro-marca);
 }
 .banda-cta--cine .ns-cifras {
+  position: relative;
   margin-top: 0;
-  border-color: rgba(255, 255, 255, .16);
+  padding: clamp(1rem, 2vw, 1.6rem) clamp(1rem, 2.2vw, 1.8rem);
+  border: 1px solid rgba(212, 175, 55, .26);
+  background: linear-gradient(180deg, rgba(6, 6, 6, .74) 0%, rgba(6, 6, 6, .6) 100%);
 }
 
 /* Las cifras van en oro. Es el recorte del 22, repetido aqui porque alli
@@ -893,9 +950,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 .banda-cta--cine .banda-cta-overlay {
   background:
     radial-gradient(74% 64% at 50% 50%,
-      rgba(6, 6, 6, .62) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .26) 100%),
+      rgba(6, 6, 6, .84) 0%, rgba(6, 6, 6, .7) 58%, rgba(6, 6, 6, .46) 100%),
     linear-gradient(180deg,
-      rgba(6, 6, 6, .3) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .5) 100%);
+      rgba(6, 6, 6, .44) 0%, rgba(6, 6, 6, .32) 45%, rgba(6, 6, 6, .62) 100%);
 }
 .banda-cta--cine h2,
 .banda-cta--cine .ns-parrafo,

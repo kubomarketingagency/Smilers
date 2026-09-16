@@ -80,9 +80,43 @@
 }
 .navbar-principal.con-scroll .marca-logo { height: 40px; }
 
+/* El aval de OAD, al lado de la marca. Va fuera del enlace a la portada
+   porque no es la marca de la clinica y pulsarlo no debe llevar a ningun
+   sitio; lo que los separa es un filo de oro, el mismo de todos los filos.
+
+   Mas bajo que el de Smilers a proposito: es una pieza ancha y baja, y a la
+   misma altura pesaria mas que la marca de la casa. Acompana el encogido de
+   la barra. */
+.marca-oad {
+  display: flex;
+  align-items: center;
+  margin-left: clamp(.55rem, 1.3vw, 1rem);
+  padding-left: clamp(.55rem, 1.3vw, 1rem);
+  border-left: 1px solid rgba(212, 175, 55, .32);
+  /* Todo el hueco sobrante, a su derecha: la barra reparte el espacio
+     entre sus hijos, y sin esto el aval se quedaba en el centro, suelto
+     entre la marca y el boton del menu en vez de pegado a la marca. */
+  margin-right: auto;
+}
+.marca-oad img {
+  display: block;
+  width: auto;
+  height: 30px;
+  transition: height .35s ease;
+}
+.navbar-principal.con-scroll .marca-oad img { height: 27px; }
+
 @media (max-width: 767.98px) {
   .marca-logo { height: 40px; }
   .navbar-principal.con-scroll .marca-logo { height: 36px; }
+  /* En el telefono la barra es el logo, el aval y el boton del menu: el aval
+     baja a lo justo para que los tres quepan sin apretarse. */
+  .marca-oad {
+    margin-left: .5rem;
+    padding-left: .5rem;
+  }
+  .marca-oad img { height: 22px; }
+  .navbar-principal.con-scroll .marca-oad img { height: 20px; }
 }
 
 .navbar-toggler {
