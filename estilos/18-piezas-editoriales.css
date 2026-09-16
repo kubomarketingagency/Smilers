@@ -279,7 +279,9 @@
 
 .pagina-tratamientos .proceso .pz-medallones { margin-top: 0; }
 
-/* El recuadro que sostiene los cinco pasos sobre la foto de la recepcion.
+/* El recuadro que sostiene la seccion entera sobre la foto de la recepcion:
+   el rotulo, el titular y los cinco pasos. La cabecera se quedaba fuera, y
+   era justo la que competia con la foto.
    Marmol negro translucido con filo de oro, la misma pieza que las tarjetas
    de Nosotros y el panel de cada especialidad: dentro de el, el oro pequeno
    se lee solo y el texto vuelve a la tinta clara. Por eso los nombres ya no
@@ -291,8 +293,8 @@
   --oro-plano: var(--oro-marca);
   position: relative;
   isolation: isolate;
-  margin-top: clamp(1.6rem, 3vw, 2.6rem);
-  padding: clamp(1.3rem, 2.6vw, 2.4rem) clamp(1.2rem, 2.6vw, 2.4rem);
+  margin-top: 0;
+  padding: clamp(1.5rem, 3vw, 2.6rem) clamp(1.2rem, 2.6vw, 2.4rem) clamp(1.4rem, 2.8vw, 2.4rem);
   border: 1px solid rgba(212, 175, 55, .26);
   background: linear-gradient(180deg, rgba(8, 7, 6, .88) 0%, rgba(8, 7, 6, .78) 100%);
   box-shadow: 0 28px 64px rgba(4, 4, 4, .34);
@@ -306,6 +308,18 @@
   background: linear-gradient(90deg, transparent, var(--gm-oro-vivo), transparent);
   opacity: .5;
   pointer-events: none;
+}
+/* La cabecera, ya dentro. El rotulo suelta su caja -el panel ya es una caja,
+   y una dentro de otra es lo que se veia saturado- y se sostiene solo: el oro
+   que le toca aqui es el vivo de la marca, que el panel declara arriba, y
+   detras solo hay marmol negro. Su filo se vuelve dorado por lo mismo: el que
+   traia era para piedra clara y aqui no se veria. */
+.pagina-tratamientos .proceso .pz-proceso__panel .nos-rotulo::after {
+  background: linear-gradient(90deg, rgba(212, 175, 55, .42), transparent);
+}
+.pagina-tratamientos .proceso .pz-proceso__panel .nos-lead {
+  color: var(--marmol);
+  margin-bottom: clamp(1.5rem, 3vw, 2.4rem);
 }
 .pagina-tratamientos .proceso .pz-medallon__texto {
   font-weight: 300;

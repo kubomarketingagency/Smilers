@@ -179,22 +179,29 @@
   object-fit: cover;
   object-position: center top;
   filter: contrast(1.02) saturate(1.03);
-  /* Un 10% mas de alto que el hueco: ese sobrante es el margen donde cada
-     retrato se mueve para formar la V. No se escala nada -escalar agrandaba
-     a los cuatro y les comia la cabeza-, solo se desliza dentro del marco,
-     que recorta lo que sobra. En reposo el sobrante se reparte a partes
-     iguales, que es el -5%. */
+  /* La foto va mas alta que el hueco y se desliza dentro de el: ese sobrante
+     es el margen con el que se cuadra la linea de hombros de una columna con
+     la de al lado. El marco recorta lo que sobra. */
   position: absolute;
   inset: auto 0 auto 0;
   top: var(--dy, -5%);
-  height: 110%;
+  height: var(--alto, 110%);
 }
-/* La V: los de los extremos, altos; los del centro, bajos. Subir un retrato
-   es tirar de el hacia arriba, o sea colocarlo mas arriba dentro del marco. */
-.hero-etapa2-col:nth-child(1) img { --dy: -9%; }
+/* La fila cuadra cuando el hombro de una columna acaba a la altura a la que
+   empieza el de la siguiente. Medido en pantalla: las dos del centro ya
+   cuadraban entre si y los dos de los extremos se quedaban cien pixeles por
+   encima de sus vecinos.
+
+   Las del centro no se tocan: son las que menos aire tienen por arriba y
+   subirlas les come la coronilla. Bajan los dos de los extremos, y como solo
+   con deslizarlos no llegaba -haria falta mas margen del que hay-, se les da
+   ademas un punto de alto, que es lo que termina de sentar su linea de
+   hombros junto a la de al lado. Quedan quince pixeles por encima del centro:
+   el salto desaparece y la V se sigue insinuando. */
+.hero-etapa2-col:nth-child(1) img { --dy: -5.4%; --alto: 115%; }
 .hero-etapa2-col:nth-child(2) img { --dy: -1%; }
 .hero-etapa2-col:nth-child(3) img { --dy: -1%; }
-.hero-etapa2-col:nth-child(4) img { --dy: -9%; }
+.hero-etapa2-col:nth-child(4) img { --dy: -6.4%; --alto: 116%; }
 .hero-etapa2-col::after {
   content: '';
   position: absolute;

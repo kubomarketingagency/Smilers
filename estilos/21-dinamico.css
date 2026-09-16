@@ -860,10 +860,10 @@
    todo: se veia el velo, no la clinica. */
 .pz-proceso .ns-fondo--degradado::after {
   background: linear-gradient(180deg,
-    rgba(250, 248, 245, .32) 0%,
-    rgba(250, 248, 245, .62) 30%,
-    rgba(250, 248, 245, .66) 58%,
-    rgba(250, 248, 245, .46) 82%,
+    rgba(250, 248, 245, .26) 0%,
+    rgba(250, 248, 245, .44) 30%,
+    rgba(250, 248, 245, .48) 58%,
+    rgba(250, 248, 245, .34) 82%,
     transparent 94%);
 }
 
@@ -890,9 +890,9 @@
   }
   .pz-proceso .ns-fondo--degradado::after {
     background: linear-gradient(180deg,
-      rgba(250, 248, 245, .56) 0%,
-      rgba(250, 248, 245, .66) 15%,
-      rgba(250, 248, 245, .48) 30%,
+      rgba(250, 248, 245, .34) 0%,
+      rgba(250, 248, 245, .40) 15%,
+      rgba(250, 248, 245, .30) 30%,
       rgba(250, 248, 245, .16) 44%,
       rgba(250, 248, 245, .06) 62%,
       rgba(250, 248, 245, .10) 80%,

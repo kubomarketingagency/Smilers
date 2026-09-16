@@ -883,8 +883,12 @@ void main() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
 
+    /* El encuadre es la altura de escena que cabe en la camara: cuanto mas
+       alta, mas campo y mas pequeno sale el disco. En escritorio la caja mide
+       835 de lado y el disco salia de 425, media caja; con 0.235 llena su
+       sitio sin tocar la perspectiva ni mover la camara. */
     function encuadreSegunPantalla() {
-      return window.innerWidth < 992 ? 0.232 : 0.285;
+      return window.innerWidth < 992 ? 0.232 : 0.235;
     }
 
     /* La esfera —WebGL y sus dos atlas de catorce fotos— no se crea al abrir

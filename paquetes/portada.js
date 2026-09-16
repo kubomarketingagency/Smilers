@@ -1768,7 +1768,7 @@ function escalaSegunPantalla(){
 return window.innerWidth < 992?2.2:3.2;
 }
 function encuadreSegunPantalla(){
-return window.innerWidth < 992?0.232:0.285;
+return window.innerWidth < 992?0.232:0.235;
 }
 var esfera=null;
 var fallida=false;
