@@ -2,6 +2,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* Enciende las fotos aplazadas de un trozo de pagina. Van con la direccion
+     en `data-src` / `data-srcset` porque `loading="lazy"` no sirve aqui:
+     las tomas de un carrusel estan una encima de otra y las capas de la
+     escena de Nosotros ocupan la pantalla a la vez, asi que el navegador las
+     da todas por visibles y se las bajaba de golpe. El `<source>` va antes
+     que el `<img>` en el documento, que es el orden en que hay que
+     encenderlos para que el navegador elija bien. */
+  function encender(nodo) {
+    if (!nodo) return;
+    var piezas = nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
+    for (var i = 0; i < piezas.length; i++) {
+      var p = piezas[i];
+      if (p.dataset.srcset) { p.setAttribute('srcset', p.dataset.srcset); delete p.dataset.srcset; }
+      if (p.dataset.src) { p.setAttribute('src', p.dataset.src); delete p.dataset.src; }
+    }
+  }
+
+  /* El resto, cuando el navegador no tenga nada mejor que hacer, y nunca
+     antes de que la pagina acabe de cargar: con una red lenta, adelantar
+     fotos que no se ven le quita ancho de banda a la que si se esta
+     mirando. */
+  function enReposo(fn) {
+    var luego = function () {
+      if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 4000 });
+      else setTimeout(fn, 1500);
+    };
+    if (document.readyState === 'complete') luego();
+    else window.addEventListener('load', luego, { once: true });
+  }
+
   function montarCarrusel(caja) {
     var tomas = Array.prototype.slice.call(caja.querySelectorAll('.crsl__toma'));
     if (tomas.length < 2) return;
@@ -28,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var reloj = null;
+    var pedidasTodas = false;
     /* `dormido` lo pone la escena de Nosotros; `visible` lo pone el
        observador de mas abajo. Hacen falta los dos y no uno: dentro del pin
        las capas nunca salen de pantalla —lo que las esconde es la opacidad o
@@ -39,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var previaToma = null;
 
     function pintar() {
+      encender(tomas[actual]);
       // La toma que acaba de salir se marca aparte: asi el carrusel del hero
       // puede sacarla por un lado mientras la nueva entra por el otro.
       var saliente = previaToma;
@@ -70,12 +102,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function ir(indice, manual) {
       actual = (indice + tomas.length) % tomas.length;
       pintar();
+      encender(tomas[(actual + 1) % tomas.length]);
       if (manual) arrancar();
     }
 
     function arrancar() {
       parar();
       if (dormido || !visible || quietud.matches) return;
+      /* Solo cuando el carrusel va a correr de verdad: la siguiente toma con
+         tiempo de sobra, y las demas en tiempo muerto. Las cintas de Nosotros
+         estan dormidas hasta que la escena llega a ellas, asi que hasta
+         entonces no piden nada. */
+      encender(tomas[(actual + 1) % tomas.length]);
+      if (!pedidasTodas) {
+        pedidasTodas = true;
+        enReposo(function () { tomas.forEach(encender); });
+      }
       reloj = setInterval(function () { ir(actual + 1); }, intervalo);
     }
 

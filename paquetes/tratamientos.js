@@ -673,6 +673,23 @@ if(destino.pathname.replace(/\.html$/,'')===aqui)abrirSegun(destino.hash);
 });;
 document.addEventListener('DOMContentLoaded',function(){
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
+function encender(nodo){
+if(!nodo)return;
+var piezas=nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
+for(var i=0;i < piezas.length;i++){
+var p=piezas[i];
+if(p.dataset.srcset){p.setAttribute('srcset',p.dataset.srcset);delete p.dataset.srcset;}
+if(p.dataset.src){p.setAttribute('src',p.dataset.src);delete p.dataset.src;}
+}
+}
+function enReposo(fn){
+var luego=function(){
+if(window.requestIdleCallback)window.requestIdleCallback(fn,{timeout:4000});
+else setTimeout(fn,1500);
+};
+if(document.readyState==='complete')luego();
+else window.addEventListener('load',luego,{once:true});
+}
 function montarCarrusel(caja){
 var tomas=Array.prototype.slice.call(caja.querySelectorAll('.crsl__toma'));
 if(tomas.length < 2)return;
@@ -695,10 +712,12 @@ puntos.push(punto);
 });
 }
 var reloj=null;
+var pedidasTodas=false;
 var dormido=false;
 var visible=true;
 var previaToma=null;
 function pintar(){
+encender(tomas[actual]);
 var saliente=previaToma;
 tomas.forEach(function(toma,indice){
 var activa=indice===actual;
@@ -724,11 +743,17 @@ punto.setAttribute('aria-current',activo?'true':'false');
 function ir(indice,manual){
 actual=(indice + tomas.length)%tomas.length;
 pintar();
+encender(tomas[(actual + 1)%tomas.length]);
 if(manual)arrancar();
 }
 function arrancar(){
 parar();
 if(dormido||!visible||quietud.matches)return;
+encender(tomas[(actual + 1)%tomas.length]);
+if(!pedidasTodas){
+pedidasTodas=true;
+enReposo(function(){tomas.forEach(encender);});
+}
 reloj=setInterval(function(){ir(actual + 1);},intervalo);
 }
 function parar(){

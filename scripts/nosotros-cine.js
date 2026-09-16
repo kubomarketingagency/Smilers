@@ -2,6 +2,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* Enciende las fotos aplazadas de un trozo de pagina. Van con la direccion
+     en `data-src` / `data-srcset` porque `loading="lazy"` no sirve aqui:
+     las tomas de un carrusel estan una encima de otra y las capas de la
+     escena de Nosotros ocupan la pantalla a la vez, asi que el navegador las
+     da todas por visibles y se las bajaba de golpe. El `<source>` va antes
+     que el `<img>` en el documento, que es el orden en que hay que
+     encenderlos para que el navegador elija bien. */
+  function encender(nodo) {
+    if (!nodo) return;
+    var piezas = nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
+    for (var i = 0; i < piezas.length; i++) {
+      var p = piezas[i];
+      if (p.dataset.srcset) { p.setAttribute('srcset', p.dataset.srcset); delete p.dataset.srcset; }
+      if (p.dataset.src) { p.setAttribute('src', p.dataset.src); delete p.dataset.src; }
+    }
+  }
+
+  /* El resto, cuando el navegador no tenga nada mejor que hacer, y nunca
+     antes de que la pagina acabe de cargar: con una red lenta, adelantar
+     fotos que no se ven le quita ancho de banda a la que si se esta
+     mirando. */
+  function enReposo(fn) {
+    var luego = function () {
+      if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 4000 });
+      else setTimeout(fn, 1500);
+    };
+    if (document.readyState === 'complete') luego();
+    else window.addEventListener('load', luego, { once: true });
+  }
+
   var elenco = (function () {
     var caja = document.querySelector('[data-elenco]');
     if (!caja) return null;
@@ -16,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var actual = 0;
     var reloj = null;
     var dormido = false;
+    var pedidosTodos = false;
 
     var puntos = retratos.map(function (retrato, indice) {
       var boton = document.createElement('button');
@@ -56,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function pintar() {
+      encender(retratos[actual]);
       retratos.forEach(function (retrato, indice) {
         var activo = indice === actual;
         retrato.classList.toggle('ns-elenco__retrato--activo', activo);
@@ -72,12 +104,21 @@ document.addEventListener('DOMContentLoaded', function () {
     function ir(indice, manual) {
       actual = (indice + retratos.length) % retratos.length;
       pintar();
+      encender(retratos[(actual + 1) % retratos.length]);
       if (manual) arrancar();
     }
 
     function arrancar() {
       parar();
       if (dormido || quietud.matches) return;
+      /* Diez retratos y uno a la vista: el siguiente se enciende con tres
+         segundos de margen y el resto en tiempo muerto, y solo desde que la
+         escena despierta al elenco. */
+      encender(retratos[(actual + 1) % retratos.length]);
+      if (!pedidosTodos) {
+        pedidosTodos = true;
+        enReposo(function () { retratos.forEach(encender); });
+      }
       reloj = setInterval(function () { ir(actual + 1); }, INTERVALO);
     }
 

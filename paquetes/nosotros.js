@@ -528,6 +528,23 @@ objetivo.scrollIntoView({behavior:'smooth',block:'center'});
 });;
 document.addEventListener('DOMContentLoaded',function(){
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
+function encender(nodo){
+if(!nodo)return;
+var piezas=nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
+for(var i=0;i < piezas.length;i++){
+var p=piezas[i];
+if(p.dataset.srcset){p.setAttribute('srcset',p.dataset.srcset);delete p.dataset.srcset;}
+if(p.dataset.src){p.setAttribute('src',p.dataset.src);delete p.dataset.src;}
+}
+}
+function enReposo(fn){
+var luego=function(){
+if(window.requestIdleCallback)window.requestIdleCallback(fn,{timeout:4000});
+else setTimeout(fn,1500);
+};
+if(document.readyState==='complete')luego();
+else window.addEventListener('load',luego,{once:true});
+}
 function montarCarrusel(caja){
 var tomas=Array.prototype.slice.call(caja.querySelectorAll('.crsl__toma'));
 if(tomas.length < 2)return;
@@ -550,10 +567,12 @@ puntos.push(punto);
 });
 }
 var reloj=null;
+var pedidasTodas=false;
 var dormido=false;
 var visible=true;
 var previaToma=null;
 function pintar(){
+encender(tomas[actual]);
 var saliente=previaToma;
 tomas.forEach(function(toma,indice){
 var activa=indice===actual;
@@ -579,11 +598,17 @@ punto.setAttribute('aria-current',activo?'true':'false');
 function ir(indice,manual){
 actual=(indice + tomas.length)%tomas.length;
 pintar();
+encender(tomas[(actual + 1)%tomas.length]);
 if(manual)arrancar();
 }
 function arrancar(){
 parar();
 if(dormido||!visible||quietud.matches)return;
+encender(tomas[(actual + 1)%tomas.length]);
+if(!pedidasTodas){
+pedidasTodas=true;
+enReposo(function(){tomas.forEach(encender);});
+}
 reloj=setInterval(function(){ir(actual + 1);},intervalo);
 }
 function parar(){
@@ -696,6 +721,23 @@ pantallas.forEach(function(p){observador.observe(p);});
 });;
 document.addEventListener('DOMContentLoaded',function(){
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
+function encender(nodo){
+if(!nodo)return;
+var piezas=nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
+for(var i=0;i < piezas.length;i++){
+var p=piezas[i];
+if(p.dataset.srcset){p.setAttribute('srcset',p.dataset.srcset);delete p.dataset.srcset;}
+if(p.dataset.src){p.setAttribute('src',p.dataset.src);delete p.dataset.src;}
+}
+}
+function enReposo(fn){
+var luego=function(){
+if(window.requestIdleCallback)window.requestIdleCallback(fn,{timeout:4000});
+else setTimeout(fn,1500);
+};
+if(document.readyState==='complete')luego();
+else window.addEventListener('load',luego,{once:true});
+}
 var elenco=(function(){
 var caja=document.querySelector('[data-elenco]');
 if(!caja)return null;
@@ -707,6 +749,7 @@ var INTERVALO=3000;
 var actual=0;
 var reloj=null;
 var dormido=false;
+var pedidosTodos=false;
 var puntos=retratos.map(function(retrato,indice){
 var boton=document.createElement('button');
 boton.type='button';
@@ -736,6 +779,7 @@ void ficha.offsetWidth;
 ficha.classList.add('ns-ficha--entra');
 }
 function pintar(){
+encender(retratos[actual]);
 retratos.forEach(function(retrato,indice){
 var activo=indice===actual;
 retrato.classList.toggle('ns-elenco__retrato--activo',activo);
@@ -751,11 +795,17 @@ pintarFicha(retratos[actual]);
 function ir(indice,manual){
 actual=(indice + retratos.length)%retratos.length;
 pintar();
+encender(retratos[(actual + 1)%retratos.length]);
 if(manual)arrancar();
 }
 function arrancar(){
 parar();
 if(dormido||quietud.matches)return;
+encender(retratos[(actual + 1)%retratos.length]);
+if(!pedidosTodos){
+pedidosTodos=true;
+enReposo(function(){retratos.forEach(encender);});
+}
 reloj=setInterval(function(){ir(actual + 1);},INTERVALO);
 }
 function parar(){
