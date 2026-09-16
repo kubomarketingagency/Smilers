@@ -188,20 +188,24 @@
   height: var(--alto, 110%);
 }
 /* La fila cuadra cuando el hombro de una columna acaba a la altura a la que
-   empieza el de la siguiente. Medido en pantalla: las dos del centro ya
-   cuadraban entre si y los dos de los extremos se quedaban cien pixeles por
-   encima de sus vecinos.
+   empieza el de la siguiente. El modelo es la juntura del centro, que ya lo
+   hacia: los hombros de las dos del medio se encuentran en el corte a 507.
+   Los de los extremos llegaban cien pixeles mas arriba, y enfrente solo habia
+   melena: eso es lo que se veia partido.
 
-   Las del centro no se tocan: son las que menos aire tienen por arriba y
-   subirlas les come la coronilla. Bajan los dos de los extremos, y como solo
-   con deslizarlos no llegaba -haria falta mas margen del que hay-, se les da
-   ademas un punto de alto, que es lo que termina de sentar su linea de
-   hombros junto a la de al lado. Quedan quince pixeles por encima del centro:
-   el salto desaparece y la V se sigue insinuando. */
-.hero-etapa2-col:nth-child(1) img { --dy: -5.4%; --alto: 115%; }
+   Lo que los sienta no es moverlos de arriba abajo -para bajar cien pixeles
+   habria que agrandar la foto un 16% y las caras quedarian desiguales- sino
+   correr el ENCUADRE LATERAL. La foto es bastante mas ancha que la columna,
+   asi que la ventana se lleva hacia el extremo del hombro, que es donde su
+   linea cae mas baja. Medido con rejilla sobre las fotos: la ventana de la
+   primera pasa de x=150-411 a 222-494, y la de la cuarta de 151-410 a
+   78-350. Ninguna cabeza se queda fuera -la primera, de hecho, perdia algo
+   de gorro por la derecha-, y como el cuadre ya no depende de la escala, las
+   cuatro comparten alto otra vez. */
+.hero-etapa2-col:nth-child(1) img { --dy: -1%; object-position: 76% top; }
 .hero-etapa2-col:nth-child(2) img { --dy: -1%; }
 .hero-etapa2-col:nth-child(3) img { --dy: -1%; }
-.hero-etapa2-col:nth-child(4) img { --dy: -6.4%; --alto: 116%; }
+.hero-etapa2-col:nth-child(4) img { --dy: -1%; object-position: 27% top; }
 .hero-etapa2-col::after {
   content: '';
   position: absolute;
@@ -257,11 +261,12 @@
     grid-template-rows: 1fr 1fr;
   }
   .hero-etapa2-col { min-width: 0; min-height: 0; }
-  /* En dos filas de dos no hay V que hacer: lo que se ve de cada retrato es
-     su mitad de arriba, y ahi los cuatro ya caen a la misma altura -medido en
-     los archivos: 44,9%, 46,5%, 43,8% y 45,5% del alto de la foto-. Se quedan
-     a la par, cada uno llenando su hueco. */
-  .hero-etapa2-col img { top: 0; height: 100%; }
+  /* En dos filas de dos no hay nada que cuadrar: lo que se ve de cada retrato
+     es su mitad de arriba, y ahi los cuatro ya caen a la misma altura -medido
+     en los archivos: 44,9%, 46,5%, 43,8% y 45,5% del alto de la foto-. Se
+     quedan a la par, cada uno llenando su hueco y con su encuadre centrado:
+     el corrimiento lateral es cosa de la fila de cuatro. */
+  .hero-etapa2-col img { top: 0; height: 100%; object-position: center top; }
   /* Con cuatro retratos en dos filas, al pie no hay sitio: abajo estan los
      botones flotantes -el de subir acaba a 135px del suelo- y subiendo el
      lema para esquivarlos cae sobre las caras de la fila de abajo. Va en la
