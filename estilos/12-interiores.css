@@ -310,7 +310,7 @@
    siete y cinco doceavos no estan: con ellas las dos columnas salian una
    debajo de otra y la vitrina escondida. */
 .faq-reja { display: grid; }
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .faq-reja {
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
     gap: clamp(1.8rem, 3.4vw, 3.4rem);
@@ -319,7 +319,7 @@
 }
 /* En el telefono las preguntas ya ocupan el ancho entero: la vitrina solo
    alargaria la pagina. */
-@media (max-width: 991.98px) {
+@media (max-width: 767.98px) {
   .faq-reja__vitrina { display: none; }
 }
 
