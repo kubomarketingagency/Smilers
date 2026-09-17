@@ -56,9 +56,16 @@
   margin-bottom: .9rem;
   display: flex;
   gap: .8rem;
-  align-items: flex-start;
+  /* Por la linea base, que es lo que pone al icono en el renglon de su texto.
+     Estaba en `flex-start` con 5px de margen arriba en el icono para
+     compensar a ojo, y a ojo se quedaba corto: medido, el icono caia entre
+     3 y 4,4px por debajo de su primera linea. La linea base lo resuelve sola
+     y sigue valiendo si cambia el cuerpo de letra o el interlineado; y en la
+     direccion, que ocupa dos lineas, se apoya en la primera, que es la que
+     le toca. */
+  align-items: baseline;
 }
-.footer-contacto i { color: var(--gold-500); margin-top: 5px; flex: 0 0 auto; }
+.footer-contacto i { color: var(--gold-500); flex: 0 0 auto; }
 /* Cada linea son dos piezas y solo dos: el icono y un `<span>` con todo el
    texto. Con el texto suelto dentro del `li` flexible, cada trozo era una
    columna aparte: en el iPhone Safari mete la direccion que detecta en un

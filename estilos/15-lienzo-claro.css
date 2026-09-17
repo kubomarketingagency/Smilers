@@ -144,6 +144,14 @@
 .pagina-clara .breadcrumb-personalizado span { color: var(--nos-negro); font-weight: 700; }
 .pagina-clara .breadcrumb-personalizado i { color: var(--nos-dorado-claro); font-size: .75em; }
 .pagina-clara .breadcrumb-personalizado i.fa-house { color: #4A4A4A; font-size: 1em; }
+/* `vertical-align: -.125em` (02-base) es la regla de Font Awesome y se cuenta
+   sobre la em del PROPIO icono, no sobre la de la letra. Con los dos iconos
+   del rastro a tamanos distintos -la casita a 1em y el chevron a .75em- eso
+   deja al pequeno 1,25px por debajo de la versal y al grande solo .16px.
+   Cada uno lleva aqui su cuenta, medida sobre la captura a cuatro aumentos:
+   los cuatro elementos del rastro quedan dentro de medio pixel. */
+.pagina-clara .breadcrumb-personalizado i .icono { vertical-align: -.036em; }
+.pagina-clara .breadcrumb-personalizado i.fa-house .icono { vertical-align: -.112em; }
 
 /* ---------------------------------------------------------------------------
    El hero de madera de Galeria y de FAQ.
@@ -233,13 +241,18 @@
 .pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
 .pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
 .pagina-clara .banner-pagina--cine .bp-velo {
+  /* Y baja otra vez, ahora que el texto va en su recuadro (mas abajo). Lo
+     que cargaba la izquierda era para sostener al titular sobre la cinta;
+     eso lo hace el recuadro, y mejor, porque pesa solo donde hay letra.
+     Aqui queda lo que cose el hero con la barra y con el marmol de despues.
+     La cinta son fotos de la clinica: es lo que hay que ver. */
   background:
     linear-gradient(90deg,
-      rgba(6, 5, 4, .58) 0%, rgba(6, 5, 4, .42) 42%,
-      rgba(6, 5, 4, .14) 76%, rgba(6, 5, 4, .06) 100%),
+      rgba(6, 5, 4, .34) 0%, rgba(6, 5, 4, .24) 42%,
+      rgba(6, 5, 4, .08) 76%, rgba(6, 5, 4, .03) 100%),
     linear-gradient(180deg,
-      rgba(6, 5, 4, .3) 0%, rgba(6, 5, 4, .08) 32%,
-      rgba(6, 5, 4, .06) 64%, rgba(6, 5, 4, .4) 100%);
+      rgba(6, 5, 4, .22) 0%, rgba(6, 5, 4, .05) 32%,
+      rgba(6, 5, 4, .04) 64%, rgba(6, 5, 4, .3) 100%);
 }
 /* En el movil el titular cruza todo el ancho, asi que ya no hay una mitad
    sin letra que dejar limpia y el velo tiene que cargar parejo: la cinta pasa
@@ -251,12 +264,41 @@
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
     background: linear-gradient(180deg,
-      rgba(6, 5, 4, .46) 0%, rgba(6, 5, 4, .32) 38%,
-      rgba(6, 5, 4, .34) 66%, rgba(6, 5, 4, .5) 100%);
+      rgba(6, 5, 4, .3) 0%, rgba(6, 5, 4, .18) 38%,
+      rgba(6, 5, 4, .2) 66%, rgba(6, 5, 4, .34) 100%);
   }
 }
 
 .pagina-clara .banner-pagina--hero > .container { position: relative; z-index: 2; }
+
+/* El recuadro del hero de cine. Debajo no hay una piedra quieta sino el
+   carrusel de la clinica: batas blancas, ventanas y pantallas encendidas que
+   cambian cada cinco segundos, y sobre eso la bajada -blanco fino a .82- se
+   perdia en cuanto pasaba una toma clara. El velo no puede arreglarlo:
+   cargarlo hasta que la letra aguante sobre la toma mas clara deja a las
+   otras sin foto. Asi que el suelo va pegado al texto y no a la pantalla, y
+   es la misma placa que sostiene el hero de Nosotros -negro translucido con
+   filo de oro-: pesa solo donde hay letra y la foto sigue entera alrededor.
+
+   Ancho de 52rem y no el del contenedor: el recuadro tiene que acabar donde
+   acaba el texto. A lo ancho de la pagina seria una franja, y lo que hay a su
+   derecha -la mitad limpia del velo, que es por donde se ve el carrusel-
+   quedaria tapado. */
+.pagina-clara .banner-pagina--cine .bp-panel {
+  position: relative;
+  max-width: min(100%, 52rem);
+  padding: clamp(1.1rem, 2.2vw, 2rem) clamp(1.1rem, 2.4vw, 2.2rem);
+  border: 1px solid rgba(212, 175, 55, .24);
+  border-radius: var(--gm-radio, 2px);
+  background: linear-gradient(180deg, rgba(8, 7, 6, .84) 0%, rgba(8, 7, 6, .74) 100%);
+  box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
+}
+/* Con suelo propio, la sombra de cada letra sobra: sumada al negro de la
+   placa engordaba la letra fina y la dejaba sucia. */
+.pagina-clara .banner-pagina--cine .bp-panel :is(h1, .banner-subtitulo,
+                                                 .breadcrumb-personalizado) {
+  text-shadow: none;
+}
 
 /* Lo que antes daba el velo lo dan ahora estas tres sombras. La diferencia
    es donde: el velo apagaba la piedra entera y esto solo apaga los pocos

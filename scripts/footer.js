@@ -136,6 +136,41 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  /* El correo del pie apunta al redactor de Gmail en la web
+     (`mail.google.com/mail/?view=cm`), que en un ordenador abre la ventana con
+     el destinatario, el asunto y el cuerpo ya escritos. En un telefono no: esa
+     direccion la recoge la aplicacion de Gmail —o el Gmail movil, que redirige—
+     y por el camino se pierden los parametros; lo que se abre es una hoja en
+     blanco, que es justo lo que no se queria.
+
+     Lo que si entienden los dos sistemas es `mailto:`: abre el correo que el
+     telefono tenga puesto —Gmail incluido— con el asunto y el cuerpo intactos.
+     Asi que en pantallas tactiles se le cambia el destino al enlace, y solo
+     ahi: en un ordenador `mailto:` depende de que haya un programa de correo
+     configurado, y en muchos no lo hay. El texto del enlace no se toca, que
+     sigue siendo la direccion de la clinica. */
+  const tactil = window.matchMedia
+    ? matchMedia('(hover: none) and (pointer: coarse)').matches
+    : false;
+  if (tactil) {
+    document.querySelectorAll('a[href*="mail.google.com/mail/"]').forEach(function (enlace) {
+      let campos;
+      try { campos = new URL(enlace.href).searchParams; } catch (e) { return; }
+      const para = campos.get('to');
+      if (!para) return;
+
+      const cola = [];
+      if (campos.get('su')) cola.push('subject=' + encodeURIComponent(campos.get('su')));
+      if (campos.get('body')) cola.push('body=' + encodeURIComponent(campos.get('body')));
+
+      enlace.href = 'mailto:' + para + (cola.length ? '?' + cola.join('&') : '');
+      /* Y deja de abrirse en otra pestana: `mailto:` no abre ninguna pagina, y
+         con `target` el navegador deja una en blanco detras. */
+      enlace.removeAttribute('target');
+      enlace.removeAttribute('rel');
+    });
+  }
+
   const anio = document.getElementById('anioActual');
   if (anio) anio.textContent = new Date().getFullYear();
 });

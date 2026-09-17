@@ -207,19 +207,30 @@ main:has(.ns-cine--viva) { background: #050505; }
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* El lado izquierdo iba al 95%: negro. Eso tenia sentido cuando el texto
+     caia suelto sobre la foto, pero desde que va en su recuadro -un negro al
+     84% con filo de oro- el velo de debajo no sostiene nada, solo tapa. Dos
+     capas opacas una encima de otra no se leen mejor que una; lo que se
+     pierde es la foto de alrededor del recuadro, que es lo unico que dice que
+     esto es una clinica y no una pantalla negra.
+
+     Ahora el velo hace lo que le toca y nada mas: separar el recuadro del
+     fondo para que se lea como una pieza encima, y coser el canto de arriba
+     con la barra y el de abajo con lo que viene. La foto aguanta el color.
+     El texto no depende de esto: depende del recuadro. */
   background:
     linear-gradient(90deg,
-      rgba(5, 5, 5, .95) 0%,
-      rgba(5, 5, 5, .92) 22%,
-      rgba(5, 5, 5, .7)  40%,
-      rgba(5, 5, 5, .32) 56%,
-      rgba(5, 5, 5, .1)  74%,
-      rgba(5, 5, 5, .04) 100%),
-    linear-gradient(180deg,
       rgba(5, 5, 5, .62) 0%,
-      rgba(5, 5, 5, .06) 26%,
+      rgba(5, 5, 5, .56) 22%,
+      rgba(5, 5, 5, .4)  40%,
+      rgba(5, 5, 5, .2)  56%,
+      rgba(5, 5, 5, .06) 74%,
+      rgba(5, 5, 5, .02) 100%),
+    linear-gradient(180deg,
+      rgba(5, 5, 5, .44) 0%,
+      rgba(5, 5, 5, .05) 26%,
       rgba(5, 5, 5, 0)   58%,
-      rgba(5, 5, 5, .5)  100%);
+      rgba(5, 5, 5, .38) 100%);
 }
 
 .ns-cine__texto > *:last-child { margin-bottom: 0; }
@@ -950,9 +961,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 .banda-cta--cine .banda-cta-overlay {
   background:
     radial-gradient(74% 64% at 50% 50%,
-      rgba(6, 6, 6, .84) 0%, rgba(6, 6, 6, .7) 58%, rgba(6, 6, 6, .46) 100%),
+      rgba(6, 6, 6, .58) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .3) 100%),
     linear-gradient(180deg,
-      rgba(6, 6, 6, .44) 0%, rgba(6, 6, 6, .32) 45%, rgba(6, 6, 6, .62) 100%);
+      rgba(6, 6, 6, .28) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .38) 100%);
 }
 .banda-cta--cine h2,
 .banda-cta--cine .ns-parrafo,
@@ -988,6 +999,19 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 }
 /* La etiqueta si es texto normal y le basta su sombra. */
 .banda-cta--cine .ns-cifra__etq { text-shadow: 0 1px 10px rgba(4, 4, 4, .9); }
+
+/* En el telefono las cuatro cifras se parten en dos columnas, y ahi cada una
+   tiene por delante mas hueco que letra: alineadas a la izquierda el numero
+   se plantaba contra el filo del recuadro y todo el aire se juntaba a la
+   derecha. Centradas -y con el mismo relleno las dos, que la de la izquierda
+   lo tenia a cero por ser la primera de su fila- cada cifra se planta en
+   medio de su mitad y las dos mitades miden igual. */
+@media (max-width: 575.98px) {
+  .banda-cta--cine .ns-cifra {
+    padding-inline: .5rem;
+    text-align: center;
+  }
+}
 
 
 /* ---------------------------------------------------------------------------
@@ -1058,7 +1082,7 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
      foto entera y no solo sobre su lado izquierdo. */
   .ns-cine__velo {
     background: linear-gradient(180deg,
-      rgba(5, 5, 5, .9) 0%, rgba(5, 5, 5, .76) 46%, rgba(5, 5, 5, .88) 100%);
+      rgba(5, 5, 5, .6) 0%, rgba(5, 5, 5, .44) 46%, rgba(5, 5, 5, .58) 100%);
   }
 
   .ns-capa--historia { min-height: max(520px, 84svh); }
@@ -1117,7 +1141,11 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-elenco__puntos { justify-content: center; margin-top: .7rem; }
 
   /* --- el cierre --- */
-  .banda-cta--cine .ns-cifras { padding: 1.1rem 0; }
+  /* Con el relleno lateral a cero el 8.500 arrancaba pegado al filo de oro
+     del recuadro -un pixel- mientras por la derecha de cada columna sobraba
+     medio dedo. El recuadro tiene filo por los cuatro lados: lo de dentro va
+     dentro, y con las dos columnas centradas el bloque queda a plomo. */
+  .banda-cta--cine .ns-cifras { padding: 1.1rem 1rem; }
   .banda-cta--cine .ns-cifra__num { font-size: 1.7rem; }
   .banda-cta--cine .ns-cifra__etq { margin-top: .4rem; font-size: .58rem; }
   .banda-cta--cine .ns-cta { margin-top: 1.2rem; }

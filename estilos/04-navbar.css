@@ -70,6 +70,10 @@
   display: flex;
   align-items: center;
   padding-block: 0;
+  /* Bootstrap le da 1rem de margen por la derecha a todo `.navbar-brand`. Con
+     el, el hueco de la izquierda de la raya medía 1rem mas que el de la
+     derecha y la raya salia pegada al aval en vez de en la mitad. */
+  margin-right: 0;
   transition: opacity .3s ease, visibility .3s ease;
 }
 .marca-logo {
@@ -91,8 +95,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  margin-left: clamp(.7rem, 1.6vw, 1.2rem);
-  padding-left: clamp(.7rem, 1.6vw, 1.2rem);
+  /* El hueco, una sola medida: la raya va en su mitad, asi que los dos
+     lados tienen que medir lo mismo. */
+  --hueco-oad: clamp(.85rem, 1.9vw, 1.45rem);
+  margin-left: var(--hueco-oad);
+  padding-left: var(--hueco-oad);
   /* Todo el hueco sobrante, a su derecha: la barra reparte el espacio
      entre sus hijos, y sin esto el aval se quedaba en el centro, suelto
      entre la marca y el boton del menu en vez de pegado a la marca. */
@@ -101,10 +108,15 @@
 .marca-oad::before {
   content: "";
   position: absolute;
-  left: 0;
+  /* A caballo de la juntura y no en `left: 0`: ahi los dos pixeles de la raya
+     salian del hueco de la derecha y ese lado quedaba dos pixeles mas corto.
+     Con -1px los dos huecos miden igual. */
+  left: -1px;
   top: 50%;
   width: 2px;
-  height: 52px;
+  /* Dos pixeles mas que los logos y no ocho: a 52 la raya se salia por arriba
+     y por abajo de las dos piezas que separa y se leia como un palo suelto. */
+  height: 46px;
   transform: translateY(-50%);
   /* El mismo oro del logo de la casa, muestreado sobre su propio
      archivo: va del tostado hondo al brillo claro y vuelve. De arriba
@@ -119,7 +131,7 @@
               #9C7824 100%);
   transition: height .35s ease;
 }
-.navbar-principal.con-scroll .marca-oad::before { height: 47px; }
+.navbar-principal.con-scroll .marca-oad::before { height: 42px; }
 /* Del mismo alto que el logo de la casa, y encoge con el. */
 .marca-oad img {
   display: block;
@@ -135,12 +147,9 @@
   /* En el telefono la barra es el logo, el aval y el boton del menu. El aval
      mantiene el alto del logo de la casa; lo que se aprieta es el hueco que
      los separa, para que los tres quepan. */
-  .marca-oad {
-    margin-left: .45rem;
-    padding-left: .45rem;
-  }
-  .marca-oad::before { height: 46px; }
-  .navbar-principal.con-scroll .marca-oad::before { height: 42px; }
+  .marca-oad { --hueco-oad: .55rem; }
+  .marca-oad::before { height: 42px; }
+  .navbar-principal.con-scroll .marca-oad::before { height: 38px; }
   .marca-oad img { height: 40px; }
   .navbar-principal.con-scroll .marca-oad img { height: 36px; }
 }

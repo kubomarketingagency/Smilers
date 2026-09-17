@@ -9,9 +9,19 @@
 }
 .banner-pagina .forma-durazno { opacity: .14; }
 
+/* El rastro se alinea por la LINEA BASE y no por el centro de cada caja.
+   Centrando cajas, cualquier pieza que mida distinto sale a otra altura, y
+   aqui ninguna medía lo mismo: el enlace lleva 2px de relleno y 1 de filo
+   debajo -el sitio del subrayado que aparece al pasar por encima-, asi que
+   su caja era 3px mas alta que la del ultimo tramo y su texto salia 1px mas
+   arriba; y los iconos, que son cuadrados de una em, caian 1,75px por debajo
+   de la versal. Por la linea base los cuatro se apoyan en el mismo renglon,
+   que es lo que hace el ojo al leerlo, y el relleno del enlace deja de
+   contar. Medido sobre captura a cuatro aumentos: de 1,75px de desvio a medio
+   pixel, que es el suelo del redondeo a pixel de pantalla. */
 .breadcrumb-personalizado {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   width: fit-content;
   margin: 0 auto 1.4rem;

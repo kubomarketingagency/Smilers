@@ -175,10 +175,25 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: var(--encuadre, 50%) top;
   filter: contrast(1.02) saturate(1.03);
   height: 100%;
 }
+/* La segunda del equipo lleva su encuadre corrido a la izquierda, y solo
+   ella. En su archivo los brazos cruzados llegan casi de canto a canto -su
+   silueta va de 6 a 433 de los 440-, asi que el hueco, que ensena 278 de
+   esos 440, le cortaba los dos hombros a la vez. El de la derecha cae
+   contra el canto de su columna y ahi el corte se lee como el marco; el de
+   la izquierda cae en la juntura con el companero de al lado, y ahi los dos
+   hombros negros se juntan en una sola mancha y parece que a ella le han
+   serrado el brazo.
+
+   Con el encuadre en 36% el hueco se corre 23px hacia su izquierda: en la
+   juntura vuelve a asomar el marmol y el hombro se cierra en su curva. La
+   cara se va un poco a la derecha del centro del hueco, que es lo que cuesta
+   y lo que le sienta bien: mira hacia ese lado, y el aire le queda delante.
+   Las otras tres no lo necesitan, y por eso no lo llevan. */
+.hero-etapa2-col:nth-child(2) img { --encuadre: 36%; }
 /* La fila cuadra porque lo hacen los archivos: las cuatro fotos estan
    recortadas para que su linea de hombros caiga a la misma altura -400 px de
    647 en todas- y con el mismo aspecto. Antes el cuadre se intentaba desde

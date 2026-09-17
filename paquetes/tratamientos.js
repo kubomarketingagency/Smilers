@@ -522,6 +522,23 @@ aviso.textContent='';
 },6000);
 });
 }
+const tactil=window.matchMedia
+?matchMedia('(hover: none) and (pointer: coarse)').matches
+:false;
+if(tactil){
+document.querySelectorAll('a[href*="mail.google.com/mail/"]').forEach(function(enlace){
+let campos;
+try{campos=new URL(enlace.href).searchParams;}catch(e){return;}
+const para=campos.get('to');
+if(!para)return;
+const cola=[];
+if(campos.get('su'))cola.push('subject=' + encodeURIComponent(campos.get('su')));
+if(campos.get('body'))cola.push('body=' + encodeURIComponent(campos.get('body')));
+enlace.href='mailto:' + para +(cola.length?'?' + cola.join('&'):'');
+enlace.removeAttribute('target');
+enlace.removeAttribute('rel');
+});
+}
 const anio=document.getElementById('anioActual');
 if(anio)anio.textContent=new Date().getFullYear();
 });;

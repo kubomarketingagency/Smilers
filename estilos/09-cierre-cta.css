@@ -115,10 +115,12 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  /* A .62 el collage era una silueta: se adivinaba que habia fotos, no que
-     fotos eran. Sube a .82 y el contraste que se pierde lo recupera el velo
-     de abajo, que ahora carga donde hay letra y suelta donde no. */
-  filter: saturate(1.06) contrast(1.02) brightness(.82);
+  /* Sin apagarlas. Primero fue .62 -el collage era una silueta-, luego .82;
+     ahora ninguna, porque el encargo es que estas fotos se vean con la misma
+     luz que las del hero de la portada, y alli la foto va tal cual y lo unico
+     que la baja es el velo. Lo que el texto necesita se lo da su propia
+     plancha, que pesa solo donde hay letra. */
+  filter: saturate(1.06) contrast(1.02);
 }
 @media (min-width: 992px) {
   .banda-cta-masonry__col { width: 220px; }
@@ -149,9 +151,9 @@
   z-index: 1;
   background:
     radial-gradient(74% 64% at 50% 50%,
-      rgba(6, 6, 6, .82) 0%, rgba(6, 6, 6, .68) 58%, rgba(6, 6, 6, .44) 100%),
+      rgba(6, 6, 6, .58) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .3) 100%),
     linear-gradient(180deg,
-      rgba(6, 6, 6, .44) 0%, rgba(6, 6, 6, .3) 45%, rgba(6, 6, 6, .62) 100%);
+      rgba(6, 6, 6, .28) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .38) 100%);
 }
 /* Lo que la plancha no alcanza lo pone la letra: la sombra solo pesa donde
    hay texto. La de la portada, la misma que en Nosotros. */
@@ -186,6 +188,10 @@
   z-index: -1;
   inset: -.5rem -1rem;
   pointer-events: none;
+  /* Y no se apaga del todo en el borde: ahora que el velo de la banda deja
+     pasar el collage, la bajada -gris fino- cae a ratos sobre una pared
+     verde a plena luz. El .34 del canto es el suelo que la sostiene ahi,
+     y sigue siendo la franja del recuadro, no la pantalla. */
   background: radial-gradient(64% 112% at 50% 50%,
-    rgba(4, 4, 4, .84) 0%, rgba(4, 4, 4, .56) 58%, rgba(4, 4, 4, 0) 100%);
+    rgba(4, 4, 4, .84) 0%, rgba(4, 4, 4, .62) 58%, rgba(4, 4, 4, .34) 100%);
 }
