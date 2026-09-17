@@ -106,7 +106,17 @@
   width: 2px;
   height: 52px;
   transform: translateY(-50%);
-  background: var(--oro-marca-degradado);
+  /* El mismo oro del logo de la casa, muestreado sobre su propio
+     archivo: va del tostado hondo al brillo claro y vuelve. De arriba
+     abajo, porque en una raya de dos pixeles un degradado en diagonal
+     no se ve. */
+  background: linear-gradient(180deg,
+              #9C7824 0%,
+              #C09C3C 18%,
+              #E4CC90 38%,
+              #F0E4B4 52%,
+              #C09C3C 76%,
+              #9C7824 100%);
   transition: height .35s ease;
 }
 .navbar-principal.con-scroll .marca-oad::before { height: 47px; }
