@@ -85,4 +85,9 @@
   --transicion: all .35s cubic-bezier(.25, .8, .25, 1);
 
   --alto-navbar: 62px;
+  /* Lo que mide la barra arriba del todo, antes de encogerse al bajar: el
+     boton de menu (48px) mas .85rem de relleno por cada lado. `--alto-navbar`
+     es la barra ya encogida, que es la que tapa algo a media pagina; lo que
+     se ve solo con la pagina arriba —los heros— se cuenta con esta. */
+  --alto-navbar-arriba: calc(48px + 1.7rem);
 }

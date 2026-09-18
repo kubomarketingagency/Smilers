@@ -9,6 +9,27 @@ document.addEventListener('DOMContentLoaded', function () {
     this.style.willChange = 'auto';
   }
 
+  /* La capa se pide al empezar y se suelta al acabar la transicion. Pero si
+     la transicion no llega a correr —porque la pieza ya estaba en su sitio,
+     como las fotos de la Galeria, que el filtro deja a opacidad 1 y sin
+     transformar—, `transitionend` no salta nunca y la capa se queda puesta
+     para siempre. En la Galeria eran 43 capas del tamano de una foto: el
+     navegador se quedaba sin memoria para pintarlas y dejaba filas enteras
+     en blanco, que solo se pintaban al pasarles el raton por encima. Asi que
+     ademas hay un reloj que la suelta pase lo que pase: la transicion mas
+     larga son .7s con hasta ~1s de retraso. */
+  const relojesCapa = new WeakMap();
+  const TOPE_CAPA = 2200;
+
+  function pedirCapa(el) {
+    el.style.willChange = CAPA_REVELAR;
+    clearTimeout(relojesCapa.get(el));
+    relojesCapa.set(el, setTimeout(function () {
+      el.style.willChange = 'auto';
+      relojesCapa.delete(el);
+    }, TOPE_CAPA));
+  }
+
   elementosRevelar.forEach(function (el) {
     el.addEventListener('transitionend', soltarCapa);
   });
@@ -37,13 +58,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
           if (!entrada.target.classList.contains('visible')) {
 
-            entrada.target.style.willChange = CAPA_REVELAR;
+            pedirCapa(entrada.target);
             entrada.target.classList.add('visible');
           }
         } else if (razon === 0 && !unaVez) {
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
-              entrada.target.style.willChange = CAPA_REVELAR;
+              pedirCapa(entrada.target);
               entrada.target.classList.remove('visible');
               temporizadoresOcultarRevelar.delete(entrada.target);
             }, 400);

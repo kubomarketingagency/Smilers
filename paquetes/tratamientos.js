@@ -239,6 +239,16 @@ function soltarCapa(evento){
 if(evento.target !==this)return;
 this.style.willChange='auto';
 }
+const relojesCapa=new WeakMap();
+const TOPE_CAPA=2200;
+function pedirCapa(el){
+el.style.willChange=CAPA_REVELAR;
+clearTimeout(relojesCapa.get(el));
+relojesCapa.set(el,setTimeout(function(){
+el.style.willChange='auto';
+relojesCapa.delete(el);
+},TOPE_CAPA));
+}
 elementosRevelar.forEach(function(el){
 el.addEventListener('transitionend',soltarCapa);
 });
@@ -254,13 +264,13 @@ clearTimeout(ocultarPendiente);
 temporizadoresOcultarRevelar.delete(entrada.target);
 }
 if(!entrada.target.classList.contains('visible')){
-entrada.target.style.willChange=CAPA_REVELAR;
+pedirCapa(entrada.target);
 entrada.target.classList.add('visible');
 }
 }else if(razon===0&&!unaVez){
 if(!temporizadoresOcultarRevelar.has(entrada.target)){
 const idOcultar=setTimeout(function(){
-entrada.target.style.willChange=CAPA_REVELAR;
+pedirCapa(entrada.target);
 entrada.target.classList.remove('visible');
 temporizadoresOcultarRevelar.delete(entrada.target);
 },400);

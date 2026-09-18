@@ -72,12 +72,10 @@
    tomas de la clinica, que es lo que se vino a ver, y el duotono ademas
    tenia el color cambiado sobre unas fotos que ya son de madera y oro.
 
-   El 21% que queda es el unico velo del sitio que no esta ahi por el texto:
-   esta por la foto. Sienta la cinta, le quita el brillo de pantalla y le da
-   fondo al logo sin llegar a apagar la toma; es tambien casi el doble que el
-   14% de los demas fondos, porque esta es la unica de todas las cintas que se
-   ve a pantalla completa nada mas abrir, y a cuerpo entero una foto de
-   consulta pide mas suelo que en una franja de hero.
+   Y el velo se queda en un 5%, casi nada: la cinta se ve tal cual. Llego a
+   estar en un 21% para sentar la foto y darle fondo al logo, pero el fondo
+   del logo lo pone ahora su recuadro (mas abajo), que pesa solo donde esta
+   la marca y deja la toma de la clinica entera alrededor.
 
    Lo que el velo grande daba al logo se lo da ahora su sombra, tambien en el
    telefono: `drop-shadow` sigue el contorno de la letra y del diente, asi
@@ -89,25 +87,37 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(8, 6, 4, .21);
+  background: rgba(8, 6, 4, .05);
   z-index: -1;
 }
 
 .hero-contenido { position: relative; z-index: 1; padding: 140px 0 100px; }
 
-/* La marca es el logo de la clinica, sin caja. El recuadro de cristal con la
-   palabra en versales se fue cuando llego el archivo de verdad: el logo trae
-   su propio dibujo —el diente y la sonrisa— y una caja alrededor solo lo
-   encerraria. Ahora es una imagen, asi que va a un ancho y no a un cuerpo de
-   letra: 58% de la ventana con tope de 820px, y 84% en el telefono. La
-   sombra le da el despegue de la foto que antes daba el cristal, y ahora
-   ademas el apoyo que daba el velo: va en todas las pantallas. */
+/* La marca es el logo de la clinica, dentro de un recuadro de negro
+   translucido con filo de oro. Con la cinta a foto limpia el logo quedaba
+   sobre lo que pasara por detras —lamparas encendidas, cristal, mampara
+   blanca— y el oro se confundia con el oro de la clinica. El recuadro le da
+   un suelo propio: negro al 30%, lo justo para que se note el plano sin
+   tapar la toma, que se sigue viendo a traves.
+
+   El logo mide lo mismo que antes —58% de la ventana con tope de 820px, 84%
+   en el telefono— y el recuadro se suma por fuera: el ancho es el del logo
+   mas el aire de los dos lados. La sombra del logo se queda: sigue el
+   contorno del diente y de la letra, y lo despega del negro del recuadro. */
 .hero-titulo {
+  --hl-logo: min(58vw, 820px);
+  --hl-aire-x: clamp(1.1rem, 3.4vw, 3rem);
+  --hl-aire-y: clamp(.9rem, 2.6vw, 2.2rem);
   display: block;
-  width: min(58vw, 820px);
+  width: calc(var(--hl-logo) + 2 * var(--hl-aire-x) + 2px);
   max-width: 100%;
   margin: 0 auto;
+  padding: var(--hl-aire-y) var(--hl-aire-x);
   line-height: 0;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  background: linear-gradient(180deg, rgba(8, 6, 4, .34) 0%, rgba(8, 6, 4, .26) 100%);
+  box-shadow: 0 24px 60px rgba(4, 3, 2, .26);
 }
 .hero-logo {
   display: block;
@@ -116,7 +126,7 @@
   filter: drop-shadow(0 10px 34px rgba(0, 0, 0, .55));
 }
 @media (max-width: 767.98px) {
-  .hero-titulo { width: 84vw; }
+  .hero-titulo { --hl-logo: 84vw; --hl-aire-x: 4vw; --hl-aire-y: 5vw; }
 }
 
 .hero-cine {

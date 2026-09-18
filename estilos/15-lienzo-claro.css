@@ -183,8 +183,13 @@
   /* Abajo el mismo aire que arriba. Con 1,1-1,7rem el bloque quedaba casi
      pegado al canto: la escuadra de abajo del marco (que sale 1,5rem por
      fuera del texto) caia a 3 o 4px del filo de oro del hero, cuando la de
-     arriba tiene 30px hasta la barra. */
-  padding: calc(var(--alto-navbar) + clamp(2.2rem, 4.4vw, 3.8rem)) 0 clamp(2.2rem, 4.4vw, 3.8rem);
+     arriba tiene 30px hasta la barra.
+
+     Y la barra se cuenta con lo que mide arriba del todo, que es cuando se
+     ve este hero: con `--alto-navbar` (la barra ya encogida, 62px, cuando
+     arriba mide 75) el marco quedaba 13px mas cerca de la barra que del
+     canto de abajo. */
+  padding: calc(var(--alto-navbar-arriba) + clamp(2.2rem, 4.4vw, 3.8rem)) 0 clamp(2.2rem, 4.4vw, 3.8rem);
   background: #0B0805;
   border-bottom: 1px solid rgba(212, 175, 55, .3);
 }
@@ -384,7 +389,7 @@
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero {
     min-height: min(68svh, 520px);
-    padding: calc(var(--alto-navbar) + clamp(1.5rem, 6.5vw, 2.4rem)) 0 clamp(1.5rem, 6.5vw, 2.4rem);
+    padding: calc(var(--alto-navbar-arriba) + clamp(1.5rem, 6.5vw, 2.4rem)) 0 clamp(1.5rem, 6.5vw, 2.4rem);
   }
   /* El mismo 14% que en el ordenador: la madera no cambia de luz porque la
      pantalla sea mas estrecha. */
