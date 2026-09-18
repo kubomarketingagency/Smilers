@@ -248,6 +248,7 @@ this.style.willChange='auto';
 elementosRevelar.forEach(function(el){
 el.addEventListener('transitionend',soltarCapa);
 });
+const unaVez=document.body.dataset.revelar==='una-vez';
 if('IntersectionObserver' in window){
 const observador=new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
@@ -262,7 +263,7 @@ if(!entrada.target.classList.contains('visible')){
 entrada.target.style.willChange=CAPA_REVELAR;
 entrada.target.classList.add('visible');
 }
-}else if(razon===0){
+}else if(razon===0&&!unaVez){
 if(!temporizadoresOcultarRevelar.has(entrada.target)){
 const idOcultar=setTimeout(function(){
 entrada.target.style.willChange=CAPA_REVELAR;

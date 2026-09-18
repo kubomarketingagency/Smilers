@@ -13,6 +13,15 @@ document.addEventListener('DOMContentLoaded', function () {
     el.addEventListener('transitionend', soltarCapa);
   });
 
+  /* Una pagina puede pedir que lo revelado se quede revelado:
+     `<body data-revelar="una-vez">`. Por defecto, lo que sale de pantalla se
+     vuelve a esconder y entra otra vez al volver, y en paginas de bloques
+     cortos eso da vida. En Tratamientos no: cada especialidad ocupa una
+     pantalla entera, y al subir por la pagina uno se encontraba pantallas
+     vacias que se volvian a montar delante de el. En un equipo lento eso se
+     lee como una pagina que no termina de cargar. */
+  const unaVez = document.body.dataset.revelar === 'una-vez';
+
   if ('IntersectionObserver' in window) {
     const observador = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
@@ -31,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
             entrada.target.style.willChange = CAPA_REVELAR;
             entrada.target.classList.add('visible');
           }
-        } else if (razon === 0) {
+        } else if (razon === 0 && !unaVez) {
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
               entrada.target.style.willChange = CAPA_REVELAR;

@@ -106,6 +106,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (manual) arrancar();
     }
 
+    /* Una toma esta lista cuando su foto ha llegado entera. Sin esta
+       comprobacion el reloj pasaba de toma a su hora aunque la siguiente
+       foto siguiera bajando, y con una conexion lenta el hero se quedaba en
+       negro cinco segundos: el fondo de la caja, con el texto encima y nada
+       detras. En un equipo con buena red no se notaba nunca, y por eso la
+       pagina "cargaba bien en unos computadores y en otros no". */
+    function lista(toma) {
+      var foto = toma.querySelector('img');
+      return !foto || (foto.complete && foto.naturalWidth > 0);
+    }
+
     function arrancar() {
       parar();
       if (dormido || !visible || quietud.matches) return;
@@ -118,7 +129,14 @@ document.addEventListener('DOMContentLoaded', function () {
         pedidasTodas = true;
         enReposo(function () { tomas.forEach(encender); });
       }
-      reloj = setInterval(function () { ir(actual + 1); }, intervalo);
+      /* Si la siguiente no ha llegado, se queda en la que hay y lo vuelve a
+         mirar en el siguiente tic: mejor una foto un rato mas que un hueco
+         negro. Las flechas y los puntos no esperan —ahi manda quien pulsa—. */
+      reloj = setInterval(function () {
+        var siguiente = tomas[(actual + 1) % tomas.length];
+        encender(siguiente);
+        if (lista(siguiente)) ir(actual + 1);
+      }, intervalo);
     }
 
     function parar() {

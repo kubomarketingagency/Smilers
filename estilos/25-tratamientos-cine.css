@@ -43,7 +43,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     align-items: center;
     min-height: calc(100svh - var(--alto-navbar));
     padding: clamp(1.4rem, 2.8vw, 2.8rem) 0;
-    scroll-snap-align: start;
   }
 
   /* Un solo ancho para los diez. La deriva de contenedores que habia antes
@@ -126,9 +125,14 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
      permitirse ser lenta. La foto se descubre de abajo arriba y se asienta
      desde un 96,5%; el panel llega un pelo despues, para que la vista vaya
      primero a la imagen y luego al texto. */
+  /* Sin desenfoque. Lo llevaba —`blur(6px)` al entrar—, y un desenfoque
+     sobre una columna de media pantalla se recalcula en cada fotograma de la
+     transicion: en un portatil con grafica integrada eso eran 20 o 30
+     fotogramas perdidos por bloque, y lo que se veia no era una entrada
+     sino una pagina que tardaba en pintar. Subir y aparecer basta. */
   .pagina-tratamientos .bloque-tratamiento .revelar {
     transform: translateY(42px) scale(.99);
-    filter: blur(6px);
+    filter: none;
     transition-duration: .95s;
   }
   .pagina-tratamientos .bloque-tratamiento .revelar.visible {
@@ -167,12 +171,14 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   }
 }
 
-/* Un empujon suave, no un carril: con `proximity` el navegador solo encaja
-   la pantalla cuando ya estas cerca, asi que la portada, el triptico y el
-   pie siguen pasando de largo como siempre. */
-@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
-  html:has(.pagina-tratamientos) { scroll-snap-type: y proximity; }
-}
+/* Sin iman de scroll. Hubo uno —`scroll-snap-type: y proximity`, un
+   empujon para que cada especialidad quedara encajada en la pantalla— y se
+   quito: con diez bloques de pantalla completa, "cerca" es casi siempre, y
+   con la rueda del raton el navegador acababa corrigiendo cada gesto. La
+   pagina daba tirones, y en un equipo con poca grafica cada tiron coincidia
+   con la entrada del bloque siguiente. El ancla de la franja de
+   especialidades ya deja cada bloque encajado bajo la barra, que es donde
+   hacia falta. */
 
 /* ---------------------------------------------------------------------------
    Fondos intercalados: piedra en las especialidades pares.

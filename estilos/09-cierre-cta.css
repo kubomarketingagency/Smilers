@@ -149,10 +149,10 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Y acaba en un 9% parejo, como los demas fondos del sitio. El radial que
+  /* Y acaba en un 14% parejo, como los demas fondos del sitio. El radial que
      cerraba por el centro se paso al recuadro, que es donde tiene sentido:
      pesa donde hay letra en vez de sobre el collage entero. */
-  background: rgba(6, 6, 6, .09);
+  background: rgba(6, 6, 6, .14);
 }
 /* Lo que la plancha no alcanza lo pone la letra: la sombra solo pesa donde
    hay texto. La de la portada, la misma que en Nosotros. */
@@ -165,7 +165,7 @@
    una bata blanca dejan de leerse. Una sombra no vale, porque lo que hay que
    sostener no es solo la letra sino el filo; lo que vale es devolverle el
    suelo negro que el resto de la pagina clara ya le da. */
-.banda-cta .btn { --btn-relleno: rgba(8, 6, 4, .82); }
+.banda-cta .btn { --btn-relleno: rgba(8, 6, 4, .88); }
 .banda-cta-contenido { position: relative; z-index: 2; }
 
 /* El recuadro. Arriba se descuenta el hueco de la rejilla de Bootstrap: cada
@@ -192,5 +192,5 @@
      verde a plena luz. El .34 del canto es el suelo que la sostiene ahi,
      y sigue siendo la franja del recuadro, no la pantalla. */
   background: radial-gradient(64% 112% at 50% 50%,
-    rgba(4, 4, 4, .9) 0%, rgba(4, 4, 4, .74) 58%, rgba(4, 4, 4, .5) 100%);
+    rgba(4, 4, 4, .94) 0%, rgba(4, 4, 4, .84) 58%, rgba(4, 4, 4, .64) 100%);
 }

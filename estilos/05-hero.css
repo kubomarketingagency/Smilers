@@ -72,10 +72,10 @@
    tomas de la clinica, que es lo que se vino a ver, y el duotono ademas
    tenia el color cambiado sobre unas fotos que ya son de madera y oro.
 
-   El 16% que queda es el unico velo del sitio que no esta ahi por el texto:
+   El 21% que queda es el unico velo del sitio que no esta ahi por el texto:
    esta por la foto. Sienta la cinta, le quita el brillo de pantalla y le da
    fondo al logo sin llegar a apagar la toma; es tambien casi el doble que el
-   9% de los demas fondos, porque esta es la unica de todas las cintas que se
+   14% de los demas fondos, porque esta es la unica de todas las cintas que se
    ve a pantalla completa nada mas abrir, y a cuerpo entero una foto de
    consulta pide mas suelo que en una franja de hero.
 
@@ -89,7 +89,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(8, 6, 4, .16);
+  background: rgba(8, 6, 4, .21);
   z-index: -1;
 }
 

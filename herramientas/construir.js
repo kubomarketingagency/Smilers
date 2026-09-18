@@ -425,6 +425,29 @@ function listaDe(valor) {
 function kb(bytes) { return (bytes / 1024).toFixed(1).padStart(6) + ' KB'; }
 function br(texto) { return zlib.brotliCompressSync(Buffer.from(texto, 'utf8')).length; }
 
+/* Las unidades de pantalla nuevas —`svh`, `lvh`, `dvh`— las entienden los
+   navegadores desde 2022 (Chrome 108, Safari 15.4, Firefox 101). Uno anterior
+   —un Mac que ya no actualiza, un Windows con el navegador congelado— tira la
+   declaracion entera por no reconocer la unidad, y con ella la altura de los
+   pines de las escenas: la pagina se queda sin alto y se desmonta. Por eso
+   cada declaracion que las use sale dos veces, primero con `vh` y luego tal
+   cual. El navegador que entiende las dos se queda con la segunda, que es
+   la de siempre; el que no, con la primera, que es casi lo mismo.
+
+   Se hace aqui y no a mano en las hojas porque son cuarenta sitios y el
+   siguiente que escriba un `svh` no se va a acordar. Las variables
+   (`--algo: 46svh`) no: un navegador viejo acepta cualquier valor en una
+   variable, se quedaria con la segunda igual y el respaldo no serviria de
+   nada. Va despues de
+   minificar: ya no hay comentarios ni saltos, y cada declaracion va entre
+   un `{` o un `;` y el siguiente `;` o `}`. */
+function conRespaldoVh(css) {
+  return css.replace(/([{;])([a-z][a-z-]*):([^;{}]*\d(?:s|l|d)vh\b[^;{}]*)(?=[;}])/g,
+    function (_t, antes, prop, valor) {
+      return antes + prop + ':' + valor.replace(/(\d)(?:s|l|d)vh\b/g, '$1vh') + ';' + prop + ':' + valor;
+    });
+}
+
 function construirEstilos(hojas, pagina) {
   let fuente = 0;
   const css = hojas.map(function (rel) {
@@ -434,7 +457,7 @@ function construirEstilos(hojas, pagina) {
     }
     const texto = leerTexto(rel).replace(/@charset\s+"[^"]*";/gi, '');
     fuente += Buffer.byteLength(texto);
-    return reescribirUrls(minificarCSS(texto), rel, pagina);
+    return reescribirUrls(conRespaldoVh(minificarCSS(texto)), rel, pagina);
   }).join('');
   return { css: css, fuente: fuente };
 }
