@@ -252,7 +252,40 @@
 }
 .pagina-tratamientos .pz-intro .nos-ruta { margin-bottom: clamp(1.6rem, 3vw, 2.6rem); }
 .pagina-tratamientos .pz-intro .nos-lead { max-width: 22ch; }
-.pagina-tratamientos .pz-intro .nos-parrafo { max-width: 62ch; }
+
+/* La bajada de Especialidades, en su placa.
+
+   Es el parrafo que explica de que va la pagina entera y estaba suelto sobre
+   el marmol, en gris fino, justo debajo de un titular de tres centimetros:
+   se leia como un pie de foto del titular y no como lo que es. La placa lo
+   separa y le da su sitio.
+
+   El cristal va claro y no negro como el del hero: aqui debajo no hay foto,
+   hay marmol, y el texto es de leer —gris sobre claro—. Un recuadro negro
+   obligaria a darle la vuelta al color de la letra y a encender un bloque
+   oscuro en mitad de la pagina clara. Asi que blanco, del 80% arriba al 60%
+   abajo, que deja pasar la veta, con el filo de oro de la casa y una sombra
+   muy baja.
+
+   `isolation` para que el `::before` de la placa —que va en z-index -1— se
+   quede detras del texto sin irse detras del marmol de la seccion. */
+.pagina-tratamientos .pz-intro .nos-parrafo {
+  position: relative;
+  isolation: isolate;
+  max-width: 62ch;
+  margin-top: clamp(1rem, 2vw, 1.6rem);
+  padding: clamp(1rem, 2vw, 1.5rem) clamp(1.1rem, 2.2vw, 1.7rem);
+}
+.pagina-tratamientos .pz-intro .nos-parrafo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid rgba(212, 175, 55, .44);
+  border-radius: var(--gm-radio, 2px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .6) 100%);
+  box-shadow: 0 18px 44px rgba(58, 46, 22, .1);
+}
 
 .pagina-tratamientos .bloque-tratamiento .titulo-seccion { margin-bottom: 0; }
 .pagina-tratamientos .bloque-tratamiento .pz-regla { margin-bottom: clamp(.8rem, 1.2vw, 1.05rem); }

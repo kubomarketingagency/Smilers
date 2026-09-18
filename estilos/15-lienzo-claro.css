@@ -332,6 +332,63 @@
   border-bottom-color: rgba(212, 175, 55, .5);
 }
 
+/* ---------------------------------------------------------------------------
+   El marco de oro de los heros de Galeria y FAQ.
+
+   Son los dos heros de madera: no llevan recuadro debajo del texto —la veta
+   wengue ya es oscura y el titular se apoya en su sombra— y por eso el
+   bloque queda flotando sobre la plancha, sin nada que diga donde empieza y
+   donde acaba. El marco lo dice, y lo dice en oro, sin tapar un pixel de la
+   madera.
+
+   Va en dos piezas y no en un `border`: el `::before` pone el filo de arriba
+   y el de la izquierda, el `::after` el de abajo y el de la derecha. Asi son
+   dos escuadras, que es como se dibuja un encuadre —y como se abre, cada una
+   desde su esquina (26-entradas.css).
+
+   Cada filo es una capa de fondo con el degradado de la marca, no un borde:
+   un borde solo admite color plano, y el oro del sitio es un degradado. La
+   sombra es para que la linea no se pierda sobre las vetas mas claras de la
+   madera; un pixel de oro sobre madera clara no se ve.
+
+   Los `inset` se cuentan desde la caja de relleno del `.container`, no de
+   su contenido, asi que a los lados hay que descontar ese relleno a mano: es
+   el mismo `clamp` que da el margen de la pagina (arriba en esta hoja) y va
+   escrito igual. Sin eso el marco se pegaba a los cantos de la ventana y
+   dejaba 86px de vacio entre la linea y el texto. El aire es el mismo por
+   los cuatro lados. */
+.pagina-clara .banner-pagina--hero .bp-marco {
+  --bp-marco-aire: clamp(.7rem, 2vw, 1.5rem);
+  position: absolute;
+  top: calc(var(--bp-marco-aire) * -1);
+  bottom: calc(var(--bp-marco-aire) * -1);
+  left: calc(clamp(1.5rem, 6vw, 6rem) - var(--bp-marco-aire));
+  right: calc(clamp(1.5rem, 6vw, 6rem) - var(--bp-marco-aire));
+  pointer-events: none;
+  filter: drop-shadow(0 1px 5px rgba(4, 3, 2, .6));
+}
+.pagina-clara .banner-pagina--hero .bp-marco::before,
+.pagina-clara .banner-pagina--hero .bp-marco::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.pagina-clara .banner-pagina--hero .bp-marco::before {
+  top: 0;
+  left: 0;
+  background:
+    var(--oro-marca-degradado) left top / 100% 1px no-repeat,
+    var(--oro-marca-degradado) left top / 1px 100% no-repeat;
+}
+.pagina-clara .banner-pagina--hero .bp-marco::after {
+  right: 0;
+  bottom: 0;
+  background:
+    var(--oro-marca-degradado) right bottom / 100% 1px no-repeat,
+    var(--oro-marca-degradado) right bottom / 1px 100% no-repeat;
+}
+
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero {
     min-height: min(68svh, 520px);
@@ -787,7 +844,14 @@
   position: relative;
   overflow: visible;
   margin: 0 0 clamp(.55rem, 1vw, .8rem);
-  background: rgba(12, 11, 9, .66);
+  /* El negro sube de .66 a .84, y de .74 a .9 la abierta. A .66 sobre el
+     marmol la tarjeta salia en un gris medio: la pregunta en blanco daba
+     5,45:1 —medidos en la captura, no en el papel—, que pasa la norma por
+     poco y en una pantalla de portatil a plena luz, que es donde se leen
+     estas, se perdia igual. A .84 da 9,97:1 y la tarjeta vuelve a ser
+     negra, que es lo que es en el resto del sitio. La veta del marmol sigue
+     asomando; lo que se va es el lavado. */
+  background: rgba(12, 11, 9, .84);
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
@@ -806,7 +870,7 @@
   pointer-events: none;
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
-  background: rgba(12, 11, 9, .74);
+  background: rgba(12, 11, 9, .9);
   box-shadow: 0 22px 54px rgba(6, 6, 6, .2);
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::before { opacity: 1; }

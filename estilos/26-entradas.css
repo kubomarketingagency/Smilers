@@ -163,7 +163,55 @@
     to   { opacity: 1; clip-path: inset(-50%); }
   }
 
-  /* --- 5. lo que queda fuera -------------------------------------------- */
+  /* --- 5. la placa de la intro de Tratamientos -------------------------- */
+
+  /* El texto de dentro ya entra con la secuencia de arriba —es un `p`, le
+     toca el escalon de .18s—; lo que falta es que la placa se abra debajo de
+     el en vez de estar puesta desde el principio. Abre de izquierda a
+     derecha, en el sentido de la lectura, y arranca un pelo antes que el
+     texto para que la letra caiga sobre suelo ya hecho.
+
+     La mascara acaba en negativo y no en `inset(0)`: la placa saca 44px de
+     sombra fuera de su caja, y un recorte a ras se la comeria para siempre.
+
+     El `.revelar` esta en la reja, no en el parrafo. */
+  .pagina-tratamientos .pz-intro .revelar .nos-parrafo::before {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    transition: opacity .55s ease .1s,
+                clip-path 1.05s cubic-bezier(.16, 1, .3, 1) .1s;
+  }
+  .pagina-tratamientos .pz-intro .revelar.visible .nos-parrafo::before {
+    opacity: 1;
+    clip-path: inset(-64px);
+  }
+
+  /* --- 6. el marco de los heros de Galeria y FAQ ------------------------ */
+
+  /* Cada escuadra se dibuja sola desde su esquina: primero el filo
+     horizontal, de esquina a esquina, y cuando llega, el vertical bajando
+     (o subiendo). Las dos a la vez, una desde arriba a la izquierda y otra
+     desde abajo a la derecha, de modo que el encuadre se cierra por los dos
+     lados al mismo tiempo.
+
+     Lo que se anima es el `background-size` de las dos capas de cada
+     escuadra, no el ancho de la caja: la caja mide ya lo que va a medir y no
+     hay que recalcular nada por fotograma. Los dos tramos van en una sola
+     animacion, con el corte en el 50%, que es lo que los pone en fila.
+
+     Arranca en .5s: el titular y la bajada ya estan subiendo (arriba), y el
+     marco llega a cerrarlos, no antes que ellos. */
+  .pagina-clara .banner-pagina--hero .bp-marco::before,
+  .pagina-clara .banner-pagina--hero .bp-marco::after {
+    animation: bp-marco-abre 1.5s cubic-bezier(.33, 1, .68, 1) .5s both;
+  }
+  @keyframes bp-marco-abre {
+    0%   { background-size: 0 1px,    1px 0; }
+    50%  { background-size: 100% 1px, 1px 0; }
+    100% { background-size: 100% 1px, 1px 100%; }
+  }
+
+  /* --- 7. lo que queda fuera -------------------------------------------- */
 
   /* Dentro del cine de Nosotros nadie pone nunca `.visible`: las capas viven
      en un pin, el observador las da por vistas desde el primer fotograma y

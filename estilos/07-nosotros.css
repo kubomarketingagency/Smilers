@@ -1171,8 +1171,43 @@
   .pn-telon {
     --pn-pad-y: clamp(1rem, 4vw, 1.8rem);
     --pn-pad-x: clamp(.9rem, 4vw, 1.6rem);
+    /* Lo que ocupan WhatsApp y subir. Una sola medida para el hueco que se
+       les deja y para el zocalo que lo viste: si cambia uno, cambia el
+       otro. */
+    --pn-zocalo: 140px;
   }
-  .pn-escena--viva .pn-telon { padding-bottom: 140px; }
+  .pn-escena--viva .pn-telon { padding-bottom: var(--pn-zocalo); }
+
+  /* Y ese pie reservado se ve: es marmol blanco, el mismo de la seccion que
+     abre la pagina y el mismo que viene despues de esta escena.
+
+     Eran 140px de negro sobre negro al final de la pantalla, con los dos
+     botones fijos flotando en el vacio. Ahora la pantalla negra apoya en un
+     zocalo claro: el bloque de pilares y cifras se queda donde estaba —el
+     centro se calcula sobre lo que hay por encima del zocalo, igual que
+     antes— y lo que era hueco pasa a ser el suelo de la pieza, con su raya
+     de oro arriba, la misma que abre la placa de las cifras.
+
+     Solo en el telefono y solo con la escena viva: sin JS el telon mide lo
+     que mide su contenido y no hay pie que reservar, asi que tampoco hay
+     nada que vestir. */
+  .pn-escena--viva .pn-telon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    height: var(--pn-zocalo);
+    /* La raya de oro va como capa de fondo y no como `border-image`: el
+       degradado es de 100 grados y, recortado a la tira de un pixel que pide
+       un borde, se queda en un solo tono. Es lo mismo que hace la placa de
+       las cifras con su raya de arriba. */
+    background:
+      var(--oro-marca-degradado) top / 100% 2px no-repeat,
+      #EFEAE1 url(../imagenes/fondos/marmol-blanco.webp) center / cover no-repeat;
+    pointer-events: none;
+  }
   .pn-contenido { gap: clamp(.8rem, 3vw, 1.2rem); }
   .pn-grupo > .etiqueta-editorial { margin-bottom: .45rem; }
   .pn-madera {
