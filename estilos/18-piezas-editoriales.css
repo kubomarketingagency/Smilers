@@ -263,9 +263,9 @@
    El cristal va claro y no negro como el del hero: aqui debajo no hay foto,
    hay marmol, y el texto es de leer —gris sobre claro—. Un recuadro negro
    obligaria a darle la vuelta al color de la letra y a encender un bloque
-   oscuro en mitad de la pagina clara. Asi que blanco, del 80% arriba al 60%
-   abajo, que deja pasar la veta, con el filo de oro de la casa y una sombra
-   muy baja.
+   oscuro en mitad de la pagina clara. Asi que blanco, del 92% arriba al 80%
+   abajo, que aun deja asomar la veta, con el filo de oro de la casa y una
+   sombra muy baja.
 
    `isolation` para que el `::before` de la placa —que va en z-index -1— se
    quede detras del texto sin irse detras del marmol de la seccion. */
@@ -283,7 +283,7 @@
   z-index: -1;
   border: 1px solid rgba(212, 175, 55, .44);
   border-radius: var(--gm-radio, 2px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, .8) 0%, rgba(255, 255, 255, .6) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .8) 100%);
   box-shadow: 0 18px 44px rgba(58, 46, 22, .1);
 }
 

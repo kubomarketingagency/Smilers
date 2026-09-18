@@ -200,8 +200,8 @@
   opacity: 1;
   filter: none;
 }
-/* El velo se ha ido: queda un 3% parejo, que es lo justo para que la piedra
-   no venga a pelo y no llega a apagarla.
+/* El velo se ha ido casi entero: queda un 9% parejo, que sienta la piedra
+   sin llegar a apagarla.
 
    La madera wengue mide 35 de luz de media —es de por si mas oscura que
    cualquier velo razonable—, asi que el blanco encima de ella se lee sin
@@ -218,7 +218,7 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: rgba(8, 6, 4, .03);
+  background: rgba(8, 6, 4, .09);
 }
 /* ---------------------------------------------------------------------------
    La variante de cine del hero: en vez de una piedra quieta, el carrusel de
@@ -233,11 +233,11 @@
 .pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
 .pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
 .pagina-clara .banner-pagina--cine .bp-velo {
-  /* Y se va del todo: un 3% parejo y nada mas. Lo que cargaba la izquierda
-     era para sostener al titular sobre la cinta; eso lo hace el recuadro
-     (mas abajo), y mejor, porque pesa solo donde hay letra. La cinta son
-     fotos de la clinica: es lo que hay que ver. */
-  background: rgba(6, 5, 4, .03);
+  /* Y se queda en un 9% parejo. Lo que cargaba la izquierda era para
+     sostener al titular sobre la cinta; eso lo hace el recuadro (mas abajo),
+     y mejor, porque pesa solo donde hay letra. La cinta son fotos de la
+     clinica: es lo que hay que ver. */
+  background: rgba(6, 5, 4, .09);
 }
 /* Las dos clases juntas y no `--cine` a secas: el velo movil del hero de
    madera vive mas abajo en esta misma hoja y pesa lo mismo (0,3,0), asi que
@@ -246,7 +246,7 @@
    toca. */
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
-    background: rgba(6, 5, 4, .03);
+    background: rgba(6, 5, 4, .09);
   }
 }
 
@@ -271,7 +271,7 @@
   padding: clamp(1.1rem, 2.2vw, 2rem) clamp(1.1rem, 2.4vw, 2.2rem);
   border: 1px solid rgba(212, 175, 55, .24);
   border-radius: var(--gm-radio, 2px);
-  background: linear-gradient(180deg, rgba(8, 7, 6, .84) 0%, rgba(8, 7, 6, .74) 100%);
+  background: linear-gradient(180deg, rgba(8, 7, 6, .92) 0%, rgba(8, 7, 6, .84) 100%);
   box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
 }
 /* Con suelo propio, la sombra de cada letra sobra: sumada al negro de la
@@ -382,9 +382,9 @@
     min-height: min(68svh, 520px);
     padding: calc(var(--alto-navbar) + clamp(1.5rem, 6.5vw, 2.4rem)) 0 clamp(.9rem, 3vw, 1.4rem);
   }
-  /* El mismo 3% que en el ordenador: la madera no cambia de luz porque la
+  /* El mismo 9% que en el ordenador: la madera no cambia de luz porque la
      pantalla sea mas estrecha. */
-  .pagina-clara .banner-pagina--hero .bp-velo { background: rgba(8, 6, 4, .03); }
+  .pagina-clara .banner-pagina--hero .bp-velo { background: rgba(8, 6, 4, .09); }
 }
 
 .pagina-clara .titulo-seccion {
@@ -834,10 +834,10 @@
      marmol la tarjeta salia en un gris medio: la pregunta en blanco daba
      5,45:1 —medidos en la captura, no en el papel—, que pasa la norma por
      poco y en una pantalla de portatil a plena luz, que es donde se leen
-     estas, se perdia igual. A .84 da 9,97:1 y la tarjeta vuelve a ser
-     negra, que es lo que es en el resto del sitio. La veta del marmol sigue
-     asomando; lo que se va es el lavado. */
-  background: rgba(12, 11, 9, .84);
+     estas, se perdia igual. A .84 daba 9,97:1, y en el .9 de ahora la
+     tarjeta es ya negra del todo, que es lo que es en el resto del sitio.
+     La veta del marmol sigue asomando; lo que se fue es el lavado. */
+  background: rgba(12, 11, 9, .9);
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
@@ -856,7 +856,7 @@
   pointer-events: none;
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
-  background: rgba(12, 11, 9, .9);
+  background: rgba(12, 11, 9, .95);
   box-shadow: 0 22px 54px rgba(6, 6, 6, .2);
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::before { opacity: 1; }
