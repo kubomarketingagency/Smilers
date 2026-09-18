@@ -1178,6 +1178,16 @@
   }
   .pn-escena--viva .pn-telon { padding-bottom: var(--pn-zocalo); }
 
+  /* Las cifras bajan hasta el zocalo. Centrado el bloque entero, el aire
+     que sobraba se partia arriba y abajo, y por abajo quedaba una franja de
+     negro vacio entre la placa y el marmol. Ahora el aire se parte entre
+     encima de los pilares y entre pilares y cifras: los pilares se quedan
+     casi donde estaban y la placa apoya a un palmo del zocalo, que es el
+     hueco reservado a WhatsApp y subir, asi que los botones siguen sin
+     tocarla. En una pantalla corta no sobra aire y nada se mueve. */
+  .pn-escena--viva .pn-telon > .pn-contenido { margin-block: auto; }
+  .pn-escena--viva .pn-telon > .pn-madera { margin-bottom: .9rem; }
+
   /* Y ese pie reservado se ve: es marmol blanco, el mismo de la seccion que
      abre la pagina y el mismo que viene despues de esta escena.
 
