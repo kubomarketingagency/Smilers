@@ -199,38 +199,22 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine__cinta .crsl__toma[data-encuadre="medio-bajo"] img { object-position: center 56%; }
 .ns-cine__cinta .crsl__toma[data-encuadre="bajo"] img { object-position: center 70%; }
 
-/* El velo no es parejo: pesa en la mitad izquierda, que es donde va el texto,
-   y se afloja hacia el centro hasta dejar la foto casi limpia a la derecha.
-   Por eso el texto se lee sin tener que apagar la imagen entera. */
+/* El velo es parejo y vale un 3%: un apoyo, no una tapa. */
 .ns-cine__velo {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  /* El lado izquierdo iba al 95%: negro. Eso tenia sentido cuando el texto
-     caia suelto sobre la foto, pero desde que va en su recuadro -un negro al
-     84% con filo de oro- el velo de debajo no sostiene nada, solo tapa. Dos
-     capas opacas una encima de otra no se leen mejor que una; lo que se
-     pierde es la foto de alrededor del recuadro, que es lo unico que dice que
-     esto es una clinica y no una pantalla negra.
+  /* El lado izquierdo llego a ir al 95%: negro. Eso tenia sentido cuando el
+     texto caia suelto sobre la foto, pero desde que va en su recuadro -un
+     negro al 84% con filo de oro- el velo de debajo no sostiene nada, solo
+     tapa. Dos capas opacas una encima de otra no se leen mejor que una; lo
+     que se pierde es la foto de alrededor del recuadro, que es lo unico que
+     dice que esto es una clinica y no una pantalla negra.
 
-     Ahora el velo hace lo que le toca y nada mas: separar el recuadro del
-     fondo para que se lea como una pieza encima, y coser el canto de arriba
-     con la barra y el de abajo con lo que viene. La foto aguanta el color.
-     El texto no depende de esto: depende del recuadro. */
-  background:
-    linear-gradient(90deg,
-      rgba(5, 5, 5, .62) 0%,
-      rgba(5, 5, 5, .56) 22%,
-      rgba(5, 5, 5, .4)  40%,
-      rgba(5, 5, 5, .2)  56%,
-      rgba(5, 5, 5, .06) 74%,
-      rgba(5, 5, 5, .02) 100%),
-    linear-gradient(180deg,
-      rgba(5, 5, 5, .44) 0%,
-      rgba(5, 5, 5, .05) 26%,
-      rgba(5, 5, 5, 0)   58%,
-      rgba(5, 5, 5, .38) 100%);
+     Bajo a .62 en el lado del texto, y de ahi a este 3% parejo. El texto no
+     depende de esto: depende del recuadro. La foto aguanta el color. */
+  background: rgba(5, 5, 5, .03);
 }
 
 .ns-cine__texto > *:last-child { margin-bottom: 0; }
@@ -956,15 +940,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
    pasa por detras son fotos de la clinica y no una textura.
 
    El radial sumado al lineal daba .93 en el centro: el collage no se veia.
-   Ahora suman .74 ahi y .34 en las esquinas. El texto recupera lo que le
-   falta con su propia sombra, que pesa solo donde hay letra. */
-.banda-cta--cine .banda-cta-overlay {
-  background:
-    radial-gradient(74% 64% at 50% 50%,
-      rgba(6, 6, 6, .58) 0%, rgba(6, 6, 6, .46) 58%, rgba(6, 6, 6, .3) 100%),
-    linear-gradient(180deg,
-      rgba(6, 6, 6, .28) 0%, rgba(6, 6, 6, .16) 45%, rgba(6, 6, 6, .38) 100%);
-}
+   Despues sumaron .74 ahi y .34 en las esquinas. Hoy es el 3% parejo de
+   todos los fondos, y lo que sostiene al texto es su recuadro. */
+.banda-cta--cine .banda-cta-overlay { background: rgba(6, 6, 6, .03); }
 .banda-cta--cine h2,
 .banda-cta--cine .ns-parrafo,
 .banda-cta--cine .ns-rotulo { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
@@ -999,6 +977,32 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
 }
 /* La etiqueta si es texto normal y le basta su sombra. */
 .banda-cta--cine .ns-cifra__etq { text-shadow: 0 1px 10px rgba(4, 4, 4, .9); }
+
+/* Y la pregunta con su boton, en la misma placa que las cifras.
+
+   Antes no le hacia falta: el velo de la banda cargaba .74 en el centro y
+   ahi no habia foto que compitiera. Con el velo en el 3% el collage pasa
+   entero, y en la cinta hay una toma de macetas con flores rosas a plena luz
+   y otra de una bata blanca: medido, el 1% mas claro de la caja del titular
+   daba 0,71 de luz, y el blanco encima de eso son 1,38:1. No se leia.
+
+   La placa es la de las cifras con un punto mas de peso, porque el titular
+   es la pieza que tiene que leerse desde el otro lado de la sala. Lo que se
+   gana es lo de siempre: pesa donde hay letra, y la foto sigue entera
+   alrededor. */
+.banda-cta--cine .ns-cta {
+  position: relative;
+  isolation: auto;
+}
+.banda-cta--cine .ns-cta::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -1rem -1.4rem;
+  pointer-events: none;
+  background: radial-gradient(70% 116% at 50% 50%,
+    rgba(4, 4, 4, .8) 0%, rgba(4, 4, 4, .58) 58%, rgba(4, 4, 4, .14) 100%);
+}
 
 /* En el telefono las cuatro cifras se parten en dos columnas, y ahi cada una
    tiene por delante mas hueco que letra: alineadas a la izquierda el numero
@@ -1078,12 +1082,9 @@ html:has(.ns-cine--viva) { scroll-snap-type: none; }
   .ns-cine__texto { max-width: none; }
   .ns-cine__texto > .breadcrumb-personalizado { margin-bottom: .7rem; }
 
-  /* Sin dos mitades que repartir, el velo pesa parejo: el texto va sobre la
-     foto entera y no solo sobre su lado izquierdo. */
-  .ns-cine__velo {
-    background: linear-gradient(180deg,
-      rgba(5, 5, 5, .6) 0%, rgba(5, 5, 5, .44) 46%, rgba(5, 5, 5, .58) 100%);
-  }
+  /* El mismo 3% que en el ordenador: quien sostiene el texto es el recuadro,
+     y el recuadro mide lo mismo en las dos pantallas. */
+  .ns-cine__velo { background: rgba(5, 5, 5, .03); }
 
   .ns-capa--historia { min-height: max(520px, 84svh); }
 

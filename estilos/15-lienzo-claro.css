@@ -200,72 +200,53 @@
   opacity: 1;
   filter: none;
 }
-/* El velo casi se ha ido. La madera wengue mide 35 de luz de media —es de
-   por si mas oscura que cualquier velo razonable—, asi que el blanco encima
-   de ella se lee sin ayuda: lo que hacia el velo del .78 no era dar
-   contraste, era tapar la veta, que es justo lo que hay que ver.
+/* El velo se ha ido: queda un 3% parejo, que es lo justo para que la piedra
+   no venga a pelo y no llega a apagarla.
 
-   Queda un resto y tiene trabajo: la franja de arriba cose el hero con la
-   barra fija, que tambien es piedra oscura, y la de abajo con el marmol
-   claro que viene despues. Por el medio no pinta nada. El apoyo que el
-   titular pierde se lo lleva ahora pegado, en su propia sombra. */
+   La madera wengue mide 35 de luz de media —es de por si mas oscura que
+   cualquier velo razonable—, asi que el blanco encima de ella se lee sin
+   ayuda: lo que hacia el velo del .78 no era dar contraste, era tapar la
+   veta, que es justo lo que hay que ver. Despues fue un par de degradados
+   que cosian el canto de arriba con la barra y el de abajo con el marmol;
+   ninguno de los dos hacia falta —la barra es opaca y abajo hay un filo de
+   oro— y por el medio no pintaban nada.
+
+   Lo que el titular pierde lo lleva pegado, en su propia sombra, que pesa
+   solo donde hay letra. Se midio despues: ver ESTRUCTURA. */
 .bp-velo {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(90deg,
-      rgba(8, 6, 4, .3) 0%, rgba(8, 6, 4, .18) 42%,
-      rgba(8, 6, 4, .04) 76%, rgba(8, 6, 4, 0) 100%),
-    linear-gradient(180deg,
-      rgba(8, 6, 4, .34) 0%, rgba(8, 6, 4, 0) 26%,
-      rgba(8, 6, 4, 0) 70%, rgba(8, 6, 4, .34) 100%);
+  background: rgba(8, 6, 4, .03);
 }
 /* ---------------------------------------------------------------------------
    La variante de cine del hero: en vez de una piedra quieta, el carrusel de
    fotos de la clinica pasando por detras. Lo usa Tratamientos.
 
-   El velo aqui pesa mas que sobre la madera y por un motivo distinto: la
-   madera es una superficie de tono parejo y oscura de fabrica, y la cinta
-   son fotos de consulta, con batas blancas y ventanas a plena luz que van
-   cambiando cada cinco segundos. Sobre eso el texto en blanco no aguanta si
-   el velo no carga nada.
-
-   Pero cargaba de mas: .76 a la izquierda y .5 por arriba se sumaban a .88
-   justo donde esta el titular, y la foto de debajo dejaba de existir. Ahora
-   la izquierda baja a .58 y el techo a .3 —suman .71 donde hay letra, .12 en
-   la mitad derecha— y el titular se apoya ademas en su propia sombra, que a
-   diferencia del velo no tapa mas que lo que hay detras de las letras.
+   El velo hizo aqui un camino largo. Llego a .76 a la izquierda y .5 por
+   arriba, que se sumaban a .88 justo donde esta el titular y la foto de
+   debajo dejaba de existir; despues bajo a .58 y .3. Hoy es el mismo 3%
+   parejo que sobre la madera, porque el titular ya no se apoya en el velo
+   sino en el recuadro de mas abajo, y un recuadro pesa solo donde hay letra.
    --------------------------------------------------------------------------- */
 .pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
 .pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
 .pagina-clara .banner-pagina--cine .bp-velo {
-  /* Y baja otra vez, ahora que el texto va en su recuadro (mas abajo). Lo
-     que cargaba la izquierda era para sostener al titular sobre la cinta;
-     eso lo hace el recuadro, y mejor, porque pesa solo donde hay letra.
-     Aqui queda lo que cose el hero con la barra y con el marmol de despues.
-     La cinta son fotos de la clinica: es lo que hay que ver. */
-  background:
-    linear-gradient(90deg,
-      rgba(6, 5, 4, .34) 0%, rgba(6, 5, 4, .24) 42%,
-      rgba(6, 5, 4, .08) 76%, rgba(6, 5, 4, .03) 100%),
-    linear-gradient(180deg,
-      rgba(6, 5, 4, .22) 0%, rgba(6, 5, 4, .05) 32%,
-      rgba(6, 5, 4, .04) 64%, rgba(6, 5, 4, .3) 100%);
+  /* Y se va del todo: un 3% parejo y nada mas. Lo que cargaba la izquierda
+     era para sostener al titular sobre la cinta; eso lo hace el recuadro
+     (mas abajo), y mejor, porque pesa solo donde hay letra. La cinta son
+     fotos de la clinica: es lo que hay que ver. */
+  background: rgba(6, 5, 4, .03);
 }
-/* En el movil el titular cruza todo el ancho, asi que ya no hay una mitad
-   sin letra que dejar limpia y el velo tiene que cargar parejo: la cinta pasa
-   fotos con paredes blancas a plena luz y el titular en blanco se perdia
-   contra ellas justo en el centro. */
 /* Las dos clases juntas y no `--cine` a secas: el velo movil del hero de
    madera vive mas abajo en esta misma hoja y pesa lo mismo (0,3,0), asi que
-   ganaba por ir despues y este no pintaba nada. Se midio. */
+   ganaba por ir despues y este no pintaba nada. Se midio. Hoy los dos valen
+   lo mismo, pero la regla se queda: el dia que uno cambie, que cambie el que
+   toca. */
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
-    background: linear-gradient(180deg,
-      rgba(6, 5, 4, .3) 0%, rgba(6, 5, 4, .18) 38%,
-      rgba(6, 5, 4, .2) 66%, rgba(6, 5, 4, .34) 100%);
+    background: rgba(6, 5, 4, .03);
   }
 }
 
@@ -346,6 +327,13 @@
    dos escuadras, que es como se dibuja un encuadre —y como se abre, cada una
    desde su esquina (26-entradas.css).
 
+   Y son escuadras de verdad, no un marco: cada una mide la mitad del ancho y
+   la mitad del alto, asi que ninguna llega a encontrarse con la otra. Lo que
+   queda son dos esquinas en diagonal —arriba a la izquierda y abajo a la
+   derecha— y dos lados abiertos. Un rectangulo cerrado encierra el texto;
+   dos escuadras lo senalan y dejan ver la madera por los otros dos costados,
+   que es lo que se queria.
+
    Cada filo es una capa de fondo con el degradado de la marca, no un borde:
    un borde solo admite color plano, y el oro del sitio es un degradado. La
    sombra es para que la linea no se pierda sobre las vetas mas claras de la
@@ -371,8 +359,8 @@
 .pagina-clara .banner-pagina--hero .bp-marco::after {
   content: '';
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 50%;
+  height: 50%;
 }
 .pagina-clara .banner-pagina--hero .bp-marco::before {
   top: 0;
@@ -394,11 +382,9 @@
     min-height: min(68svh, 520px);
     padding: calc(var(--alto-navbar) + clamp(1.5rem, 6.5vw, 2.4rem)) 0 clamp(.9rem, 3vw, 1.4rem);
   }
-  .pagina-clara .banner-pagina--hero .bp-velo {
-    background: linear-gradient(180deg,
-      rgba(8, 6, 4, .38) 0%, rgba(8, 6, 4, .16) 38%,
-      rgba(8, 6, 4, .18) 66%, rgba(8, 6, 4, .42) 100%);
-  }
+  /* El mismo 3% que en el ordenador: la madera no cambia de luz porque la
+     pantalla sea mas estrecha. */
+  .pagina-clara .banner-pagina--hero .bp-velo { background: rgba(8, 6, 4, .03); }
 }
 
 .pagina-clara .titulo-seccion {

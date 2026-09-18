@@ -63,25 +63,32 @@
   .carousel-item.active .hero-slide-img { animation: none; transform: none; }
 }
 
-/* El hero va a foto limpia: ni velo ni duotono.
+/* El hero va practicamente a foto limpia: el duotono fuera y el velo en un
+   7%, que es un apoyo y no una tapa.
 
    Encima de la cinta no hay texto que sostener —solo el logo, que trae su
-   dibujo hecho y su propia sombra—, asi que las dos capas que habia aqui no
-   defendian nada: apagaban las tomas de la clinica, que es lo que se vino a
-   ver. El duotono ademas tenia el color cambiado, un lavado de plata en
-   `overlay` sobre unas fotos que ya son de madera y oro.
+   dibujo hecho y su propia sombra—, asi que las dos capas que habia aqui
+   (.68 a .46 de velo, mas un lavado de plata en `overlay`) apagaban las
+   tomas de la clinica, que es lo que se vino a ver, y el duotono ademas
+   tenia el color cambiado sobre unas fotos que ya son de madera y oro.
 
-   Lo que el velo daba al logo se lo da ahora su sombra, tambien en el
+   El 7% que queda es el unico velo del sitio que no esta ahi por el texto:
+   esta por la foto. Sienta la cinta un punto y le quita el brillo de
+   pantalla sin que se note que hay nada encima; es tambien el doble que el
+   3% de los demas fondos, porque esta es la unica de todas las cintas que se
+   ve a pantalla completa nada mas abrir.
+
+   Lo que el velo grande daba al logo se lo da ahora su sombra, tambien en el
    telefono: `drop-shadow` sigue el contorno de la letra y del diente, asi
    que apaga los pocos pixeles que hay detras y deja la foto entera
    alrededor. Antes se caia en pantallas tactiles porque el velo ya cargaba
-   por ella; sin velo, hace falta. */
+   por ella; con un 7%, hace falta. */
 .hero-duotone { display: none; }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: none;
+  background: rgba(8, 6, 4, .07);
   z-index: -1;
 }
 
