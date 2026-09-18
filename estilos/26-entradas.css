@@ -197,13 +197,30 @@
      Lo que se anima es el `background-size` de las dos capas de cada
      escuadra, no el ancho de la caja: la caja mide ya lo que va a medir y no
      hay que recalcular nada por fotograma. Los dos tramos van en una sola
-     animacion, con el corte en el 50%, que es lo que los pone en fila.
+     animacion, con el corte en el 50%, que es lo que los pone en fila; y el
+     `cubic-bezier` de la animacion se aplica entre cada par de fotogramas,
+     asi que cada tramo sale con su propia curva y la esquina no da tiron.
 
-     Arranca en .5s: el titular y la bajada ya estan subiendo (arriba), y el
-     marco llega a cerrarlos, no antes que ellos. */
+     **La espera es la del umbral, no un numero elegido.** Galeria y FAQ
+     empiezan tapadas de negro —la palabra de la seccion sobre negro, que se
+     va a 1,6s (ver el 15)—, y el marco arrancaba en .5s: el tramo horizontal
+     entero se dibujaba detras del telon y, cuando el telon se iba, ya estaba
+     puesto. Solo se veia bajar el vertical. Ahora arranca en 1,65s, en
+     cuanto el negro se ha ido, y se ve salir de la esquina.
+
+     Con ancla no hay umbral (`html.sin-umbral` lo apaga), asi que ahi la
+     espera vuelve a ser corta: esperar 1,65s sobre una pagina que ya esta
+     entera no es una entrada, es un retraso.
+
+     La curva tambien cambio: era `cubic-bezier(.33, 1, .68, 1)`, que gasta
+     media distancia en la primera quinta parte del tiempo y hace que la
+     linea aparezca de golpe y luego se arrastre. Esta es una ese, y se lee
+     como un trazo. */
+  .pagina-clara .banner-pagina--hero .bp-marco { --bp-marco-espera: 1.65s; }
+  html.sin-umbral .pagina-clara .banner-pagina--hero .bp-marco { --bp-marco-espera: .5s; }
   .pagina-clara .banner-pagina--hero .bp-marco::before,
   .pagina-clara .banner-pagina--hero .bp-marco::after {
-    animation: bp-marco-abre 1.5s cubic-bezier(.33, 1, .68, 1) .5s both;
+    animation: bp-marco-abre 1.6s cubic-bezier(.5, 0, .3, 1) var(--bp-marco-espera, 1.65s) both;
   }
   @keyframes bp-marco-abre {
     0%   { background-size: 0 1px,    1px 0; }
