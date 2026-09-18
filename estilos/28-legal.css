@@ -1,0 +1,131 @@
+/* ---------------------------------------------------------------------------
+   Los textos legales (Politica de privacidad). Solo lo carga privacidad.html.
+
+   Es la unica pagina del sitio que es para leer de corrido, y larga: el texto
+   va en una placa clara sobre el marmol, a una medida de lectura (unos 70
+   caracteres por linea) y con el cuerpo de letra de la respuesta de FAQ. La
+   placa es la misma de la bajada de Especialidades —blanco casi macizo con
+   filo de oro—, porque sobre las vetas grises del marmol un texto largo se
+   lee a trozos.
+   --------------------------------------------------------------------------- */
+.legal {
+  position: relative;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: clamp(1.4rem, 5vw, 3.6rem) clamp(1.2rem, 5vw, 4rem);
+  border: 1px solid rgba(212, 175, 55, .4);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .97) 0%, rgba(255, 255, 255, .93) 100%);
+  box-shadow: 0 30px 70px rgba(43, 35, 20, .12);
+  color: #2B2620;
+}
+.legal .legal__fecha {
+  margin: 0 0 1.4rem;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--oro-hondo);
+}
+.legal h2 {
+  margin: 2.6rem 0 .8rem;
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  line-height: 1.3;
+  color: #14110C;
+  scroll-margin-top: 100px;
+}
+.legal h3 {
+  margin: 1.6rem 0 .5rem;
+  font-family: var(--fuente-cuerpo);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #14110C;
+}
+.legal p,
+.legal li {
+  font-size: 1.02rem;
+  line-height: 1.78;
+}
+.legal p { margin: 0 0 1rem; }
+.legal ul { margin: 0 0 1.1rem; padding-left: 1.25rem; }
+.legal li { margin-bottom: .35rem; }
+.legal li::marker { color: var(--oro-hondo); }
+.legal a {
+  color: #7A5C12;
+  text-decoration: underline;
+  text-decoration-color: rgba(168, 128, 30, .5);
+  text-underline-offset: .2em;
+  overflow-wrap: anywhere;
+}
+.legal a:hover { color: #14110C; }
+.legal strong { color: #14110C; }
+
+/* El resumen de arriba: lo que casi todo el mundo viene a buscar. */
+.legal__resumen {
+  margin: 0 0 2rem;
+  padding: 1.2rem 1.4rem;
+  border-left: 3px solid var(--oro-marca);
+  background: rgba(212, 175, 55, .08);
+}
+.legal__resumen ul { margin: 0; }
+
+/* El indice: dos columnas donde caben. */
+.legal__indice {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: indice;
+  columns: 2 16rem;
+  column-gap: 2rem;
+}
+.legal__indice li { counter-increment: indice; margin: 0 0 .3rem; break-inside: avoid; }
+.legal__indice li::before {
+  content: counter(indice) '.';
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--oro-hondo);
+  font-weight: 700;
+}
+.legal__indice a { text-decoration: none; }
+
+/* Las tablas de cookies: con su propio scroll lateral en el telefono, que
+   no empujen la pagina. */
+.legal__tabla {
+  margin: 0 0 1.2rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.legal table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: .92rem;
+  line-height: 1.5;
+}
+.legal th,
+.legal td {
+  padding: .6rem .7rem;
+  border-bottom: 1px solid rgba(43, 38, 32, .12);
+  text-align: left;
+  vertical-align: top;
+}
+.legal th {
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #14110C;
+  border-bottom-color: rgba(212, 175, 55, .55);
+}
+.legal code {
+  font-size: .9em;
+  padding: .05em .3em;
+  background: rgba(20, 17, 12, .06);
+  border-radius: 2px;
+  color: #14110C;
+}
+
+/* Como en FAQ y Galeria: la pagina no pinta fondo en sus secciones, que lo
+   que se ve debajo es el marmol fijo. */
+.pagina-legal { background: #F2F1EF; }
+.pagina-legal :is(.banner-pagina, .seccion, .fondo-suave) { background: transparent; }

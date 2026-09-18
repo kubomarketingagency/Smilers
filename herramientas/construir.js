@@ -40,7 +40,7 @@ const vm = require('vm');
 const RAIZ = path.resolve(__dirname, '..');
 const SOLO_VERIFICAR = process.argv.includes('--verificar');
 
-const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html'];
+const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html', 'privacidad.html'];
 const PAQUETES = 'paquetes';
 
 const SELLABLES = /\.(css|js|mjs|webp|avif|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i;
@@ -92,7 +92,10 @@ function sellarUrl(url, quien) {
   return ruta + '?v=' + sello(rel);
 }
 
-const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues)="([^"]*)"/g;
+/* `data-perezoso-*` son los archivos que una pagina pide tarde, desde un
+   guion (el aviso de cookies: terceros/cookieconsent/). Van en una <meta>
+   para que el sello les llegue igual que a un `src`. */
+const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css)="([^"]*)"/g;
 const ATRIBUTO_LISTA = /\b(srcset|imagesrcset|data-fotos)="([^"]*)"/g;
 
 function sellarHtml(html, pagina) {
@@ -545,6 +548,18 @@ function procesarPagina(pagina) {
     fila.js = Buffer.byteLength(r.js);
     fila.jsBr = br(r.js);
   }
+
+  /* Los paquetes perezosos: los que la pagina no pide al cargar sino mas
+     tarde, desde un guion, y solo si le hacen falta (el aviso de cookies).
+     Se declaran en una <meta> con su lista y su destino; se construyen igual
+     que el paquete principal y el sello les llega por `data-perezoso-js`. */
+  const rePerezosos = /<meta\b[^>]*\bdata-guiones-perezosos="([^"]*)"[^>]*>/g;
+  (html.match(rePerezosos) || []).forEach(function (etiqueta) {
+    const src = (etiqueta.match(/\bdata-perezoso-js="([^"?]+)/) || [])[1];
+    if (!src || !src.startsWith(PAQUETES + '/')) throw new Error(pagina + ': la <meta data-guiones-perezosos> tiene que pedir un paquete de ' + PAQUETES + '/');
+    const r = construirGuiones(listaDe(etiqueta.match(/data-guiones-perezosos="([^"]*)"/)[1]), pagina);
+    pendientes.set(src, r.js);
+  });
 
   html = sellarHtml(html, pagina);
   fila.html = Buffer.byteLength(html);

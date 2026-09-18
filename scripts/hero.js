@@ -269,12 +269,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function esperar(ms, fn) { temporizadores.push(setTimeout(fn, ms)); }
 
+    /* Al acabar de irse avisa: el aviso de cookies espera a que el video de
+       bienvenida haya terminado y desaparecido para no taparlo ni competir
+       con el (ver consentimiento.js). La marca en `window` es para quien
+       llegue a escuchar tarde. */
     function retirarSplash() {
       if (retirado) return;
       retirado = true;
       temporizadores.forEach(clearTimeout);
       splash.classList.add('oculto');
-      setTimeout(function () { splash.remove(); }, 700);
+      setTimeout(function () {
+        splash.remove();
+        window.SmilersSplashTerminado = true;
+        document.dispatchEvent(new CustomEvent('smilers:splash-fin'));
+      }, 700);
     }
 
     /* Plan B: la misma animacion como imagen animada (WebP, ya a la

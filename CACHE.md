@@ -50,7 +50,7 @@ pasan por la construcción. Es decir: guiones, imágenes, vídeo y tipografías.
 ### 2. Las cabeceras — `vercel.json`
 
 ```
-/paquetes, /fuentes, /imagenes, /video-hero
+/paquetes, /terceros, /fuentes, /imagenes, /video-hero
     → public, max-age=31536000, immutable      (un año, sin revalidar)
 
 todo lo demás (los HTML)
@@ -106,6 +106,12 @@ parte** hasta que se construye.
    las fotos de la esfera de testimonios (`data-antes` / `data-despues`).
 4. **No renombres archivos para "forzar" una actualización.** El sello lo
    hace solo.
+5. **Un archivo que un guion pide tarde** (no al abrir la página) → decláralo
+   en una `<meta>` con `data-perezoso-js` / `data-perezoso-css`, que el sello
+   alcanza igual que a un `src`, y el guion lo lee de ahí. Si es un paquete,
+   la misma `<meta>` lleva su lista en `data-guiones-perezosos` y la
+   construcción lo arma como el principal. Así se carga el aviso de cookies
+   (`paquetes/aviso-cookies.js` y `terceros/cookieconsent/cookieconsent.css`).
 
 ---
 
