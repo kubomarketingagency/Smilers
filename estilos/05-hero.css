@@ -97,8 +97,8 @@
    translucido con filo de oro. Con la cinta a foto limpia el logo quedaba
    sobre lo que pasara por detras —lamparas encendidas, cristal, mampara
    blanca— y el oro se confundia con el oro de la clinica. El recuadro le da
-   un suelo propio: negro al 30%, lo justo para que se note el plano sin
-   tapar la toma, que se sigue viendo a traves.
+   un suelo propio: negro al 50%, que asienta el logo y deja adivinar la
+   toma por detras.
 
    El logo mide lo mismo que antes —58% de la ventana con tope de 820px, 84%
    en el telefono— y el recuadro se suma por fuera: el ancho es el del logo
@@ -116,7 +116,7 @@
   line-height: 0;
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
-  background: linear-gradient(180deg, rgba(8, 6, 4, .34) 0%, rgba(8, 6, 4, .26) 100%);
+  background: linear-gradient(180deg, rgba(8, 6, 4, .56) 0%, rgba(8, 6, 4, .46) 100%);
   box-shadow: 0 24px 60px rgba(4, 3, 2, .26);
 }
 .hero-logo {
