@@ -116,35 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
       ultimoProgresoCine = -1;
     }, { guarda: envoltorio, alCambiarVisibilidad: pedirCapas });
     SmilersScroll.pedir();
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var especialidades = document.getElementById('especialidades');
-
-    var hechoTratamientos = false;
-
-    SmilersScroll.alDetenerse(function () {
-      if (!especialidades) return null;
-
-      if (!window.matchMedia('(min-width: 992px)').matches) return null;
-
-      var rect = especialidades.getBoundingClientRect();
-      var alto = window.innerHeight;
-      var visible = Math.min(rect.bottom, alto) - Math.max(rect.top, 0);
-      var proporcion = visible / rect.height;
-
-      if (proporcion < .06) {
-        hechoTratamientos = false;
-        return null;
-      }
-      if (proporcion <= .22 || proporcion >= .96) return null;
-      if (hechoTratamientos) return null;
-      if (rect.top <= 4) return null;
-
-      hechoTratamientos = true;
-      return rect.top + window.scrollY;
-    });
-
   })();
 
   (function () {

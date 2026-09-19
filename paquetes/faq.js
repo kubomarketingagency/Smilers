@@ -48,95 +48,48 @@ pedido=true;
 requestAnimationFrame(correr);
 }
 var deslizamiento=null;
-var bloqueadoHasta=0;
 var inmuneHasta=0;
 function abortar(){
 if(Date.now()< inmuneHasta)return;
 document.documentElement.classList.remove('smilers-deslizando');
-if(deslizamiento){
-deslizamiento.vivo=false;
-bloqueadoHasta=Date.now()+ 1400;
-}
+if(deslizamiento)deslizamiento.vivo=false;
 deslizamiento=null;
 }
-function curva(t,k){
-if(k===null)return t < .5?4*t*t*t:1 - Math.pow(-2*t + 2,3)/ 2;
-return k*(t*t*t - 2*t*t + t)+ 3*t*t - 2*t*t*t;
-}
-function pendiente(t,k){
-if(k===null)return t < .5?12*t*t:3*Math.pow(-2*t + 2,2);
-return(1 - t)*(k + t*(6 - 3*k));
-}
-function deslizarA(destino,duracion,arranque,alLlegar){
+function deslizarA(destino,duracion,salida){
 abortar();
 inmuneHasta=Date.now()+ 90;
 var inicio=window.scrollY;
 var salto=destino - inicio;
-if(Math.abs(salto)< 2){
-if(alLlegar)alLlegar();
-return;
-}
+if(Math.abs(salto)< 2)return;
 document.documentElement.classList.add('smilers-deslizando');
 var d=duracion||620;
-var k=arranque===true?3
-:(typeof arranque==='number'?Math.min(3,Math.max(0,arranque*d / Math.abs(salto))):null);
-var mio={vivo:true,destino:destino,salto:salto,d:d,k:k,t0:0};
+var t0=0;
+var mio={vivo:true};
 deslizamiento=mio;
 function paso(ahora){
 if(!mio.vivo)return;
-if(!mio.t0)mio.t0=ahora;
-var t=Math.min(1,(ahora - mio.t0)/ d);
-window.scrollTo(0,Math.round(inicio + salto*curva(t,k)));
+if(!t0)t0=ahora;
+var t=Math.min(1,(ahora - t0)/ d);
+var e=salida
+?1 - Math.pow(1 - t,3)
+:(t < .5?4*t*t*t:1 - Math.pow(-2*t + 2,3)/ 2);
+window.scrollTo(0,Math.round(inicio + salto*e));
 if(t < 1)requestAnimationFrame(paso);
 else if(deslizamiento===mio){
 deslizamiento=null;
 document.documentElement.classList.remove('smilers-deslizando');
-if(alLlegar)alLlegar();
 }
 }
 requestAnimationFrame(paso);
 }
-function velocidad(){
-var s=deslizamiento;
-if(!s||!s.t0)return 0;
-var t=Math.min(1,(performance.now()- s.t0)/ s.d);
-return s.salto / s.d*pendiente(t,s.k);
-}
 var quietos=[];
 var idle=null;
-var direccion='down';
-var ultimaDireccionArriba=false;
-var yPrevia=null;
-var SALTO_MAXIMO=.9;
 function alDetenerse(){
 idle=null;
 if(deslizamiento)return;
-if(Date.now()< bloqueadoHasta)return;
-if(direccion !=='down')return;
-for(var i=0;i < quietos.length;i++){
-var respuesta=quietos[i](direccion);
-if(respuesta===null||respuesta===undefined)continue;
-var destino=typeof respuesta==='number'?respuesta:respuesta.y;
-var tope=(typeof respuesta==='object'&&respuesta.maximo)||SALTO_MAXIMO;
-if(typeof destino !=='number'||!isFinite(destino))continue;
-var salto=destino - window.scrollY;
-if(Math.abs(salto)> 4&&Math.abs(salto)< window.innerHeight*tope){
-deslizarA(destino,Math.min(1150,420 + Math.abs(salto)*.95));
-}
-return;
-}
+for(var i=0;i < quietos.length;i++)quietos[i]();
 }
 function alScroll(){
-var y=window.scrollY;
-if(yPrevia===null)yPrevia=y;
-if(y > yPrevia + 1)direccion='down';
-else if(y < yPrevia - 1)direccion='up';
-yPrevia=y;
-var arriba=(direccion==='up');
-if(arriba !==ultimaDireccionArriba){
-ultimaDireccionArriba=arriba;
-document.documentElement.classList.toggle('smilers-arriba',arriba);
-}
 pedir();
 if(idle)clearTimeout(idle);
 idle=setTimeout(alDetenerse,220);
@@ -149,12 +102,9 @@ if(altoGrande===altoAntes&&(window.innerWidth||1)===anchoAntes){pedir();return;}
 for(var i=0;i < reinicios.length;i++)reinicios[i]();
 pedir();
 });
-['wheel','touchstart','keydown'].forEach(function(evt){
+['wheel','touchstart','pointerdown','keydown'].forEach(function(evt){
 window.addEventListener(evt,abortar,{passive:true});
 });
-window.addEventListener('pointerdown',function(evento){
-if(evento.pointerType !=='touch')abortar();
-},{passive:true});
 return{
 registrar:function(leer,escribir,alRedimensionar,opciones){
 var e={leer:leer||null,escribir:escribir||null,activo:true};
@@ -178,9 +128,6 @@ alDetenerse:function(fn){quietos.push(fn);},
 alto:alto,
 deslizarA:deslizarA,
 abortarDeslizamiento:abortar,
-detener:function(){inmuneHasta=0;abortar();},
-destino:function(){return deslizamiento?deslizamiento.destino:null;},
-velocidad:velocidad,
 pedir:pedir
 };
 })();

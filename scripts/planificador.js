@@ -58,131 +58,69 @@ var SmilersScroll = (function () {
     requestAnimationFrame(correr);
   }
 
+  /* Los deslizamientos: solo los de un clic (el riel de Nosotros y el de las
+     subpaginas, los enlaces del menu, los pasos de los testimonios). Nunca
+     uno que invente la pagina por su cuenta: el scroll es de quien lo mueve.
+     Cualquier gesto —rueda, dedo, tecla, clic— lo corta en el acto. Mientras
+     dura, `smilers-deslizando` apaga el `scroll-behavior: smooth` de la
+     pagina, que animaria cada paso por su cuenta. */
   var deslizamiento = null;
-  var bloqueadoHasta = 0;
-
   var inmuneHasta = 0;
 
   function abortar() {
     if (Date.now() < inmuneHasta) return;
     document.documentElement.classList.remove('smilers-deslizando');
-    if (deslizamiento) {
-      deslizamiento.vivo = false;
-
-      bloqueadoHasta = Date.now() + 1400;
-    }
+    if (deslizamiento) deslizamiento.vivo = false;
     deslizamiento = null;
   }
 
-  /* La curva del deslizamiento. Sin `arranque` es la de siempre, lenta al
-     salir y lenta al llegar: la de un ancla. Con `arranque` sale ya en
-     marcha y frena hasta pararse en el destino, que es lo que pide un gesto:
-     la pagina tiene que moverse en el mismo fotograma en que se toca la
-     rueda o se suelta el dedo, no un cuarto de segundo despues.
-
-     `arranque` es la velocidad de salida en pixeles por milisegundo (la del
-     dedo al soltar, o la del deslizamiento al que este releva), y `true`
-     equivale a la salida mas brusca, la de siempre en los testimonios. La
-     curva es una cubica de Hermite: sale a esa velocidad y llega a cero, y
-     con `k` (la velocidad de salida en unidades del salto entero) entre 0 y
-     3 nunca se pasa del destino ni vuelve atras. */
-  function curva(t, k) {
-    if (k === null) return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    return k * (t * t * t - 2 * t * t + t) + 3 * t * t - 2 * t * t * t;
-  }
-  function pendiente(t, k) {
-    if (k === null) return t < .5 ? 12 * t * t : 3 * Math.pow(-2 * t + 2, 2);
-    return (1 - t) * (k + t * (6 - 3 * k));
-  }
-
-  function deslizarA(destino, duracion, arranque, alLlegar) {
+  /* `salida` es la curva que sale rapido y frena al llegar; sin ella sale y
+     llega despacio, como un ancla. */
+  function deslizarA(destino, duracion, salida) {
     abortar();
     inmuneHasta = Date.now() + 90;
     var inicio = window.scrollY;
     var salto = destino - inicio;
-    if (Math.abs(salto) < 2) {
-      if (alLlegar) alLlegar();
-      return;
-    }
+    if (Math.abs(salto) < 2) return;
     document.documentElement.classList.add('smilers-deslizando');
     var d = duracion || 620;
-    var k = arranque === true ? 3
-      : (typeof arranque === 'number' ? Math.min(3, Math.max(0, arranque * d / Math.abs(salto))) : null);
-    var mio = { vivo: true, destino: destino, salto: salto, d: d, k: k, t0: 0 };
+    var t0 = 0;
+    var mio = { vivo: true };
     deslizamiento = mio;
 
     function paso(ahora) {
       if (!mio.vivo) return;
-      if (!mio.t0) mio.t0 = ahora;
-      var t = Math.min(1, (ahora - mio.t0) / d);
-      window.scrollTo(0, Math.round(inicio + salto * curva(t, k)));
+      if (!t0) t0 = ahora;
+      var t = Math.min(1, (ahora - t0) / d);
+      var e = salida
+        ? 1 - Math.pow(1 - t, 3)
+        : (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      window.scrollTo(0, Math.round(inicio + salto * e));
       if (t < 1) requestAnimationFrame(paso);
       else if (deslizamiento === mio) {
         deslizamiento = null;
         document.documentElement.classList.remove('smilers-deslizando');
-        if (alLlegar) alLlegar();
       }
     }
     requestAnimationFrame(paso);
   }
 
-  /* A cuanto va el deslizamiento en curso, en pixeles por milisegundo y con
-     signo (positivo es bajar). Para que el que lo releve salga a la misma
-     velocidad y el cambio no se note. */
-  function velocidad() {
-    var s = deslizamiento;
-    if (!s || !s.t0) return 0;
-    var t = Math.min(1, (performance.now() - s.t0) / s.d);
-    return s.salto / s.d * pendiente(t, s.k);
-  }
-
+  /* Lo que espera a que la pagina se quede quieta para hacer trabajo pesado
+     sin quitarle fotogramas al scroll (la esfera de los testimonios se crea
+     ahi). Solo avisa: ninguno mueve la pagina. Hubo imanes que si la movian
+     —al pararse cerca de Especialidades o entre dos testimonios, la pagina
+     arrancaba sola un cuarto de segundo despues— y eran justo la sensacion de
+     scroll pausado. Ver 02-base.css. */
   var quietos = [];
   var idle = null;
-  var direccion = 'down';
-  var ultimaDireccionArriba = false;
-  /* Se toma en el primer scroll y no aqui: leer scrollY mientras la pagina
-     aun no esta maquetada obliga al navegador a maquetarla entera a
-     destiempo, y en un telefono eso eran 128ms con la pagina congelada. */
-  var yPrevia = null;
-
-  var SALTO_MAXIMO = .9;
 
   function alDetenerse() {
     idle = null;
     if (deslizamiento) return;
-    if (Date.now() < bloqueadoHasta) return;
-
-    if (direccion !== 'down') return;
-    for (var i = 0; i < quietos.length; i++) {
-      var respuesta = quietos[i](direccion);
-      if (respuesta === null || respuesta === undefined) continue;
-
-      var destino = typeof respuesta === 'number' ? respuesta : respuesta.y;
-      var tope = (typeof respuesta === 'object' && respuesta.maximo) || SALTO_MAXIMO;
-      if (typeof destino !== 'number' || !isFinite(destino)) continue;
-
-      var salto = destino - window.scrollY;
-
-      if (Math.abs(salto) > 4 && Math.abs(salto) < window.innerHeight * tope) {
-
-        deslizarA(destino, Math.min(1150, 420 + Math.abs(salto) * .95));
-      }
-      return;
-    }
+    for (var i = 0; i < quietos.length; i++) quietos[i]();
   }
 
   function alScroll() {
-    var y = window.scrollY;
-    if (yPrevia === null) yPrevia = y;
-    if (y > yPrevia + 1) direccion = 'down';
-    else if (y < yPrevia - 1) direccion = 'up';
-    yPrevia = y;
-
-    var arriba = (direccion === 'up');
-    if (arriba !== ultimaDireccionArriba) {
-      ultimaDireccionArriba = arriba;
-      document.documentElement.classList.toggle('smilers-arriba', arriba);
-    }
     pedir();
     if (idle) clearTimeout(idle);
     idle = setTimeout(alDetenerse, 220);
@@ -199,16 +137,10 @@ var SmilersScroll = (function () {
     pedir();
   });
 
-  ['wheel', 'touchstart', 'keydown'].forEach(function (evt) {
+  /* Todos pasivos: la pagina no frena nunca un gesto para mirarlo. */
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (evt) {
     window.addEventListener(evt, abortar, { passive: true });
   });
-  /* El dedo ya lo corta `touchstart`. Con `pointerdown` tambien, el toque
-     mataba el deslizamiento antes de que nadie pudiera ver adonde iba
-     —`pointerdown` llega primero—, y los topes de Nosotros no sabian que un
-     segundo gesto venia a continuar el primero. */
-  window.addEventListener('pointerdown', function (evento) {
-    if (evento.pointerType !== 'touch') abortar();
-  }, { passive: true });
 
   return {
 
@@ -239,13 +171,6 @@ var SmilersScroll = (function () {
     alto: alto,
     deslizarA: deslizarA,
     abortarDeslizamiento: abortar,
-    /* Como abortar, pero sin respetar los 90ms de gracia del arranque: para
-       cuando el dedo agarra la pagina, que manda aunque el deslizamiento
-       acabe de salir. */
-    detener: function () { inmuneHasta = 0; abortar(); },
-    /* Adonde va el deslizamiento en curso, o null si no hay ninguno. */
-    destino: function () { return deslizamiento ? deslizamiento.destino : null; },
-    velocidad: velocidad,
     pedir: pedir
   };
 })();

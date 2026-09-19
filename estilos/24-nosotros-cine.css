@@ -822,13 +822,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 .pagina-nosotros .ns-cine--viva .revelar--velo > * { clip-path: none; }
 
-/* Los imanes de scroll del 21 apuntan a `#fundamentos` y a `#equipo`, que
-   dentro del pin caen los dos en el mismo sitio: engancharian el barrido y no
-   habria forma de recorrer la escena. */
-html:has(.ns-cine--viva) { scroll-snap-type: none; }
-.ns-cine--viva #fundamentos,
-.ns-cine--viva #equipo { scroll-snap-align: none; scroll-snap-stop: normal; }
-
 
 /* ---------------------------------------------------------------------------
    El cierre: la pregunta sobre la mamposteria de la portada.

@@ -963,24 +963,6 @@
   .ns-ficha__cabeza { grid-column: auto; }
 }
 
-/* La parada de scroll: Nosotros solo tiene un iman, el de Equipo, para que
-   la seccion se vea entera de una vez. Solo donde de verdad cabe. */
-@media (min-width: 992px) and (min-height: 760px) {
-  html:has(body.pagina-nosotros) { scroll-snap-type: y proximity; }
-  .pagina-nosotros #equipo {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-}
-/* Fundamentos y Valores juntos miden mas que Equipo: su iman solo entra
-   donde las dos mitades caben de verdad. */
-@media (min-width: 992px) and (min-height: 900px) {
-  .pagina-nosotros #fundamentos {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-}
-
 .ns-ficha__esp {
   margin: 0 0 .35rem;
   font-family: var(--fuente-cuerpo);

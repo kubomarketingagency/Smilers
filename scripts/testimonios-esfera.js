@@ -1147,21 +1147,12 @@ void main() {
       });
     });
 
-    if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
-      window.SmilersScroll.alDetenerse(function () {
-        var progreso = progresoSeccion;
-        if (progreso <= APERTURA || progreso >= CIERRE_DESDE) return null;
-
-        var tramos = items.length - 1;
-        if (tramos <= 0) return null;
-
-        var lineal = acotar((progreso - REPOSO_INICIO) / TRAMO_GIRO) * tramos;
-        var destino = yDeTestimonio(Math.round(lineal));
-        if (destino === null) return null;
-
-        return { y: destino, maximo: 0.62 };
-      });
-    }
+    /* Sin iman: cada testimonio tiene su meseta (`UNIDADES.meseta`), el
+       tramo en que la esfera se queda quieta en el mientras se sigue
+       bajando, y eso es la pausa. Hubo un guion que, un cuarto de segundo
+       despues de pararse la pagina, la arrastraba hasta el testimonio mas
+       cercano: se notaba como un scroll pausado que luego arrancaba solo.
+       Ver 02-base.css. */
 
     if (window.SmilersScroll) {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {

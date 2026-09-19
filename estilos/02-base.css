@@ -1,21 +1,29 @@
 * { box-sizing: border-box; }
 
+/* El scroll es siempre el del navegador, en todas las paginas: ningun
+   guion frena la rueda ni el dedo, y no hay imanes de ningun tipo.
+
+   La pausa en cada seccion la dan las escenas clavadas (`position:
+   sticky` dentro de un envoltorio alto): cada capa se queda a pantalla
+   completa durante un tramo del recorrido mientras se sigue bajando, y
+   el guion solo convierte la posicion en progreso. El scroll no se para
+   nunca; lo que se para es la escena.
+
+   Imanes hubo tres y se quitaron los tres. `scroll-snap-type` (aunque
+   sea `proximity`) con la rueda del raton: cada golpe que acababa cerca
+   de una seccion volvia a ella, y la de Especialidades en la portada no
+   dejaba salir girando la rueda —medido: seis golpes, cero pixeles—. Los
+   imanes con guion (Especialidades, los testimonios) movian la pagina un
+   cuarto de segundo despues de que se parara, que se sentia como un
+   scroll pausado que luego arrancaba solo. Y los topes de Nosotros cogian
+   la rueda y el dedo para ir de parada en parada: frenaban cada gesto
+   para mirarlo y cortaban la inercia. Ver tambien 25-tratamientos-cine.css.
+
+   Mientras dura un deslizamiento de un clic (riel, menu) se apaga el
+   `smooth`, que animaria cada paso del deslizamiento por su cuenta. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; }
 
 html.smilers-deslizando { scroll-behavior: auto; }
-
-@media (min-width: 992px) and (hover: hover) and (pointer: fine) {
-  html:not(.smilers-arriba):not(.smilers-deslizando) {
-    scroll-snap-type: y proximity;
-  }
-  .acordeon-seccion {
-    scroll-snap-align: start;
-    scroll-margin-top: -90px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-snap-type: none !important; }
-}
 
 body {
   font-family: var(--fuente-cuerpo);

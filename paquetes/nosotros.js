@@ -42,95 +42,48 @@ pedido=true;
 requestAnimationFrame(correr);
 }
 var deslizamiento=null;
-var bloqueadoHasta=0;
 var inmuneHasta=0;
 function abortar(){
 if(Date.now()< inmuneHasta)return;
 document.documentElement.classList.remove('smilers-deslizando');
-if(deslizamiento){
-deslizamiento.vivo=false;
-bloqueadoHasta=Date.now()+ 1400;
-}
+if(deslizamiento)deslizamiento.vivo=false;
 deslizamiento=null;
 }
-function curva(t,k){
-if(k===null)return t < .5?4*t*t*t:1 - Math.pow(-2*t + 2,3)/ 2;
-return k*(t*t*t - 2*t*t + t)+ 3*t*t - 2*t*t*t;
-}
-function pendiente(t,k){
-if(k===null)return t < .5?12*t*t:3*Math.pow(-2*t + 2,2);
-return(1 - t)*(k + t*(6 - 3*k));
-}
-function deslizarA(destino,duracion,arranque,alLlegar){
+function deslizarA(destino,duracion,salida){
 abortar();
 inmuneHasta=Date.now()+ 90;
 var inicio=window.scrollY;
 var salto=destino - inicio;
-if(Math.abs(salto)< 2){
-if(alLlegar)alLlegar();
-return;
-}
+if(Math.abs(salto)< 2)return;
 document.documentElement.classList.add('smilers-deslizando');
 var d=duracion||620;
-var k=arranque===true?3
-:(typeof arranque==='number'?Math.min(3,Math.max(0,arranque*d / Math.abs(salto))):null);
-var mio={vivo:true,destino:destino,salto:salto,d:d,k:k,t0:0};
+var t0=0;
+var mio={vivo:true};
 deslizamiento=mio;
 function paso(ahora){
 if(!mio.vivo)return;
-if(!mio.t0)mio.t0=ahora;
-var t=Math.min(1,(ahora - mio.t0)/ d);
-window.scrollTo(0,Math.round(inicio + salto*curva(t,k)));
+if(!t0)t0=ahora;
+var t=Math.min(1,(ahora - t0)/ d);
+var e=salida
+?1 - Math.pow(1 - t,3)
+:(t < .5?4*t*t*t:1 - Math.pow(-2*t + 2,3)/ 2);
+window.scrollTo(0,Math.round(inicio + salto*e));
 if(t < 1)requestAnimationFrame(paso);
 else if(deslizamiento===mio){
 deslizamiento=null;
 document.documentElement.classList.remove('smilers-deslizando');
-if(alLlegar)alLlegar();
 }
 }
 requestAnimationFrame(paso);
 }
-function velocidad(){
-var s=deslizamiento;
-if(!s||!s.t0)return 0;
-var t=Math.min(1,(performance.now()- s.t0)/ s.d);
-return s.salto / s.d*pendiente(t,s.k);
-}
 var quietos=[];
 var idle=null;
-var direccion='down';
-var ultimaDireccionArriba=false;
-var yPrevia=null;
-var SALTO_MAXIMO=.9;
 function alDetenerse(){
 idle=null;
 if(deslizamiento)return;
-if(Date.now()< bloqueadoHasta)return;
-if(direccion !=='down')return;
-for(var i=0;i < quietos.length;i++){
-var respuesta=quietos[i](direccion);
-if(respuesta===null||respuesta===undefined)continue;
-var destino=typeof respuesta==='number'?respuesta:respuesta.y;
-var tope=(typeof respuesta==='object'&&respuesta.maximo)||SALTO_MAXIMO;
-if(typeof destino !=='number'||!isFinite(destino))continue;
-var salto=destino - window.scrollY;
-if(Math.abs(salto)> 4&&Math.abs(salto)< window.innerHeight*tope){
-deslizarA(destino,Math.min(1150,420 + Math.abs(salto)*.95));
-}
-return;
-}
+for(var i=0;i < quietos.length;i++)quietos[i]();
 }
 function alScroll(){
-var y=window.scrollY;
-if(yPrevia===null)yPrevia=y;
-if(y > yPrevia + 1)direccion='down';
-else if(y < yPrevia - 1)direccion='up';
-yPrevia=y;
-var arriba=(direccion==='up');
-if(arriba !==ultimaDireccionArriba){
-ultimaDireccionArriba=arriba;
-document.documentElement.classList.toggle('smilers-arriba',arriba);
-}
 pedir();
 if(idle)clearTimeout(idle);
 idle=setTimeout(alDetenerse,220);
@@ -143,12 +96,9 @@ if(altoGrande===altoAntes&&(window.innerWidth||1)===anchoAntes){pedir();return;}
 for(var i=0;i < reinicios.length;i++)reinicios[i]();
 pedir();
 });
-['wheel','touchstart','keydown'].forEach(function(evt){
+['wheel','touchstart','pointerdown','keydown'].forEach(function(evt){
 window.addEventListener(evt,abortar,{passive:true});
 });
-window.addEventListener('pointerdown',function(evento){
-if(evento.pointerType !=='touch')abortar();
-},{passive:true});
 return{
 registrar:function(leer,escribir,alRedimensionar,opciones){
 var e={leer:leer||null,escribir:escribir||null,activo:true};
@@ -172,9 +122,6 @@ alDetenerse:function(fn){quietos.push(fn);},
 alto:alto,
 deslizarA:deslizarA,
 abortarDeslizamiento:abortar,
-detener:function(){inmuneHasta=0;abortar();},
-destino:function(){return deslizamiento?deslizamiento.destino:null;},
-velocidad:velocidad,
 pedir:pedir
 };
 })();
@@ -1147,237 +1094,6 @@ botones.push(boton);
 nav.appendChild(lista);
 document.body.appendChild(nav);
 }
-var conRaton=window.matchMedia('(hover: hover) and (pointer: fine)');
-function posicionesTopes(){
-var lista=[];
-for(var i=0;i < paradas.length;i++){
-var parada=paradas[i];
-if(parada.bloque===escena?viva:cierreVivo)lista.push(destinoDe(parada));
-}
-return lista;
-}
-function topeHacia(topes,y,direccion){
-var i;
-if(direccion > 0){
-for(i=0;i < topes.length;i++)if(topes[i]> y + 2)return topes[i];
-}else{
-for(i=topes.length - 1;i >=0;i--)if(topes[i]< y - 2)return topes[i];
-}
-return null;
-}
-function fueraDeTopes(topes,y,delta){
-var primero=topes[0];
-var ultimo=topes[topes.length - 1];
-return(delta > 0&&y >=ultimo - 2)||
-(delta < 0&&(y <=primero + 2||y + delta > ultimo));
-}
-function ajeno(evento){
-if(document.body.style.overflow==='hidden')return true;
-var el=evento.target;
-return !!(el&&el.closest&&el.closest('#cc-main, .menu-abierto'));
-}
-var ARRANQUE=.8;
-function duracionPaso(salto){
-return Math.round(Math.min(900,Math.max(620,420 + Math.abs(salto)*.28)));
-}
-var marcha=null;
-var pendiente=0;
-function enMarcha(){
-return marcha&&SmilersScroll.destino()===marcha.destino?marcha:null;
-}
-function darPaso(direccion){
-pendiente=0;
-marcha=null;
-var y=window.scrollY;
-var destino=topeHacia(posicionesTopes(),y,direccion);
-if(destino===null)return;
-var salto=Math.abs(destino - y);
-var duracion=duracionPaso(salto);
-var yendo=SmilersScroll.velocidad()*direccion;
-var arranque=yendo < 0?0:Math.max(yendo,ARRANQUE*salto / duracion);
-marcha={destino:destino,direccion:direccion,t0:performance.now(),duracion:duracion};
-SmilersScroll.deslizarA(destino,duracion,arranque,alLlegar);
-}
-function alLlegar(){
-marcha=null;
-if(pendiente)darPaso(pendiente);
-}
-function pedirPaso(direccion,nuevo){
-var m=enMarcha();
-if(!m||direccion !==m.direccion){darPaso(direccion);return;}
-if(pendiente)return;
-if(nuevo||(performance.now()- m.t0)/ m.duracion > .6)pendiente=direccion;
-}
-var PAUSA_RACHA=200;
-var FUERZA_SIGUE=.7;
-var ultimaRueda=0;
-var racha={direccion:0,pico:0};
-var rachaNuestra=false;
-function alRodar(evento){
-if(!viva||!conRaton.matches||quietud.matches||ajeno(evento))return;
-if(evento.ctrlKey||Math.abs(evento.deltaX)> Math.abs(evento.deltaY))return;
-var topes=posicionesTopes();
-if(topes.length < 2)return;
-var escala=evento.deltaMode===1?40:(evento.deltaMode===2?window.innerHeight:1);
-var delta=evento.deltaY*escala;
-if(!delta)return;
-var ahora=performance.now();
-var direccion=delta > 0?1:-1;
-var fuerza=Math.abs(delta);
-var nueva=ahora - ultimaRueda >=PAUSA_RACHA||direccion !==racha.direccion;
-ultimaRueda=ahora;
-if(nueva)racha={direccion:direccion,pico:fuerza};
-else racha.pico=Math.max(racha.pico,fuerza);
-if(fueraDeTopes(topes,window.scrollY,delta)){
-rachaNuestra=false;
-return;
-}
-evento.preventDefault();
-evento.stopPropagation();
-var entra=!rachaNuestra;
-rachaNuestra=true;
-if(nueva||entra)pedirPaso(direccion,true);
-else if(fuerza >=racha.pico*FUERZA_SIGUE)pedirPaso(direccion,false);
-}
-document.addEventListener('wheel',alRodar,{passive:false,capture:true});
-var TECLAS={PageDown:1,PageUp:-1,ArrowDown:1,ArrowUp:-1,' ':1};
-document.addEventListener('keydown',function(evento){
-if(!viva||quietud.matches||ajeno(evento))return;
-var direccion=TECLAS[evento.key];
-if(!direccion||evento.altKey||evento.ctrlKey||evento.metaKey)return;
-var el=evento.target;
-if(el&&(el.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)))return;
-if(evento.key===' '){
-if(el&&/^(BUTTON|A|SUMMARY)$/.test(el.tagName))return;
-if(evento.shiftKey)direccion=-1;
-}
-var topes=posicionesTopes();
-if(topes.length < 2||fueraDeTopes(topes,window.scrollY,direccion))return;
-evento.preventDefault();
-evento.stopPropagation();
-pedirPaso(direccion,!evento.repeat);
-},true);
-var dedo=null;
-var VELOCIDAD_LANZADO=.25;
-var vigilaInercia=false;
-var ultimoTope=0;
-function frenarEn(y){
-var raiz=document.documentElement;
-raiz.classList.add('smilers-deslizando');
-raiz.style.overflow='hidden';
-window.scrollTo(0,y);
-setTimeout(function(){
-raiz.style.overflow='';
-raiz.classList.remove('smilers-deslizando');
-},150);
-}
-window.addEventListener('scroll',function(){
-if(!vigilaInercia||(dedo&&dedo.nuestro))return;
-if(window.scrollY < ultimoTope - 1){
-vigilaInercia=false;
-frenarEn(ultimoTope);
-}
-},{passive:true});
-function soltarHacia(destino,velocidad){
-var resto=Math.abs(destino - window.scrollY);
-if(resto < 2)return;
-var tope=Math.min(880,Math.max(500,450 + resto*.3));
-var v=Math.max(0,velocidad);
-var duracion=v > 0?Math.max(380,Math.min(tope,2*resto / v)):tope;
-SmilersScroll.deslizarA(destino,Math.round(duracion),Math.max(v,.4*resto / duracion));
-}
-function alTocar(evento){
-dedo=null;
-vigilaInercia=false;
-if(!viva||quietud.matches||evento.touches.length !==1||ajeno(evento))return;
-var topesAhora=posicionesTopes();
-if(topesAhora.length){
-ultimoTope=topesAhora[topesAhora.length - 1];
-vigilaInercia=window.scrollY > ultimoTope + 2;
-}
-var yendo=SmilersScroll.destino();
-if(yendo !==null)SmilersScroll.detener();
-marcha=null;
-pendiente=0;
-var t=evento.touches[0];
-dedo={
-x:t.clientX,y:t.clientY,desde:window.scrollY,yendo:yendo,
-decidido:false,nuestro:false,nativo:false,
-muestras:[{y:t.clientY,t:evento.timeStamp}]
-};
-}
-function alArrastrar(evento){
-if(!dedo)return;
-if(evento.touches.length !==1){dedo=null;return;}
-var t=evento.touches[0];
-if(!dedo.decidido){
-var dx=t.clientX - dedo.x;
-var dy=t.clientY - dedo.y;
-if(Math.abs(dx)< 6&&Math.abs(dy)< 6)return;
-dedo.decidido=true;
-if(Math.abs(dx)> Math.abs(dy))return;
-var topes=posicionesTopes();
-if(topes.length < 2||fueraDeTopes(topes,dedo.desde,-dy)){
-dedo.nativo=true;
-return;
-}
-dedo.nuestro=true;
-dedo.topes=topes;
-var detras=topeHacia(topes,dedo.desde,-1);
-var delante=topeHacia(topes,dedo.desde,1);
-if(dedo.yendo !==null&&dedo.yendo > dedo.desde + 2){
-var despues=topeHacia(topes,dedo.yendo,1);
-delante=despues===null?dedo.yendo:despues;
-}else if(dedo.yendo !==null&&dedo.yendo < dedo.desde - 2){
-var antes=topeHacia(topes,dedo.yendo,-1);
-detras=antes===null?dedo.yendo:antes;
-}
-dedo.min=detras===null?dedo.desde:detras;
-dedo.max=delante===null?dedo.desde:delante;
-document.documentElement.classList.add('smilers-deslizando');
-}
-if(!dedo.nuestro)return;
-evento.preventDefault();
-var y=dedo.desde -(t.clientY - dedo.y);
-window.scrollTo(0,Math.round(Math.min(dedo.max,Math.max(dedo.min,y))));
-dedo.muestras.push({y:t.clientY,t:evento.timeStamp});
-if(dedo.muestras.length > 8)dedo.muestras.shift();
-}
-function alSoltar(evento){
-var d=dedo;
-dedo=null;
-if(!d)return;
-if(!d.nuestro){
-if(d.yendo !==null&&!d.nativo)soltarHacia(d.yendo,0);
-return;
-}
-var ultima=d.muestras[d.muestras.length - 1];
-var vieja=ultima;
-for(var i=d.muestras.length - 1;i >=0;i--){
-if(evento.timeStamp - d.muestras[i].t > 100)break;
-vieja=d.muestras[i];
-}
-var velocidad=-(ultima.y - vieja.y)/ Math.max(1,ultima.t - vieja.t);
-var y=window.scrollY;
-var movido=y - d.desde;
-var direccion=0;
-if(Math.abs(velocidad)> VELOCIDAD_LANZADO)direccion=velocidad > 0?1:-1;
-else if(Math.abs(movido)> window.innerHeight*.12)direccion=movido > 0?1:-1;
-var destino;
-if(direccion > 0)destino=d.max;
-else if(direccion < 0)destino=d.min;
-else if(d.yendo !==null)destino=d.yendo;
-else{
-var enParada=d.topes.some(function(tope){return Math.abs(tope - d.desde)<=2;});
-destino=enParada?d.desde:(Math.abs(y - d.min)<=Math.abs(d.max - y)?d.min:d.max);
-}
-document.documentElement.classList.remove('smilers-deslizando');
-soltarHacia(destino,destino > y?velocidad:-velocidad);
-}
-document.addEventListener('touchstart',alTocar,{passive:true});
-document.addEventListener('touchmove',alArrastrar,{passive:false});
-document.addEventListener('touchend',alSoltar,{passive:true});
-document.addEventListener('touchcancel',alSoltar,{passive:true});
 document.addEventListener('click',function(evento){
 var enlace=evento.target.closest&&evento.target.closest('a[href*="#"]');
 if(!enlace)return;
