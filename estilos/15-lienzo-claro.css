@@ -259,7 +259,16 @@
   }
 }
 
-.pagina-clara .banner-pagina--hero > .container { position: relative; z-index: 2; }
+/* `--bp-lado` es el margen de la pagina a cada lado del texto, el mismo que
+   el de todo `.container` claro. Va en variable porque lo usan tambien el
+   marco de oro y la muela, que se cuentan desde el: si cambia aqui, cambian
+   los tres a la vez y siguen cuadrados. */
+.pagina-clara .banner-pagina--hero > .container {
+  --bp-lado: clamp(1.5rem, 6vw, 6rem);
+  position: relative;
+  z-index: 2;
+  padding-inline: var(--bp-lado);
+}
 
 /* El recuadro del hero de cine. Debajo no hay una piedra quieta sino el
    carrusel de la clinica: batas blancas, ventanas y pantallas encendidas que
@@ -349,18 +358,19 @@
    madera; un pixel de oro sobre madera clara no se ve.
 
    Los `inset` se cuentan desde la caja de relleno del `.container`, no de
-   su contenido, asi que a los lados hay que descontar ese relleno a mano: es
-   el mismo `clamp` que da el margen de la pagina (arriba en esta hoja) y va
-   escrito igual. Sin eso el marco se pegaba a los cantos de la ventana y
-   dejaba 86px de vacio entre la linea y el texto. El aire es el mismo por
-   los cuatro lados. */
+   su contenido, asi que a los lados hay que descontar ese relleno: es
+   `--bp-lado`, el margen de la pagina. Sin eso el marco se pegaba a los
+   cantos de la ventana y dejaba 86px de vacio entre la linea y el texto.
+   El aire es el mismo por los cuatro lados, salvo en el telefono (mas
+   abajo), donde arriba y abajo lleva mas. */
 .pagina-clara .banner-pagina--hero .bp-marco {
   --bp-marco-aire: clamp(.7rem, 2vw, 1.5rem);
+  --bp-marco-aire-y: var(--bp-marco-aire);
   position: absolute;
-  top: calc(var(--bp-marco-aire) * -1);
-  bottom: calc(var(--bp-marco-aire) * -1);
-  left: calc(clamp(1.5rem, 6vw, 6rem) - var(--bp-marco-aire));
-  right: calc(clamp(1.5rem, 6vw, 6rem) - var(--bp-marco-aire));
+  top: calc(var(--bp-marco-aire-y) * -1);
+  bottom: calc(var(--bp-marco-aire-y) * -1);
+  left: calc(var(--bp-lado) - var(--bp-marco-aire));
+  right: calc(var(--bp-lado) - var(--bp-marco-aire));
   pointer-events: none;
   filter: drop-shadow(0 1px 5px rgba(4, 3, 2, .6));
 }
@@ -386,6 +396,61 @@
     var(--oro-marca-degradado) right bottom / 1px 100% no-repeat;
 }
 
+/* ---------------------------------------------------------------------------
+   La muela de oro, a la derecha del texto, dentro del marco. La llevan los
+   tres heros de madera: Galeria, FAQ y Privacidad.
+
+   Cuadra con el texto por construccion: mide lo mismo de alto que el
+   bloque de texto (de la ruta a la bajada: `top: 0` y `height: 100%` del
+   `.container`, que no tiene relleno vertical), asi que queda a la misma
+   distancia de los filos de arriba y de abajo que el texto; y su canto
+   derecho cae en `--bp-lado`, a la misma distancia del filo derecho que el
+   texto del izquierdo. El ancho sale solo, de la proporcion de la imagen.
+
+   El texto le deja sitio: el `.container` le reserva a la derecha
+   `--bp-muela-reserva` (la muela mas el hueco entre los dos), y la muela no
+   pasa nunca de ese sitio (`max-width`, con `object-fit: contain` por si un
+   titulo mas alto de la cuenta la hiciera crecer): no hay combinacion de
+   pantalla y titulo en la que pise la letra.
+
+   En el ordenador, desde 1280px, los tres titulos caben en una linea y la
+   reserva es la de una muela de ~220px. En la tableta no caben con la muela
+   al lado, y cada uno se partia por donde le tocaba —unos si y otros no,
+   segun la pagina y el ancho—; ahi el titulo va siempre en dos lineas
+   (`max-width: 11em`: «Un vistazo a / Smilers», «Preguntas / frecuentes»,
+   «Politica de / privacidad») y los tres heros quedan iguales. En el
+   telefono no cabe: ni se ve ni se descarga (`loading="lazy"` y
+   `display: none`). */
+.pagina-clara .banner-pagina--hero .bp-muela { display: none; }
+
+@media (min-width: 768px) {
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
+    --bp-muela-hueco: clamp(1.9rem, 3vw, 2.6rem);
+    --bp-muela-reserva: calc(14vw + 140px);
+    padding-right: calc(var(--bp-lado) + var(--bp-muela-reserva));
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: 11em; }
+  .pagina-clara .banner-pagina--hero .bp-muela {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: var(--bp-lado);
+    width: auto;
+    height: 100%;
+    max-width: calc(var(--bp-muela-reserva) - var(--bp-muela-hueco));
+    object-fit: contain;
+    object-position: 100% 50%;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
+  }
+}
+@media (min-width: 1280px) {
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
+    --bp-muela-reserva: calc(224px + var(--bp-muela-hueco));
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: none; }
+}
+
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero {
     min-height: min(68svh, 520px);
@@ -394,6 +459,24 @@
   /* El mismo 14% que en el ordenador: la madera no cambia de luz porque la
      pantalla sea mas estrecha. */
   .pagina-clara .banner-pagina--hero .bp-velo { background: rgba(8, 6, 4, .14); }
+}
+
+/* En el telefono el marco iba pegado al texto —11px de aire— y dejaba
+   vacia media plancha de madera por encima y por debajo. Ahora se abre
+   hacia ese vacio: 2,6rem de aire arriba y abajo, y a los lados el texto
+   entra un poco (`--bp-lado`) para que las lineas tampoco lo rocen, con los
+   filos donde estaban, a 12px del canto de la pantalla. El relleno del hero
+   cuenta ese aire, asi que el marco nunca se sale de la madera y queda a la
+   misma distancia de la barra que del canto de abajo. */
+@media (max-width: 767.98px) {
+  .pagina-clara .banner-pagina--hero:has(.bp-marco) {
+    padding: calc(var(--alto-navbar-arriba) + 3.9rem) 0 3.9rem;
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-marco) > .container { --bp-lado: 1.85rem; }
+  .pagina-clara .banner-pagina--hero .bp-marco {
+    --bp-marco-aire: 1.1rem;
+    --bp-marco-aire-y: 2.6rem;
+  }
 }
 
 .pagina-clara .titulo-seccion {
