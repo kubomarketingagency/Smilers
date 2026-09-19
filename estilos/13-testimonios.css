@@ -109,32 +109,33 @@
   overflow: hidden;
 }
 .esfera-activa .testimonios-cierre { display: block; }
+/* El cierre es el mismo telon que el de Nosotros antes de las cifras (ver
+   `.ns-hoja` en 24-nosotros-cine.css): dos hojas que entran desde los
+   lados y se juntan en el centro, con el filo de oro de la marca en el
+   canto mientras se mueven. En onix y no en el negro de Nosotros, que lo
+   que viene detras es el cierre de la portada, que arranca en onix
+   (`.cierre-cine-negro`), y el relevo no se ve. */
 .tc-hoja {
   position: absolute;
-  left: 0;
-  width: 100%;
-  height: 50.6%;
+  top: 0;
+  bottom: 0;
+  width: 50.4%;
   background: var(--onix);
 }
-.tc-hoja--arriba { top: 0;    transform: translate3d(0, -100%, 0); }
-.tc-hoja--abajo { bottom: 0; transform: translate3d(0, 100%, 0); }
+.tc-hoja--izq { left: 0;  transform: translate3d(-101%, 0, 0); }
+.tc-hoja--der { right: 0; transform: translate3d(101%, 0, 0); }
 
 .tc-hoja::after {
   content: '';
   position: absolute;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(212, 175, 55, .5) 28%,
-    var(--gold-100) 50%,
-    rgba(212, 175, 55, .5) 72%,
-    transparent 100%);
-  opacity: calc(.7 * var(--filo, 1));
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--oro-marca-degradado);
+  opacity: var(--filo, 0);
 }
-.tc-hoja--arriba::after { bottom: 0; }
-.tc-hoja--abajo::after  { top: 0; }
+.tc-hoja--izq::after { right: 0; }
+.tc-hoja--der::after { left: 0; }
 @media (prefers-reduced-motion: reduce) {
   .testimonios-cierre { display: none !important; }
 }

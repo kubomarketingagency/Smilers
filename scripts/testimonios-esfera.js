@@ -959,11 +959,15 @@ void main() {
       seccion.classList.toggle('mostrando-despues', encendido);
     }
 
+    /* Una unidad es casi 1vh de scroll (ver `vhPorUnidad`). El cierre
+       (`obturador`) mide lo mismo que el telon de Nosotros antes de las
+       cifras: el 8% de aquella escena, unos 39vh en escritorio y 34vh en el
+       telefono. Era de 68 y pedia casi el doble de scroll para lo mismo. */
     var UNIDADES = {
       apertura:  24,
       meseta:    58,
       giro:      38,
-      obturador: 68,
+      obturador: 39,
       cola:       1
     };
 
@@ -1022,18 +1026,17 @@ void main() {
       }
 
       if (hojas.length === 2) {
+        /* Como las hojas de Nosotros: la misma curva y el filo solo
+           mientras se mueven. */
         var c = acotar((progreso - CIERRE_DESDE) / (CIERRE_HASTA - CIERRE_DESDE));
-
-        var suave = c * c * c * (c * (c * 6 - 15) + 10);
-        var fuera = ((1 - suave) * 100).toFixed(2);
+        var suave = c * c * (3 - 2 * c);
+        var fuera = ((1 - suave) * 101).toFixed(2);
         if (fuera !== ultimoCierre) {
           ultimoCierre = fuera;
-          hojas[0].style.transform = 'translate3d(0,-' + fuera + '%,0)';
-          hojas[1].style.transform = 'translate3d(0,' + fuera + '%,0)';
+          hojas[0].style.transform = 'translate3d(-' + fuera + '%,0,0)';
+          hojas[1].style.transform = 'translate3d(' + fuera + '%,0,0)';
 
-          if (cierre) {
-            cierre.style.setProperty('--filo', Math.min(1, (1 - suave) / 0.15).toFixed(3));
-          }
+          if (cierre) cierre.style.setProperty('--filo', c > 0 && c < 1 ? '1' : '0');
         }
       }
 

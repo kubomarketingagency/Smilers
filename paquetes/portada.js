@@ -1805,7 +1805,7 @@ var UNIDADES={
 apertura:24,
 meseta:58,
 giro:38,
-obturador:68,
+obturador:39,
 cola:1
 };
 var N=items.length;
@@ -1852,15 +1852,13 @@ velo.style.opacity=String(opVelo);
 }
 if(hojas.length===2){
 var c=acotar((progreso - CIERRE_DESDE)/(CIERRE_HASTA - CIERRE_DESDE));
-var suave=c*c*c*(c*(c*6 - 15)+ 10);
-var fuera=((1 - suave)*100).toFixed(2);
+var suave=c*c*(3 - 2*c);
+var fuera=((1 - suave)*101).toFixed(2);
 if(fuera !==ultimoCierre){
 ultimoCierre=fuera;
-hojas[0].style.transform='translate3d(0,-' + fuera + '%,0)';
-hojas[1].style.transform='translate3d(0,' + fuera + '%,0)';
-if(cierre){
-cierre.style.setProperty('--filo',Math.min(1,(1 - suave)/ 0.15).toFixed(3));
-}
+hojas[0].style.transform='translate3d(-' + fuera + '%,0,0)';
+hojas[1].style.transform='translate3d(' + fuera + '%,0,0)';
+if(cierre)cierre.style.setProperty('--filo',c > 0&&c < 1?'1':'0');
 }
 }
 var indice=Math.round(t);
