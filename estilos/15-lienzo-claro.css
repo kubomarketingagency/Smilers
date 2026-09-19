@@ -400,12 +400,18 @@
    La muela de oro, a la derecha del texto, dentro del marco. La llevan los
    tres heros de madera: Galeria, FAQ y Privacidad.
 
-   Cuadra con el texto por construccion: mide lo mismo de alto que el
-   bloque de texto (de la ruta a la bajada: `top: 0` y `height: 100%` del
-   `.container`, que no tiene relleno vertical), asi que queda a la misma
-   distancia de los filos de arriba y de abajo que el texto; y su canto
-   derecho cae en `--bp-lado`, a la misma distancia del filo derecho que el
-   texto del izquierdo. El ancho sale solo, de la proporcion de la imagen.
+   Es un vector (`imagenes/muela-oro.svg`): el contorno va en curvas y por
+   dentro lleva el brillo del original, asi que el filo sale nitido a
+   cualquier tamano y en cualquier pantalla. La de antes era una foto de
+   480px sacada de un original borroso, y el borde se veia pixelado.
+
+   En la tableta y el ordenador cuadra con el texto por construccion: mide
+   lo mismo de alto que el bloque de texto (de la ruta a la bajada: `top: 0`
+   y `height: 100%` del `.container`, que no tiene relleno vertical), asi
+   que queda a la misma distancia de los filos de arriba y de abajo que el
+   texto; y su canto derecho cae en `--bp-lado`, a la misma distancia del
+   filo derecho que el texto del izquierdo. El ancho sale solo, de la
+   proporcion de la imagen.
 
    El texto le deja sitio: el `.container` le reserva a la derecha
    `--bp-muela-reserva` (la muela mas el hueco entre los dos), y la muela no
@@ -418,10 +424,41 @@
    al lado, y cada uno se partia por donde le tocaba —unos si y otros no,
    segun la pagina y el ancho—; ahi el titulo va siempre en dos lineas
    (`max-width: 11em`: «Un vistazo a / Smilers», «Preguntas / frecuentes»,
-   «Politica de / privacidad») y los tres heros quedan iguales. En el
-   telefono no cabe: ni se ve ni se descarga (`loading="lazy"` y
-   `display: none`). */
-.pagina-clara .banner-pagina--hero .bp-muela { display: none; }
+   «Politica de / privacidad») y los tres heros quedan iguales.
+
+   En el telefono va a la derecha del titulo y no del bloque entero: la ruta
+   de FAQ y de Privacidad llega casi al canto y arriba no deja sitio. Flota
+   a la derecha —por eso va en el HTML justo despues de la ruta: un flotante
+   solo aparta a lo que viene detras— y mide de alto lo mismo que el titulo,
+   de la primera linea al filo de oro. El titulo va siempre en dos lineas
+   (`max-width: 11em`), asi que esa altura se sabe sin medir: dos lineas de
+   1,18 de interlineado, mas el filo (1,4rem de margen y 1px de linea). Y el
+   cuerpo del titulo es el que deja caber la palabra mas larga de los tres
+   —FRECUENTES, 7,9em con su espaciado y un margen— al lado de la muela con
+   1rem de hueco: el de siempre (30,4px) desde 412px de ancho y un poco
+   menos por debajo (28,9px a 393, 25,7px a 360). */
+.pagina-clara .banner-pagina--hero .bp-muela {
+  display: block;
+  pointer-events: none;
+}
+
+@media (max-width: 767.98px) {
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
+    --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
+    max-width: 11em;
+    font-size: var(--bp-titulo);
+  }
+  .pagina-clara .banner-pagina--hero .bp-muela {
+    float: right;
+    width: auto;
+    height: calc(var(--bp-titulo) * 2.36 + 1.4rem + 1px);
+    margin-left: 1rem;
+    filter: drop-shadow(0 3px 9px rgba(4, 3, 2, .55));
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) .banner-subtitulo { clear: right; }
+}
 
 @media (min-width: 768px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
@@ -431,7 +468,6 @@
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: 11em; }
   .pagina-clara .banner-pagina--hero .bp-muela {
-    display: block;
     position: absolute;
     top: 0;
     right: var(--bp-lado);
@@ -440,7 +476,6 @@
     max-width: calc(var(--bp-muela-reserva) - var(--bp-muela-hueco));
     object-fit: contain;
     object-position: 100% 50%;
-    pointer-events: none;
     filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
   }
 }
