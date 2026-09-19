@@ -49,6 +49,34 @@
 @media (max-width: 767.98px) {
   .cierre-cine { height: 132vh; }
 }
+
+/* Sin la pantalla de negro despues de los testimonios. Acaban con sus
+   hojas cerradas en onix, y este cierre arranca en onix; entre los dos se
+   recorria una pantalla entera de negro quieto —el pin de los testimonios
+   tenia que terminar de salir antes de que este pudiera clavarse—, y la
+   pregunta tardaba eso en aparecer. Ahora va montado sobre la ultima
+   pantalla de los testimonios, como el cierre de Nosotros sobre su cine (ver
+   24-nosotros-cine.css): su pin se clava en el pixel en que el de los
+   testimonios se suelta. Mientras sube por encima va escondido y sin raton,
+   para no tapar ni robarle el clic al ultimo testimonio, y `hero.js` lo
+   enciende (`cc-clavado`) al clavarse.
+
+   Solo con la esfera en marcha —sin ella los testimonios son tarjetas en
+   flujo y no hay pantalla que montar—, con movimiento —con menos no hay
+   hojas que cierren— y con `hero.js` al mando (`cc-montado`): si el guion
+   no corre, el cierre se queda donde estaba y la pregunta no se esconde. */
+@media (prefers-reduced-motion: no-preference) {
+  .testimonios-cine.esfera-activa + .cierre-cine.cc-montado {
+    margin-top: -100vh;
+    margin-top: -100lvh; /* lo que mide el pin de los testimonios */
+    pointer-events: none;
+  }
+  .testimonios-cine.esfera-activa + .cierre-cine.cc-montado .cierre-cine-pin { visibility: hidden; }
+  .testimonios-cine.esfera-activa + .cierre-cine.cc-montado.cc-clavado .cierre-cine-pin {
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cierre-cine { height: auto; }
   .cierre-cine-pin { position: static; height: auto; overflow: visible; }

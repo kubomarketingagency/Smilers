@@ -200,9 +200,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var SALE  = 2;
     var revelado = false;
 
+    /* Detras de los testimonios el cierre va montado sobre su ultima
+       pantalla (ver 09-cierre-cta.css) y sube escondido; se ve desde que se
+       clava, que es justo cuando los testimonios acaban con las hojas
+       cerradas. El pixel de holgura es por el redondeo del `lvh`. */
+    var clavado = null;
+
     function actualizarCierre() {
       if (desplazado === ultimoDesplazado) return;
       ultimoDesplazado = desplazado;
+
+      var estaClavado = desplazado >= -1;
+      if (estaClavado !== clavado) {
+        clavado = estaClavado;
+        envoltorio.classList.toggle('cc-clavado', clavado);
+      }
 
       var quiere = revelado ? (desplazado > SALE) : (desplazado >= ENTRA);
       if (quiere === revelado) return;
@@ -212,7 +224,9 @@ document.addEventListener('DOMContentLoaded', function () {
       envoltorio.classList.toggle('cc-velado', !revelado);
     }
 
-    envoltorio.classList.add('cc-velado');
+    /* `cc-montado` es lo que monta el cierre sobre los testimonios: sin este
+       guion no se monta, y la pregunta nunca se queda escondida. */
+    envoltorio.classList.add('cc-velado', 'cc-montado');
 
     SmilersScroll.registrar(leerCierre, actualizarCierre, function () {
       ultimoDesplazado = -1;

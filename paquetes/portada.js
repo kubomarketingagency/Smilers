@@ -874,16 +874,22 @@ desplazado=-envoltorio.getBoundingClientRect().top;
 var ENTRA=8;
 var SALE=2;
 var revelado=false;
+var clavado=null;
 function actualizarCierre(){
 if(desplazado===ultimoDesplazado)return;
 ultimoDesplazado=desplazado;
+var estaClavado=desplazado >=-1;
+if(estaClavado !==clavado){
+clavado=estaClavado;
+envoltorio.classList.toggle('cc-clavado',clavado);
+}
 var quiere=revelado?(desplazado > SALE):(desplazado >=ENTRA);
 if(quiere===revelado)return;
 revelado=quiere;
 envoltorio.classList.toggle('cc-revelado',revelado);
 envoltorio.classList.toggle('cc-velado',!revelado);
 }
-envoltorio.classList.add('cc-velado');
+envoltorio.classList.add('cc-velado','cc-montado');
 SmilersScroll.registrar(leerCierre,actualizarCierre,function(){
 ultimoDesplazado=-1;
 },{
