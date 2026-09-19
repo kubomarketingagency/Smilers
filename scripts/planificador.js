@@ -74,36 +74,66 @@ var SmilersScroll = (function () {
     deslizamiento = null;
   }
 
-  function deslizarA(destino, duracion, salida) {
+  /* La curva del deslizamiento. Sin `arranque` es la de siempre, lenta al
+     salir y lenta al llegar: la de un ancla. Con `arranque` sale ya en
+     marcha y frena hasta pararse en el destino, que es lo que pide un gesto:
+     la pagina tiene que moverse en el mismo fotograma en que se toca la
+     rueda o se suelta el dedo, no un cuarto de segundo despues.
+
+     `arranque` es la velocidad de salida en pixeles por milisegundo (la del
+     dedo al soltar, o la del deslizamiento al que este releva), y `true`
+     equivale a la salida mas brusca, la de siempre en los testimonios. La
+     curva es una cubica de Hermite: sale a esa velocidad y llega a cero, y
+     con `k` (la velocidad de salida en unidades del salto entero) entre 0 y
+     3 nunca se pasa del destino ni vuelve atras. */
+  function curva(t, k) {
+    if (k === null) return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    return k * (t * t * t - 2 * t * t + t) + 3 * t * t - 2 * t * t * t;
+  }
+  function pendiente(t, k) {
+    if (k === null) return t < .5 ? 12 * t * t : 3 * Math.pow(-2 * t + 2, 2);
+    return (1 - t) * (k + t * (6 - 3 * k));
+  }
+
+  function deslizarA(destino, duracion, arranque, alLlegar) {
     abortar();
     inmuneHasta = Date.now() + 90;
     var inicio = window.scrollY;
     var salto = destino - inicio;
-    if (Math.abs(salto) < 2) return;
+    if (Math.abs(salto) < 2) {
+      if (alLlegar) alLlegar();
+      return;
+    }
     document.documentElement.classList.add('smilers-deslizando');
     var d = duracion || 620;
-    var t0 = 0;
-    var mio = { vivo: true };
+    var k = arranque === true ? 3
+      : (typeof arranque === 'number' ? Math.min(3, Math.max(0, arranque * d / Math.abs(salto))) : null);
+    var mio = { vivo: true, destino: destino, salto: salto, d: d, k: k, t0: 0 };
     deslizamiento = mio;
 
     function paso(ahora) {
       if (!mio.vivo) return;
-      if (!t0) t0 = ahora;
-      var t = Math.min(1, (ahora - t0) / d);
-      var e = salida
-
-        ? 1 - Math.pow(1 - t, 3)
-
-        : (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-      window.scrollTo(0, Math.round(inicio + salto * e));
+      if (!mio.t0) mio.t0 = ahora;
+      var t = Math.min(1, (ahora - mio.t0) / d);
+      window.scrollTo(0, Math.round(inicio + salto * curva(t, k)));
       if (t < 1) requestAnimationFrame(paso);
       else if (deslizamiento === mio) {
         deslizamiento = null;
         document.documentElement.classList.remove('smilers-deslizando');
+        if (alLlegar) alLlegar();
       }
     }
     requestAnimationFrame(paso);
+  }
+
+  /* A cuanto va el deslizamiento en curso, en pixeles por milisegundo y con
+     signo (positivo es bajar). Para que el que lo releve salga a la misma
+     velocidad y el cambio no se note. */
+  function velocidad() {
+    var s = deslizamiento;
+    if (!s || !s.t0) return 0;
+    var t = Math.min(1, (performance.now() - s.t0) / s.d);
+    return s.salto / s.d * pendiente(t, s.k);
   }
 
   var quietos = [];
@@ -169,9 +199,16 @@ var SmilersScroll = (function () {
     pedir();
   });
 
-  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (evt) {
+  ['wheel', 'touchstart', 'keydown'].forEach(function (evt) {
     window.addEventListener(evt, abortar, { passive: true });
   });
+  /* El dedo ya lo corta `touchstart`. Con `pointerdown` tambien, el toque
+     mataba el deslizamiento antes de que nadie pudiera ver adonde iba
+     —`pointerdown` llega primero—, y los topes de Nosotros no sabian que un
+     segundo gesto venia a continuar el primero. */
+  window.addEventListener('pointerdown', function (evento) {
+    if (evento.pointerType !== 'touch') abortar();
+  }, { passive: true });
 
   return {
 
@@ -202,6 +239,13 @@ var SmilersScroll = (function () {
     alto: alto,
     deslizarA: deslizarA,
     abortarDeslizamiento: abortar,
+    /* Como abortar, pero sin respetar los 90ms de gracia del arranque: para
+       cuando el dedo agarra la pagina, que manda aunque el deslizamiento
+       acabe de salir. */
+    detener: function () { inmuneHasta = 0; abortar(); },
+    /* Adonde va el deslizamiento en curso, o null si no hay ninguno. */
+    destino: function () { return deslizamiento ? deslizamiento.destino : null; },
+    velocidad: velocidad,
     pedir: pedir
   };
 })();

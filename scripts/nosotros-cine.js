@@ -595,13 +595,74 @@ document.addEventListener('DOMContentLoaded', function () {
              (delta < 0 && (y <= primero + 2 || y + delta > ultimo));
     }
 
-    /* Con raton cada racha de rueda es un paso: el primer golpe manda
-       deslizar hasta la parada siguiente y el resto de la racha —la inercia
-       del trackpad, o la rueda girada de un tiron— se descarta hasta que la
-       mano se para un momento (`PAUSA_RACHA`). */
-    var PAUSA_RACHA = 220;
+    /* Lo que pasa encima del menu abierto o del aviso de cookies es suyo: el
+       menu bloquea la pagina y el aviso tiene su propio scroll. */
+    function ajeno(evento) {
+      if (document.body.style.overflow === 'hidden') return true;
+      var el = evento.target;
+      return !!(el && el.closest && el.closest('#cc-main, .menu-abierto'));
+    }
+
+    /* Cuanto tarda un paso: 0,6s entre paradas cercanas y 0,9s como mucho,
+       para la mas lejana. Sale a `ARRANQUE` veces la velocidad media, asi que
+       la escena ya se esta moviendo en el fotograma del gesto. */
+    var ARRANQUE = .8;
+    function duracionPaso(salto) {
+      return Math.round(Math.min(900, Math.max(620, 420 + Math.abs(salto) * .28)));
+    }
+
+    /* Un paso, y el que queda pedido para cuando llegue. Un gesto mientras
+       la escena va hacia una parada no se pierde: si es en la misma
+       direccion, se apunta y en cuanto llega sale hacia la siguiente; si es
+       en la contraria, se da la vuelta ya. Solo se apunta uno, asi que por
+       mucho que se insista cada parada se ve llegar y quedarse. */
+    var marcha = null;
+    var pendiente = 0;
+
+    function enMarcha() {
+      return marcha && SmilersScroll.destino() === marcha.destino ? marcha : null;
+    }
+
+    function darPaso(direccion) {
+      pendiente = 0;
+      marcha = null;
+      var y = window.scrollY;
+      var destino = topeHacia(posicionesTopes(), y, direccion);
+      if (destino === null) return;
+      var salto = Math.abs(destino - y);
+      var duracion = duracionPaso(salto);
+      /* Si iba en la otra direccion, sale desde parado. */
+      var yendo = SmilersScroll.velocidad() * direccion;
+      var arranque = yendo < 0 ? 0 : Math.max(yendo, ARRANQUE * salto / duracion);
+      marcha = { destino: destino, direccion: direccion, t0: performance.now(), duracion: duracion };
+      SmilersScroll.deslizarA(destino, duracion, arranque, alLlegar);
+    }
+
+    function alLlegar() {
+      marcha = null;
+      if (pendiente) darPaso(pendiente);
+    }
+
+    /* `nuevo` es un gesto que empieza (un golpe de rueda tras una pausa, una
+       tecla); si no, es la continuacion de uno que ya se atendio, y solo
+       cuenta pasado el 60% del paso: antes es el mismo gesto que lo lanzo. */
+    function pedirPaso(direccion, nuevo) {
+      var m = enMarcha();
+      if (!m || direccion !== m.direccion) { darPaso(direccion); return; }
+      if (pendiente) return;
+      if (nuevo || (performance.now() - m.t0) / m.duracion > .6) pendiente = direccion;
+    }
+
+    /* Con raton, una racha de rueda es un gesto. Se distingue lo que la mano
+       sigue pidiendo de la inercia que la rueda o el trackpad sueltan al
+       acabar: la inercia se va apagando, y un golpe que llega con al menos el
+       70% de la fuerza del mas fuerte de la racha es que la mano sigue ahi.
+       Asi, girar la rueda sin parar va de parada en parada sin atascarse, y
+       un solo golpe de trackpad, con toda su cola, es un paso. */
+    var PAUSA_RACHA = 200;
+    var FUERZA_SIGUE = .7;
     var ultimaRueda = 0;
-    var deslizandoHasta = 0;
+    var racha = { direccion: 0, pico: 0 };
     /* Si el golpe anterior de la racha ya fue nuestro. Subiendo desde el pie
        la racha empieza con rueda normal y entra en los topes a mitad: ese
        primer golpe dentro tiene que valer, que si no la racha se quedaba
@@ -609,21 +670,24 @@ document.addEventListener('DOMContentLoaded', function () {
     var rachaNuestra = false;
 
     function alRodar(evento) {
-      if (!viva || !conRaton.matches || quietud.matches) return;
+      if (!viva || !conRaton.matches || quietud.matches || ajeno(evento)) return;
       if (evento.ctrlKey || Math.abs(evento.deltaX) > Math.abs(evento.deltaY)) return;
-
-      var ahora = Date.now();
-      var pausa = ahora - ultimaRueda;
-      ultimaRueda = ahora;
 
       var topes = posicionesTopes();
       if (topes.length < 2) return;
-      var y = window.scrollY;
       var escala = evento.deltaMode === 1 ? 40 : (evento.deltaMode === 2 ? window.innerHeight : 1);
       var delta = evento.deltaY * escala;
       if (!delta) return;
 
-      if (fueraDeTopes(topes, y, delta)) {
+      var ahora = performance.now();
+      var direccion = delta > 0 ? 1 : -1;
+      var fuerza = Math.abs(delta);
+      var nueva = ahora - ultimaRueda >= PAUSA_RACHA || direccion !== racha.direccion;
+      ultimaRueda = ahora;
+      if (nueva) racha = { direccion: direccion, pico: fuerza };
+      else racha.pico = Math.max(racha.pico, fuerza);
+
+      if (fueraDeTopes(topes, window.scrollY, delta)) {
         rachaNuestra = false;
         return;
       }
@@ -632,26 +696,47 @@ document.addEventListener('DOMContentLoaded', function () {
       /* Que no llegue a la ventana: alli el planificador cancela cualquier
          deslizamiento en cuanto se mueve la rueda, y este es el nuestro. */
       evento.stopPropagation();
-      var seguida = pausa < PAUSA_RACHA && rachaNuestra;
+      var entra = !rachaNuestra;
       rachaNuestra = true;
-      if (ahora < deslizandoHasta || seguida) return;
-
-      var destino = topeHacia(topes, y, delta);
-      if (destino === null) return;
-
-      var duracion = Math.round(Math.min(1500, Math.max(1000, 600 + Math.abs(destino - y) * .45)));
-      deslizandoHasta = ahora + duracion + 80;
-      SmilersScroll.deslizarA(destino, duracion);
+      if (nueva || entra) pedirPaso(direccion, true);
+      else if (fuerza >= racha.pico * FUERZA_SIGUE) pedirPaso(direccion, false);
     }
     document.addEventListener('wheel', alRodar, { passive: false, capture: true });
+
+    /* Y con el teclado, lo mismo: avanzar pagina, la barra espaciadora y las
+       flechas van de parada en parada. Dejar la tecla pulsada es como girar
+       la rueda sin parar. */
+    var TECLAS = { PageDown: 1, PageUp: -1, ArrowDown: 1, ArrowUp: -1, ' ': 1 };
+    document.addEventListener('keydown', function (evento) {
+      if (!viva || quietud.matches || ajeno(evento)) return;
+      var direccion = TECLAS[evento.key];
+      if (!direccion || evento.altKey || evento.ctrlKey || evento.metaKey) return;
+      var el = evento.target;
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+      if (evento.key === ' ') {
+        if (el && /^(BUTTON|A|SUMMARY)$/.test(el.tagName)) return;
+        if (evento.shiftKey) direccion = -1;
+      }
+      var topes = posicionesTopes();
+      if (topes.length < 2 || fueraDeTopes(topes, window.scrollY, direccion)) return;
+      evento.preventDefault();
+      evento.stopPropagation();
+      pedirPaso(direccion, !evento.repeat);
+    }, true);
 
     /* Con el dedo, la escena va pegada al dedo mientras se arrastra —se ve
        el telon moverse bajo la yema— pero sin pasar de la parada de delante
        ni de la de atras. Al soltar decide la direccion del gesto: si iba
        lanzado, o si se arrastro mas de un 12% de pantalla, sigue hasta la
-       parada siguiente arrancando a la velocidad del dedo y frenando al
+       parada siguiente saliendo a la velocidad del dedo y frenando al
        llegar; si fue un roce, vuelve a donde estaba. El gesto horizontal no
-       se toca: es de los carruseles. */
+       se toca: es de los carruseles.
+
+       Tocar mientras la escena va hacia una parada la agarra, como a la
+       inercia de siempre, pero no la olvida: un segundo gesto en la misma
+       direccion cuenta desde la parada a la que iba —lleva a la siguiente,
+       no a la misma—, y un toque sin arrastre la deja seguir hasta ella en
+       vez de dejarla entre dos. */
     var dedo = null;
     var VELOCIDAD_LANZADO = .25; // px por ms
 
@@ -683,19 +768,34 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }, { passive: true });
 
+    /* Hasta una parada soltando a `velocidad` (px/ms, a favor del camino).
+       Si el dedo iba rapido tarda menos: sale a su velocidad y frena. */
+    function soltarHacia(destino, velocidad) {
+      var resto = Math.abs(destino - window.scrollY);
+      if (resto < 2) return;
+      var tope = Math.min(880, Math.max(500, 450 + resto * .3));
+      var v = Math.max(0, velocidad);
+      var duracion = v > 0 ? Math.max(380, Math.min(tope, 2 * resto / v)) : tope;
+      SmilersScroll.deslizarA(destino, Math.round(duracion), Math.max(v, .4 * resto / duracion));
+    }
+
     function alTocar(evento) {
       dedo = null;
       vigilaInercia = false;
-      if (!viva || quietud.matches || evento.touches.length !== 1) return;
+      if (!viva || quietud.matches || evento.touches.length !== 1 || ajeno(evento)) return;
       var topesAhora = posicionesTopes();
       if (topesAhora.length) {
         ultimoTope = topesAhora[topesAhora.length - 1];
         vigilaInercia = window.scrollY > ultimoTope + 2;
       }
+      var yendo = SmilersScroll.destino();
+      if (yendo !== null) SmilersScroll.detener();
+      marcha = null;
+      pendiente = 0;
       var t = evento.touches[0];
       dedo = {
-        x: t.clientX, y: t.clientY, desde: window.scrollY,
-        decidido: false, nuestro: false,
+        x: t.clientX, y: t.clientY, desde: window.scrollY, yendo: yendo,
+        decidido: false, nuestro: false, nativo: false,
         muestras: [{ y: t.clientY, t: evento.timeStamp }]
       };
     }
@@ -710,17 +810,24 @@ document.addEventListener('DOMContentLoaded', function () {
         var dy = t.clientY - dedo.y;
         if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
         dedo.decidido = true;
+        if (Math.abs(dx) > Math.abs(dy)) return;
         var topes = posicionesTopes();
-        if (Math.abs(dx) > Math.abs(dy) || topes.length < 2 ||
-            fueraDeTopes(topes, dedo.desde, -dy)) {
-          dedo = null;
+        if (topes.length < 2 || fueraDeTopes(topes, dedo.desde, -dy)) {
+          dedo.nativo = true;
           return;
         }
         dedo.nuestro = true;
         dedo.topes = topes;
-        var atras = topeHacia(topes, dedo.desde, -1);
+        var detras = topeHacia(topes, dedo.desde, -1);
         var delante = topeHacia(topes, dedo.desde, 1);
-        dedo.min = atras === null ? dedo.desde : atras;
+        if (dedo.yendo !== null && dedo.yendo > dedo.desde + 2) {
+          var despues = topeHacia(topes, dedo.yendo, 1);
+          delante = despues === null ? dedo.yendo : despues;
+        } else if (dedo.yendo !== null && dedo.yendo < dedo.desde - 2) {
+          var antes = topeHacia(topes, dedo.yendo, -1);
+          detras = antes === null ? dedo.yendo : antes;
+        }
+        dedo.min = detras === null ? dedo.desde : detras;
         dedo.max = delante === null ? dedo.desde : delante;
         /* Sin el `scroll-behavior: smooth` de la pagina mientras tanto: con
            el, cada `scrollTo` se animaba por su cuenta y la escena llegaba
@@ -739,7 +846,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function alSoltar(evento) {
       var d = dedo;
       dedo = null;
-      if (!d || !d.nuestro) return;
+      if (!d) return;
+      if (!d.nuestro) {
+        if (d.yendo !== null && !d.nativo) soltarHacia(d.yendo, 0);
+        return;
+      }
 
       /* La velocidad de los ultimos 100ms, en pixeles de pagina: positiva
          es bajar, que es subir el dedo. */
@@ -760,6 +871,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var destino;
       if (direccion > 0) destino = d.max;
       else if (direccion < 0) destino = d.min;
+      else if (d.yendo !== null) destino = d.yendo;
       else {
         /* Un roce: de vuelta a la parada de la que salio, o a la mas
            cercana si el gesto empezo entre dos. */
@@ -768,9 +880,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       document.documentElement.classList.remove('smilers-deslizando');
-      var resto = Math.abs(destino - y);
-      if (resto < 2) return;
-      SmilersScroll.deslizarA(destino, Math.round(Math.min(1300, Math.max(700, 450 + resto * .6))), true);
+      soltarHacia(destino, destino > y ? velocidad : -velocidad);
     }
 
     document.addEventListener('touchstart', alTocar, { passive: true });
