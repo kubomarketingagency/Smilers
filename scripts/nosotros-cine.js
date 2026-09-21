@@ -241,7 +241,9 @@ document.addEventListener('DOMContentLoaded', function () {
       '--k-retrato': pieza(carta, '.ns-carta__retrato'),
       '--k-frase': pieza(carta, '.ns-carta__frase'),
       '--k-papel': pieza(carta, '.ns-carta__hoja'),
-      '--k-texto': pieza(carta, '.ns-carta__texto'),
+      /* Lo impreso se funde sobre la hoja ya puesta: la variable va en el
+         documento y de ahi la heredan sus bloques. */
+      '--k-texto': pieza(carta, '.cb-doc'),
       '--k-filo': pieza(carta, '.ns-carta__escuadras'),
       '--k-firma': pieza(carta, '.ns-carta__firma')
     };

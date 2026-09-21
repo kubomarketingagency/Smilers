@@ -120,49 +120,155 @@
   color: var(--oro-marca);
 }
 
-/* ---- El papel ---- */
+/* ---- La hoja: el documento de la clinica ----------------------------------
+   Lo que va aqui dentro es la carta que paso la clinica, rehecha pieza por
+   pieza: los dos arcos de la esquina salen del original —medidos pixel a
+   pixel y pasados a curvas—, y los bloques estan cada uno en el porcentaje
+   exacto en que estaban. El original es un PNG de 320x455: a media pantalla
+   su letra de cuerpo mide seis pixeles y se lee como se lee una foto de un
+   papel, borrosa. Asi se lee a cualquier tamano, se puede seleccionar, la
+   encuentra un buscador y la lee en voz alta un lector de pantalla.
+
+   La hoja guarda la proporcion del original (320/455, que es la de un A4) y
+   la letra va en `cqw` —tanto por ciento del ancho de la hoja—, asi que la
+   pagina entera escala de una pieza, igual que escalaria la imagen. */
 .ns-carta__hoja {
   position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  /* `--aire` es lo que se deja por arriba y por abajo, y es tambien lo que
+     hay que descontarle a la pantalla para saber cuanto puede medir la hoja. */
+  --aire: clamp(1.1rem, 3vh, 2.4rem);
+  padding: var(--aire) clamp(1.1rem, 2.2vw, 2.6rem);
   background: #050505;
 }
+/* El documento, con las cuatro escuadras de oro por fuera.
+
+   El ancho sale del alto, y no al reves: una hoja A4 en una pantalla apaisada
+   la limita el alto, siempre. Escrito al reves —un `aspect-ratio` con un
+   `max-height`— el navegador encoge un lado, deja el otro donde estaba y la
+   hoja sale deformada; asi no puede pasar. */
 .ns-carta__papel {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  padding: clamp(2.2rem, 5vw, 4.2rem) clamp(1.5rem, 5vw, 4rem);
-  /* Papel de verdad: la crema editorial con una veladura calida que se va
-     hacia el canto, como la luz que entra por un lado. */
-  background:
-    radial-gradient(120% 90% at 18% 8%, rgba(255, 253, 248, .90) 0%, rgba(255, 253, 248, 0) 58%),
-    linear-gradient(152deg, #F7F1E4 0%, #F1E7D4 46%, #E9DCC4 100%);
-  color: var(--gm-texto);
+  aspect-ratio: 320 / 455;
 }
-/* El filo de oro del papel: una linea fina por dentro del canto. */
-.ns-carta__papel::after {
-  content: "";
-  position: absolute;
-  inset: clamp(.5rem, 1.1vw, .9rem);
-  z-index: 3;
-  border: 1px solid rgba(168, 128, 30, .34);
-  pointer-events: none;
+
+.cb-doc {
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  color: #0A0A0A;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  -webkit-font-smoothing: antialiased;
+}
+.cb-doc p { margin: 0; }
+.cb-doc__marco { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* La raya que parte la hoja: x=123 de 320, de y=92 a y=429 de 455. */
+.cb-raya { position: absolute; left: 38.44%; top: 20.22%; bottom: 5.71%; width: .3cqw; background: #0A0A0A; }
+
+/* ---- La columna de los datos, centrada en x=71 de 320 ---- */
+.cb-b { position: absolute; left: 6.2%; width: 32%; text-align: center; }
+.cb-b p { font-size: 2.05cqw; line-height: 1.5; }
+.cb-ico {
+  width: 5.3cqw;
+  height: 5.3cqw;
+  border-radius: 50%;
+  background: #0A0A0A;
+  color: #FFFFFF;
+  display: inline-grid;
+  place-items: center;
+  vertical-align: top;
+}
+.cb-ico .icono { width: 2.7cqw; height: 2.7cqw; fill: currentColor; }
+.cb-ico--cuadro { border-radius: 1.1cqw; }
+.cb-redes { display: flex; gap: 1.6cqw; justify-content: center; }
+
+.cb-b--tel    { top: 28.35%; }
+.cb-b--nums   { top: 33.19%; }
+.cb-b--nums p { font-size: 2.4cqw; line-height: 1.4; letter-spacing: .01em; }
+.cb-b--redes  { top: 47.25%; }
+.cb-b--arroba { top: 52.31%; }
+.cb-b--arroba p { font-size: 2.2cqw; }
+.cb-b--pin    { top: 60%; }
+.cb-b--dirs   { top: 64.62%; }
+.cb-b--dirs p + p { margin-top: 3.1cqw; }
+
+/* ---- La carta ---- */
+.cb-r { position: absolute; left: 40.63%; right: 7.8%; }
+.cb-logo { position: absolute; left: 48.75%; width: 43.13%; top: 3.52%; }
+.cb-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* En el documento el logo va en gris plano, no en oro. */
+  filter: grayscale(1) contrast(.42) brightness(1.3);
+}
+.cb-tit {
+  top: 21.98%;
+  margin: 0;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: 2.72cqw;
+  line-height: 1.44;
+  letter-spacing: -.004em;
+  color: #0A0A0A;
+}
+.cb-p1  { top: 29.89%; }
+.cb-p2  { top: 56.26%; }
+.cb-lem { top: 75.16%; }
+.cb-p1, .cb-p2, .cb-lem {
+  font-size: 2.28cqw;
+  line-height: 1.6;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* La rubrica, centrada en la columna del texto. */
+.cb-rub { top: 82.2%; text-align: center; }
+.cb-rub b { display: block; font-size: 2.5cqw; line-height: 1.25; margin-top: .4cqw; }
+.cb-rub i { display: block; font-style: italic; font-size: 2.35cqw; line-height: 1.6; }
+/* La firma se escribe de izquierda a derecha con `--k-firma`, que es lo
+   ultimo que mueve la escena: la carta acaba de firmarse delante de quien
+   la esta leyendo. */
+.ns-carta__firma {
+  width: 20cqw;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  clip-path: inset(0 calc((1 - var(--k-firma, 1)) * 100%) 0 0);
+  mix-blend-mode: multiply;
+}
+
+
+/* Sin escena no hay pantalla que repartir: la hoja se queda en un ancho de
+   lectura y centrada; con escena, lo que quepa en el pin. */
+.ns-carta__papel { width: min(100%, 30rem); }
+.ns-carta--viva .ns-carta__hoja { padding-top: calc(var(--alto-navbar) + var(--aire)); }
+.ns-carta--viva .ns-carta__papel {
+  width: min(100%, calc((100lvh - var(--alto-navbar) - var(--aire) * 2) * 320 / 455));
 }
 
 /* Las cuatro escuadras de oro, que se dibujan solas: cada una son dos rayas
-   que crecen desde su vertice. `--k-filo` va de 0 a 1. */
+   que crecen desde su vertice. `--k-filo` va de 0 a 1. Enmarcan el
+   documento por fuera, sin taparle nada. */
 .ns-carta__escuadras {
   position: absolute;
-  inset: clamp(.5rem, 1.1vw, .9rem);
+  inset: clamp(-1rem, -1.3vw, -.55rem);
   z-index: 4;
   pointer-events: none;
 }
 .ns-carta__esq {
   position: absolute;
-  width: clamp(28px, 4vw, 54px);
-  height: clamp(28px, 4vw, 54px);
+  width: clamp(26px, 3.4vw, 46px);
+  height: clamp(26px, 3.4vw, 46px);
 }
 .ns-carta__esq::before,
 .ns-carta__esq::after {
@@ -170,14 +276,13 @@
   position: absolute;
   background: var(--oro-marca-degradado);
 }
-/* La raya horizontal y la vertical de cada escuadra. */
 .ns-carta__esq::before { height: 2px; width: calc(var(--k-filo, 1) * 100%); }
 .ns-carta__esq::after  { width: 2px; height: calc(var(--k-filo, 1) * 100%); }
 
-.ns-carta__esq--ai { top: -1px; left: -1px; }
-.ns-carta__esq--ad { top: -1px; right: -1px; }
-.ns-carta__esq--bi { bottom: -1px; left: -1px; }
-.ns-carta__esq--bd { bottom: -1px; right: -1px; }
+.ns-carta__esq--ai { top: 0; left: 0; }
+.ns-carta__esq--ad { top: 0; right: 0; }
+.ns-carta__esq--bi { bottom: 0; left: 0; }
+.ns-carta__esq--bd { bottom: 0; right: 0; }
 
 .ns-carta__esq--ai::before { top: 0; left: 0; }
 .ns-carta__esq--ai::after  { top: 0; left: 0; }
@@ -187,7 +292,6 @@
 .ns-carta__esq--bi::after  { bottom: 0; left: 0; }
 .ns-carta__esq--bd::before { bottom: 0; right: 0; }
 .ns-carta__esq--bd::after  { bottom: 0; right: 0; }
-
 /* El lustre: una banda de luz que cruza el papel una sola vez, cuando la
    carta acaba de entrar. Es un reflejo, no un brillo de anuncio: va al 12%
    y cruza en dos segundos. */
@@ -202,90 +306,6 @@
               rgba(255, 252, 240, .78) 50%,
               rgba(255, 255, 255, 0) 62%);
 }
-
-.ns-carta__texto {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 40rem;
-  margin-inline: auto;
-}
-/* El rotulo va sobre papel claro: el oro hondo, que es el que se lee ahi. */
-.ns-rotulo--carta { color: var(--gm-oro-hondo); }
-.ns-rotulo--carta i { color: var(--gm-oro-hondo); }
-.ns-rotulo--carta::after { background: linear-gradient(90deg, rgba(168, 128, 30, .5), transparent); }
-
-.ns-carta__titulo {
-  margin: 0 0 clamp(.9rem, 1.6vw, 1.3rem);
-  font-family: var(--fuente-titulo);
-  font-weight: 400;
-  font-size: clamp(1.35rem, 2.5vw, 2.1rem);
-  line-height: 1.24;
-  color: #241F16;
-}
-.ns-carta__titulo em {
-  font-style: normal;
-  font-weight: 500;
-  color: var(--oro-hondo);
-}
-.ns-carta__parrafo {
-  margin: 0 0 clamp(.8rem, 1.4vw, 1.1rem);
-  font-family: var(--fuente-cuerpo);
-  font-weight: 300;
-  font-size: clamp(.9rem, 1vw, 1rem);
-  line-height: 1.76;
-  color: #40382B;
-}
-.ns-carta__lema {
-  margin: clamp(1rem, 1.8vw, 1.5rem) 0 0;
-  font-family: var(--fuente-titulo);
-  font-weight: 500;
-  font-style: italic;
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  line-height: 1.4;
-  color: #241F16;
-}
-
-/* ---- La rubrica ---- */
-.ns-carta__rubrica {
-  display: flex;
-  align-items: center;
-  gap: clamp(.9rem, 2vw, 1.6rem);
-  margin-top: clamp(1.2rem, 2.4vw, 2rem);
-  padding-top: clamp(1rem, 2vw, 1.5rem);
-  border-top: 1px solid rgba(168, 128, 30, .28);
-}
-/* La firma se escribe de izquierda a derecha con `--k-firma`, que es la
-   ultima que mueve la escena: la carta acaba de firmarse delante de quien
-   la esta leyendo. */
-.ns-carta__firma {
-  flex: 0 0 auto;
-  width: clamp(96px, 12vw, 140px);
-  height: auto;
-  clip-path: inset(0 calc((1 - var(--k-firma, 1)) * 100%) 0 0);
-  mix-blend-mode: multiply;
-}
-.ns-carta__pie {
-  margin: 0;
-  font-family: var(--fuente-cuerpo);
-  line-height: 1.45;
-}
-.ns-carta__pie b {
-  display: block;
-  font-weight: 700;
-  font-size: clamp(.85rem, 1vw, .95rem);
-  color: #241F16;
-}
-.ns-carta__pie span {
-  display: block;
-  margin-top: .15rem;
-  font-weight: 700;
-  font-size: .6rem;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--oro-hondo);
-}
-
 
 /* ---------------------------------------------------------------------------
    La escena viva.
@@ -351,14 +371,14 @@
   transform-origin: 50% 30%;
 }
 /* Sobre los brazos cruzados, que es la unica franja ancha de negro liso que
-   tiene la foto. Mas arriba cae sobre el bordado de la bata —que tambien
-   pone su nombre, en blanco y a contraluz— y las dos letras se estorban; mas
-   abajo pisa la placa. */
+   tiene la foto, y bien por debajo de la cara: arriba estorba al retrato y al
+   bordado de la bata —que tambien pone su nombre, en blanco y a contraluz—,
+   y mas abajo pisa la placa. */
 .ns-carta--viva .ns-carta__frase {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 21%;
+  bottom: 17%;
   z-index: 2;
   background: none;
   opacity: var(--k-frase, 1);
@@ -371,9 +391,11 @@
   z-index: 3;
   transform: translate3d(0, calc((1 - var(--k-papel, 1)) * 101%), 0);
 }
-.ns-carta--viva .ns-carta__texto {
+/* La hoja entra en blanco y lo impreso aparece despues: el papel primero,
+   la carta encima. Se funde todo lo que hay dentro del documento menos el
+   marco —que es parte del papel— y el lustre, que va por su cuenta. */
+.ns-carta--viva .cb-doc > *:not(.cb-doc__marco):not(.ns-carta__lustre) {
   opacity: var(--k-texto, 1);
-  transform: translate3d(0, calc((1 - var(--k-texto, 1)) * 22px), 0);
 }
 /* El lustre cruza cuando el papel ya esta puesto. Se enciende con una clase
    que pone el guion, no con el progreso: es un gesto que pasa una vez. */
@@ -388,15 +410,7 @@
 }
 
 
-/* En el telefono el papel sube hasta cubrir la pantalla entera, y arriba del
-   todo esta la barra de navegacion, que es fija y opaca: el filo de oro y las
-   dos escuadras de arriba le quedaban debajo. El marco del papel empieza por
-   donde acaba la barra, y el texto un poco mas abajo. */
-@media (max-width: 991.98px) {
-  .ns-carta--viva .ns-carta__papel::after,
-  .ns-carta--viva .ns-carta__escuadras { top: calc(var(--alto-navbar) + .6rem); }
-  .ns-carta--viva .ns-carta__papel { padding-top: calc(var(--alto-navbar) + 1.6rem); }
-}
+
 
 
 /* ---------------------------------------------------------------------------
@@ -413,11 +427,10 @@
      ancho no hay nada que la tape ni tiene por que irse. */
   .ns-carta__frase {
     position: absolute;
-    top: 50%;
+    bottom: 16%;
     left: 0;
     width: 50%;
     z-index: 2;
-    transform: translateY(-50%);
     padding-inline: clamp(2rem, 4vw, 3.6rem);
     background: none;
     text-shadow: 0 2px 20px rgba(0, 0, 0, .5);
@@ -438,10 +451,12 @@
     grid-column: 1;
     clip-path: inset(0 calc((1 - var(--k-retrato, 1)) * 100%) 0 0);
   }
+  /* En ancho tampoco va a media altura: ahi cae sobre la cara. Baja al
+     tercio de abajo, sobre los brazos, y deja el retrato limpio. */
   .ns-carta--viva .ns-carta__frase {
-    top: 50%;
-    bottom: auto;
-    transform: translate3d(0, calc(-50% + (1 - var(--k-frase, 1)) * 22px), 0);
+    top: auto;
+    bottom: 16%;
+    transform: translate3d(0, calc((1 - var(--k-frase, 1)) * 22px), 0);
   }
   /* Y el papel se descubre desde la juntura hacia fuera, en el mismo sentido
      en que se lee y en el mismo en que se abrio el retrato. */
@@ -469,9 +484,17 @@
    Telefono en horizontal y pantallas muy bajas: el papel necesita todo el
    sitio que haya, y la frase estorba mas que suma.
    --------------------------------------------------------------------------- */
+/* En el telefono el documento se lleva todo el ancho que haya: es una hoja
+   A4 y cada pixel de ancho es un punto mas de letra. El aire del marco baja a
+   lo justo para que las escuadras no se salgan de la pantalla. */
+@media (max-width: 991.98px) {
+  .ns-carta__hoja { --aire: .8rem; padding-inline: .8rem; }
+  .ns-carta__esq { width: 20px; height: 20px; }
+  .ns-carta__escuadras { inset: -.5rem; }
+}
+
 @media (max-width: 991.98px) and (max-height: 560px) {
   .ns-carta--viva .ns-carta__frase { display: none; }
-  .ns-carta__papel { padding-block: clamp(1.2rem, 4vw, 2rem); }
 }
 
 /* Con menos movimiento pedido no hay escena: ni lustre ni firma a medias. */

@@ -896,7 +896,7 @@ var DESTINOS_CARTA={
 '--k-retrato':pieza(carta,'.ns-carta__retrato'),
 '--k-frase':pieza(carta,'.ns-carta__frase'),
 '--k-papel':pieza(carta,'.ns-carta__hoja'),
-'--k-texto':pieza(carta,'.ns-carta__texto'),
+'--k-texto':pieza(carta,'.cb-doc'),
 '--k-filo':pieza(carta,'.ns-carta__escuadras'),
 '--k-firma':pieza(carta,'.ns-carta__firma')
 };
