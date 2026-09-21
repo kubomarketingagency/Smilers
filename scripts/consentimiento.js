@@ -3,12 +3,20 @@
 
   /* El aviso de cookies y los pixeles de publicidad (Meta y Google Ads).
 
-     Lo que manda aqui es la Ley Organica de Proteccion de Datos Personales del
-     Ecuador: nada de terceros se carga sin permiso. Los dos pixeles NO estan en
-     el HTML. No hay un <script> de Meta ni de Google en ninguna pagina, ni
-     bloqueado ni esperando: el codigo que los pide se escribe en la pagina solo
-     despues de que la persona pulse "Aceptar". Si rechaza, cierra el aviso o no
-     hace nada, no se pide nada a Meta ni a Google.
+     Los dos pixeles NO estan en el HTML. No hay un <script> de Meta ni de
+     Google en ninguna pagina, ni bloqueado ni esperando: el codigo que los
+     pide lo escribe este guion, y solo cuando la politica de `antesDeDecidir`
+     se lo permite.
+
+     Esa politica es la decision del cliente y esta en un solo sitio, abajo.
+     Hoy vale 'activo': mientras la persona no responda al aviso, los pixeles
+     miden. En cuanto pulsa "Rechazar" se apagan, se borran sus cookies y la
+     pagina se recarga sin ellos; y si ya habia rechazado en otra visita, aqui
+     no se carga absolutamente nada. Poner 'espera' devuelve el guion al
+     comportamiento estricto —nada hasta que alguien acepte— sin tocar nada
+     mas. La pagina de privacidad cuenta exactamente esto, y las dos cosas
+     tienen que seguir diciendo lo mismo: si se cambia el interruptor, se
+     cambia la seccion 7 de privacidad.
 
      El aviso es CookieConsent (vanilla-cookieconsent 3, de Orest Bida, licencia
      MIT), servido desde el propio dominio: la libreria y los textos van en
@@ -37,6 +45,14 @@
     // Opcional. La conversion "Contacto" de Google Ads, p. ej. 'AW-123456789/AbCdEfGhIj'.
     // Se envia al pulsar WhatsApp, llamar o escribir por correo.
     googleAdsContacto: '',
+    /* Que pasa mientras la persona no ha contestado al aviso:
+         'activo' — los pixeles miden desde la primera pagina. Es lo que hay
+                    hoy. Rechazar los apaga y borra sus cookies.
+         'espera' — no se carga nada de Meta ni de Google hasta que alguien
+                    pulse "Aceptar". Es lo mas conservador.
+       Cambiar esto obliga a cambiar la seccion 7 de privacidad.html, que lo
+       cuenta tal cual. */
+    antesDeDecidir: 'activo',
     // Subirla (2, 3...) vuelve a preguntar a todo el mundo: hay que hacerlo si
     // se anade otro servicio que use cookies.
     revision: 1
@@ -101,8 +117,12 @@
   function cargarGoogleAds(id) {
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
-    /* Modo de consentimiento de Google: se declara lo que se acepto. Solo se
-       llega aqui con la publicidad aceptada, y la analitica no se usa. */
+    /* Modo de consentimiento de Google, declarado antes de pedir su guion,
+       que es el unico momento en que sirve de algo. A esta funcion solo se
+       llega cuando la publicidad puede correr —aceptada, o todavia sin
+       contestar con la politica en 'activo'—, asi que se declara concedida;
+       si luego alguien rechaza, `apagarPixeles()` manda el `update` a denied
+       y recarga. La analitica no se usa en este sitio y va siempre denegada. */
     window.gtag('consent', 'default', {
       ad_storage: 'granted',
       ad_user_data: 'granted',
@@ -119,6 +139,56 @@
     pixelesActivos = true;
     if (AJUSTES.metaPixel) cargarMeta(AJUSTES.metaPixel);
     if (AJUSTES.googleAds) cargarGoogleAds(AJUSTES.googleAds);
+  }
+
+  /* ---- Apagarlos ----------------------------------------------------------
+     Un guion que ya esta en la pagina no se puede descargar: `fbq` y `gtag`
+     siguen ahi hasta que la pagina se recarga. Asi que apagar es borrar sus
+     cookies y recargar, que es tambien lo que hace CookieConsent cuando
+     alguien retira un permiso que habia dado. La diferencia es que aqui hay
+     que hacerlo tambien cuando nunca hubo permiso —con `antesDeDecidir` en
+     'activo', los pixeles corren antes de que nadie diga nada— y eso la
+     libreria no lo contempla: para ella no ha cambiado ninguna categoria. */
+
+  function borrarCookiesDePublicidad() {
+    var nombres = document.cookie.split(';')
+      .map(function (trozo) { return trozo.split('=')[0].trim(); })
+      .filter(function (nombre) { return /^_fbp$|^_fbc$|^_gcl_/.test(nombre); });
+    if (!nombres.length) return;
+
+    /* Meta y Google las escriben en el dominio y, a veces, en el dominio de
+       segundo nivel. Se borra en los dos, y sin dominio, que es un tercer
+       sitio donde pueden estar. */
+    var host = location.hostname;
+    var dominios = [null, host, '.' + host];
+    var punto = host.indexOf('.');
+    if (punto !== -1) dominios.push('.' + host.slice(punto + 1));
+
+    nombres.forEach(function (nombre) {
+      dominios.forEach(function (dominio) {
+        document.cookie = nombre + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
+          (dominio ? '; domain=' + dominio : '');
+      });
+    });
+  }
+
+  function apagarPixeles() {
+    if (!pixelesActivos) return;
+    pixelesActivos = false;
+    /* Decirselo a Google antes de irnos: si algo suyo sigue en cola, que sepa
+       que ya no tiene permiso. */
+    if (window.gtag) {
+      window.gtag('consent', 'update', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied'
+      });
+    }
+    borrarCookiesDePublicidad();
+    /* La decision ya esta guardada en `cc_cookie` cuando se llega aqui, asi
+       que al volver a cargar no se pide nada y el aviso no reaparece. */
+    location.reload();
   }
 
   /* La conversion que le importa a una clinica: que alguien la contacte. Se
@@ -187,7 +257,9 @@
       revision: AJUSTES.revision,
       categoria: CATEGORIA,
       mostrar: mostrar,
-      alAceptar: activarPixeles
+      yaMiden: pixelesActivos,
+      alAceptar: activarPixeles,
+      alRechazar: apagarPixeles
     });
   }
 
@@ -243,9 +315,15 @@
     /* Ya acepto en otra visita: los pixeles, sin aviso y sin libreria. */
     enReposo(activarPixeles);
   } else if (decision === null) {
+    /* Todavia no ha contestado. Con la politica en 'activo' los pixeles
+       arrancan ya, en cuanto el navegador esta libre, y el aviso sale
+       despues, con la bienvenida retirada: el orden importa poco para lo que
+       se mide y mucho para lo que se ve. */
+    if (AJUSTES.antesDeDecidir === 'activo') enReposo(activarPixeles);
     trasLaBienvenida(function () {
       cargarLibreria().then(function () { return arrancar(true); }).catch(function () {});
     });
   }
-  /* decision === false: rechazo. No se carga nada. */
+  /* decision === false: rechazo en otra visita. No se carga nada, ni pixeles
+     ni libreria, y no se vuelve a preguntar hasta que caduque su decision. */
 })();

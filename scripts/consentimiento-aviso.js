@@ -10,20 +10,26 @@ window.SmilersAvisoCookies = {
     var categoria = opciones.categoria;
     var dominio = location.hostname;
 
+    /* Los dos caminos, y solo uno de los dos cada vez. Quien decide si hay
+       algo que encender o que apagar es consentimiento.js, que es el que
+       sabe si los pixeles estan corriendo. */
     function revisar() {
       if (CC.acceptedCategory(categoria)) opciones.alAceptar();
+      else if (opciones.alRechazar) opciones.alRechazar();
     }
 
     var categorias = {
       necesarias: { enabled: true, readOnly: true }
     };
     categorias[categoria] = {
-      /* Si alguien acepta y luego se arrepiente, se borran las cookies que
-         Meta y Google dejaron en este dominio y se recarga la pagina, que es
-         la unica forma de descargar sus guiones. */
+      /* Al rechazar se borran las cookies que Meta y Google hubieran dejado
+         en este dominio. La recarga —que es la unica forma de descargar sus
+         guiones— no la pide aqui `reloadPage`, sino consentimiento.js, que
+         tambien tiene que hacerla en el caso que esta libreria no ve: cuando
+         los pixeles corrian sin que nadie hubiera aceptado nada. Un solo
+         camino para recargar, y no dos. */
       autoClear: {
-        cookies: [{ name: /^_fbp/ }, { name: /^_fbc/ }, { name: /^_gcl_/ }],
-        reloadPage: true
+        cookies: [{ name: /^_fbp/ }, { name: /^_fbc/ }, { name: /^_gcl_/ }]
       }
     };
 
@@ -48,14 +54,20 @@ window.SmilersAvisoCookies = {
         translations: {
           es: {
             consentModal: {
-              title: 'Tu privacidad, tu decisión',
-              description:
-                'Con tu permiso, Meta y Google usarán cookies para medir nuestros anuncios ' +
-                'y mostrarte publicidad de la clínica. Si las rechazas, el sitio funciona igual, ' +
-                'y puedes cambiar de opinión cuando quieras.',
+              title: 'Cookies de publicidad',
+              /* Lo que dice depende de si los pixeles ya estan midiendo, que
+                 es lo que manda la politica de consentimiento.js. Decirlo de
+                 otra forma seria mentir en la primera frase que alguien lee. */
+              description: opciones.yaMiden
+                ? 'Meta y Google usan cookies para medir nuestros anuncios, y mientras no ' +
+                  'nos digas nada están funcionando. Si las rechazas, las apagamos y borramos ' +
+                  'ahora mismo. La página se ve igual en los dos casos.'
+                : 'Con tu permiso, Meta y Google usarán cookies para medir nuestros anuncios ' +
+                  'y mostrarte publicidad de la clínica. Si las rechazas, el sitio funciona igual, ' +
+                  'y puedes cambiar de opinión cuando quieras.',
               acceptAllBtn: 'Aceptar',
               acceptNecessaryBtn: 'Rechazar',
-              showPreferencesBtn: 'Elegir',
+              showPreferencesBtn: 'Ver cuáles',
               footer: '<a href="/privacidad">Política de privacidad</a>'
             },
             preferencesModal: {
@@ -66,39 +78,39 @@ window.SmilersAvisoCookies = {
               closeIconLabel: 'Cerrar',
               sections: [
                 {
-                  title: 'Cómo usamos las cookies',
+                  title: 'Las cookies de este sitio',
                   description:
-                    'Una cookie es un pequeño archivo que el sitio guarda en tu navegador. ' +
-                    'Aquí decides cuáles permites. Tu elección se guarda durante seis meses ' +
-                    'y puedes cambiarla en cualquier momento desde «Preferencias de cookies», ' +
-                    'al pie de cada página.'
+                    'Una cookie es un archivo diminuto que la página deja en tu navegador. ' +
+                    'Aquí abajo están todas, una por una, y decides cuáles permites. Tu ' +
+                    'elección dura seis meses y puedes cambiarla cuando quieras desde el botón ' +
+                    'de cookies, abajo a la izquierda de cualquier página.'
                 },
                 {
                   title: 'Necesarias <span class="pm__badge">Siempre activas</span>',
                   description:
-                    'Solo una: la que recuerda lo que respondiste en este aviso, para no ' +
-                    'volver a preguntarte en cada página. No sirve para identificarte.',
+                    'Una sola: la que recuerda qué respondiste aquí, para no preguntarte en ' +
+                    'cada página. No sirve para identificarte.',
                   linkedCategory: 'necesarias',
                   cookieTable: {
                     headers: tabla,
                     body: [
-                      { name: 'cc_cookie', domain: dominio, desc: 'Guarda tu elección sobre las cookies.', dur: '6 meses' }
+                      { name: 'cc_cookie', domain: dominio, desc: 'Recuerda tu elección sobre las cookies.', dur: '6 meses' }
                     ]
                   }
                 },
                 {
                   title: 'Publicidad (Meta y Google Ads)',
                   description:
-                    'Nos permiten saber si nuestros anuncios en Facebook, Instagram y Google ' +
-                    'traen visitas y contactos, y mostrar anuncios de la clínica a quien ya nos ' +
-                    'visitó. Las ponen Meta Platforms y Google, que tratan esos datos según sus ' +
-                    'propias políticas. Si no las aceptas, el sitio funciona exactamente igual.',
+                    'Sirven para saber si nuestros anuncios en Facebook, Instagram y Google ' +
+                    'traen visitas, y para mostrar anuncios de la clínica a quien ya nos visitó. ' +
+                    'Las ponen Meta Platforms y Google, cada uno con su propia política. ' +
+                    'Rechazarlas no cambia nada de lo que ves aquí.',
                   linkedCategory: categoria,
                   cookieTable: {
                     headers: tabla,
                     body: [
                       { name: '_fbp', domain: dominio, desc: 'Meta: reconoce el navegador para medir los anuncios.', dur: '3 meses' },
-                      { name: '_fbc', domain: dominio, desc: 'Meta: recuerda el anuncio desde el que llegaste.', dur: '3 meses' },
+                      { name: '_fbc', domain: dominio, desc: 'Meta: recuerda desde qué anuncio llegaste.', dur: '3 meses' },
                       { name: '_gcl_au', domain: dominio, desc: 'Google Ads: mide las conversiones de los anuncios.', dur: '3 meses' },
                       { name: 'Cookies de Meta y Google', domain: 'facebook.com, google.com', desc: 'Las que esos servicios guardan en sus propios dominios.', dur: 'Según cada servicio' }
                     ]
@@ -107,9 +119,9 @@ window.SmilersAvisoCookies = {
                 {
                   title: 'Más información',
                   description:
-                    'Todo lo que hacemos con tus datos está en nuestra ' +
-                    '<a href="/privacidad">Política de privacidad</a>. Para cualquier duda o para ' +
-                    'ejercer tus derechos, escríbenos a ' +
+                    'Lo que hacemos con tus datos está contado entero en la ' +
+                    '<a href="/privacidad">política de privacidad</a>. Si te queda una duda, o ' +
+                    'quieres ejercer tus derechos, escríbenos a ' +
                     '<a href="mailto:smilersdentalclinique@gmail.com">smilersdentalclinique@gmail.com</a>.'
                 }
               ]

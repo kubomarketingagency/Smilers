@@ -115,3 +115,95 @@
   color: var(--gold-500);
 }
 .footer-bottom .enlace-cookies[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------------
+   El boton flotante de cookies.
+
+   Va abajo a la izquierda, en la esquina que esta libre: a la derecha ya
+   estan el de WhatsApp y el de volver arriba, y un tercero ahi seria una
+   columna de tres botones tapando la pagina. Es el mismo oro y el mismo negro
+   que el resto, pero mas discreto que el de WhatsApp: ese llama, este solo
+   tiene que estar cuando se le busca.
+
+   Nace escondido (`hidden`) y solo lo enciende consentimiento.js cuando hay
+   algo que elegir, igual que el enlace del pie: si no hay ningun pixel
+   configurado, no hay cookies que preferir y el boton no aparece.
+
+   Cerrado es un circulo con la galleta; al pasar por encima o al recibir el
+   foco se abre hacia la derecha y ensena la palabra. En un telefono, donde no
+   hay raton, se queda siempre en circulo.
+   --------------------------------------------------------------------------- */
+.btn-cookies {
+  position: fixed;
+  left: 25px;
+  bottom: 25px;
+  z-index: 1040;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(212, 175, 55, .45);
+  border-radius: 999px;
+  background: var(--onix, #000);
+  color: var(--gold-500, #D4AF37);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--transicion, all .35s cubic-bezier(.25, .8, .25, 1));
+}
+.btn-cookies[hidden] { display: none; }
+/* Mientras el aviso esta abierto, el boton sobra: el aviso ocupa esa misma
+   esquina y ya lleva dentro todo lo que el boton abriria. CookieConsent
+   marca el `<html>` con estas dos clases mientras alguno de sus dos paneles
+   esta a la vista. */
+.show--consent .btn-cookies,
+.show--preferences .btn-cookies { display: none; }
+/* El ancho es el del circulo cerrado y el alto el del dibujo: asi la galleta
+   queda centrada en el circulo sin margenes a mano, y sigue centrada cuando
+   el boton se abre y la palabra crece a su derecha. */
+.btn-cookies .icono {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 23px;
+  fill: currentColor;
+}
+/* La palabra existe siempre —para quien lee la pagina con un lector— pero no
+   ocupa sitio hasta que el boton se abre. */
+.btn-cookies__etq {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--fuente-cuerpo, sans-serif);
+  font-weight: 700;
+  font-size: .64rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: max-width .38s cubic-bezier(.22, 1, .36, 1), opacity .24s ease, padding-right .38s cubic-bezier(.22, 1, .36, 1);
+}
+.btn-cookies:hover,
+.btn-cookies:focus-visible {
+  border-color: var(--oro-marca, #D4AF37);
+  color: #F0D77A;
+}
+.btn-cookies:hover .btn-cookies__etq,
+.btn-cookies:focus-visible .btn-cookies__etq {
+  max-width: 9rem;
+  padding-right: 1.15rem;
+  opacity: 1;
+}
+.btn-cookies:active { transform: scale(.94); }
+
+/* Sin raton no hay «al pasar por encima»: el boton se queda redondo y la
+   palabra solo la ve quien llega con el teclado o con un lector de pantalla. */
+@media (hover: none) {
+  .btn-cookies { left: 20px; bottom: 20px; width: 44px; height: 44px; }
+  .btn-cookies .icono { width: 42px; height: 21px; }
+  .btn-cookies:hover .btn-cookies__etq { max-width: 0; padding-right: 0; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-cookies,
+  .btn-cookies__etq { transition: none; }
+}

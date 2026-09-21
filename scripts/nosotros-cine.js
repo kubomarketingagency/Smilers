@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
   (function () {
     var escena = document.getElementById('nsCine');
     var cierre = document.getElementById('nsCierre');
+    var carta = document.getElementById('nsCarta');
     if (!escena || typeof SmilersScroll === 'undefined') {
       if (elenco) elenco.despertar(false);
       return;
@@ -234,6 +235,16 @@ document.addEventListener('DOMContentLoaded', function () {
       '--h-abre': pieza(cierre, '.ns-hojas'),
       '--h-filo': pieza(cierre, '.ns-hojas')
     };
+    var DESTINOS_CARTA = {
+      '--h-abre': pieza(carta, '.ns-hojas'),
+      '--h-filo': pieza(carta, '.ns-hojas'),
+      '--k-retrato': pieza(carta, '.ns-carta__retrato'),
+      '--k-frase': pieza(carta, '.ns-carta__frase'),
+      '--k-papel': pieza(carta, '.ns-carta__hoja'),
+      '--k-texto': pieza(carta, '.ns-carta__texto'),
+      '--k-filo': pieza(carta, '.ns-carta__escuadras'),
+      '--k-firma': pieza(carta, '.ns-carta__firma')
+    };
     function borrar(destinos) {
       Object.keys(destinos).forEach(function (nombre) {
         if (destinos[nombre]) destinos[nombre].style.removeProperty(nombre);
@@ -264,16 +275,26 @@ document.addEventListener('DOMContentLoaded', function () {
     var cierreVivo = false;
     var clavado = false;
     var clavadoPintado = false;
+    /* La carta de bienvenida es la escena de en medio y esta montada igual
+       que el cierre: su pin se clava en el pixel en que el del cine deja de
+       estarlo, y el del cierre en el que ella deja de estarlo. */
+    var cartaViva = false;
+    var cartaClavada = false;
+    var cartaClavadaPintada = false;
+    var cartaLustrada = false;
 
     function revisarModo() {
       var quiere = cabe();
       var quiereCierre = quiere && !!cierre;
-      if (quiere === viva && quiereCierre === cierreVivo) return;
+      var quiereCarta = quiere && !!carta;
+      if (quiere === viva && quiereCierre === cierreVivo && quiereCarta === cartaViva) return;
       viva = quiere;
       cierreVivo = quiereCierre;
+      cartaViva = quiereCarta;
 
       escena.classList.toggle('ns-cine--viva', viva);
       if (cierre) cierre.classList.toggle('ns-cierre--viva', cierreVivo);
+      if (carta) carta.classList.toggle('ns-carta--viva', cartaViva);
 
       if (cierre && !cierreVivo) {
         borrar(DESTINOS_CIERRE);
@@ -285,11 +306,23 @@ document.addEventListener('DOMContentLoaded', function () {
         contadosYa = false;
       }
 
+      if (carta && !cartaViva) {
+        borrar(DESTINOS_CARTA);
+        carta.classList.remove('ns-carta--clavado');
+        carta.classList.remove('ns-carta--lustrada');
+        cartaClavada = cartaClavadaPintada = cartaLustrada = false;
+        escritoCarta = {};
+        ultimoCarta = -1;
+        pCarta = 0;
+      }
+
       if (!viva) {
         borrar(DESTINOS_CINE);
         borrar(DESTINOS_CIERRE);
+        borrar(DESTINOS_CARTA);
         escritoCine = {};
         escritoCierre = {};
+        escritoCarta = {};
         if (elenco) elenco.despertar(false);
         /* Sin escena las capas estan apiladas en flujo y cada cinta entra y
            sale de pantalla de verdad: vuelve a mandar su observador. */
@@ -309,6 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
        escrito, ese tramo cuesta cero. */
     var escritoCine = {};
     var escritoCierre = {};
+    var escritoCarta = {};
     function ponCine(nombre, valor) {
       if (escritoCine[nombre] === valor) return;
       escritoCine[nombre] = valor;
@@ -318,6 +352,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (escritoCierre[nombre] === valor) return;
       escritoCierre[nombre] = valor;
       if (DESTINOS_CIERRE[nombre]) DESTINOS_CIERRE[nombre].style.setProperty(nombre, valor);
+    }
+    function ponCarta(nombre, valor) {
+      if (escritoCarta[nombre] === valor) return;
+      escritoCarta[nombre] = valor;
+      if (DESTINOS_CARTA[nombre]) DESTINOS_CARTA[nombre].style.setProperty(nombre, valor);
     }
 
     function progresoDe(bloque, ctx) {
@@ -329,8 +368,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var pCine = 0;
     var pCierre = 0;
+    var pCarta = 0;
     var ultimoCine = -1;
     var ultimoCierre = -1;
+    var ultimoCarta = -1;
     var contadosYa = false;
     var rielMejor = 0;
     var rielPintado = -1;
@@ -338,6 +379,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function leer(ctx) {
       if (viva) {
         pCine = progresoDe(escena, ctx);
+        if (carta && cartaViva) {
+          pCarta = progresoDe(carta, ctx);
+          cartaClavada = carta.getBoundingClientRect().top <= 1;
+        }
         if (cierre && cierreVivo) {
           pCierre = progresoDe(cierre, ctx);
           /* Clavado es que el techo del cierre ya llego arriba: a partir de
@@ -413,6 +458,55 @@ document.addEventListener('DOMContentLoaded', function () {
         cintas(pCine < .22 ? 'historia' : (pCine > .73 ? 'infra' : 'ninguna'));
       }
 
+      if (viva && cartaViva && cartaClavada !== cartaClavadaPintada) {
+        cartaClavadaPintada = cartaClavada;
+        carta.classList.toggle('ns-carta--clavado', cartaClavada);
+      }
+
+      if (viva && cartaViva && carta && pCarta !== ultimoCarta) {
+        ultimoCarta = pCarta;
+
+        /* El orden de la escena, que es el de una carta que se recibe: se
+           abre el telon sobre quien la firma, aparece la frase, entra el
+           papel, se lee, se dibujan las escuadras y al final se firma.
+           Cada tramo empieza cuando el anterior lleva recorrido medio
+           camino: nunca hay dos cosas naciendo a la vez ni un hueco muerto. */
+        var cRetrato = suave(tramo(pCarta, .05, .26));
+        var cFrase   = suave(tramo(pCarta, .18, .34));
+        var cPapel   = suave(tramo(pCarta, .40, .62));
+        var cTexto   =       tramo(pCarta, .50, .70);
+        var cFilo    = suave(tramo(pCarta, .60, .76));
+        /* La firma acaba antes de .86, que es donde el riel deja la pantalla:
+           en la meseta de lectura la carta tiene que estar entera. */
+        var cFirma   =       tramo(pCarta, .70, .84);
+
+        /* Las hojas: se abren al clavarse y se vuelven a cerrar al final,
+           que es como el cierre se las espera para clavarse encima. Un solo
+           valor para las dos cosas, porque nunca se solapan. */
+        var cAbre  = suave(tramo(pCarta, 0, .14));
+        var cCierra = suave(tramo(pCarta, .92, 1));
+        var cHojas = cAbre * (1 - cCierra);
+
+        ponCarta('--h-abre', cHojas.toFixed(3));
+        ponCarta('--h-filo', cHojas > 0 && cHojas < 1 ? '1' : '0');
+        ponCarta('--k-retrato', cRetrato.toFixed(3));
+        ponCarta('--k-frase', cFrase.toFixed(3));
+        ponCarta('--k-papel', cPapel.toFixed(3));
+        ponCarta('--k-texto', cTexto.toFixed(3));
+        ponCarta('--k-filo', cFilo.toFixed(3));
+        ponCarta('--k-firma', cFirma.toFixed(3));
+
+        /* El lustre pasa una sola vez, cuando el papel acaba de posarse. Se
+           rearma si se vuelve a subir del todo, para quien recorre la
+           escena dos veces. */
+        if (cPapel < .2) {
+          if (cartaLustrada) { cartaLustrada = false; carta.classList.remove('ns-carta--lustrada'); }
+        } else if (!cartaLustrada && cPapel > .96) {
+          cartaLustrada = true;
+          carta.classList.add('ns-carta--lustrada');
+        }
+      }
+
       if (viva && cierreVivo && clavado !== clavadoPintado) {
         clavadoPintado = clavado;
         cierre.classList.toggle('ns-cierre--clavado', clavado);
@@ -449,10 +543,12 @@ document.addEventListener('DOMContentLoaded', function () {
       revisarModo();
       ultimoCine = -1;
       ultimoCierre = -1;
+      ultimoCarta = -1;
       /* Al redimensionar hay que volver a escribirlo todo: el cache guarda
          cadenas y los porcentajes miden sobre una ventana que ya no es esa. */
       escritoCine = {};
       escritoCierre = {};
+      escritoCarta = {};
     });
 
     /* -------------------------------------------------------------------
@@ -478,14 +574,29 @@ document.addEventListener('DOMContentLoaded', function () {
       { id: 'fundamentos',     nombre: 'Fundamentos',     bloque: escena, p: .37,  desde: .21 },
       { id: 'equipo',          nombre: 'Equipo',          bloque: escena, p: .66,  desde: .52 },
       { id: 'infraestructura', nombre: 'Infraestructura', bloque: escena, p: .905, desde: .80 },
+      { id: 'bienvenida',      nombre: 'Carta de bienvenida', bloque: carta, p: .86, desde: .12 },
       { id: 'cifras',          nombre: 'En cifras',       bloque: cierre, p: .55,  desde: .15 }
     ].filter(function (parada) {
       parada.destinoEl = document.getElementById(parada.id);
       return parada.bloque && parada.destinoEl;
     });
 
+    /* Cada parada vive en una de las tres escenas, y cada escena se apaga por
+       su cuenta (sin JS, o con menos movimiento pedido). Apagada, la parada
+       es un ancla normal: el elemento esta donde se lee. */
+    function bloqueVivo(parada) {
+      if (parada.bloque === escena) return viva;
+      if (parada.bloque === carta) return cartaViva;
+      return cierreVivo;
+    }
+    function progresoSuyo(parada) {
+      if (parada.bloque === escena) return pCine;
+      if (parada.bloque === carta) return pCarta;
+      return pCierre;
+    }
+
     function destinoDe(parada) {
-      if (!(parada.bloque === escena ? viva : cierreVivo)) {
+      if (!bloqueVivo(parada)) {
         return Math.max(0, parada.destinoEl.getBoundingClientRect().top + window.scrollY - 90);
       }
       var caja = parada.bloque.getBoundingClientRect();
@@ -507,10 +618,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var mejor = 0;
       for (var i = 0; i < paradas.length; i++) {
         var parada = paradas[i];
-        var esCine = parada.bloque === escena;
-        if (esCine ? viva : cierreVivo) {
-          var suyo = esCine ? pCine : pCierre;
-          if (suyo >= parada.desde) mejor = i;
+        if (bloqueVivo(parada)) {
+          if (progresoSuyo(parada) >= parada.desde) mejor = i;
         } else if (parada.destinoEl.getBoundingClientRect().top < ctx.alto * .5) {
           mejor = i;
         }

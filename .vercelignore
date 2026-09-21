@@ -11,3 +11,7 @@ vendor/
 
 # Las fotos tal cual llegaron; los recortes que se publican van en imagenes/clinica/
 imagenes/originales/
+
+# La carta y el retrato tal cual llegaron; lo que se publica sale de
+# imagenes/carta/ y de imagenes/equipo/
+imagenes/Carta de Bienvenida/

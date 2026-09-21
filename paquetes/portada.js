@@ -2051,6 +2051,7 @@ var AJUSTES={
 metaPixel:'',
 googleAds:'',
 googleAdsContacto:'',
+antesDeDecidir:'activo',
 revision:1
 };
 var activo=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
@@ -2112,6 +2113,36 @@ pixelesActivos=true;
 if(AJUSTES.metaPixel)cargarMeta(AJUSTES.metaPixel);
 if(AJUSTES.googleAds)cargarGoogleAds(AJUSTES.googleAds);
 }
+function borrarCookiesDePublicidad(){
+var nombres=document.cookie.split(';')
+.map(function(trozo){return trozo.split('=')[0].trim();})
+.filter(function(nombre){return /^_fbp$|^_fbc$|^_gcl_/.test(nombre);});
+if(!nombres.length)return;
+var host=location.hostname;
+var dominios=[null,host,'.' + host];
+var punto=host.indexOf('.');
+if(punto !==-1)dominios.push('.' + host.slice(punto + 1));
+nombres.forEach(function(nombre){
+dominios.forEach(function(dominio){
+document.cookie=nombre + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
+(dominio?'; domain=' + dominio:'');
+});
+});
+}
+function apagarPixeles(){
+if(!pixelesActivos)return;
+pixelesActivos=false;
+if(window.gtag){
+window.gtag('consent','update',{
+ad_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied',
+analytics_storage:'denied'
+});
+}
+borrarCookiesDePublicidad();
+location.reload();
+}
 function canalDe(href){
 if(/^https:\/\/(api\.whatsapp\.com|wa\.me)\//.test(href))return 'WhatsApp';
 if(/^tel:/.test(href))return 'Llamada';
@@ -2164,7 +2195,9 @@ return window.SmilersAvisoCookies.arrancar({
 revision:AJUSTES.revision,
 categoria:CATEGORIA,
 mostrar:mostrar,
-alAceptar:activarPixeles
+yaMiden:pixelesActivos,
+alAceptar:activarPixeles,
+alRechazar:apagarPixeles
 });
 }
 function enReposo(fn){
@@ -2205,6 +2238,7 @@ var decision=decisionGuardada();
 if(decision===true){
 enReposo(activarPixeles);
 }else if(decision===null){
+if(AJUSTES.antesDeDecidir==='activo')enReposo(activarPixeles);
 trasLaBienvenida(function(){
 cargarLibreria().then(function(){return arrancar(true);}).catch(function(){});
 });
