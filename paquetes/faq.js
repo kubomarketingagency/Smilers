@@ -729,10 +729,9 @@ googleAdsContacto:'',
 antesDeDecidir:'activo',
 revision:1
 };
-var activo=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
+var hayPixeles=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
 var raiz=document.documentElement;
 var botonesPreferencias=document.querySelectorAll('[data-preferencias-cookies]');
-if(!activo)return;
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
 var CATEGORIA='publicidad';
 function decisionGuardada(){
@@ -783,7 +782,7 @@ window.gtag('config',id);
 pedirGuion('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id));
 }
 function activarPixeles(){
-if(pixelesActivos)return;
+if(pixelesActivos||!hayPixeles)return;
 pixelesActivos=true;
 if(AJUSTES.metaPixel)cargarMeta(AJUSTES.metaPixel);
 if(AJUSTES.googleAds)cargarGoogleAds(AJUSTES.googleAds);
@@ -871,6 +870,7 @@ revision:AJUSTES.revision,
 categoria:CATEGORIA,
 mostrar:mostrar,
 yaMiden:pixelesActivos,
+hayPixeles:hayPixeles,
 alAceptar:activarPixeles,
 alRechazar:apagarPixeles
 });

@@ -82,17 +82,25 @@
 /* En el telefono la libreria apila los tres botones, y el aviso subia hasta
    tapar el logo de la portada. Aceptar y rechazar van en una fila, uno al
    lado del otro y del mismo ancho, y "Elegir" debajo. Con `!important`
-   porque asi los apila ella. */
+   porque asi los apila ella.
+
+   Y el conjunto, mas apretado: a su tamano el aviso se llevaba mas de un
+   tercio de la pantalla de un telefono, y una pregunta de dos frases no
+   necesita tanto. Lo que se toca es el tamano de letra de la caja —el resto
+   de la libreria va en `em` y sigue a este— y el aire de arriba. */
 @media (max-width: 640px) {
   :root #cc-main .cm__btn-group { flex-direction: row !important; }
   :root #cc-main .cm__btn-group .cm__btn { flex: 1 1 0 !important; }
   :root #cc-main .cm__btn-group .cm__btn + .cm__btn { margin: 0 0 0 .375rem !important; }
+
+  :root #cc-main .cm { font-size: .94rem; }
+  :root #cc-main .cm__texts { padding-top: .8rem; }
+  :root #cc-main .cm__desc { margin-top: .7em; padding-bottom: .7em; line-height: 1.45; }
 }
 
 /* El pie: la politica y el boton para volver a elegir, juntos. El boton
-   nace escondido (`hidden`) y solo lo enciende el guion cuando hay algo que
-   elegir, es decir, cuando hay algun pixel configurado. Se viste como los
-   enlaces de al lado: el mismo oro recortado en la letra. */
+   nace escondido (`hidden`) y lo enciende el guion al arrancar. Se viste como
+   los enlaces de al lado: el mismo oro recortado en la letra. */
 .footer-legal {
   display: flex;
   flex-wrap: wrap;
@@ -125,9 +133,8 @@
    que el resto, pero mas discreto que el de WhatsApp: ese llama, este solo
    tiene que estar cuando se le busca.
 
-   Nace escondido (`hidden`) y solo lo enciende consentimiento.js cuando hay
-   algo que elegir, igual que el enlace del pie: si no hay ningun pixel
-   configurado, no hay cookies que preferir y el boton no aparece.
+   Nace escondido (`hidden`) y lo enciende consentimiento.js, igual que el
+   enlace del pie: sin JS no hay nada que elegir, asi que tampoco hay boton.
 
    Cerrado es un circulo con la galleta; al pasar por encima o al recibir el
    foco se abre hacia la derecha y ensena la palabra. En un telefono, donde no

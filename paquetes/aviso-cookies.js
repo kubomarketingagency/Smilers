@@ -10,6 +10,10 @@ arrancar:function(opciones){
 var CC=window.CookieConsent;
 var categoria=opciones.categoria;
 var dominio=location.hostname;
+var todavia=opciones.hayPixeles===false
+?' Ahora mismo no hay ninguna funcionando en el sitio: guardamos tu ' +
+'respuesta para cuando las pongamos en marcha.'
+:'';
 function revisar(){
 if(CC.acceptedCategory(categoria))opciones.alAceptar();
 else if(opciones.alRechazar)opciones.alRechazar();
@@ -42,12 +46,10 @@ es:{
 consentModal:{
 title:'Cookies de publicidad',
 description:opciones.yaMiden
-?'Meta y Google usan cookies para medir nuestros anuncios, y mientras no ' +
-'nos digas nada están funcionando. Si las rechazas, las apagamos y borramos ' +
-'ahora mismo. La página se ve igual en los dos casos.'
-:'Con tu permiso, Meta y Google usarán cookies para medir nuestros anuncios ' +
-'y mostrarte publicidad de la clínica. Si las rechazas, el sitio funciona igual, ' +
-'y puedes cambiar de opinión cuando quieras.',
+?'Meta y Google usan cookies para medir nuestros anuncios, y ahora mismo ' +
+'están funcionando. Si las rechazas, las apagamos y las borramos.'
+:'Con tu permiso, Meta y Google usarán cookies para medir nuestros ' +
+'anuncios. Si las rechazas, el sitio funciona igual.',
 acceptAllBtn:'Aceptar',
 acceptNecessaryBtn:'Rechazar',
 showPreferencesBtn:'Ver cuáles',
@@ -87,7 +89,7 @@ description:
 'Sirven para saber si nuestros anuncios en Facebook, Instagram y Google ' +
 'traen visitas, y para mostrar anuncios de la clínica a quien ya nos visitó. ' +
 'Las ponen Meta Platforms y Google, cada uno con su propia política. ' +
-'Rechazarlas no cambia nada de lo que ves aquí.',
+'Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
 linkedCategory:categoria,
 cookieTable:{
 headers:tabla,

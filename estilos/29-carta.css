@@ -170,6 +170,24 @@
 }
 .cb-doc p { margin: 0; }
 .cb-doc__marco { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* Todo lo impreso cuelga de aqui, y esta pieza es del tamano exacto del
+   documento: los bloques siguen midiendo sus porcentajes contra lo mismo que
+   antes. Existe por la escena —es la unica capa que se funde, en vez de
+   diecisiete— y en estatico no hace nada. */
+.cb-tinta { position: absolute; inset: 0; }
+
+/* Los datos del documento llevan a donde llevan: el telefono llama, las redes
+   abren su perfil y las direcciones abren el mapa. Se ven exactamente igual
+   que cuando eran texto muerto —ni color distinto ni subrayado—, porque lo
+   que se ensena es la carta de la clinica y no una pagina de enlaces. Solo
+   responden cuando el documento esta a pantalla completa, que es cuando el
+   pin deja pasar el dedo (`--clavado`). */
+.cb-doc a { color: inherit; text-decoration: none; }
+.cb-doc a:hover,
+.cb-doc a:focus-visible { text-decoration: underline; text-underline-offset: .22em; }
+.cb-doc .cb-ico { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.cb-doc a.cb-ico:hover,
+.cb-doc a.cb-ico:focus-visible { transform: translateY(-.6cqw); text-decoration: none; }
 
 /* La raya que parte la hoja: x=123 de 320, de y=92 a y=429 de 455. */
 .cb-raya { position: absolute; left: 38.44%; top: 20.22%; bottom: 5.71%; width: .3cqw; background: #0A0A0A; }
@@ -188,6 +206,10 @@
   vertical-align: top;
 }
 .cb-ico .icono { width: 2.7cqw; height: 2.7cqw; fill: currentColor; }
+/* Los tres de las redes son enlaces, y el `color: inherit` de los enlaces del
+   documento —que es el negro del texto— los dejaba negros sobre su propio
+   circulo negro. El dibujo va en blanco, sea o no un enlace. */
+.cb-doc a.cb-ico { color: #FFFFFF; }
 .cb-ico--cuadro { border-radius: 1.1cqw; }
 .cb-redes { display: flex; gap: 1.6cqw; justify-content: center; }
 
@@ -326,7 +348,11 @@
 @property --k-retrato { syntax: "<number>"; inherits: true; initial-value: 1; }
 @property --k-frase   { syntax: "<number>"; inherits: true; initial-value: 1; }
 @property --k-papel   { syntax: "<number>"; inherits: true; initial-value: 1; }
-@property --k-texto   { syntax: "<number>"; inherits: true; initial-value: 1; }
+/* La de la tinta es la excepcion: se escribe en `.cb-tinta` y la usa esa
+   misma pieza, nadie por debajo. Sin herencia, cambiarla no obliga a repasar
+   el estilo de los cuarenta nodos que lleva dentro el documento, que es
+   justo el tramo en el que la escena tiene mas que hacer. */
+@property --k-texto   { syntax: "<number>"; inherits: false; initial-value: 1; }
 @property --k-filo    { syntax: "<number>"; inherits: true; initial-value: 1; }
 @property --k-firma   { syntax: "<number>"; inherits: true; initial-value: 1; }
 
@@ -392,11 +418,11 @@
   transform: translate3d(0, calc((1 - var(--k-papel, 1)) * 101%), 0);
 }
 /* La hoja entra en blanco y lo impreso aparece despues: el papel primero,
-   la carta encima. Se funde todo lo que hay dentro del documento menos el
-   marco —que es parte del papel— y el lustre, que va por su cuenta. */
-.ns-carta--viva .cb-doc > *:not(.cb-doc__marco):not(.ns-carta__lustre) {
-  opacity: var(--k-texto, 1);
-}
+   la carta encima. Se funde `.cb-tinta` entera —una capa— y no cada bloque
+   por su cuenta: el marco es parte del papel y se queda, y el lustre va por
+   su lado. Fundiendolos uno a uno eran diecisiete planos que componer en
+   cada fotograma de ese tramo, y en un telefono eso se nota. */
+.ns-carta--viva .cb-tinta { opacity: var(--k-texto, 1); }
 /* El lustre cruza cuando el papel ya esta puesto. Se enciende con una clase
    que pone el guion, no con el progreso: es un gesto que pasa una vez. */
 .ns-carta--viva.ns-carta--lustrada .ns-carta__lustre {
@@ -497,8 +523,48 @@
   .ns-carta--viva .ns-carta__frase { display: none; }
 }
 
+/* ---------------------------------------------------------------------------
+   Los botones flotantes se apartan mientras la carta ocupa la pantalla.
+
+   El documento es una hoja A4 y en un telefono va de canto a canto: los tres
+   botones fijos —cookies abajo a la izquierda, WhatsApp y volver arriba abajo
+   a la derecha— le caen encima. Sobre el retrato tapaban el nombre del
+   director; sobre el papel, la direccion de la sucursal y el final de la
+   carta. Y no hay sitio al que moverlos: lo que sobra en esa pantalla es el
+   negro de arriba y de abajo, que mide lo que mide porque una hoja vertical
+   en una pantalla vertical mas estrecha se queda sin alto antes que sin
+   ancho.
+
+   Asi que se van, y vuelven solos en cuanto la escena deja la pantalla. Es un
+   tramo corto —tres pantallas de scroll— y mientras dura no hay nada que
+   pulsar ahi: lo que hay que hacer es leer. Se van con un fundido, no de
+   golpe, y sin `display: none`, que quitaria el sitio y haria saltar al de
+   volver arriba.
+
+   `con-carta` lo pone y lo quita nosotros-cine.js en el <html>, en el mismo
+   sitio en el que marca la escena como clavada.
+   --------------------------------------------------------------------------- */
+.con-carta .wsp-flotante,
+.con-carta .btn-subir,
+.con-carta .btn-cookies {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity .45s cubic-bezier(.22, 1, .36, 1),
+              transform .45s cubic-bezier(.22, 1, .36, 1),
+              visibility .45s;
+}
+/* El halo del de WhatsApp late cada tres segundos aunque no se vea: es un
+   fotograma que se le quita a la escena por nada. */
+.con-carta .wsp-flotante::before,
+.con-carta .wsp-flotante::after { animation: none; }
+
 /* Con menos movimiento pedido no hay escena: ni lustre ni firma a medias. */
 @media (prefers-reduced-motion: reduce) {
   .ns-carta__lustre { display: none; }
   .ns-carta__firma { clip-path: none; }
+  .con-carta .wsp-flotante,
+  .con-carta .btn-subir,
+  .con-carta .btn-cookies { transition: none; }
 }

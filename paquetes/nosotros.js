@@ -896,7 +896,7 @@ var DESTINOS_CARTA={
 '--k-retrato':pieza(carta,'.ns-carta__retrato'),
 '--k-frase':pieza(carta,'.ns-carta__frase'),
 '--k-papel':pieza(carta,'.ns-carta__hoja'),
-'--k-texto':pieza(carta,'.cb-doc'),
+'--k-texto':pieza(carta,'.cb-tinta'),
 '--k-filo':pieza(carta,'.ns-carta__escuadras'),
 '--k-firma':pieza(carta,'.ns-carta__firma')
 };
@@ -912,6 +912,8 @@ var clavadoPintado=false;
 var cartaViva=false;
 var cartaClavada=false;
 var cartaClavadaPintada=false;
+var cartaEnPantalla=false;
+var cartaEnPantallaPintada=false;
 var cartaLustrada=false;
 function revisarModo(){
 var quiere=cabe();
@@ -936,8 +938,10 @@ contadosYa=false;
 if(carta&&!cartaViva){
 borrar(DESTINOS_CARTA);
 carta.classList.remove('ns-carta--clavado');
+document.documentElement.classList.remove('con-carta');
 carta.classList.remove('ns-carta--lustrada');
 cartaClavada=cartaClavadaPintada=cartaLustrada=false;
+cartaEnPantalla=cartaEnPantallaPintada=false;
 escritoCarta={};
 ultimoCarta=-1;
 pCarta=0;
@@ -996,7 +1000,9 @@ if(viva){
 pCine=progresoDe(escena,ctx);
 if(carta&&cartaViva){
 pCarta=progresoDe(carta,ctx);
-cartaClavada=carta.getBoundingClientRect().top <=1;
+var cajaCarta=carta.getBoundingClientRect();
+cartaClavada=cajaCarta.top <=1;
+cartaEnPantalla=cartaClavada&&cajaCarta.bottom > ctx.alto;
 }
 if(cierre&&cierreVivo){
 pCierre=progresoDe(cierre,ctx);
@@ -1043,6 +1049,10 @@ cintas(pCine < .22?'historia':(pCine > .73?'infra':'ninguna'));
 if(viva&&cartaViva&&cartaClavada !==cartaClavadaPintada){
 cartaClavadaPintada=cartaClavada;
 carta.classList.toggle('ns-carta--clavado',cartaClavada);
+}
+if(viva&&cartaViva&&cartaEnPantalla !==cartaEnPantallaPintada){
+cartaEnPantallaPintada=cartaEnPantalla;
+document.documentElement.classList.toggle('con-carta',cartaEnPantalla);
 }
 if(viva&&cartaViva&&carta&&pCarta !==ultimoCarta){
 ultimoCarta=pCarta;
@@ -1197,17 +1207,27 @@ return;
 });
 if(location.hash.length > 1){
 var pedido=location.hash.slice(1);
-requestAnimationFrame(function(){
-requestAnimationFrame(function(){
-for(var i=0;i < paradas.length;i++){
-if(paradas[i].id===pedido){
-window.scrollTo(0,destinoDe(paradas[i]));
+var suya=null;
+for(var iP=0;iP < paradas.length;iP++){
+if(paradas[iP].id===pedido){suya=paradas[iP];break;}
+}
+if(suya){
+var puesta=-1;
+var colocar=function(){
+puesta=destinoDe(suya);
+window.scrollTo(0,puesta);
 SmilersScroll.pedir();
-return;
+};
+requestAnimationFrame(function(){requestAnimationFrame(colocar);});
+if(document.readyState !=='complete'){
+window.addEventListener('load',function(){
+requestAnimationFrame(function(){
+if(puesta < 0||Math.abs(window.scrollY - puesta)> 4)return;
+colocar();
+});
+},{once:true});
 }
 }
-});
-});
 }
 SmilersScroll.pedir();
 })();
@@ -1221,10 +1241,9 @@ googleAdsContacto:'',
 antesDeDecidir:'activo',
 revision:1
 };
-var activo=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
+var hayPixeles=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
 var raiz=document.documentElement;
 var botonesPreferencias=document.querySelectorAll('[data-preferencias-cookies]');
-if(!activo)return;
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
 var CATEGORIA='publicidad';
 function decisionGuardada(){
@@ -1275,7 +1294,7 @@ window.gtag('config',id);
 pedirGuion('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id));
 }
 function activarPixeles(){
-if(pixelesActivos)return;
+if(pixelesActivos||!hayPixeles)return;
 pixelesActivos=true;
 if(AJUSTES.metaPixel)cargarMeta(AJUSTES.metaPixel);
 if(AJUSTES.googleAds)cargarGoogleAds(AJUSTES.googleAds);
@@ -1363,6 +1382,7 @@ revision:AJUSTES.revision,
 categoria:CATEGORIA,
 mostrar:mostrar,
 yaMiden:pixelesActivos,
+hayPixeles:hayPixeles,
 alAceptar:activarPixeles,
 alRechazar:apagarPixeles
 });

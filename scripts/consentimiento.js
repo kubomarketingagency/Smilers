@@ -34,16 +34,48 @@
      cargada y el navegador libre, que en un telefono no le quite ni un
      fotograma a lo que se esta viendo. */
 
-  /* ---- Lo unico que hay que rellenar -------------------------------------
-     Mientras los dos esten vacios no pasa nada: ni aviso, ni boton en el pie,
-     ni pixeles. Es el interruptor general. */
+  /* =========================================================================
+     ===  AQUI  ==============================================================
+     ===  Es el unico sitio del proyecto donde se escriben el pixel de Meta
+     ===  y la etiqueta de Google. No hay que tocar ningun HTML: los
+     ===  identificadores se escriben aqui, se guarda, se corre
+     ===
+     ===      node herramientas/construir.js
+     ===
+     ===  y con eso las seis paginas quedan midiendo.
+     ===
+     ===  Vacios —como estan ahora— el aviso de cookies sale igual, el boton
+     ===  de la esquina funciona igual y la decision de cada visitante queda
+     ===  guardada: lo unico que no ocurre es la llamada a Meta y a Google,
+     ===  porque todavia no hay a quien llamar. El dia que se rellenen, quien
+     ===  ya dijo que no sigue diciendo que no.
+     ========================================================================= */
   var AJUSTES = {
-    // Meta (Facebook / Instagram): el ID numerico del pixel, p. ej. '123456789012345'.
+    /* META (Facebook / Instagram)
+       Donde sale: Administrador de eventos -> Origenes de datos. Es el numero
+       largo que hay bajo el nombre del pixel, sin letras ni espacios.
+       Ejemplo:  metaPixel: '123456789012345'
+       (El token de la API de Conversiones NO va aqui: ese es de servidor y
+        este guion corre en el navegador.) */
     metaPixel: '',
-    // Google Ads: el ID de la cuenta, p. ej. 'AW-123456789'.
+
+    /* GOOGLE ADS
+       Donde sale: Google Ads -> Herramientas -> Administrador de datos ->
+       Tu etiqueta de Google. Es el identificador con su prefijo, tal cual:
+       'AW-...' si viene de Ads, 'GT-...' si es una etiqueta de Google, y
+       tambien vale un 'G-...' de Analytics.
+       Ejemplo:  googleAds: 'AW-123456789' */
     googleAds: '',
-    // Opcional. La conversion "Contacto" de Google Ads, p. ej. 'AW-123456789/AbCdEfGhIj'.
-    // Se envia al pulsar WhatsApp, llamar o escribir por correo.
+
+    /* LA CONVERSION DE CONTACTO — opcional, y solo de Google Ads.
+       Donde sale: Google Ads -> Objetivos -> Conversiones -> la accion que se
+       quiera contar -> "Configurar con la etiqueta". Son dos trozos separados
+       por una barra: el identificador de la cuenta y la etiqueta.
+       Ejemplo:  googleAdsContacto: 'AW-123456789/AbCdEfGhIj'
+       Con esto puesto, cada vez que alguien pulse WhatsApp, llame o escriba
+       un correo se cuenta como conversion. A Meta se le avisa igual (evento
+       'Contact') sin necesidad de configurar nada. Nunca se envia el nombre
+       ni el mensaje: solo por que canal se contacto. */
     googleAdsContacto: '',
     /* Que pasa mientras la persona no ha contestado al aviso:
          'activo' — los pixeles miden desde la primera pagina. Es lo que hay
@@ -58,11 +90,13 @@
     revision: 1
   };
 
-  var activo = !!(AJUSTES.metaPixel || AJUSTES.googleAds);
+  /* Si hay a quien llamar. El aviso NO depende de esto: sale igual, porque lo
+     que pregunta es si se permite la publicidad, y esa respuesta hay que
+     tenerla guardada antes de que exista el primer pixel. Lo que depende de
+     esto es unicamente que se pida el guion de Meta o el de Google. */
+  var hayPixeles = !!(AJUSTES.metaPixel || AJUSTES.googleAds);
   var raiz = document.documentElement;
   var botonesPreferencias = document.querySelectorAll('[data-preferencias-cookies]');
-
-  if (!activo) return;
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
   var CATEGORIA = 'publicidad';
@@ -135,7 +169,7 @@
   }
 
   function activarPixeles() {
-    if (pixelesActivos) return;
+    if (pixelesActivos || !hayPixeles) return;
     pixelesActivos = true;
     if (AJUSTES.metaPixel) cargarMeta(AJUSTES.metaPixel);
     if (AJUSTES.googleAds) cargarGoogleAds(AJUSTES.googleAds);
@@ -257,7 +291,10 @@
       revision: AJUSTES.revision,
       categoria: CATEGORIA,
       mostrar: mostrar,
+      /* El aviso dice una cosa u otra segun lo que este pasando de verdad:
+         si los pixeles ya estan midiendo, o si todavia no hay ninguno. */
       yaMiden: pixelesActivos,
+      hayPixeles: hayPixeles,
       alAceptar: activarPixeles,
       alRechazar: apagarPixeles
     });

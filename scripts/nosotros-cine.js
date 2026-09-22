@@ -241,9 +241,9 @@ document.addEventListener('DOMContentLoaded', function () {
       '--k-retrato': pieza(carta, '.ns-carta__retrato'),
       '--k-frase': pieza(carta, '.ns-carta__frase'),
       '--k-papel': pieza(carta, '.ns-carta__hoja'),
-      /* Lo impreso se funde sobre la hoja ya puesta: la variable va en el
-         documento y de ahi la heredan sus bloques. */
-      '--k-texto': pieza(carta, '.cb-doc'),
+      /* Lo impreso se funde sobre la hoja ya puesta, y se funde de una pieza:
+         la variable va en la capa que lo lleva todo y la usa ella sola. */
+      '--k-texto': pieza(carta, '.cb-tinta'),
       '--k-filo': pieza(carta, '.ns-carta__escuadras'),
       '--k-firma': pieza(carta, '.ns-carta__firma')
     };
@@ -283,6 +283,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var cartaViva = false;
     var cartaClavada = false;
     var cartaClavadaPintada = false;
+    /* Clavada quiere decir que su techo ya paso por arriba, y eso sigue siendo
+       cierto el resto de la pagina. Para saber si la carta esta ocupando la
+       pantalla AHORA hace falta ademas que su suelo siga por debajo del borde
+       de abajo, que es justo mientras el pin esta pegado. */
+    var cartaEnPantalla = false;
+    var cartaEnPantallaPintada = false;
     var cartaLustrada = false;
 
     function revisarModo() {
@@ -311,8 +317,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (carta && !cartaViva) {
         borrar(DESTINOS_CARTA);
         carta.classList.remove('ns-carta--clavado');
+        document.documentElement.classList.remove('con-carta');
         carta.classList.remove('ns-carta--lustrada');
         cartaClavada = cartaClavadaPintada = cartaLustrada = false;
+        cartaEnPantalla = cartaEnPantallaPintada = false;
         escritoCarta = {};
         ultimoCarta = -1;
         pCarta = 0;
@@ -383,7 +391,9 @@ document.addEventListener('DOMContentLoaded', function () {
         pCine = progresoDe(escena, ctx);
         if (carta && cartaViva) {
           pCarta = progresoDe(carta, ctx);
-          cartaClavada = carta.getBoundingClientRect().top <= 1;
+          var cajaCarta = carta.getBoundingClientRect();
+          cartaClavada = cajaCarta.top <= 1;
+          cartaEnPantalla = cartaClavada && cajaCarta.bottom > ctx.alto;
         }
         if (cierre && cierreVivo) {
           pCierre = progresoDe(cierre, ctx);
@@ -463,6 +473,16 @@ document.addEventListener('DOMContentLoaded', function () {
       if (viva && cartaViva && cartaClavada !== cartaClavadaPintada) {
         cartaClavadaPintada = cartaClavada;
         carta.classList.toggle('ns-carta--clavado', cartaClavada);
+      }
+
+      /* Y el <html> se entera, que es lo que aparta los botones flotantes
+         mientras la carta ocupa la pantalla: en un telefono el documento va de
+         canto a canto y los tres —cookies, WhatsApp y volver arriba— le caian
+         encima, uno de ellos justo sobre el nombre del director. Vuelven en
+         cuanto el cierre se clava encima. */
+      if (viva && cartaViva && cartaEnPantalla !== cartaEnPantallaPintada) {
+        cartaEnPantallaPintada = cartaEnPantalla;
+        document.documentElement.classList.toggle('con-carta', cartaEnPantalla);
       }
 
       if (viva && cartaViva && carta && pCarta !== ultimoCarta) {
@@ -687,23 +707,42 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    /* Al llegar con `#equipo` en la direccion, el navegador ya ha saltado al
-       arranque de la escena —que es donde vive el elemento— antes de que
-       ninguno de estos guiones exista. Se recoloca en el fotograma siguiente,
-       cuando el pin ya mide lo que tiene que medir. */
+    /* Al llegar con `#equipo` o con `#bienvenida` en la direccion, el
+       navegador ya ha saltado al arranque de la escena —que es donde vive el
+       elemento, porque dentro del pin todas las secciones caen en el mismo
+       sitio del documento— antes de que ninguno de estos guiones exista. Se
+       recoloca en el fotograma siguiente, cuando el pin ya mide lo que tiene
+       que medir, y el sitio al que se va es la meseta de esa parada: la carta
+       entera y quieta, no su primer fotograma.
+
+       Y otra vez al acabar de cargar. Por encima de la escena hay fotos que
+       en ese primer fotograma todavia no habian llegado, y basta con que una
+       cambie de alto para que el pixel calculado se quede corto y la carta
+       aparezca a medio montar. Solo se repite si nadie ha tocado el scroll
+       desde entonces: si la persona ya se ha movido, mandar ella. */
     if (location.hash.length > 1) {
       var pedido = location.hash.slice(1);
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          for (var i = 0; i < paradas.length; i++) {
-            if (paradas[i].id === pedido) {
-              window.scrollTo(0, destinoDe(paradas[i]));
-              SmilersScroll.pedir();
-              return;
-            }
-          }
-        });
-      });
+      var suya = null;
+      for (var iP = 0; iP < paradas.length; iP++) {
+        if (paradas[iP].id === pedido) { suya = paradas[iP]; break; }
+      }
+      if (suya) {
+        var puesta = -1;
+        var colocar = function () {
+          puesta = destinoDe(suya);
+          window.scrollTo(0, puesta);
+          SmilersScroll.pedir();
+        };
+        requestAnimationFrame(function () { requestAnimationFrame(colocar); });
+        if (document.readyState !== 'complete') {
+          window.addEventListener('load', function () {
+            requestAnimationFrame(function () {
+              if (puesta < 0 || Math.abs(window.scrollY - puesta) > 4) return;
+              colocar();
+            });
+          }, { once: true });
+        }
+      }
     }
 
     /* La primera pasada, al final del todo: `leer` y `escribir` se apoyan en
