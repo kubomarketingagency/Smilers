@@ -4,18 +4,24 @@ window.SmilersAvisoCookies = {
      Va en un paquete aparte (paquetes/aviso-cookies.js, junto con la
      libreria) que consentimiento.js pide solo cuando hay que preguntar o
      cuando alguien abre "Preferencias de cookies". Quien ya decidio no lo
-     descarga nunca. */
+     descarga nunca.
+
+     Los textos van en frases, no en tablas. Cada categoria llevaba una tabla
+     de cuatro columnas —cookie, dominio, para que sirve, duracion— y en un
+     telefono esa tabla se desarma en una lista de parejas que ocupa media
+     pantalla para decir tres cosas. Lo mismo en dos frases se lee de una vez,
+     y quien quiera el detalle entero lo tiene en la pagina de privacidad, a
+     un clic de aqui. */
   arrancar: function (opciones) {
     var CC = window.CookieConsent;
     var categoria = opciones.categoria;
-    var dominio = location.hostname;
     /* Mientras no haya pixel escrito en consentimiento.js, la pregunta es la
        misma —se hace en futuro, que es como hay que hacerla— pero el detalle
        lo dice: hoy no hay ninguna de estas cookies puesta. La respuesta se
        guarda igual, y sirve el dia que las haya. */
     var todavia = opciones.hayPixeles === false
-      ? ' Ahora mismo no hay ninguna funcionando en el sitio: guardamos tu ' +
-        'respuesta para cuando las pongamos en marcha.'
+      ? ' Ahora mismo no hay ninguna funcionando: guardamos tu respuesta para ' +
+        'cuando las pongamos en marcha.'
       : '';
 
     /* Los dos caminos, y solo uno de los dos cada vez. Quien decide si hay
@@ -41,15 +47,14 @@ window.SmilersAvisoCookies = {
       }
     };
 
-    var tabla = { name: 'Cookie', domain: 'Dominio', desc: 'Para qué sirve', dur: 'Duración' };
-
     return CC.run({
       revision: opciones.revision,
       autoShow: opciones.mostrar,
       hideFromBots: true,
       cookie: { name: 'cc_cookie', expiresAfterDays: 182 },
-      /* Los dos botones de la primera pregunta pesan lo mismo: rechazar
-         tiene que costar lo mismo que aceptar. */
+      /* Los tres botones pesan lo mismo y se ven iguales: son el boton del
+         sitio, con su filo de oro y su brillo al pasar (27-consentimiento.css).
+         Rechazar tiene que costar lo mismo que aceptar. */
       guiOptions: {
         consentModal: { layout: 'box inline', position: 'bottom left', equalWeightButtons: true, flipButtons: false },
         preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false }
@@ -87,47 +92,36 @@ window.SmilersAvisoCookies = {
                   title: 'Las cookies de este sitio',
                   description:
                     'Una cookie es un archivo diminuto que la página deja en tu navegador. ' +
-                    'Aquí abajo están todas, una por una, y decides cuáles permites. Tu ' +
-                    'elección dura seis meses y puedes cambiarla cuando quieras desde el botón ' +
-                    'de cookies, abajo a la izquierda de cualquier página.'
+                    'Aquí eliges cuáles permites. Tu respuesta dura seis meses y la puedes ' +
+                    'cambiar cuando quieras con el botón de cookies, abajo a la izquierda.'
                 },
                 {
                   title: 'Necesarias <span class="pm__badge">Siempre activas</span>',
+                  /* La chapa de "Siempre activas" que la libreria pone al lado
+                     del titulo la esconde ella misma en pantallas estrechas, asi
+                     que lo que no se puede apagar se dice aqui, con palabras. */
                   description:
-                    'Una sola: la que recuerda qué respondiste aquí, para no preguntarte en ' +
-                    'cada página. No sirve para identificarte.',
-                  linkedCategory: 'necesarias',
-                  cookieTable: {
-                    headers: tabla,
-                    body: [
-                      { name: 'cc_cookie', domain: dominio, desc: 'Recuerda tu elección sobre las cookies.', dur: '6 meses' }
-                    ]
-                  }
+                    'Una sola, y es nuestra: recuerda qué respondiste aquí para no ' +
+                    'preguntártelo en cada página. Dura seis meses, no sirve para ' +
+                    'identificarte y no se puede apagar, porque sin ella no podríamos ' +
+                    'recordar tu «no».',
+                  linkedCategory: 'necesarias'
                 },
                 {
                   title: 'Publicidad (Meta y Google Ads)',
                   description:
-                    'Sirven para saber si nuestros anuncios en Facebook, Instagram y Google ' +
-                    'traen visitas, y para mostrar anuncios de la clínica a quien ya nos visitó. ' +
-                    'Las ponen Meta Platforms y Google, cada uno con su propia política. ' +
-                    'Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
-                  linkedCategory: categoria,
-                  cookieTable: {
-                    headers: tabla,
-                    body: [
-                      { name: '_fbp', domain: dominio, desc: 'Meta: reconoce el navegador para medir los anuncios.', dur: '3 meses' },
-                      { name: '_fbc', domain: dominio, desc: 'Meta: recuerda desde qué anuncio llegaste.', dur: '3 meses' },
-                      { name: '_gcl_au', domain: dominio, desc: 'Google Ads: mide las conversiones de los anuncios.', dur: '3 meses' },
-                      { name: 'Cookies de Meta y Google', domain: 'facebook.com, google.com', desc: 'Las que esos servicios guardan en sus propios dominios.', dur: 'Según cada servicio' }
-                    ]
-                  }
+                    'Son tres y duran tres meses. Sirven para saber si nuestros anuncios en ' +
+                    'Facebook, Instagram y Google traen visitas, y para mostrar los nuestros ' +
+                    'a quien ya nos visitó. Las ponen Meta y Google, cada uno con su propia ' +
+                    'política. Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
+                  linkedCategory: categoria
                 },
                 {
                   title: 'Más información',
                   description:
-                    'Lo que hacemos con tus datos está contado entero en la ' +
-                    '<a href="/privacidad">política de privacidad</a>. Si te queda una duda, o ' +
-                    'quieres ejercer tus derechos, escríbenos a ' +
+                    'Cuáles son, una por una, y qué hacemos con tus datos: está todo en la ' +
+                    '<a href="/privacidad">política de privacidad</a>. Si te queda una duda, ' +
+                    'escríbenos a ' +
                     '<a href="mailto:smilersdentalclinique@gmail.com">smilersdentalclinique@gmail.com</a>.'
                 }
               ]

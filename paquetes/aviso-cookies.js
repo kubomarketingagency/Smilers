@@ -9,10 +9,9 @@ window.SmilersAvisoCookies={
 arrancar:function(opciones){
 var CC=window.CookieConsent;
 var categoria=opciones.categoria;
-var dominio=location.hostname;
 var todavia=opciones.hayPixeles===false
-?' Ahora mismo no hay ninguna funcionando en el sitio: guardamos tu ' +
-'respuesta para cuando las pongamos en marcha.'
+?' Ahora mismo no hay ninguna funcionando: guardamos tu respuesta para ' +
+'cuando las pongamos en marcha.'
 :'';
 function revisar(){
 if(CC.acceptedCategory(categoria))opciones.alAceptar();
@@ -26,7 +25,6 @@ autoClear:{
 cookies:[{name:/^_fbp/},{name:/^_fbc/},{name:/^_gcl_/}]
 }
 };
-var tabla={name:'Cookie',domain:'Dominio',desc:'Para qué sirve',dur:'Duración'};
 return CC.run({
 revision:opciones.revision,
 autoShow:opciones.mostrar,
@@ -66,47 +64,33 @@ sections:[
 title:'Las cookies de este sitio',
 description:
 'Una cookie es un archivo diminuto que la página deja en tu navegador. ' +
-'Aquí abajo están todas, una por una, y decides cuáles permites. Tu ' +
-'elección dura seis meses y puedes cambiarla cuando quieras desde el botón ' +
-'de cookies, abajo a la izquierda de cualquier página.'
+'Aquí eliges cuáles permites. Tu respuesta dura seis meses y la puedes ' +
+'cambiar cuando quieras con el botón de cookies, abajo a la izquierda.'
 },
 {
 title:'Necesarias <span class="pm__badge">Siempre activas</span>',
 description:
-'Una sola: la que recuerda qué respondiste aquí, para no preguntarte en ' +
-'cada página. No sirve para identificarte.',
-linkedCategory:'necesarias',
-cookieTable:{
-headers:tabla,
-body:[
-{name:'cc_cookie',domain:dominio,desc:'Recuerda tu elección sobre las cookies.',dur:'6 meses'}
-]
-}
+'Una sola, y es nuestra: recuerda qué respondiste aquí para no ' +
+'preguntártelo en cada página. Dura seis meses, no sirve para ' +
+'identificarte y no se puede apagar, porque sin ella no podríamos ' +
+'recordar tu «no».',
+linkedCategory:'necesarias'
 },
 {
 title:'Publicidad (Meta y Google Ads)',
 description:
-'Sirven para saber si nuestros anuncios en Facebook, Instagram y Google ' +
-'traen visitas, y para mostrar anuncios de la clínica a quien ya nos visitó. ' +
-'Las ponen Meta Platforms y Google, cada uno con su propia política. ' +
-'Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
-linkedCategory:categoria,
-cookieTable:{
-headers:tabla,
-body:[
-{name:'_fbp',domain:dominio,desc:'Meta: reconoce el navegador para medir los anuncios.',dur:'3 meses'},
-{name:'_fbc',domain:dominio,desc:'Meta: recuerda desde qué anuncio llegaste.',dur:'3 meses'},
-{name:'_gcl_au',domain:dominio,desc:'Google Ads: mide las conversiones de los anuncios.',dur:'3 meses'},
-{name:'Cookies de Meta y Google',domain:'facebook.com, google.com',desc:'Las que esos servicios guardan en sus propios dominios.',dur:'Según cada servicio'}
-]
-}
+'Son tres y duran tres meses. Sirven para saber si nuestros anuncios en ' +
+'Facebook, Instagram y Google traen visitas, y para mostrar los nuestros ' +
+'a quien ya nos visitó. Las ponen Meta y Google, cada uno con su propia ' +
+'política. Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
+linkedCategory:categoria
 },
 {
 title:'Más información',
 description:
-'Lo que hacemos con tus datos está contado entero en la ' +
-'<a href="/privacidad">política de privacidad</a>. Si te queda una duda, o ' +
-'quieres ejercer tus derechos, escríbenos a ' +
+'Cuáles son, una por una, y qué hacemos con tus datos: está todo en la ' +
+'<a href="/privacidad">política de privacidad</a>. Si te queda una duda, ' +
+'escríbenos a ' +
 '<a href="mailto:smilersdentalclinique@gmail.com">smilersdentalclinique@gmail.com</a>.'
 }
 ]

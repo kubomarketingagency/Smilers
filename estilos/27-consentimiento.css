@@ -15,7 +15,9 @@
 :root #cc-main {
   --cc-font-family: var(--fuente-cuerpo);
   --cc-modal-border-radius: 2px;
-  --cc-btn-border-radius: 2px;
+  /* Los botones del aviso son el boton del sitio, y ese no tiene esquinas
+     redondeadas: ver el bloque de abajo. */
+  --cc-btn-border-radius: 0;
   --cc-bg: #0B0A08;
   --cc-primary-color: #F4EFE6;
   --cc-secondary-color: rgba(244, 239, 230, .8);
@@ -72,12 +74,80 @@
   font-weight: 600;
   letter-spacing: .02em;
 }
+/* ---------------------------------------------------------------------------
+   Los botones del aviso son EL boton del sitio.
+
+   En todo el sitio hay un solo boton (16-oro.css, `.btn`): filo de oro de
+   degradado, letras de oro en versales espaciadas, sin relleno; y al pasar por
+   encima se llena del degradado entero, las letras pasan a negro, un filo
+   interior se dibuja hacia fuera y un brillo cruza la cara de izquierda a
+   derecha. Aqui va lo mismo, con el tamano que pide una caja pequena.
+
+   Los tres pesan igual —aceptar, rechazar y ver cuales— porque son el mismo
+   boton. Antes aceptar iba de oro macizo y rechazar de contorno, y aunque la
+   libreria los declaraba del mismo peso, el ojo no leia lo mismo.
+
+   `:root #cc-main` porque la hoja de la libreria los pinta con `#cc-main`, que
+   ya lleva un id: sin el `:root` delante gana ella. */
 :root #cc-main .cm__btn,
 :root #cc-main .pm__btn {
-  font-size: .74rem;
-  font-weight: 700;
-  letter-spacing: .14em;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+  padding: .85em 1.4em;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  background: transparent;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .72rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
+  color: var(--oro-marca);
+  transition: var(--transicion);
+}
+:root #cc-main .cm__btn:hover,
+:root #cc-main .cm__btn:focus-visible,
+:root #cc-main .pm__btn:hover,
+:root #cc-main .pm__btn:focus-visible {
+  background: var(--oro-marca-degradado);
+  border-image: var(--oro-marca-degradado) 1;
+  color: var(--onix);
+}
+/* El brillo que cruza, y el filo interior que se abre. Los dos son los del
+   boton del sitio (03-botones.css), copiados y no heredados: la libreria pone
+   sus botones fuera del arbol donde vive `.btn`. */
+:root #cc-main .cm__btn::after,
+:root #cc-main .pm__btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, .42) 48%, rgba(255, 255, 255, .5) 56%, transparent 72%);
+  transform: translateX(-130%);
+  transition: transform .6s ease;
+  pointer-events: none;
+}
+:root #cc-main .cm__btn:hover::after,
+:root #cc-main .pm__btn:hover::after { transform: translateX(130%); }
+:root #cc-main .cm__btn::before,
+:root #cc-main .pm__btn::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(10, 10, 10, .35);
+  opacity: 0;
+  transform: scale(.85);
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1), opacity .4s ease;
+  pointer-events: none;
+}
+:root #cc-main .cm__btn:hover::before,
+:root #cc-main .pm__btn:hover::before { opacity: 1; transform: scale(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root #cc-main .cm__btn::after,
+  :root #cc-main .cm__btn::before,
+  :root #cc-main .pm__btn::after,
+  :root #cc-main .pm__btn::before { display: none; }
 }
 /* En el telefono la libreria apila los tres botones, y el aviso subia hasta
    tapar el logo de la portada. Aceptar y rechazar van en una fila, uno al
@@ -136,6 +206,12 @@
    Nace escondido (`hidden`) y lo enciende consentimiento.js, igual que el
    enlace del pie: sin JS no hay nada que elegir, asi que tampoco hay boton.
 
+   Va en plata, no en oro. En esa esquina de la pagina hay tres botones fijos y
+   el oro es de uno solo: el de WhatsApp, que es el que llama. Los otros dos
+   —volver arriba y este— van del mismo gris plata de la marca, que es lo que
+   los pone en su sitio: estan cuando se los busca y no compiten con el que
+   tiene que verse.
+
    Cerrado es un circulo con la galleta; al pasar por encima o al recibir el
    foco se abre hacia la derecha y ensena la palabra. En un telefono, donde no
    hay raton, se queda siempre en circulo.
@@ -150,10 +226,10 @@
   gap: 0;
   height: 48px;
   padding: 0;
-  border: 1px solid rgba(212, 175, 55, .45);
+  border: 1px solid rgba(192, 192, 192, .5);
   border-radius: 999px;
   background: var(--onix, #000);
-  color: var(--gold-500, #D4AF37);
+  color: var(--plata, #C0C0C0);
   box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
   cursor: pointer;
   overflow: hidden;
@@ -191,8 +267,9 @@
 }
 .btn-cookies:hover,
 .btn-cookies:focus-visible {
-  border-color: var(--oro-marca, #D4AF37);
-  color: #F0D77A;
+  border-color: rgba(192, 192, 192, .9);
+  color: #ECECEC;
+  transform: translateY(-3px);
 }
 .btn-cookies:hover .btn-cookies__etq,
 .btn-cookies:focus-visible .btn-cookies__etq {
@@ -200,7 +277,7 @@
   padding-right: 1.15rem;
   opacity: 1;
 }
-.btn-cookies:active { transform: scale(.94); }
+.btn-cookies:active { transform: translateY(0) scale(.94); }
 
 /* Sin raton no hay «al pasar por encima»: el boton se queda redondo y la
    palabra solo la ve quien llega con el teclado o con un lector de pantalla. */

@@ -89,34 +89,13 @@
 }
 .legal__indice a { text-decoration: none; }
 
-/* Las tablas de cookies: con su propio scroll lateral en el telefono, que
-   no empujen la pagina. */
-.legal__tabla {
-  margin: 0 0 1.2rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.legal table {
-  width: 100%;
-  min-width: 520px;
-  border-collapse: collapse;
-  font-size: .92rem;
-  line-height: 1.5;
-}
-.legal th,
-.legal td {
-  padding: .6rem .7rem;
-  border-bottom: 1px solid rgba(43, 38, 32, .12);
-  text-align: left;
-  vertical-align: top;
-}
-.legal th {
-  font-size: .72rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: #14110C;
-  border-bottom-color: rgba(212, 175, 55, .55);
-}
+/* Aqui vivian las reglas de la tabla de cookies (`.legal__tabla`, `.legal
+   table`, `th`, `td`), con su scroll lateral para el telefono. Ya no hay
+   tabla: la seccion 7 dice lo mismo en dos frases. Una tabla de cinco
+   columnas en una pantalla de 390 px se lee de lado o no se lee, y lo que
+   tenia dentro eran cuatro nombres de cookie y dos duraciones.
+
+   El `code` se queda, que los nombres de las cookies siguen ahi. */
 .legal code {
   font-size: .9em;
   padding: .05em .3em;
