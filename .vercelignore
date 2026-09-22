@@ -16,7 +16,7 @@ imagenes/originales/
 # imagenes/carta/ y de imagenes/equipo/
 imagenes/Carta de Bienvenida/
 
-# Los logos en alta, tal cual los paso el cliente. Lo que se publica son los
+# Los logos y la firma en alta, tal cual los paso el cliente. Lo que se publica son los
 # .webp de imagenes/, sacados de estos. Se guardan en el repo —son el maestro
 # de una marca, no una foto mas— pero no tienen por que viajar al dominio.
 imagenes/logos-originales/

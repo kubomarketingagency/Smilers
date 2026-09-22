@@ -442,35 +442,68 @@
   pointer-events: none;
 }
 
+/* En el telefono la muela deja de ser una pieza al lado del titulo y pasa a
+   ser **la esquina de arriba a la derecha**. Antes flotaba junto al texto, del
+   alto justo del titulo, y se leia como un adorno puesto ahi por no dejar el
+   hueco vacio. Ahora es grande, se sienta en el vertice del marco —asomando
+   un poco por arriba y por el canto— y el filo de oro entra por su costado:
+   la linea y la muela son la misma pieza, y lo que cierran es el rincon donde
+   vive el texto.
+
+   El titulo no le pasa por debajo: se le acorta el ancho a lo que queda libre
+   a su izquierda, con un dedo de solape para que las dos lineas caigan a
+   plomo. La bajada empieza por debajo de la muela y se lleva el ancho entero.
+
+   La muela va por encima del marco (`z-index`), que en el HTML va detras: sin
+   eso la linea de oro se le dibujaba encima. */
 @media (max-width: 767.98px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
+    --bp-muela-ancho: clamp(112px, 34vw, 172px);
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
-    max-width: 11em;
+    max-width: calc(100% - var(--bp-muela-ancho) + 2.2rem);
     font-size: var(--bp-titulo);
   }
   .pagina-clara .banner-pagina--hero .bp-muela {
-    float: right;
-    width: auto;
-    height: calc(var(--bp-titulo) * 2.36 + 1.4rem + 1px);
-    margin-left: 1rem;
-    filter: drop-shadow(0 3px 9px rgba(4, 3, 2, .55));
+    position: absolute;
+    z-index: 3;
+    width: var(--bp-muela-ancho);
+    height: auto;
+    top: calc(var(--bp-marco-aire-y, 2.6rem) * -1 - .55rem);
+    right: calc(var(--bp-lado) - var(--bp-marco-aire, 1.1rem) - .35rem);
+    filter: drop-shadow(0 6px 16px rgba(4, 3, 2, .6));
   }
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) .banner-subtitulo { clear: right; }
+  /* El filo de arriba, alargado hasta meterse debajo de la muela. Es la
+     escuadra de siempre; lo unico que cambia es donde termina. */
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) .bp-marco::before {
+    width: calc(100% + .35rem - var(--bp-muela-ancho) + 1.6rem);
+  }
 }
 
+/* `--bp-muela-adentro` es lo que la muela se mete hacia dentro del bloque en
+   vez de quedarse pegada al margen de la pagina. Colgada del canto derecho
+   miraba a la nada: entre ella y el filo de oro del marco no habia nada que
+   mirar, y entre ella y el titulo quedaba un desierto. Metida hacia dentro,
+   el titulo y la muela se leen como una sola linea. Lo que se mete se le suma
+   tambien al sitio que el texto le reserva, para que no haya combinacion de
+   pantalla y titulo en la que le pise la letra. */
 @media (min-width: 768px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-muela-hueco: clamp(1.9rem, 3vw, 2.6rem);
+    /* Crece con la pantalla, pero desde una base que deja el titulo de FAQ
+       —el mas largo de los tres— en una sola linea a 1280, que es donde la
+       hoja promete que los tres caben en una. Con un `vw` limpio, a 1280 le
+       faltaban nueve pixeles y se partia en dos. */
+    --bp-muela-adentro: clamp(1.2rem, 6vw - 40px, 5rem);
     --bp-muela-reserva: calc(14vw + 140px);
-    padding-right: calc(var(--bp-lado) + var(--bp-muela-reserva));
+    padding-right: calc(var(--bp-lado) + var(--bp-muela-reserva) + var(--bp-muela-adentro));
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: 11em; }
   .pagina-clara .banner-pagina--hero .bp-muela {
     position: absolute;
     top: 0;
-    right: var(--bp-lado);
+    right: calc(var(--bp-lado) + var(--bp-muela-adentro));
     width: auto;
     height: 100%;
     max-width: calc(var(--bp-muela-reserva) - var(--bp-muela-hueco));

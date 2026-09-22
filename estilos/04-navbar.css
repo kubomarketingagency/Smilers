@@ -91,10 +91,14 @@
    Mas bajo que el de Smilers a proposito: es una pieza ancha y baja, y a la
    misma altura pesaria mas que la marca de la casa. Acompana el encogido de
    la barra. */
+/* Es un enlace a la portada, como la marca de la casa: un logo puesto en una
+   barra se pulsa, y el que no lleve a ningun sitio se nota. Sin subrayado ni
+   color heredado, que lo que se ve es la imagen. */
 .marca-oad {
   position: relative;
   display: flex;
   align-items: center;
+  text-decoration: none;
   /* El hueco, una sola medida: la raya va en su mitad, asi que los dos
      lados tienen que medir lo mismo. */
   --hueco-oad: clamp(.85rem, 1.9vw, 1.45rem);
