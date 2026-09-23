@@ -419,11 +419,12 @@ void main() {
      coloca las instancias y medidaDisco(), que tiene que dar la misma medida
      que se ve. */
   var ESC_DISCO = 0.25;
-  /* El radio del disco en unidades de geometria. Por ESC_DISCO son 0,30 de
-     radio en el mundo, y eso es tres cuartos del alto del lienzo. Fue 1 —dos
-     tercios— y se subio a peticion de la clinica; mas arriba empieza a
-     pisar el rotulo de la seccion. */
-  var DISCO_RADIO = 1.2;
+  /* El radio del disco en unidades de geometria. Por ESC_DISCO son 0,325 de
+     radio en el mundo, y eso es cuatro quintos del alto del lienzo. Fue 1
+     —dos tercios— y luego 1,2, y ha ido subiendo a peticion de la clinica;
+     mas arriba empieza a pisar el rotulo de la seccion, que cuelga siempre a
+     la misma altura y en una pantalla baja es lo primero que se toca. */
+  var DISCO_RADIO = 1.3;
   /* Cuanto mas ancho que el circulo va el video dentro, y a que altura del
      fotograma cae la cara de quien habla. Son las mismas dos cifras que el
      CSS (`--tst-zoom` y `--tst-foco` en el 13): con ellas recorta el atlas la

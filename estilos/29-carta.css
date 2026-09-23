@@ -173,7 +173,16 @@
   display: flex;
   --aire: clamp(1.4rem, 4vh, 3rem);
   --lado: clamp(1.4rem, 3vw, 3.2rem);
-  padding: var(--aire) var(--lado);
+  /* Lo que la mitad deja por arriba y por abajo, en una variable cada una:
+     las dos franjas se lo tienen que comer para centrar lo que llevan dentro
+     en el marmol que se ve, que llega hasta el canto. */
+  --tapa-alta: var(--aire);
+  --tapa-baja: var(--aire);
+  /* Y lo que de esa tapa de arriba tapa la barra de navegacion, que es
+     fija y opaca y se pone por delante de la mitad. Cuenta aparte porque
+     el marmol si pasa por detras de ella, pero el logo no puede. */
+  --tapa-barra: 0px;
+  padding: var(--tapa-alta) var(--lado) var(--tapa-baja);
   background: #FFFFFF;
 }
 .ns-carta__panel {
@@ -197,8 +206,20 @@
 .cb-tinta {
   --medida: 38rem;
   width: 100%;
+  /* Llena el alto de la mitad y reparte lo que sobra en dos huecos: uno
+     debajo del logo y otro encima del pie (`margin-top: auto` en `.cb-tit` y
+     en `.cb-nombre`). Asi las dos franjas quedan pegadas a los cantos —que es
+     donde tienen que estar, porque su marmol llega hasta alli— y el texto se
+     centra entre ellas. Centrando el bloque entero, como se hacia antes, las
+     franjas se quedaban a media altura y encima del logo sobraba un palmo de
+     marmol vacio. */
   text-align: center;
   font-size: clamp(.86rem, .34vw + .76rem, 1.02rem);
+}
+.ns-carta--viva .cb-tinta {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 /* La medida de lectura ya no la lleva `.cb-tinta` sino cada una de sus
    piezas, y es por las franjas: tienen que llegar a los cantos de la mitad, y
@@ -208,7 +229,13 @@
 
    Con el nombre de la escena delante para ganarle en peso a `.cb-p`, que
    lleva sus margenes en forma corta. */
+/* Ninguna pieza encoge ni se estira: lo que no quepa tiene que verse que no
+   cabe, no aplastarse en silencio. Y el ancho va explicito, que en una
+   columna flexible un margen lateral automatico deja a la pieza con el ancho
+   de su texto. */
+.ns-carta .cb-tinta > * { flex: 0 0 auto; }
 .ns-carta .cb-tinta > *:not(.cb-franja) {
+  width: 100%;
   max-width: var(--medida);
   margin-inline: auto;
 }
@@ -275,19 +302,35 @@
    De aqui salio la peticion: con la franja a ras del logo quedaba una banda
    de papel suelta por encima y otra por debajo de la firma, y una carta no
    tiene bandas sueltas. El cargo cae ya sobre el marmol, asi que su oro pasa
-   a ser el vivo. */
-.ns-carta__hoja { overflow: hidden; }
-.cb-franja { overflow: visible; }
-.cb-logo > .tarjeta-piedra { top: -100lvh; }
-.cb-nombre > .tarjeta-piedra { bottom: -100lvh; }
+   a ser el vivo.
+
+   Solo con la escena viva. En estatico la carta es un bloque mas de la
+   pagina y su canto de arriba no esta en ningun sitio fijo: la barra de
+   navegacion le pasa por encima cuando toca, y un logo pegado al canto se
+   queda debajo de ella. Ahi la franja se queda siendo una franja. */
+.ns-carta--viva .ns-carta__hoja { overflow: hidden; }
+.ns-carta--viva .cb-franja { overflow: visible; }
+.ns-carta--viva .cb-logo > .tarjeta-piedra { top: -100lvh; }
+.ns-carta--viva .cb-nombre > .tarjeta-piedra { bottom: -100lvh; }
 /* De los dos filos de cada franja se queda el que da al papel. El otro caeria
    en mitad del marmol. */
-.cb-logo::before,
-.cb-nombre::after { display: none; }
+.ns-carta--viva .cb-logo::before,
+.ns-carta--viva .cb-nombre::after { display: none; }
 
+/* La franja del logo sube hasta el canto de arriba y el logo se queda en el
+   centro de lo que SE VE de ella. La franja se sube entera con un margen
+   negativo de `--tapa-alta` —asi su marmol llega al canto y se cose con el de
+   la barra de navegacion, que es el mismo— y el relleno de arriba se lleva
+   ademas el alto de la barra, que es opaca y esta por delante. Con el relleno
+   igual por los dos lados el logo quedaba a medias debajo de la barra. */
 .cb-logo {
   margin-bottom: 1.15em;
   padding-block: 1.05em;
+}
+.ns-carta--viva .cb-logo {
+  margin-top: calc(var(--tapa-alta) * -1);
+  padding-top: calc(1.05em + var(--tapa-barra));
+  padding-bottom: 1.05em;
 }
 .cb-logo > img {
   display: block;
@@ -301,7 +344,8 @@
    clase sola. Empatando en peso manda el que va despues, y el 29 va el
    ultimo. */
 .ns-carta .cb-tit {
-  margin: 0 0 .9em;
+  /* `auto` arriba: es uno de los dos huecos donde se reparte lo que sobra. */
+  margin: auto 0 .9em;
   font-family: var(--fuente-titulo);
   font-weight: 400;
   font-size: 1.75em;
@@ -357,7 +401,7 @@
    renglon de oro fino: los dos se leen mejor sobre el papel, y en negro se
    perderian. Las tres piezas cuelgan de `.cb-tinta` y no una de otra, porque
    la franja tiene que poder salirse a los cantos. */
-.cb-rub { margin-top: 1.25em; }
+.cb-rub { margin-top: 1.25em; margin-bottom: .7em; }
 .cb-rub__filo {
   display: block;
   width: 4.2em;
@@ -366,8 +410,18 @@
   background: var(--gradiente-oro-hondo);
 }
 .cb-nombre {
+  /* El otro hueco donde se reparte lo que sobra. Y la misma cuenta que arriba
+     por el otro lado, repartida entre las dos piezas del pie: media tapa de
+     relleno aqui y media debajo del cargo, que ademas se sale al canto con un
+     margen negativo (ver `.cb-cargo`). El nombre y el cargo quedan asi
+     centrados en el marmol que se ve, que baja hasta el canto, y la carta
+     mide lo mismo que antes. */
   margin-top: .7em;
-  padding-block: .6em;
+  padding-block: .55em;
+}
+.ns-carta--viva .cb-nombre {
+  margin-top: auto;
+  padding-top: calc(.55em + var(--tapa-baja) / 2);
 }
 .cb-nombre b {
   display: block;
@@ -400,6 +454,13 @@
   -webkit-text-fill-color: transparent;
   color: var(--oro-marca);
 }
+/* Se sale al canto de abajo y se guarda media tapa de aire por debajo: es la
+   otra mitad de la cuenta de `.cb-nombre`. */
+.ns-carta--viva .cb-cargo {
+  margin-bottom: calc(var(--tapa-baja) * -1);
+  padding-bottom: calc(.55em + var(--tapa-baja) / 2);
+}
+
 /* La firma se escribe de izquierda a derecha con `--k-firma`, que es lo
    ultimo que mueve la escena: la carta acaba de firmarse delante de quien la
    esta leyendo.
@@ -513,9 +574,11 @@
   z-index: 3;
   transform: translate3d(0, calc((1 - var(--k-papel, 1)) * 101%), 0);
   /* La barra de navegacion es fija y opaca: el texto empieza por donde ella
-     acaba, o la escuadra de arriba le queda debajo. La piedra si pasa por
-     detras, que es lo que tiene que hacer un fondo. */
-  padding-top: calc(var(--alto-navbar) + var(--aire));
+     acaba. El marmol si pasa por detras, que es lo que tiene que hacer un
+     fondo. */
+  --tapa-alta: calc(var(--alto-navbar) + var(--aire));
+  --tapa-barra: var(--alto-navbar);
+  padding-top: var(--tapa-alta);
 }
 /* La piedra entra vacia y la carta aparece despues: primero la mitad, luego
    lo que dice. */
@@ -554,14 +617,16 @@
   .ns-carta__hoja {
     grid-column: 2;
     --lado: clamp(2rem, 3.4vw, 4rem);
-    padding: clamp(1.8rem, 5vh, 3.6rem) var(--lado);
+    --tapa-alta: clamp(1.8rem, 5vh, 3.6rem);
+    --tapa-baja: clamp(1.8rem, 5vh, 3.6rem);
+    padding: var(--tapa-alta) var(--lado) var(--tapa-baja);
   }
   /* El techo del alto, en dos tramos. No es el mismo porque lo que decide
      cuanto mide la carta no es solo el alto: cuanto mas estrecha es la
      mitad, en mas lineas cae el mismo texto. Medido, la carta pide unos 40
      em de alto a partir de 1200 de ancho y casi 46 por debajo, que es donde
      la columna baja de 450 px. Dos tramos, y las dos cifras salen de ahi. */
-  .ns-carta--viva .cb-tinta { --cb-tope: 1.62vh; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.56vh; }
 
   /* Con la escena clavada, la fila de la rejilla mide lo que la pantalla y
      ni un pixel mas. Por defecto una fila implicita es `auto`, es decir,
@@ -614,7 +679,7 @@
 /* A partir de 1200 la columna vuelve a pasar de 450 px, el texto cae en
    menos lineas y el techo puede subir. */
 @media (min-width: 1200px) {
-  .ns-carta--viva .cb-tinta { --cb-tope: 1.78vh; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.70vh; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -630,14 +695,15 @@
    primero que cede es el aire; el cuerpo de la letra no baja de lo que se
    lee. */
 @media (max-width: 991.98px) and (max-height: 760px) {
-  .ns-carta--viva .cb-logo { margin-bottom: .8em; padding-block: .85em; }
+  .ns-carta--viva .cb-logo { margin-bottom: .8em; padding-top: calc(.85em + var(--tapa-barra)); padding-bottom: .85em; }
   .ns-carta--viva .cb-logo > img { width: min(46%, 10rem); }
   .ns-carta--viva .cb-tit { margin-bottom: .7em; }
   .ns-carta--viva .cb-p { margin-bottom: .6em; line-height: 1.58; }
   .ns-carta--viva .cb-lem { margin-top: .75em; }
   .ns-carta--viva .cb-rub { margin-top: .95em; }
   .ns-carta--viva .cb-rub__filo { margin-bottom: .55em; }
-  .ns-carta--viva .cb-nombre { margin-top: .55em; padding-block: .5em; }
+  .ns-carta--viva .cb-nombre { padding-top: calc(.5em + var(--tapa-baja) / 2); padding-bottom: .5em; }
+  .ns-carta--viva .cb-cargo { padding-bottom: calc(.5em + var(--tapa-baja) / 2); }
   .ns-carta--viva .ns-carta__firma { width: min(34%, 7rem); }
 }
 /* Y un escalon mas para las de verdad bajas —un iPhone SE, un telefono de
@@ -646,14 +712,14 @@
 @media (max-width: 991.98px) and (max-height: 700px) {
   .ns-carta--viva .cb-tinta { --cb-tope: 2.05vh; }
   .ns-carta--viva .ns-carta__hoja { --aire: .7rem; }
-  .ns-carta--viva .cb-logo { margin-bottom: .6em; padding-block: .68em; }
+  .ns-carta--viva .cb-logo { margin-bottom: .6em; padding-top: calc(.68em + var(--tapa-barra)); padding-bottom: .68em; }
   .ns-carta--viva .cb-logo > img { width: min(38%, 8.5rem); }
   .ns-carta--viva .cb-tit { font-size: 1.5em; margin-bottom: .55em; }
   .ns-carta--viva .cb-p { margin-bottom: .5em; line-height: 1.5; }
   .ns-carta--viva .cb-lem { font-size: 1.12em; margin-top: .6em; line-height: 1.32; }
   .ns-carta--viva .cb-rub { margin-top: .7em; }
-  .ns-carta--viva .cb-nombre { margin-top: .45em; padding-block: .42em; }
-  .ns-carta--viva .cb-cargo { margin-top: .4em; }
+  .ns-carta--viva .cb-nombre { padding-top: calc(.42em + var(--tapa-baja) / 2); padding-bottom: .42em; }
+  .ns-carta--viva .cb-cargo { margin-top: .4em; padding-bottom: calc(.42em + var(--tapa-baja) / 2); }
   .ns-carta--viva .ns-carta__firma { width: min(28%, 6rem); }
 }
 
@@ -664,23 +730,20 @@
 /* ---------------------------------------------------------------------------
    Los botones flotantes se apartan mientras la carta ocupa la pantalla.
 
-   La carta ocupa la mitad en el ordenador y la pantalla entera en el
-   telefono: los botones fijos —cookies abajo a la izquierda, volver arriba
-   abajo a la derecha— le caen encima, y sobre el retrato tapaban el nombre
-   del director. No hay sitio al que moverlos, asi que se van y vuelven solos
-   en cuanto la escena deja la pantalla. Es un tramo corto —tres pantallas de
-   scroll— y mientras dura no hay nada que pulsar ahi: lo que hay que hacer es
-   leer. Se van con un fundido, no de golpe, y sin `display: none`, que
-   quitaria el sitio y haria saltar al de volver arriba.
+   De los tres botones fijos —cookies abajo a la izquierda, WhatsApp y volver
+   arriba abajo a la derecha— se iban los tres, que sobre el retrato tapaban
+   el nombre del director. Ahora se queda el de cookies fuera y los otros dos
+   dentro: el de WhatsApp porque es el unico que sirve para algo justo ahi
+   —se acaba de leer quien te va a atender— y el de volver arriba porque tres
+   pantallas de scroll es mucho para volver a mano. Los dos caen sobre la
+   franja de marmol del final, que es donde no hay nada que tapar.
 
-   EL DE WHATSAPP SE QUEDA. Se iba con los otros dos y no tenia por que: es el
-   unico de los tres que sirve para algo justo ahi —se acaba de leer quien te
-   va a atender— y cae sobre la franja de marmol del final, que es donde no
-   hay nada que tapar.
+   El de cookies si se va, con un fundido y sin `display: none`, que quitaria
+   el sitio. Ese no hace falta mientras se lee una carta y es el unico que cae
+   del lado del texto.
 
    `con-carta` lo pone y lo quita nosotros-cine.js en el <html>.
    --------------------------------------------------------------------------- */
-.con-carta .btn-subir,
 .con-carta .btn-cookies {
   opacity: 0;
   visibility: hidden;
@@ -693,6 +756,5 @@
 /* Con menos movimiento pedido no hay escena: ni firma a medias. */
 @media (prefers-reduced-motion: reduce) {
   .ns-carta__firma { clip-path: none; }
-  .con-carta .btn-subir,
   .con-carta .btn-cookies { transition: none; }
 }

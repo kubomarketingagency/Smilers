@@ -499,6 +499,58 @@
   z-index: 3;
 }
 
+/* El boton de play, en oro y en el centro del circulo.
+
+   Esta ahi porque hay telefonos donde el video no arranca solo por mucho que
+   se le pida: iOS con el ahorro de energia puesto no deja que arranque ningun
+   video sin que lo pidan con el dedo, y entonces YouTube se queda con SU
+   glifo de pausa puesto en medio de la cara. El fotograma tapa el glifo y
+   encima va este boton, que es el mismo gesto pero de la casa.
+
+   Solo sale cuando el video esta parado de verdad (`video-parado`, que pone
+   video-testimonio.js mirando si el reloj del video avanza y no solo lo que
+   diga su estado). */
+.tst-video__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: 4.1rem;
+  height: 4.1rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 55, .9);
+  border-radius: 50%;
+  background: rgba(10, 8, 6, .5);
+  color: var(--oro-marca);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.92);
+  transition: opacity .28s ease, visibility .28s, transform .28s ease,
+              background .3s ease, color .3s ease;
+}
+.tst-video__medio.video-parado ~ .tst-video__play {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.tst-video__play svg {
+  width: 1.7rem;
+  height: 1.7rem;
+  margin-left: .18rem; /* el triangulo pesa a la izquierda */
+  fill: currentColor;
+}
+.tst-video__play:hover,
+.tst-video__play:focus-visible {
+  background: var(--oro-marca);
+  color: var(--onix);
+}
+
 /* El boton del sonido, colgando por debajo del circulo. Dentro se lo comeria
    el recorte: un circulo no tiene esquinas donde meter un boton sin que pise
    la cara. Empieza callado porque ningun navegador deja que un video arranque
@@ -643,7 +695,7 @@
   }
   .testimonios-esfera {
     order: -1;
-    width: min(132vw, 48svh);
+    width: min(132vw, 52svh);
   }
   .testimonios-texto {
     flex: 0 0 auto;

@@ -1255,6 +1255,31 @@
 @media (min-width: 576px) and (max-width: 991.98px) {
   .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
 }
+/* En un telefono alto sobra sitio: entre los cuatro pilares y la placa de las
+   cifras quedaba un palmo de negro vacio, y la letra estaba puesta para el
+   telefono corto, que es donde no cabe. Aqui sube un punto, que es lo que hace
+   falta para leerla de un vistazo. El tope de 780 de alto es el de un telefono
+   normal de hoy; por debajo se queda como estaba. */
+@media (max-width: 575.98px) and (min-height: 780px) {
+  .pn-telon .pilar { padding: .7rem .55rem .6rem; }
+  .pn-telon .pilar__num { font-size: 1.55rem; }
+  .pn-telon .pilar__icono { margin: .34rem 0 .3rem; font-size: 1rem; }
+  .pn-telon .pilar h3 {
+    padding: .42em .52em .38em .62em;
+    /* Un pelo por encima del tramo corto y no mas: a .74 los rotulos de tres
+       palabras se parten en dos lineas y las cuatro casillas dejan de tener
+       la misma pinta. */
+    font-size: .66rem;
+    letter-spacing: .105em;
+    margin-bottom: .42rem;
+  }
+  .pn-telon .pilar p { font-size: .87rem; line-height: 1.6; }
+
+  .pn-telon .cl-item { padding: .15rem .35rem .55rem; }
+  .pn-telon .cl-num { font-size: 1.8rem; }
+  .pn-telon .cl-etiqueta { margin-top: .35rem; font-size: .64rem; letter-spacing: .14em; }
+}
+
 /* Y en una tableta en vertical la letra del telefono dejaba el bloque en
    380px en mitad de una pantalla de 1024: sobra alto, asi que la letra sube
    hacia la de escritorio y el bloque ocupa lo que le toca. */

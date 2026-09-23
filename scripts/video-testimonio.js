@@ -124,15 +124,37 @@ window.SmilersVideo = (function () {
          tarde o no llegan —al rebobinar, al cambiar de video, al volver de
          una pausa— y en ese hueco YouTube ensena su titulo y su canal. Mirarlo
          cada dos por tres no cuesta nada y no se escapa ninguno. */
+      /* No basta con preguntar el estado: hay veces en que dice que esta
+         rodando (1) y el video esta quieto —iOS con el ahorro de energia
+         puesto para la reproduccion y YouTube no se entera—, y ahi se queda
+         su glifo de pausa en medio de la cara. Asi que se mira el reloj: si
+         no avanza en tres vueltas seguidas, esta parado, diga lo que diga. */
       var estado = r.getPlayerState ? r.getPlayerState() : -1;
-      caja.classList.toggle('video-listo', !!(estado === 1 && caja.__video));
+      var reloj = r.getCurrentTime ? r.getCurrentTime() : 0;
+      if (estado === 1 && Math.abs(reloj - (caja.__reloj || 0)) < 0.01) {
+        caja.__quieto = (caja.__quieto || 0) + 1;
+      } else {
+        caja.__quieto = 0;
+      }
+      caja.__reloj = reloj;
+      var rodando = estado === 1 && caja.__quieto < 3;
+      caja.classList.toggle('video-listo', !!(rodando && caja.__video));
+      /* Y si esta parado de verdad, sale el boton de play de la casa. */
+      caja.classList.toggle('video-parado', !!(caja.__video && !rodando));
       if (!caja.__video) return;
-      /* Y si esta pausado teniendo que rodar, se le vuelve a dar. No lo
-         pausa nadie de aqui —soltar un video pausado es justo lo que hace
-         salir el titulo—, pero el navegador si lo para por su cuenta cuando
-         el iframe lleva un rato sin verse, y al volver se queda con el glifo
-         de pausa puesto en medio de la cara. */
-      if (estado === 2) { taparUnMomento(caja, 900); r.playVideo(); return; }
+      /* Antes de rendirse se le pide un par de veces mas. No lo pausa nadie
+         de aqui —soltar un video pausado es justo lo que hace salir el
+         titulo—, pero el navegador si lo para por su cuenta cuando el iframe
+         lleva un rato sin verse. Si a la tercera sigue parado, se deja: quien
+         no deja arrancar un video solo no va a cambiar de idea, y para eso
+         esta el boton. */
+      if (!rodando && (caja.__ruegos || 0) < 3) {
+        caja.__ruegos = (caja.__ruegos || 0) + 1;
+        taparUnMomento(caja, 900);
+        r.playVideo();
+        return;
+      }
+      if (rodando) caja.__ruegos = 0;
       var largo = r.getDuration();
       if (!(largo > 0) || r.getCurrentTime() < largo - MARGEN) return;
       taparUnMomento(caja);
@@ -144,6 +166,8 @@ window.SmilersVideo = (function () {
     if (!caja || !id) return;
     if (caja.__video === id) return;
     caja.__video = id;
+    caja.__ruegos = 0;
+    caja.__quieto = 0;
     caja.classList.add('tiene-video');
     pintarBoton(caja);
 
@@ -224,7 +248,7 @@ window.SmilersVideo = (function () {
   function apagar(caja) {
     if (!caja || !caja.__video) return false;
     caja.__video = null;
-    caja.classList.remove('tiene-video', 'video-listo', 'saltando');
+    caja.classList.remove('tiene-video', 'video-listo', 'saltando', 'video-parado');
     clearTimeout(caja.__volver);
     var r = caja.__reproductor;
     if (r && r.mute) { try { r.mute(); } catch (e) {} }
@@ -243,6 +267,25 @@ window.SmilersVideo = (function () {
     var img = caja && caja.querySelector('[data-video-poster]');
     if (img && foto && img.getAttribute('src') !== foto) img.setAttribute('src', foto);
   }
+
+  /* El play de la casa. Va aqui y no en el guion de la esfera porque es el
+     reproductor quien sabe si hace falta, y tiene que salir de un gesto de
+     verdad: es justo lo que le falta a iOS para dejarlo arrancar. */
+  document.addEventListener('click', function (evento) {
+    var destino = evento.target;
+    if (!destino || destino.nodeType !== 1 || !destino.closest) return;
+    var play = destino.closest('[data-video-play]');
+    if (!play) return;
+    evento.preventDefault();
+    var caja = play.parentNode.querySelector('[data-video-hueco]');
+    var r = caja && caja.__reproductor;
+    if (!r || !r.playVideo) return;
+    caja.__ruegos = 0;
+    caja.__quieto = 0;
+    taparUnMomento(caja, 900);
+    try { if (conSonido) r.unMute(); else r.mute(); } catch (e) {}
+    r.playVideo();
+  });
 
   document.addEventListener('click', function (evento) {
     var destino = evento.target;
