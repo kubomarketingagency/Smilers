@@ -474,6 +474,203 @@
 .mostrando-despues .testimonios-revelar__estado { color: var(--onix); }
 .mostrando-despues .testimonios-revelar__pista { display: none; }
 
+/* ===========================================================================
+   El testimonio en video.
+
+   Es el primero de los circulos y no es una foto: es un video de YouTube. Un
+   iframe no se puede pintar dentro de WebGL, asi que va por fuera del lienzo,
+   en un circulo puesto justo encima del disco de delante. Su tamano no esta
+   escrito aqui: lo mide la propia esfera (diametroDisco, en
+   testimonios-esfera.js) y lo deja en --tst-disco, para que no haya dos
+   cifras que mantener el dia que cambie el encuadre. El 62% de aqui es solo
+   lo que se usa mientras la esfera no se ha creado todavia.
+
+   Dentro, el video NO llena el circulo. Es vertical, y un vertical recortado
+   en redondo se queda sin cabeza y sin pies: lo que se ve es el tronco. Asi
+   que ocupa el rectangulo de 9:16 mas grande que cabe dentro del circulo
+   —48% de ancho, que da 85% de alto y una diagonal del 98%— y lo que queda
+   alrededor lo llena su propio fotograma, desenfocado y oscuro, como el
+   fondo de un reproductor vertical. Los mandos del video quedan enteros y
+   dentro, que es lo que se pierde al recortar.
+
+   La misma pieza aparece dos veces: aqui y en la tarjeta de la lista, que es
+   lo que se ve cuando la escena no se enciende (sin WebGL o con menos
+   movimiento pedido).
+   =========================================================================== */
+.tst-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  /* Un par de pixeles mas que el disco: asi nunca asoma un aro de la foto de
+     debajo por un redondeo. */
+  width: calc(var(--tst-disco, 62%) + 2px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .38s ease, visibility .38s;
+}
+.tst-con-video .tst-video {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* El fotograma del video, desenfocado, relleno el circulo. Se pasa del borde
+   a proposito: un blur deja el canto transparente y se veria el filo. */
+.tst-video__fondo {
+  position: absolute;
+  inset: -18%;
+  background: url(../imagenes/testimonios/anaela-vertical.webp) center / cover no-repeat;
+  filter: blur(26px) brightness(.32) saturate(.55);
+  pointer-events: none;
+}
+/* Y encima, la sombra que hunde el canto: sin ella el desenfoque deja manchas
+   claras justo donde el circulo tiene que acabar. */
+.tst-video::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(5, 4, 3, .1) 24%, rgba(5, 4, 3, .72) 100%);
+  pointer-events: none;
+}
+/* El filo de oro, que aqui ya no lo pinta el lienzo. */
+.tst-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, .6);
+  pointer-events: none;
+}
+
+.tst-video__marco {
+  position: relative;
+  z-index: 2;
+  width: 48%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .55);
+}
+
+/* ---- El boton de ver ------------------------------------------------------
+   Es un enlace y no un boton: sin JS —o donde no quepa verse— lleva al video
+   en YouTube, que es lo que tiene que hacer. Con JS, video-testimonio.js le
+   quita el salto y monta el reproductor en su sitio. */
+.tst-play {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.tst-play__foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+}
+.tst-play:hover .tst-play__foto,
+.tst-play:focus-visible .tst-play__foto { transform: scale(1.04); }
+
+.tst-play__aro {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 32%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, .9);
+  background: rgba(10, 8, 6, .52);
+  transition: background .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
+}
+/* El triangulo, recortado y no dibujado con bordes: asi crece con el aro. */
+.tst-play__aro::after {
+  content: '';
+  position: absolute;
+  inset: 30% 26% 30% 36%;
+  background: var(--oro-marca);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+.tst-play:hover .tst-play__aro,
+.tst-play:focus-visible .tst-play__aro {
+  background: rgba(212, 175, 55, .92);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.tst-play:hover .tst-play__aro::after,
+.tst-play:focus-visible .tst-play__aro::after { background: var(--onix); }
+
+.tst-play__txt {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2.2em .6em .8em;
+  background: linear-gradient(to top, rgba(0, 0, 0, .85) 0%, transparent 100%);
+  font-family: var(--fuente-menu);
+  font-size: .6rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #FFFFFF;
+}
+.tst-play:focus-visible { box-shadow: var(--foco); }
+
+.tst-video__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.tiene-video .tst-play { display: none; }
+
+/* La cita del panel deja de ser una cita cuando el testimonio es un video:
+   nadie esta citando a nadie, se esta presentando lo que se va a ver. */
+.tst-item-video .tst-comillas { display: none; }
+.tst-item-video .tst-cita { font-style: italic; }
+
+/* ---- La misma pieza en la tarjeta de la lista ---- */
+.tst-tarjeta__fotos--video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.tst-tarjeta__fotos--video .tst-video__marco {
+  width: auto;
+  height: 96%;
+}
+.tst-tarjeta--video blockquote::before,
+.tst-tarjeta--video blockquote::after { content: none; }
+
+@media (max-width: 991.98px) {
+  /* En el telefono el circulo es mas grande respecto a la pantalla, asi que
+     el rotulo de debajo no hace falta: el triangulo ya dice lo que es, y el
+     video se queda con todo el alto. */
+  .tst-play__txt { font-size: .54rem; letter-spacing: .12em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tst-video { transition: none; }
+  .tst-play__foto,
+  .tst-play__aro { transition: none; }
+}
+
 @media (max-width: 991.98px) {
   .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
   .esfera-activa .testimonios-etiqueta { padding: 84px 1.2rem 14px; }

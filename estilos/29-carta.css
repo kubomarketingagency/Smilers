@@ -18,23 +18,29 @@
    direcciones, su raya vertical, su hoja blanca en proporcion A4—. De ese
    documento se queda **lo que dice**; el resto se fue. Los datos de contacto
    estaban tres veces en la misma pagina (el pie los lleva enteros, con sus
-   mapas) y la hoja blanca obligaba a dejar dos franjas de negro arriba y
-   abajo, porque una hoja vertical dentro de una pantalla mas estrecha se
-   queda sin alto antes que sin ancho. Ahora la carta es una plancha de onix
-   que ocupa su mitad entera, con el logo de oro de la casa arriba, el texto
-   debajo y las cuatro escuadras de oro dibujandose alrededor.
+   mapas) y la hoja en proporcion A4 obligaba a dejar dos franjas muertas
+   arriba y abajo, porque una hoja vertical dentro de una pantalla mas ancha
+   se queda sin alto antes que sin ancho.
 
-   Y el logo es el de oro con la muela de plata —el mismo de la barra y del
-   hero—, no el gris del documento: sobre onix ese es el que vive. Eso es
-   tambien lo que manda el fondo oscuro: el logo de marmol esta hecho para
-   fondos claros y sobre negro se apaga.
+   Y TAMPOCO ES UNA TARJETA. Hubo despues una plancha de onix flotando en su
+   mitad, con sombra y cuatro escuadras alrededor: una carta dentro de una
+   caja dentro de una pantalla. Ahora la mitad **es** la carta. El blanco
+   llega a los cuatro cantos de su lado —sin marco, sin sombra y sin nada
+   detras— y lo unico que la enmarca son las dos escuadras de oro del
+   documento: alli eran las del lado izquierdo, la de arriba y la de abajo, y
+   aqui se espejan al canto derecho, que es el que queda libre.
+
+   El logo es el de marmol y no el de onix, y son el mismo logo: oro con la
+   muela de plata, las dos versiones que hay del de la barra. La diferencia
+   esta en el renglon de abajo —"Dental Clinique"—, que en el de onix va en
+   blanco y sobre este fondo desaparecia.
 
    Dos coreografias con el mismo progreso, y eso lo hace el CSS, no el guion:
 
    - En pantalla ancha las dos mitades conviven —el director a la izquierda,
      la carta a la derecha— y se descubren por orden: primero el retrato, de
-     izquierda a derecha; luego la frase; luego la plancha, que entra desde el
-     canto derecho.
+     izquierda a derecha; luego la frase; luego el blanco, que entra desde la
+     juntura hacia fuera.
    - En el telefono no caben las dos, asi que se turnan: el retrato ocupa la
      pantalla con la frase encima y, al seguir bajando, la carta sube desde
      abajo y lo tapa. La frase no necesita irse por su cuenta: la tapa la
@@ -102,6 +108,8 @@
   line-height: 1.1;
   color: #FFFFFF;
 }
+/* El oro de aqui es el vivo y no el hondo aunque la pagina sea clara: esta
+   placa cae sobre el retrato, que es piedra oscura. */
 .ns-carta__placa-cargo {
   font-family: var(--fuente-cuerpo);
   font-weight: 700;
@@ -138,34 +146,27 @@
 }
 
 /* ---------------------------------------------------------------------------
-   La carta: una plancha de onix que se lleva su mitad entera.
+   La carta: la mitad en blanco, de canto a canto.
+
+   `--aire` es lo que se deja entre el texto y los cantos de la mitad, y es
+   tambien donde se apoyan las escuadras. No es un marco: el blanco pasa por
+   debajo y llega al filo.
    --------------------------------------------------------------------------- */
 .ns-carta__hoja {
   position: relative;
   display: flex;
-  /* `--aire` es lo que se deja por arriba y por abajo, y es tambien lo que
-     hay que descontarle a la pantalla cuando la escena esta viva. */
-  --aire: clamp(1.1rem, 3vh, 2.4rem);
-  padding: var(--aire) clamp(1.1rem, 2.2vw, 2.6rem);
-  background: #050505;
+  --aire: clamp(1.4rem, 4vh, 3rem);
+  padding: var(--aire) clamp(1.4rem, 3vw, 3.2rem);
+  background: #FFFFFF;
 }
-/* La plancha. El fondo no es negro plano: lleva un rescoldo de oro muy bajo
-   en el borde de arriba y un degradado que la aleja del negro del pin, que es
-   lo que la hace leerse como una pieza puesta encima y no como un agujero. */
 .ns-carta__panel {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: clamp(1.6rem, 4.4vh, 3rem) clamp(1.2rem, 3.4vw, 2.8rem);
-  background:
-    radial-gradient(118% 66% at 50% 0%, rgba(212, 175, 55, .10), transparent 64%),
-    linear-gradient(168deg, #16130F 0%, #0B0A09 46%, #110E0A 100%);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
 }
 
 /* Toda la carta cuelga de aqui, y es esta pieza la que se funde: una capa que
@@ -174,52 +175,51 @@
    Y aqui esta tambien **la unica medida de la carta**: todo lo que lleva
    dentro —cuerpos, margenes, la raya de la rubrica— va en `em` contra este
    tamano. Asi la carta entera se escala con una sola cifra, que es lo que
-   hace falta en una pantalla baja: la escena la clava a pantalla completa y
-   ahi no hay a donde seguir, de modo que lo que no cabe se pierde. Con una
-   cifra, cabe. */
+   hace falta cuando la escena la clava a pantalla completa: ahi no hay a
+   donde seguir, de modo que lo que no cabe se pierde. Con una cifra, cabe. */
 .cb-tinta {
   width: 100%;
-  max-width: 34rem;
+  max-width: 38rem;
   text-align: center;
   font-size: clamp(.86rem, .34vw + .76rem, 1.02rem);
 }
 
 .cb-logo {
   display: block;
-  width: min(62%, 16.5rem);
-  margin: 0 auto 1.15em;
-  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, .55));
+  width: min(58%, 15.5rem);
+  margin: 0 auto 1.1em;
 }
 .cb-logo img { display: block; width: 100%; height: auto; }
 
 /* Con el nombre de la escena delante, y no `.cb-tit` a secas: la pagina lleva
    `pagina-clara` en el <body> y `.pagina-clara h2` (0,2,0) pesa mas que una
-   clase sola, asi que pintaba este titulo del negro de la piedra clara sobre
-   la plancha de onix. Empatando en peso manda el que va despues, y el 29 va
-   el ultimo. */
+   clase sola. Empatando en peso manda el que va despues, y el 29 va el
+   ultimo. */
 .ns-carta .cb-tit {
-  margin: 0 0 .95em;
+  margin: 0 0 .9em;
   font-family: var(--fuente-titulo);
   font-weight: 400;
   font-size: 1.75em;
   line-height: 1.26;
   letter-spacing: .01em;
-  color: #F4F1EA;
+  color: var(--nos-negro);
 }
+/* El oro de la carta es el hondo, el de piedra clara: sobre blanco el vivo se
+   pierde, porque su tramo claro es casi blanco. Es la misma regla del 22. */
 .ns-carta .cb-tit em {
   font-style: normal;
   font-weight: 500;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 
 /* El cuerpo va alineado a la izquierda y no justificado. En el documento
    estaba justificado, pero eso era una columna de papel de 12 cm; en una
-   plancha que en el telefono mide 330 px, justificar abre rios entre las
-   palabras y la carta se lee peor de lo que se ve. */
+   pantalla de telefono justificar abre rios entre las palabras y la carta se
+   lee peor de lo que se ve. */
 .cb-p {
   margin: 0 0 .8em;
   font-family: var(--fuente-cuerpo);
@@ -227,7 +227,7 @@
   font-size: 1em;
   line-height: 1.72;
   text-align: left;
-  color: rgba(238, 233, 224, .82);
+  color: #2E2E2E;
 }
 .cb-p:last-of-type { margin-bottom: 0; }
 
@@ -238,22 +238,21 @@
   font-style: italic;
   font-size: 1.24em;
   line-height: 1.4;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 
 /* ---- La rubrica ---- */
-.cb-rub { margin-top: 1.3em; }
+.cb-rub { margin-top: 1.25em; }
 .cb-rub__filo {
   display: block;
   width: 4.2em;
   height: 1px;
   margin: 0 auto .8em;
-  background: var(--oro-marca-degradado);
-  opacity: .7;
+  background: var(--gradiente-oro-hondo);
 }
 .cb-rub b {
   display: block;
@@ -262,7 +261,7 @@
   font-weight: 500;
   font-size: 1.1em;
   line-height: 1.25;
-  color: #FFFFFF;
+  color: var(--nos-negro);
 }
 .cb-rub i {
   display: block;
@@ -273,11 +272,11 @@
   font-size: .6em;
   letter-spacing: .24em;
   text-transform: uppercase;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 /* La firma se escribe de izquierda a derecha con `--k-firma`, que es lo
    ultimo que mueve la escena: la carta acaba de firmarse delante de quien la
@@ -290,70 +289,50 @@
    gris+alfa a 640 de ancho, que es la mitad de canales que RGBA para el mismo
    resultado, porque el color del trazo es plano.
 
-   Y ese color es oscuro, que es como se firma en papel. Aqui el papel es
-   onix, asi que se invierte: `invert(1)` le da la vuelta al gris y deja el
-   alfa donde estaba, y el trazo sale en blanco. El `screen` remata los bordes
-   del recorte contra el fondo, que a este tamano se notarian. */
+   Aqui va tal cual, sin invertir: el trazo es oscuro y el fondo es blanco,
+   que es como se firmo. `multiply` remata los bordes del recorte contra el
+   blanco, que a este tamano se notarian. */
 .ns-carta__firma {
   display: block;
   width: min(46%, 9.5rem);
   height: auto;
   margin: 0 auto;
   clip-path: inset(0 calc((1 - var(--k-firma, 1)) * 100%) 0 0);
-  filter: invert(1);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
-/* Las cuatro escuadras de oro, que se dibujan solas: cada una son dos rayas
-   que crecen desde su vertice. `--k-filo` va de 0 a 1. Enmarcan la plancha
-   por dentro, sin tocarle el texto. */
+/* Las dos escuadras de oro, que se dibujan solas: cada una son dos rayas que
+   crecen desde su vertice. `--k-filo` va de 0 a 1. Son las del documento —la
+   de arriba y la de abajo del lado izquierdo— espejadas al canto derecho,
+   que en esta mitad es el que queda libre: el izquierdo lo ocupa la juntura
+   con el retrato. */
 .ns-carta__escuadras {
   position: absolute;
-  inset: clamp(.5rem, 1vw, .95rem);
+  inset: 0;
   z-index: 4;
   pointer-events: none;
 }
 .ns-carta__esq {
   position: absolute;
-  width: clamp(26px, 3.4vw, 46px);
-  height: clamp(26px, 3.4vw, 46px);
+  width: clamp(30px, 4.4vw, 62px);
+  height: clamp(30px, 4.4vw, 62px);
 }
 .ns-carta__esq::before,
 .ns-carta__esq::after {
   content: "";
   position: absolute;
-  background: var(--oro-marca-degradado);
+  background: var(--gradiente-oro-hondo);
 }
 .ns-carta__esq::before { height: 2px; width: calc(var(--k-filo, 1) * 100%); }
 .ns-carta__esq::after  { width: 2px; height: calc(var(--k-filo, 1) * 100%); }
 
-.ns-carta__esq--ai { top: 0; left: 0; }
 .ns-carta__esq--ad { top: 0; right: 0; }
-.ns-carta__esq--bi { bottom: 0; left: 0; }
 .ns-carta__esq--bd { bottom: 0; right: 0; }
 
-.ns-carta__esq--ai::before { top: 0; left: 0; }
-.ns-carta__esq--ai::after  { top: 0; left: 0; }
 .ns-carta__esq--ad::before { top: 0; right: 0; }
 .ns-carta__esq--ad::after  { top: 0; right: 0; }
-.ns-carta__esq--bi::before { bottom: 0; left: 0; }
-.ns-carta__esq--bi::after  { bottom: 0; left: 0; }
 .ns-carta__esq--bd::before { bottom: 0; right: 0; }
 .ns-carta__esq--bd::after  { bottom: 0; right: 0; }
-
-/* El lustre: una banda de luz que cruza la plancha una sola vez, cuando la
-   carta acaba de entrar. Es un reflejo, no un brillo de anuncio. */
-.ns-carta__lustre {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  background: linear-gradient(104deg,
-              rgba(255, 255, 255, 0) 38%,
-              rgba(255, 248, 224, .52) 50%,
-              rgba(255, 255, 255, 0) 62%);
-}
 
 /* ---------------------------------------------------------------------------
    La escena viva.
@@ -362,9 +341,9 @@
    motivo para cortar la herencia era que el guion las escribia en la escena
    entera y cada cambio invalidaba el estilo de sus doscientos elementos. Aqui
    cada una se escribe ya en la pieza pequena que la usa —el retrato, la
-   plancha, las escuadras— y lo que cuelga de esa pieza son unos pocos nodos,
+   mitad, las escuadras— y lo que cuelga de esa pieza son unos pocos nodos,
    pero entre ellos hay pseudo-elementos y un `img` que tienen que leerla: la
-   juntura, las ocho rayas de las escuadras, el retrato dentro de su marco.
+   juntura, las cuatro rayas de las escuadras, el retrato dentro de su marco.
    Sin herencia se quedarian todos en el valor inicial, es decir, dibujados
    desde el principio. Registradas de todos modos porque el tipo declarado
    (`<number>`) es lo que deja al navegador interpolarlas en el compositor.
@@ -440,23 +419,21 @@
   inset: 0;
   z-index: 3;
   transform: translate3d(0, calc((1 - var(--k-papel, 1)) * 101%), 0);
-  /* La barra de navegacion es fija y opaca: la plancha empieza por donde ella
-     acaba, o el filo de oro de arriba le queda debajo. */
+  /* La barra de navegacion es fija y opaca: el texto empieza por donde ella
+     acaba, o la escuadra de arriba le queda debajo. El blanco si pasa por
+     detras, que es lo que tiene que hacer un fondo. */
   padding-top: calc(var(--alto-navbar) + var(--aire));
 }
-/* La plancha entra vacia y la carta aparece despues: primero la pieza,
-   luego lo que dice. */
+/* El blanco entra vacio y la carta aparece despues: primero la mitad, luego
+   lo que dice. */
 .ns-carta--viva .cb-tinta { opacity: var(--k-texto, 1); }
-/* El lustre cruza cuando la plancha ya esta puesta. Se enciende con una clase
-   que pone el guion, no con el progreso: es un gesto que pasa una vez. */
-.ns-carta--viva.ns-carta--lustrada .ns-carta__lustre {
-  animation: cartaLustre 1.9s cubic-bezier(.4, 0, .2, 1) .15s 1 both;
-}
-@keyframes cartaLustre {
-  0%   { opacity: 0;   transform: translate3d(-62%, 0, 0); }
-  18%  { opacity: .14; }
-  82%  { opacity: .14; }
-  100% { opacity: 0;   transform: translate3d(62%, 0, 0); }
+
+/* La carta clavada no tiene a donde seguir: lo que no cabe en la pantalla se
+   pierde. Como todo lo suyo va en `em` contra una sola cifra, atar esa cifra
+   tambien al alto hace que quepa entera a cualquier tamano. `--cb-tope` es
+   ese techo y baja por tramos, segun lo que se estreche la pantalla. */
+.ns-carta--viva .cb-tinta {
+  font-size: min(clamp(.86rem, .34vw + .76rem, 1.02rem), var(--cb-tope, 2.1vh));
 }
 
 /* ---------------------------------------------------------------------------
@@ -483,8 +460,26 @@
   }
   .ns-carta__hoja {
     grid-column: 2;
-    padding: clamp(1.8rem, 5vh, 3.6rem) clamp(1.8rem, 3vw, 3.4rem);
+    padding: clamp(1.8rem, 5vh, 3.6rem) clamp(2rem, 3.4vw, 4rem);
   }
+  /* El techo del alto, en dos tramos. No es el mismo porque lo que decide
+     cuanto mide la carta no es solo el alto: cuanto mas estrecha es la
+     mitad, en mas lineas cae el mismo texto. Medido, la carta pide unos 40
+     em de alto a partir de 1200 de ancho y casi 46 por debajo, que es donde
+     la columna baja de 450 px. Dos tramos, y las dos cifras salen de ahi. */
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.85vh; }
+
+  /* Con la escena clavada, la fila de la rejilla mide lo que la pantalla y
+     ni un pixel mas. Por defecto una fila implicita es `auto`, es decir,
+     max-content: si la carta pedia mas alto del que hay, la fila crecia, se
+     salia del pin por abajo y lo que sobraba se lo comia su `overflow`; es
+     decir, se recortaba la firma sin que nada lo dijera. Con la fila atada a
+     la pantalla el sobrante se reparte arriba y abajo —el contenido va
+     centrado— y, sobre todo, se ve al medirlo. `min-height: 0` es lo que
+     deja a las dos mitades encogerse hasta esa medida. */
+  .ns-carta--viva .ns-carta__escena { grid-template-rows: 100%; }
+  .ns-carta--viva .ns-carta__retrato,
+  .ns-carta--viva .ns-carta__hoja { min-height: 0; }
 
   /* El retrato se descubre de izquierda a derecha, como se abre un telon. */
   .ns-carta--viva .ns-carta__retrato {
@@ -500,8 +495,8 @@
     bottom: 16%;
     transform: translate3d(0, calc((1 - var(--k-frase, 1)) * 22px), 0);
   }
-  /* Y la plancha se descubre desde la juntura hacia fuera, en el mismo
-     sentido en que se lee y en el mismo en que se abrio el retrato. */
+  /* Y el blanco se descubre desde la juntura hacia fuera, en el mismo sentido
+     en que se lee y en el mismo en que se abrio el retrato. */
   .ns-carta--viva .ns-carta__hoja {
     position: relative;
     inset: auto;
@@ -518,8 +513,14 @@
     z-index: 5;
     width: 2px;
     height: calc(var(--k-papel, 1) * 100%);
-    background: var(--oro-marca-degradado);
+    background: var(--gradiente-oro-hondo);
   }
+}
+
+/* A partir de 1200 la columna vuelve a pasar de 450 px, el texto cae en
+   menos lineas y el techo puede subir. */
+@media (min-width: 1200px) {
+  .ns-carta--viva .cb-tinta { --cb-tope: 2vh; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -527,22 +528,16 @@
    minimo y todo lo que mide se ata tambien al alto, que ahi es lo que escasea.
    --------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {
-  .ns-carta__hoja { --aire: .8rem; padding-inline: .8rem; }
-  .ns-carta__panel { padding: clamp(1.1rem, 3.4vh, 2rem) clamp(1rem, 4.4vw, 1.8rem); }
-  .ns-carta__esq { width: 22px; height: 22px; }
-  .ns-carta__escuadras { inset: .55rem; }
+  .ns-carta__hoja { --aire: 1rem; padding-inline: 1.2rem; }
+  .ns-carta__esq { width: 26px; height: 26px; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 2.15vh; }
 }
 
-/* Pantallas bajas —un telefono pequeno, o uno grande en horizontal—: la carta
-   entera tiene que caber dentro del pin, que ahi no hay a donde seguir. Lo
-   primero que cede es el tamano base, atado al alto de la pantalla; lo
-   segundo, el aire. El cuerpo de la letra no baja de lo que se lee. */
-@media (max-width: 991.98px) {
-  .ns-carta--viva .cb-tinta { font-size: min(clamp(.86rem, .34vw + .76rem, 1.02rem), 2.15vh); }
-}
+/* Pantallas bajas —un telefono pequeno, o uno grande en horizontal—: lo
+   primero que cede es el aire; el cuerpo de la letra no baja de lo que se
+   lee. */
 @media (max-width: 991.98px) and (max-height: 760px) {
-  .ns-carta--viva .ns-carta__panel { padding: 1rem .9rem; }
-  .ns-carta--viva .cb-logo { width: min(44%, 10rem); margin-bottom: .8em; }
+  .ns-carta--viva .cb-logo { width: min(46%, 10rem); margin-bottom: .8em; }
   .ns-carta--viva .cb-tit { margin-bottom: .7em; }
   .ns-carta--viva .cb-p { margin-bottom: .6em; line-height: 1.58; }
   .ns-carta--viva .cb-lem { margin-top: .75em; }
@@ -551,13 +546,12 @@
   .ns-carta--viva .ns-carta__firma { width: min(34%, 7rem); }
 }
 /* Y un escalon mas para las de verdad bajas —un iPhone SE, un telefono de
-   360x640—, donde la carta se pasaba de largo medio centenar de pixeles. Lo
-   que baja es lo que no es letra de leer: el logo, la firma, el aire y el
-   cuerpo del titulo. El del texto apenas se mueve. */
+   360x640—. Lo que baja es lo que no es letra de leer: el logo, la firma, el
+   aire y el cuerpo del titulo. El del texto apenas se mueve. */
 @media (max-width: 991.98px) and (max-height: 700px) {
-  .ns-carta--viva .cb-tinta { font-size: min(.86rem, 2.05vh); }
-  .ns-carta--viva .ns-carta__panel { padding: .7rem; }
-  .ns-carta--viva .cb-logo { width: min(36%, 8.5rem); margin-bottom: .6em; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 2.05vh; }
+  .ns-carta--viva .ns-carta__hoja { --aire: .7rem; }
+  .ns-carta--viva .cb-logo { width: min(38%, 8.5rem); margin-bottom: .6em; }
   .ns-carta--viva .cb-tit { font-size: 1.5em; margin-bottom: .55em; }
   .ns-carta--viva .cb-p { margin-bottom: .5em; line-height: 1.5; }
   .ns-carta--viva .cb-lem { font-size: 1.12em; margin-top: .6em; line-height: 1.32; }
@@ -565,6 +559,7 @@
   .ns-carta--viva .cb-rub b { margin-top: .15em; }
   .ns-carta--viva .cb-rub i { margin-top: .35em; }
   .ns-carta--viva .ns-carta__firma { width: min(28%, 6rem); }
+  .ns-carta--viva .ns-carta__esq { width: 20px; height: 20px; }
 }
 
 @media (max-width: 991.98px) and (max-height: 560px) {
@@ -577,12 +572,12 @@
    La carta ocupa la mitad en el ordenador y la pantalla entera en el
    telefono: los tres botones fijos —cookies abajo a la izquierda, WhatsApp y
    volver arriba abajo a la derecha— le caen encima. Sobre el retrato tapaban
-   el nombre del director; sobre la carta, el final y la firma. Y no hay sitio
-   al que moverlos, asi que se van y vuelven solos en cuanto la escena deja la
-   pantalla. Es un tramo corto —tres pantallas de scroll— y mientras dura no
-   hay nada que pulsar ahi: lo que hay que hacer es leer. Se van con un
-   fundido, no de golpe, y sin `display: none`, que quitaria el sitio y haria
-   saltar al de volver arriba.
+   el nombre del director; sobre la carta, el final y la firma, y ademas son
+   tres piezas oscuras sobre blanco. No hay sitio al que moverlos, asi que se
+   van y vuelven solos en cuanto la escena deja la pantalla. Es un tramo corto
+   —tres pantallas de scroll— y mientras dura no hay nada que pulsar ahi: lo
+   que hay que hacer es leer. Se van con un fundido, no de golpe, y sin
+   `display: none`, que quitaria el sitio y haria saltar al de volver arriba.
 
    `con-carta` lo pone y lo quita nosotros-cine.js en el <html>.
    --------------------------------------------------------------------------- */
@@ -602,9 +597,8 @@
 .con-carta .wsp-flotante::before,
 .con-carta .wsp-flotante::after { animation: none; }
 
-/* Con menos movimiento pedido no hay escena: ni lustre ni firma a medias. */
+/* Con menos movimiento pedido no hay escena: ni firma a medias. */
 @media (prefers-reduced-motion: reduce) {
-  .ns-carta__lustre { display: none; }
   .ns-carta__firma { clip-path: none; }
   .con-carta .wsp-flotante,
   .con-carta .btn-subir,

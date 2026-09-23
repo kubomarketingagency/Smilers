@@ -417,6 +417,10 @@ void main() {
 `;
 
   var RADIO_ESFERA = 2;
+  /* Lo que mide un disco frente al radio de la esfera. Lo usan el bucle que
+     coloca las instancias y diametroDisco(), que tiene que dar la misma
+     medida que se ve. */
+  var ESC_DISCO = 0.25;
   var DURACION_CUADRO = 1000 / 60;
 
   function EsferaTestimonios(lienzo, items, opciones) {
@@ -673,6 +677,32 @@ void main() {
     this._dormida = false;
   };
 
+/* El disco de delante, medido en pixeles de pantalla. Lo pide la escena para
+   poner el circulo del video justo encima, que un iframe no se puede pintar
+   dentro de WebGL y tiene que ir por fuera, del tamano exacto.
+
+   Se calcula y no se mide a ojo, que asi no hay dos cifras que mantener: si
+   manana cambia la escala o el encuadre, el circulo cambia con ellos.
+
+   La cuenta sigue lo que hace el shader. El disco se coloca con su centro a
+   (1 - ESC_DISCO) * RADIO_ESFERA del origen y con radio ESC_DISCO, pero el
+   vertice pasa despues por radius * normalize(...): deja de ser un disco
+   plano y se convierte en un casquete de esa misma esfera. Su borde queda a
+   un angulo atan(ESC_DISCO / centro) del eje, y de ahi salen el desvio
+   lateral y la profundidad reales, que son los que hay que proyectar. */
+  EsferaTestimonios.prototype.diametroDisco = function () {
+    var centro = (1 - ESC_DISCO) * RADIO_ESFERA;
+    var angulo = Math.atan(ESC_DISCO / centro);
+    var lateral = centro * Math.sin(angulo);
+    var hondo = centro * Math.cos(angulo);
+    /* La camara en reposo, no la de ahora: cuando la esfera gira se echa
+       hacia atras, y el circulo del video solo se ve con la esfera parada. */
+    var distancia = 3 * this.escala - hondo;
+    var mitad = distancia * Math.tan(this.camara.fov / 2);
+    if (!(mitad > 0)) return 0;
+    return (lateral / mitad) * this.lienzo.clientHeight;
+  };
+
   EsferaTestimonios.prototype._actualizarCamara = function () {
     var ojo = this._ojo;
     ojo[0] = 0; ojo[1] = 0; ojo[2] = this.camara.z;
@@ -741,7 +771,6 @@ void main() {
     var arribaY = this._arribaY;
     var arribaX = this._arribaX;
     var origen = this._origen;
-    var ESC_DISCO = 0.25;
     var INTENSIDAD = 0.6;
     var p = this._p;
     var m = this._m;
@@ -860,6 +889,9 @@ void main() {
     var hojas = Array.prototype.slice.call(seccion.querySelectorAll('.tc-hoja'));
     var pasos = Array.prototype.slice.call(seccion.querySelectorAll('[data-paso]'));
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
+    var cajaEsfera = seccion.querySelector('.testimonios-esfera');
+    var circuloVideo = seccion.querySelector('[data-video-esfera]');
+    var huecoVideo = circuloVideo ? circuloVideo.querySelector('[data-video-hueco]') : null;
 
     if (!lienzo || fichas.length < 2) return;
     if (!window.WebGL2RenderingContext) return;
@@ -867,6 +899,7 @@ void main() {
     var items = fichas.map(function (ficha) {
       var cita = ficha.querySelector('blockquote');
       return {
+        video: ficha.getAttribute('data-video') || '',
         antes: ficha.getAttribute('data-antes'),
         despues: ficha.getAttribute('data-despues'),
         nombre: ficha.getAttribute('data-nombre') || '',
@@ -917,10 +950,22 @@ void main() {
       }
       esfera.irA(tActual);
       esfera.revelar(revelando);
+      fijarDisco();
       return esfera;
     }
 
+    /* El circulo del video se monta encima del disco de delante, asi que
+       tiene que medir lo mismo que el. La esfera lo calcula (diametroDisco)
+       y aqui se escribe en la variable que lee el CSS. */
+    function fijarDisco() {
+      if (!esfera || !cajaEsfera) return;
+      var d = esfera.diametroDisco();
+      if (d > 0) cajaEsfera.style.setProperty('--tst-disco', Math.round(d) + 'px');
+    }
+
     var revelando = false;
+    var videoPuesto = false;
+    var itemConVideo = null;
     var ultimoIndice = -1;
     var ultimoCierre = null;
     var progresoSeccion = 0;
@@ -1058,6 +1103,27 @@ void main() {
         });
         ajustarPista();
         fijarRevelado(false);
+        /* Lo que cambia al cambiar de testimonio es el texto del panel: si
+           el que llega es el del video, la cita no es una cita y no lleva
+           comillas. */
+        var llevaVideo = !!item.video;
+        if (llevaVideo !== itemConVideo) {
+          itemConVideo = llevaVideo;
+          seccion.classList.toggle('tst-item-video', llevaVideo);
+        }
+      }
+
+      /* El circulo del video solo se pone con la esfera quieta en el suyo:
+         mientras gira, lo que hay ahi es el disco dando la vuelta, y un
+         iframe encima no gira con el. Al quitarlo se apaga el video, que si
+         no seguiria sonando detras de otro testimonio. */
+      if (circuloVideo) {
+        var toca = !!(items[indice] && items[indice].video) && quietud > 0.55;
+        if (toca !== videoPuesto) {
+          videoPuesto = toca;
+          seccion.classList.toggle('tst-con-video', toca);
+          if (!toca && window.SmilersVideo) window.SmilersVideo.apagar(huecoVideo);
+        }
       }
 
       var op = Number(suavizada.toFixed(2));
@@ -1070,14 +1136,15 @@ void main() {
       if (quietud < 0.5 && revelando) fijarRevelado(false);
       if (boton) {
 
-        var pasa = quietud > 0.75;
+        var pasa = quietud > 0.75 && !videoPuesto;
         if (pasa !== ultimoBotonActivo) {
           ultimoBotonActivo = pasa;
           boton.style.pointerEvents = pasa ? 'auto' : 'none';
         }
-        if (op !== ultimaOpacidadBoton) {
-          ultimaOpacidadBoton = op;
-          boton.style.opacity = String(op);
+        var opBoton = videoPuesto ? 0 : op;
+        if (opBoton !== ultimaOpacidadBoton) {
+          ultimaOpacidadBoton = opBoton;
+          boton.style.opacity = String(opBoton);
         }
       }
     }
@@ -1165,6 +1232,7 @@ void main() {
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
+        fijarDisco();
       }, {
 
         guarda: seccion,
@@ -1195,6 +1263,7 @@ void main() {
           esfera.escala = escalaSegunPantalla();
           esfera.encuadre = encuadreSegunPantalla();
           esfera.redimensionar();
+          fijarDisco();
         }
         pedirActualizacion();
       });
@@ -1238,7 +1307,7 @@ void main() {
         entradas.forEach(function (entrada) {
           var e = entrada.isIntersecting ? crearEsfera() : esfera;
           if (!e) return;
-          if (entrada.isIntersecting) { e.redimensionar(); e.arrancar(); }
+          if (entrada.isIntersecting) { e.redimensionar(); fijarDisco(); e.arrancar(); }
           else { e.detener(); }
         });
       }, { rootMargin: '200px 0px' }).observe(seccion);

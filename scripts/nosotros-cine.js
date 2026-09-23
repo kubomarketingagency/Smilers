@@ -289,7 +289,6 @@ document.addEventListener('DOMContentLoaded', function () {
        de abajo, que es justo mientras el pin esta pegado. */
     var cartaEnPantalla = false;
     var cartaEnPantallaPintada = false;
-    var cartaLustrada = false;
 
     function revisarModo() {
       var quiere = cabe();
@@ -318,8 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
         borrar(DESTINOS_CARTA);
         carta.classList.remove('ns-carta--clavado');
         document.documentElement.classList.remove('con-carta');
-        carta.classList.remove('ns-carta--lustrada');
-        cartaClavada = cartaClavadaPintada = cartaLustrada = false;
+        cartaClavada = cartaClavadaPintada = false;
         cartaEnPantalla = cartaEnPantallaPintada = false;
         escritoCarta = {};
         ultimoCarta = -1;
@@ -517,16 +515,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ponCarta('--k-texto', cTexto.toFixed(3));
         ponCarta('--k-filo', cFilo.toFixed(3));
         ponCarta('--k-firma', cFirma.toFixed(3));
-
-        /* El lustre pasa una sola vez, cuando el papel acaba de posarse. Se
-           rearma si se vuelve a subir del todo, para quien recorre la
-           escena dos veces. */
-        if (cPapel < .2) {
-          if (cartaLustrada) { cartaLustrada = false; carta.classList.remove('ns-carta--lustrada'); }
-        } else if (!cartaLustrada && cPapel > .96) {
-          cartaLustrada = true;
-          carta.classList.add('ns-carta--lustrada');
-        }
       }
 
       if (viva && cierreVivo && clavado !== clavadoPintado) {
