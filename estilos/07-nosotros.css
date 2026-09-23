@@ -958,6 +958,9 @@
 .pn-escena--viva .pn-fondo {
   position: absolute;
   inset: 0;
+  /* Lo que se ve de verdad, que el pin mide la pantalla grande. Ver
+     `--sobra-barra` en el 01. */
+  bottom: var(--sobra-barra);
   z-index: 0;
 }
 /* El cambiazo. Es un corte seco, sin transicion a proposito: se da con el

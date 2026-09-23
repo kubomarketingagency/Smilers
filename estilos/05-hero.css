@@ -151,6 +151,9 @@
 .hero {
   position: absolute;
   inset: 0;
+  /* Y el pin mide la pantalla grande, asi que lo de dentro se queda en lo que
+     se ve con la barra del navegador fuera. Ver `--sobra-barra` en el 01. */
+  bottom: var(--sobra-barra);
 }
 
 /* La fila entra por debajo de la barra fija. La barra es opaca y la fila le
@@ -159,6 +162,7 @@
 .hero-etapa2 {
   position: absolute;
   inset: 0;
+  bottom: var(--sobra-barra);
   z-index: 1;
   display: flex;
   padding-top: var(--alto-navbar);

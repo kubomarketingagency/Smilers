@@ -124,9 +124,15 @@ window.SmilersVideo = (function () {
          tarde o no llegan —al rebobinar, al cambiar de video, al volver de
          una pausa— y en ese hueco YouTube ensena su titulo y su canal. Mirarlo
          cada dos por tres no cuesta nada y no se escapa ninguno. */
-      var rodando = r.getPlayerState && r.getPlayerState() === 1;
-      caja.classList.toggle('video-listo', !!(rodando && caja.__video));
+      var estado = r.getPlayerState ? r.getPlayerState() : -1;
+      caja.classList.toggle('video-listo', !!(estado === 1 && caja.__video));
       if (!caja.__video) return;
+      /* Y si esta pausado teniendo que rodar, se le vuelve a dar. No lo
+         pausa nadie de aqui —soltar un video pausado es justo lo que hace
+         salir el titulo—, pero el navegador si lo para por su cuenta cuando
+         el iframe lleva un rato sin verse, y al volver se queda con el glifo
+         de pausa puesto en medio de la cara. */
+      if (estado === 2) { taparUnMomento(caja, 900); r.playVideo(); return; }
       var largo = r.getDuration();
       if (!(largo > 0) || r.getCurrentTime() < largo - MARGEN) return;
       taparUnMomento(caja);

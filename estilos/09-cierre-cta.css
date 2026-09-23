@@ -7,6 +7,10 @@
   top: 0;
   height: 100vh;
   height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
+  /* El pin mide la pantalla grande y no cambia, pero lo que lleva dentro se
+     queda en lo que se ve con la barra del navegador fuera. Ver
+     `--sobra-barra` en el 01. */
+  padding-bottom: var(--sobra-barra);
   overflow: hidden;
   isolation: isolate;
 }

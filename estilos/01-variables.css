@@ -90,4 +90,24 @@
      es la barra ya encogida, que es la que tapa algo a media pagina; lo que
      se ve solo con la pagina arriba —los heros— se cuenta con esta. */
   --alto-navbar-arriba: calc(48px + 1.7rem);
+
+  /* Lo que la barra del navegador del telefono se esta comiendo de la
+     pantalla: cero con la barra escondida y su alto con la barra fuera. En el
+     ordenador vale cero siempre.
+
+     Los pines de las escenas siguen midiendo la pantalla grande (`100lvh`) y
+     no cambian: de esa medida cuelga toda la cuenta del scroll, que mide lo
+     mismo con una sonda de 100lvh (planificador.js), y con `dvh` el pin
+     crecia y encogia a mitad del gesto. Lo que se ajusta es lo que va DENTRO
+     del pin, que es lo unico que se perdia: en una escena clavada no se puede
+     bajar para ver lo que sobresale por abajo, asi que con la barra fuera se
+     comia el final de la carta, el pie de una escena o el rotulo de otra.
+
+     Va en dos pasos a proposito: donde no haya `dvh` se queda en cero y no
+     pasa nada, en vez de dejar un `bottom` invalido y descolgar la capa. */
+  --sobra-barra: 0px;
+}
+
+@supports (height: 1dvh) {
+  :root { --sobra-barra: calc(100lvh - 100dvh); }
 }

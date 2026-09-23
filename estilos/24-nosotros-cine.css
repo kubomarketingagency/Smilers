@@ -740,6 +740,9 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine--viva .ns-capa {
   position: absolute;
   inset: 0;
+  /* Lo que se ve de verdad, que el pin mide la pantalla grande. Ver
+     `--sobra-barra` en el 01. */
+  bottom: var(--sobra-barra);
   min-height: 0;
   padding-block: clamp(1rem, 2.2vw, 2.2rem);
   padding-top: calc(var(--alto-navbar) + clamp(.6rem, 1.6vw, 1.6rem));
@@ -862,7 +865,8 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cierre--viva .banda-cta--cine {
   position: absolute;
   inset: 0;
-  height: 100%;
+  bottom: var(--sobra-barra); /* lo que se ve: ver `--sobra-barra` en el 01 */
+  height: auto;
   min-height: 0;
 }
 /* Cada columna de la mamposteria son tres fotos a 3/4, y tres fotos a 3/4

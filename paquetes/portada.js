@@ -1175,29 +1175,18 @@ o[15]=(a20*b03 - a21*b01 + a22*b00)*det;
 return o;
 }
 };
-function geometriaTarjeta(medioAncho,medioAlto,radio,pasos){
+function geometriaDisco(pasos,radio){
 var vertices=[0,0,0];
 var uvs=[0.5,0.5];
 var indices=[];
-var centros=[
-[medioAncho - radio,medioAlto - radio],
-[-(medioAncho - radio),medioAlto - radio],
-[-(medioAncho - radio),-(medioAlto - radio)],
-[medioAncho - radio,-(medioAlto - radio)]
-];
-var n=0;
-for(var e=0;e < 4;e++){
-for(var i=0;i <=pasos;i++){
-var alfa=(e*Math.PI / 2)+(i / pasos)*(Math.PI / 2);
-var x=centros[e][0]+ radio*Math.cos(alfa);
-var y=centros[e][1]+ radio*Math.sin(alfa);
-vertices.push(x,y,0);
-uvs.push(x /(2*medioAncho)+ 0.5,y /(2*medioAlto)+ 0.5);
-n++;
-if(n > 1)indices.push(0,n - 1,n);
+for(var i=0;i < pasos;i++){
+var alfa=(2*Math.PI*i)/ pasos;
+var x=Math.cos(alfa),y=Math.sin(alfa);
+vertices.push(radio*x,radio*y,0);
+uvs.push(x*0.5 + 0.5,y*0.5 + 0.5);
+if(i > 0)indices.push(0,i,i + 1);
 }
-}
-indices.push(0,n,1);
+indices.push(0,pasos,1);
 return{
 vertices:new Float32Array(vertices),
 uvs:new Float32Array(uvs),
@@ -1373,9 +1362,9 @@ void main() {
 `;
 var RADIO_ESFERA=2;
 var ESC_DISCO=0.25;
-var TARJETA_ALTO=1.2;
-var TARJETA_ANCHO=TARJETA_ALTO*9 / 16;
-var TARJETA_RADIO=0.07;
+var DISCO_RADIO=1.2;
+var ZOOM_VIDEO=1.4;
+var FOCO_VIDEO=0.375;
 var DURACION_CUADRO=1000 / 60;
 function EsferaTestimonios(lienzo,items,opciones){
 opciones=opciones||{};
@@ -1439,20 +1428,20 @@ pos:gl.getAttribLocation(this.programa,'aModelPosition'),
 uv:gl.getAttribLocation(this.programa,'aModelUvs'),
 inst:gl.getAttribLocation(this.programa,'aInstanceMatrix')
 };
-this.tarjeta=geometriaTarjeta(TARJETA_ANCHO,TARJETA_ALTO,TARJETA_RADIO,8);
+this.disco=geometriaDisco(64,DISCO_RADIO);
 this.vao=gl.createVertexArray();
 gl.bindVertexArray(this.vao);
-var bufPos=crearBuffer(gl,this.tarjeta.vertices,gl.STATIC_DRAW);
+var bufPos=crearBuffer(gl,this.disco.vertices,gl.STATIC_DRAW);
 gl.bindBuffer(gl.ARRAY_BUFFER,bufPos);
 gl.enableVertexAttribArray(a.pos);
 gl.vertexAttribPointer(a.pos,3,gl.FLOAT,false,0,0);
-var bufUv=crearBuffer(gl,this.tarjeta.uvs,gl.STATIC_DRAW);
+var bufUv=crearBuffer(gl,this.disco.uvs,gl.STATIC_DRAW);
 gl.bindBuffer(gl.ARRAY_BUFFER,bufUv);
 gl.enableVertexAttribArray(a.uv);
 gl.vertexAttribPointer(a.uv,2,gl.FLOAT,false,0,0);
 var bufIdx=gl.createBuffer();
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,bufIdx);
-gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,this.tarjeta.indices,gl.STATIC_DRAW);
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,this.disco.indices,gl.STATIC_DRAW);
 this.posicionesInstancia=posicionesEsfera(1,RADIO_ESFERA);
 this.cantidadInstancias=this.posicionesInstancia.length;
 this.matricesArray=new Float32Array(this.cantidadInstancias*16);
@@ -1511,14 +1500,13 @@ Q.copiar(this._orientacionPrevia,this.orientaciones[0]);
 EsferaTestimonios.prototype._cargarAtlas=function(){
 var gl=this.gl;
 var self=this;
-var CELDA_ALTO=512;
-var CELDA_ANCHO=Math.round(CELDA_ALTO*9 / 16);
+var CELDA=512;
 this.texFoto=crearTextura(gl);
 this.tamAtlas=Math.ceil(Math.sqrt(Math.max(1,this.items.length)));
 function pintar(claveFuente,textura){
 var lienzo2d=document.createElement('canvas');
-lienzo2d.width=self.tamAtlas*CELDA_ANCHO;
-lienzo2d.height=self.tamAtlas*CELDA_ALTO;
+lienzo2d.width=self.tamAtlas*CELDA;
+lienzo2d.height=self.tamAtlas*CELDA;
 var ctx=lienzo2d.getContext('2d');
 Promise.all(self.items.map(function(item){
 return new Promise(function(resolver){
@@ -1537,16 +1525,13 @@ img.src=item[claveFuente];
 })).then(function(imagenes){
 imagenes.forEach(function(img,i){
 if(!img)return;
-var x=(i%self.tamAtlas)*CELDA_ANCHO;
-var y=Math.floor(i / self.tamAtlas)*CELDA_ALTO;
-var prop=CELDA_ANCHO / CELDA_ALTO;
-var anchoFuente=img.width;
-var altoFuente=img.height;
-if(anchoFuente / altoFuente > prop)anchoFuente=altoFuente*prop;
-else altoFuente=anchoFuente / prop;
-var sx=(img.width - anchoFuente)/ 2;
-var sy=(img.height - altoFuente)/ 2;
-ctx.drawImage(img,sx,sy,anchoFuente,altoFuente,x,y,CELDA_ANCHO,CELDA_ALTO);
+var x=(i%self.tamAtlas)*CELDA;
+var y=Math.floor(i / self.tamAtlas)*CELDA;
+var lado=Math.min(img.width / ZOOM_VIDEO,img.height);
+var sx=(img.width - lado)/ 2;
+var sy=Math.max(0,Math.min(img.height - lado,
+img.height*FOCO_VIDEO - lado / 2));
+ctx.drawImage(img,sx,sy,lado,lado,x,y,CELDA,CELDA);
 if(img.close)img.close();
 });
 gl.bindTexture(gl.TEXTURE_2D,textura);
@@ -1580,22 +1565,14 @@ M4.perspectiva(this.camara.proyeccion,this.camara.fov,aspecto,
 this.camara.cerca,this.camara.lejos);
 this._dormida=false;
 };
-EsferaTestimonios.prototype.medidaTarjeta=function(){
+EsferaTestimonios.prototype.medidaDisco=function(){
 var centro=(1 - ESC_DISCO)*RADIO_ESFERA;
-var self=this;
-function lado(medida){
-var angulo=Math.atan(medida / centro);
+var angulo=Math.atan((ESC_DISCO*DISCO_RADIO)/ centro);
 var lateral=centro*Math.sin(angulo);
 var hondo=centro*Math.cos(angulo);
-var mitad=(3*self.escala - hondo)*Math.tan(self.camara.fov / 2);
+var mitad=(3*this.escala - hondo)*Math.tan(this.camara.fov / 2);
 if(!(mitad > 0))return 0;
-return(lateral / mitad)*self.lienzo.clientHeight;
-}
-return{
-ancho:lado(ESC_DISCO*TARJETA_ANCHO),
-alto:lado(ESC_DISCO*TARJETA_ALTO),
-radio:lado(ESC_DISCO*TARJETA_RADIO)/ 2
-};
+return(lateral / mitad)*this.lienzo.clientHeight;
 };
 EsferaTestimonios.prototype._actualizarCamara=function(){
 var ojo=this._ojo;
@@ -1694,7 +1671,7 @@ gl.uniform1i(this.u.texFoto,0);
 gl.activeTexture(gl.TEXTURE0);
 gl.bindTexture(gl.TEXTURE_2D,this.texFoto);
 gl.bindVertexArray(this.vao);
-gl.drawElementsInstanced(gl.TRIANGLES,this.tarjeta.indices.length,
+gl.drawElementsInstanced(gl.TRIANGLES,this.disco.indices.length,
 gl.UNSIGNED_SHORT,0,this.cantidadInstancias);
 gl.bindVertexArray(null);
 };
@@ -1777,17 +1754,15 @@ seccion.classList.remove('esfera-activa');
 return null;
 }
 esfera.irA(tActual);
-fijarTarjeta();
+fijarDisco();
 if(window.SmilersVideo)window.SmilersVideo.preparar();
 return esfera;
 }
-function fijarTarjeta(){
+function fijarDisco(){
 if(!esfera||!cajaEsfera)return;
-var m=esfera.medidaTarjeta();
-if(!(m.alto > 0))return;
-cajaEsfera.style.setProperty('--tst-ancho',Math.round(m.ancho)+ 'px');
-cajaEsfera.style.setProperty('--tst-alto',Math.round(m.alto)+ 'px');
-cajaEsfera.style.setProperty('--tst-radio',Math.round(m.radio)+ 'px');
+var lado=esfera.medidaDisco();
+if(!(lado > 0))return;
+cajaEsfera.style.setProperty('--tst-lado',Math.round(lado)+ 'px');
 }
 var videoPuesto=false;
 var videoMontado=-1;
@@ -1874,7 +1849,7 @@ else paso.removeAttribute('aria-current');
 }
 if(marcoVideo){
 var quien=items[indice]&&items[indice].video?indice:-1;
-var toca=quien >=0&&quietud > 0.55&&enJuego;
+var toca=quien >=0&&quietud >(videoPuesto?0.5:0.82)&&enJuego;
 if(toca !==videoPuesto||(toca&&quien !==videoMontado)){
 videoPuesto=toca;
 seccion.classList.toggle('tst-con-video',toca);
@@ -1938,7 +1913,7 @@ if(!esfera)return;
 esfera.escala=escalaSegunPantalla();
 esfera.encuadre=encuadreSegunPantalla();
 esfera.redimensionar();
-fijarTarjeta();
+fijarDisco();
 },{
 guarda:seccion,
 alCambiarVisibilidad:function(dentro){
@@ -1968,7 +1943,7 @@ if(esfera){
 esfera.escala=escalaSegunPantalla();
 esfera.encuadre=encuadreSegunPantalla();
 esfera.redimensionar();
-fijarTarjeta();
+fijarDisco();
 }
 pedirActualizacion();
 });
@@ -2004,7 +1979,7 @@ new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
 var e=entrada.isIntersecting?crearEsfera():esfera;
 if(!e)return;
-if(entrada.isIntersecting){e.redimensionar();fijarTarjeta();e.arrancar();}
+if(entrada.isIntersecting){e.redimensionar();fijarDisco();e.arrancar();}
 else{e.detener();}
 });
 },{rootMargin:'200px 0px'}).observe(seccion);
@@ -2079,9 +2054,10 @@ if(caja.__vigia)return;
 caja.__vigia=setInterval(function(){
 var r=caja.__reproductor;
 if(!r||!r.getDuration)return;
-var rodando=r.getPlayerState&&r.getPlayerState()===1;
-caja.classList.toggle('video-listo',!!(rodando&&caja.__video));
+var estado=r.getPlayerState?r.getPlayerState():-1;
+caja.classList.toggle('video-listo',!!(estado===1&&caja.__video));
 if(!caja.__video)return;
+if(estado===2){taparUnMomento(caja,900);r.playVideo();return;}
 var largo=r.getDuration();
 if(!(largo > 0)||r.getCurrentTime()< largo - MARGEN)return;
 taparUnMomento(caja);

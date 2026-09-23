@@ -200,11 +200,25 @@
   top: 0;
   height: 100vh;
   height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
-  padding: 0;
+  /* El pin mide la pantalla grande y no cambia, pero lo que lleva dentro se
+     centra en lo que se ve con la barra del navegador fuera: si no, la esfera
+     se va hacia abajo y el rotulo se sube. Ver `--sobra-barra` en el 01. */
+  padding: 0 0 var(--sobra-barra);
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
+}
+
+/* El rotulo es una banda fija pegada al techo, asi que la escena se centra en
+   lo que el rotulo deja y no en la pantalla entera. En una pantalla baja —un
+   portatil de 1366x768, un monitor de 1280x720— el circulo subia hasta
+   metersele por debajo a la palabra «Testimonios»: la esfera se centra en el
+   pin y el rotulo cuelga siempre a la misma altura, asi que cuanto menos alto
+   hay, mas cerca se ponen. En el telefono no hace falta, que ahi la escena ya
+   trae su propio aire de arriba. */
+@media (min-width: 992px) {
+  .esfera-activa .testimonios-pin { padding-top: calc(var(--alto-navbar) + 3.6rem); }
 }
 
 .esfera-activa .testimonios-etiqueta {
@@ -335,38 +349,50 @@
   flex: 0 0 auto;
   width: min(58vw, 94svh);
   aspect-ratio: 1;
+  /* Lo que mide el disco de delante en pixeles. Lo calcula la esfera y lo
+     reescribe aqui en cuanto existe (`fijarDisco`); esta cifra es solo el
+     punto de partida. */
+  --tst-lado: 300px;
 }
 .testimonios-lienzo {
   display: block;
   width: 100%;
   height: 100%;
   outline: none;
-  /* La mascara apaga el lienzo hacia fuera para que las tarjetas no acaben
-     en un canto. Sus topes van con el tamano de la tarjeta de delante: la de
-     ahora llega al 74% del alto del lienzo y sus esquinas caen al 60% de la
-     diagonal, asi que el negro macizo tiene que llegar hasta ahi o le come
-     las puntas. Con el disco de antes bastaba el 50%. */
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 64%, rgba(0, 0, 0, .8) 76%, rgba(0, 0, 0, .3) 88%, transparent 98%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 0 64%, rgba(0, 0, 0, .8) 76%, rgba(0, 0, 0, .3) 88%, transparent 98%);
+  /* La mascara apaga el lienzo hacia fuera para que los discos no acaben en
+     un canto. Sus topes van con el tamano del disco de delante: el de ahora
+     mide tres cuartos del alto del lienzo, o sea 37% de radio, y los topes de
+     un gradiente redondo se miden contra la media diagonal (70,7%), asi que
+     el negro macizo tiene que llegar al 53% largo. Va al 58%, con un dedo de
+     aire. */
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, rgba(0, 0, 0, .8) 72%, rgba(0, 0, 0, .3) 86%, transparent 98%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, rgba(0, 0, 0, .8) 72%, rgba(0, 0, 0, .3) 86%, transparent 98%);
 }
 
 
 /* ===========================================================================
    Los testimonios en video.
 
-   Los ocho son videos verticales de YouTube, y por eso la esfera dejo de
-   estar hecha de discos: cada cara es una tarjeta de 9:16 (ver
-   testimonios-esfera.js). Un iframe no se puede pintar dentro de WebGL, asi
-   que el reproductor va por fuera del lienzo, en una tarjeta puesta justo
-   encima de la que esta de frente. Su tamano no esta escrito aqui: lo mide la
-   propia esfera y lo deja en `--tst-ancho`, `--tst-alto` y `--tst-radio`,
-   para que no haya dos cifras que mantener el dia que cambie el encuadre. Los
-   porcentajes del CSS son solo lo que se usa mientras la esfera no existe.
+   Los ocho son videos verticales de YouTube. Un iframe no se puede pintar
+   dentro de WebGL, asi que el reproductor va por fuera del lienzo, en un
+   circulo puesto justo encima del disco que esta de frente. Su tamano no
+   esta escrito aqui: lo mide la propia esfera y lo deja en `--tst-lado`,
+   para que no haya dos cifras que mantener el dia que cambie el encuadre.
 
-   Hubo antes un circulo con el video vertical metido dentro y el hueco
-   relleno con su propio fotograma desenfocado. Funcionaba, pero era un
-   apano: el video ocupaba la mitad del circulo y en un telefono se quedaba en
-   133 px de ancho. Con la tarjeta, el video ES la cara.
+   EL VIDEO VA MAS ANCHO QUE EL CIRCULO. Un video vertical metido en un
+   circulo de su mismo ancho se queda en una tira: se ve el suelo, se ve el
+   techo y no se ve la cara. Aqui va al reves —el video es mas ancho que el
+   circulo y el circulo recorta—, y ademas sube hasta que la cara cae en el
+   centro. Recorta por arriba y por abajo, que es justo lo que sobra.
+
+   Y de paso resuelve lo otro: lo que YouTube dibuja encima de sus videos
+   —el sello de Shorts arriba a la izquierda, los botones del canto derecho,
+   el titulo abajo— se queda fuera del recorte. Con el video al ancho justo
+   se veia entero, y no hay parametro que lo apague.
+
+   Hubo en medio una version con tarjetas de 9:16 en vez de discos, que era lo
+   que pedia un video vertical entero. El circulo es lo que quiso la clinica y
+   con el video recortado dentro ya no hace falta la tarjeta.
 
    La misma pieza aparece dos veces: aqui y en la tarjeta de la lista, que es
    lo que se ve cuando la escena no se enciende (sin WebGL o con menos
@@ -378,20 +404,27 @@
   top: 50%;
   left: 50%;
   z-index: 3;
-  /* Un pelo mas que la tarjeta de debajo: asi nunca asoma un filo de la foto
-     por un redondeo. */
-  width: calc(var(--tst-ancho, 42%) + 2px);
-  height: calc(var(--tst-alto, 74%) + 2px);
+  /* Un pelo mas que el disco de debajo: asi nunca asoma un filo de la foto
+     por el borde. */
+  width: calc(var(--tst-lado) + 2px);
+  height: calc(var(--tst-lado) + 2px);
   transform: translate(-50%, -50%);
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-  transition: opacity .38s ease, visibility .38s;
+  /* Se va deprisa y vuelve despacio. Mientras la esfera gira no puede quedar
+     un circulo flotando por delante —eso es lo que se veia feo—, y cuando la
+     esfera se para hay tiempo de sobra para que entre con calma.
+
+     Se esconde con la opacidad y no con `visibility`: un iframe escondido de
+     verdad el navegador lo da por parado y le para el video, y al volver
+     YouTube se queda con su glifo de pausa puesto en medio de la cara. A
+     opacidad cero sigue rodando, callado, que es como tiene que estar. */
+  transition: opacity .16s ease;
 }
 .tst-con-video .tst-video {
   opacity: 1;
-  visibility: visible;
   pointer-events: auto;
+  transition: opacity .42s ease .05s;
 }
 
 .tst-video__marco {
@@ -399,9 +432,32 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: var(--tst-radio, 14px);
+  border-radius: 50%;
   background: #000000;
   box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
+}
+
+/* El video dentro del circulo: mas ancho que el (`--tst-zoom`) y subido
+   hasta que la cara queda en el centro (`--tst-foco`, la altura a la que cae
+   la cara en el fotograma, contada de arriba abajo).
+
+   Las dos cifras son las mismas que usa el atlas de la esfera para recortar
+   la foto del disco (`ZOOM_VIDEO` y `FOCO_VIDEO` en testimonios-esfera.js):
+   si se cambia una hay que cambiar las dos, o el disco y el video ensenaran
+   trozos distintos del fotograma y el relevo entre ellos se vera.
+
+   La cuenta del `top`: el alto del video es `lado * zoom * 16/9`, la cara cae
+   a `foco` de ese alto y tiene que quedar a medio circulo del borde de
+   arriba. */
+.tst-video__medio {
+  --tst-zoom: 1.4;
+  --tst-foco: .375;
+  position: absolute;
+  left: 50%;
+  top: calc((.5 - var(--tst-foco) * var(--tst-zoom) * 16 / 9) * var(--tst-lado));
+  width: calc(var(--tst-lado) * var(--tst-zoom));
+  aspect-ratio: 9 / 16;
+  transform: translateX(-50%);
 }
 /* El fotograma, mientras el reproductor se monta: sin el ahi hay medio
    segundo de agujero negro. Se va cuando el video ya esta dando. */
@@ -422,7 +478,7 @@
    video no rueda —y no rueda entre que se pide y arranca, ni mientras esta
    parado—, que es cuando YouTube ensena su titulo y su canal. Si volviera con
    transicion, ese medio segundo se veria. */
-.tst-video__marco:not(.video-listo) .tst-video__poster { transition: none; }
+.tst-video__medio:not(.video-listo) .tst-video__poster { transition: none; }
 /* Y vuelve de golpe cuando el guion rebobina: ahi son seis decimas y una
    transicion se comeria la mitad. */
 .saltando .tst-video__poster { opacity: 1; transition: none; }
@@ -443,13 +499,14 @@
   z-index: 3;
 }
 
-/* El boton del sonido. Empieza callado porque ningun navegador deja que un
-   video arranque solo con sonido; en cuanto se pulsa una vez, los demas ya
-   salen sonando. */
+/* El boton del sonido, colgando por debajo del circulo. Dentro se lo comeria
+   el recorte: un circulo no tiene esquinas donde meter un boton sin que pise
+   la cara. Empieza callado porque ningun navegador deja que un video arranque
+   solo con sonido; en cuanto se pulsa una vez, los demas ya salen sonando. */
 .tst-video__son {
   position: absolute;
-  right: .5rem;
-  bottom: .5rem;
+  left: 50%;
+  bottom: -1.55rem;
   z-index: 4;
   width: 2.3rem;
   height: 2.3rem;
@@ -458,10 +515,11 @@
   place-items: center;
   border: 1px solid rgba(212, 175, 55, .85);
   border-radius: 50%;
-  background: rgba(10, 8, 6, .6);
+  background: rgba(10, 8, 6, .82);
   color: var(--oro-marca);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transform: translateX(-50%);
   transition: background .3s ease, color .3s ease, transform .3s ease;
 }
 .tst-video__son svg {
@@ -481,7 +539,7 @@
 .tst-video__son:focus-visible {
   background: var(--oro-marca);
   color: var(--onix);
-  transform: scale(1.06);
+  transform: translateX(-50%) scale(1.06);
 }
 
 /* Ninguna cita es una cita: lo que dice el panel presenta el video, no
