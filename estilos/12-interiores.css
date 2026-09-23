@@ -370,114 +370,33 @@
   .bloque-tratamiento-numero { font-size: 3.5rem; }
 }
 
-.comparador { max-width: 720px; margin: 0 auto; position: relative; }
-.comparador-marco {
+/* La foto de cada especialidad.
+
+   Aqui hubo un comparador de antes y despues: dos copias de la MISMA foto,
+   una en blanco y negro debajo de la otra, con una manija para deslizar entre
+   las dos y una nota al pie que avisaba de que la comparacion era una
+   simulacion y no un caso real. Es decir, un gesto de antes/despues que no
+   comparaba nada. Se fue entero —la manija, la raya, las dos chapas, el
+   deslizador y la nota— y queda la foto, que es lo que habia debajo. */
+.tz-foto {
   position: relative;
   overflow: hidden;
+  margin: 0 auto;
+  max-width: 720px;
   aspect-ratio: 16 / 11;
   border-radius: var(--radio-tag);
   box-shadow: var(--sombra-hover);
-  cursor: ew-resize;
-  touch-action: pan-y;
-  --pos: 50%;
 }
-.comparador-img {
-  position: absolute;
-  inset: 0;
+.tz-foto__img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* A lo ancho, donde diga cada comparador: en escritorio la caja es casi
-     cuadrada y una foto apaisada pierde los lados, asi que el que lo
-     necesita corre la suya con --foco-x en su .comparador. Por defecto, al
-     centro. */
+  /* A lo ancho, donde diga cada foto: en escritorio la caja es casi cuadrada
+     y una foto apaisada pierde los lados, asi que la que lo necesita corre la
+     suya con --foco-x. Por defecto, al centro. */
   object-position: var(--foco-x, 50%) 42%;
-  -webkit-user-drag: none;
-  user-select: none;
-  pointer-events: none;
 }
-.comparador-despues { filter: saturate(1.05) contrast(1.03); }
-.comparador-antes-cont {
-  position: absolute;
-  inset: 0;
-  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
-}
-.comparador-antes {
-  filter: saturate(.45) sepia(.4) brightness(.88) contrast(.95);
-}
-
-.comparador-linea {
-  position: absolute;
-  top: 0; bottom: 0;
-  left: var(--pos);
-  width: 3px;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, .9);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
-  pointer-events: none;
-}
-.comparador-manija {
-  position: absolute;
-  top: 50%;
-  left: var(--pos);
-  transform: translate(-50%, -50%);
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: var(--marmol);
-  color: var(--turquesa-osc);
-  display: grid;
-  place-items: center;
-  font-size: 1rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, .25);
-  pointer-events: none;
-  transition: transform .15s ease;
-}
-.comparador-marco:hover .comparador-manija,
-.comparador-marco:active .comparador-manija { transform: translate(-50%, -50%) scale(1.08); }
-
-.comparador-tag {
-  position: absolute;
-  top: 16px;
-  font-family: var(--fuente-cuerpo);
-  font-weight: 600;
-  font-size: .72rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: .35rem .8rem;
-  border-radius: 50px;
-  color: #fff;
-  pointer-events: none;
-  z-index: 1;
-}
-.comparador-tag-antes  { left: 16px; background: rgba(22, 19, 15, .88); }
-.comparador-tag-despues{ right: 16px; background: var(--naranja-accion); }
-
-.comparador-rango {
-  width: 100%;
-  margin-top: 1.1rem;
-  accent-color: var(--naranja);
-  cursor: ew-resize;
-}
-
-.comparador-rango::-webkit-slider-thumb { background-color: var(--naranja); }
-.comparador-rango::-webkit-slider-thumb:active { background-color: var(--naranja-oscuro); }
-.comparador-rango::-moz-range-thumb { background-color: var(--naranja); }
-.comparador-rango::-moz-range-thumb:active { background-color: var(--naranja-oscuro); }
-.comparador-rango::-webkit-slider-runnable-track { background-color: var(--turquesa-claro); }
-.comparador-rango::-moz-range-track { background-color: var(--turquesa-claro); }
-.comparador-rango:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(192, 192, 192, .35); }
-.comparador-rango:focus::-moz-range-thumb { box-shadow: 0 0 0 1px #fff, 0 0 0 .25rem rgba(192, 192, 192, .35); }
-.comparador-nota {
-  text-align: center;
-  font-size: .78rem;
-  color: var(--texto-suave);
-  margin-top: .6rem;
-  font-style: italic;
-}
-
-@media (max-width: 575.98px) {
-  .comparador-manija { width: 40px; height: 40px; }
-  .comparador-tag { font-size: .74rem; padding: .3rem .65rem; top: 12px; }
 }
 
 @media (max-height: 480px) and (orientation: landscape) {
@@ -492,5 +411,5 @@
   .navbar-collapse { max-height: calc(100vh - 70px); overflow-y: auto; }
   .seccion { padding: 40px 0; }
     .contador-lujo { margin-top: 2rem; }
-      .comparador-marco { aspect-ratio: 16 / 6; }
+  .tz-foto { aspect-ratio: 16 / 6; }
 }

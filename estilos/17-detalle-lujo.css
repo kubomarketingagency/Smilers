@@ -46,13 +46,14 @@
 @media (max-width: 767.98px) {
 }
 
-.pagina-tratamientos .comparador { max-width: none; }
-.pagina-tratamientos .comparador-marco {
+.pagina-tratamientos .tz-foto {
+  max-width: none;
   border: 1px solid rgba(212, 175, 55, .40);
 }
 
-.pagina-tratamientos .comparador-marco::before,
-.pagina-tratamientos .comparador-marco::after {
+/* Las dos escuadras de oro en diagonal, como en el resto de la pagina. */
+.pagina-tratamientos .tz-foto::before,
+.pagina-tratamientos .tz-foto::after {
   content: "";
   position: absolute;
   width: 22px;
@@ -61,71 +62,15 @@
   pointer-events: none;
   z-index: 2;
 }
-.pagina-tratamientos .comparador-marco::before {
+.pagina-tratamientos .tz-foto::before {
   top: 0; left: 0;
   border-top-width: 2px;
   border-left-width: 2px;
 }
-.pagina-tratamientos .comparador-marco::after {
+.pagina-tratamientos .tz-foto::after {
   right: 0; bottom: 0;
   border-bottom-width: 2px;
   border-right-width: 2px;
-}
-
-.pagina-tratamientos .comparador-tag {
-  border-radius: 0;
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: .62rem;
-  letter-spacing: .22em;
-  padding: .32rem .7rem;
-}
-.pagina-tratamientos .comparador-tag-antes {
-  background: rgba(10, 10, 10, .74);
-  -webkit-backdrop-filter: none;
-          backdrop-filter: none;
-}
-.pagina-tratamientos .comparador-tag-despues {
-  background: var(--gradiente-oro);
-  color: #14110C;
-}
-
-.pagina-tratamientos .comparador-manija {
-  background: #FCFBF8;
-  /* El filo iba en `--gold-200` (#E6C95F): un oro palido sobre una manija
-     casi blanca, que a 1px no se veia. Va en el mismo oro que su icono. */
-  border: 1px solid var(--oro-hondo);
-  color: var(--nos-dorado-texto);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
-}
-.pagina-tratamientos .comparador-linea { width: 2px; background: rgba(255, 255, 255, .92); }
-
-.pagina-tratamientos .comparador-nota {
-  text-align: left;
-  font-style: normal;
-  font-size: .72rem;
-  letter-spacing: .04em;
-  color: #6E6A64;
-}
-
-.pagina-tratamientos .comparador-rango {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.pagina-tratamientos .comparador-rango:focus-visible {
-  position: static;
-  width: 100%;
-  height: auto;
-  margin: 1.1rem 0 0;
-  clip: auto;
-  clip-path: none;
 }
 
 .pagina-tratamientos .bloque-tratamiento-numero {

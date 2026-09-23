@@ -1204,21 +1204,31 @@ for(var iP=0;iP < paradas.length;iP++){
 if(paradas[iP].id===pedido){suya=paradas[iP];break;}
 }
 if(suya){
-var puesta=-1;
+var tocado=false;
+var apuntarTocado=function(){tocado=true;};
+['wheel','touchstart','pointerdown','keydown'].forEach(function(que){
+window.addEventListener(que,apuntarTocado,{passive:true,once:true});
+});
 var colocar=function(){
-puesta=destinoDe(suya);
-window.scrollTo(0,puesta);
+if(tocado)return;
+window.scrollTo(0,destinoDe(suya));
 SmilersScroll.pedir();
 };
 requestAnimationFrame(function(){requestAnimationFrame(colocar);});
-if(document.readyState !=='complete'){
+if(document.readyState==='complete'){
+setTimeout(colocar,0);
+}else{
 window.addEventListener('load',function(){
-requestAnimationFrame(function(){
-if(puesta < 0||Math.abs(window.scrollY - puesta)> 4)return;
-colocar();
-});
+requestAnimationFrame(colocar);
 },{once:true});
 }
+setTimeout(function(){
+colocar();
+window.removeEventListener('wheel',apuntarTocado);
+window.removeEventListener('touchstart',apuntarTocado);
+window.removeEventListener('pointerdown',apuntarTocado);
+window.removeEventListener('keydown',apuntarTocado);
+},900);
 }
 }
 SmilersScroll.pedir();

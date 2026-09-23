@@ -166,34 +166,6 @@
   overflow: hidden;
   background: var(--superficie);
 }
-.tst-foto {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity .5s ease, filter .5s ease;
-}
-
-.tst-foto--antes  { filter: grayscale(1) contrast(1.05); }
-.tst-foto--despues { opacity: 0; }
-
-.tst-tarjeta:hover .tst-foto--despues,
-.tst-tarjeta:focus-within .tst-foto--despues { opacity: 1; }
-
-.tst-tarjeta__chip {
-  position: absolute;
-  left: 1rem;
-  bottom: 1rem;
-  padding: .28rem .7rem;
-  border-radius: 999px;
-  font-family: var(--fuente-menu);
-  font-size: .62rem;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: #0A0806;
-  background: #FFFFFF;
-}
-
 .tst-tarjeta blockquote {
   margin: 0;
   font-family: var(--fuente-cuerpo);
@@ -369,149 +341,48 @@
   width: 100%;
   height: 100%;
   outline: none;
-  /* La mascara apaga el lienzo hacia fuera para que el disco no acabe en un
-     canto. Sus topes van con el tamano del disco: apretados, se comen lo que
-     el encuadre acaba de ganar. */
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 50%, rgba(0, 0, 0, .85) 64%, rgba(0, 0, 0, .35) 78%, transparent 92%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 0 50%, rgba(0, 0, 0, .85) 64%, rgba(0, 0, 0, .35) 78%, transparent 92%);
+  /* La mascara apaga el lienzo hacia fuera para que las tarjetas no acaben
+     en un canto. Sus topes van con el tamano de la tarjeta de delante: la de
+     ahora llega al 74% del alto del lienzo y sus esquinas caen al 60% de la
+     diagonal, asi que el negro macizo tiene que llegar hasta ahi o le come
+     las puntas. Con el disco de antes bastaba el 50%. */
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 64%, rgba(0, 0, 0, .8) 76%, rgba(0, 0, 0, .3) 88%, transparent 98%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 64%, rgba(0, 0, 0, .8) 76%, rgba(0, 0, 0, .3) 88%, transparent 98%);
 }
 
-.testimonios-revelar {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 55%;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-.testimonios-revelar:focus-visible { box-shadow: var(--foco); }
-
-.testimonios-revelar__chip {
-  transform: translateY(150%);
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .4rem .95rem;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, .9);
-  border: 1px solid rgba(255, 255, 255, .5);
-  transition: background .35s ease, border-color .35s ease, color .35s ease;
-}
-.testimonios-revelar__estado {
-  font-family: var(--fuente-menu);
-  font-size: .66rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-}
-.testimonios-revelar__pista {
-  font-family: var(--fuente-cuerpo);
-  font-size: .72rem;
-  color: rgba(255, 255, 255, .66);
-}
-
-.testimonios-revelar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(212, 175, 55, .75);
-  box-shadow: 0 0 14px rgba(212, 175, 55, .3);
-  opacity: 0;
-  pointer-events: none;
-}
-.tst-en-juego.tst-pista-toque .testimonios-revelar::before {
-  animation: pistaAnillo 2.6s cubic-bezier(.16, 1, .3, 1) 5;
-}
-
-@keyframes pistaAnillo {
-  0%   { transform: scale(1.02); opacity: 0; }
-  30%  { transform: scale(1.14); opacity: .9; }
-  72%  { transform: scale(1.28); opacity: 0; }
-  100% { transform: scale(1.36); opacity: 0; }
-}
-
-.tst-en-juego.tst-pista-toque .testimonios-revelar__chip {
-  animation: pistaChip 2.6s ease-in-out 5;
-}
-@keyframes pistaChip {
-  0%, 100% { transform: translateY(150%); }
-  22%      { transform: translateY(118%); }
-  48%      { transform: translateY(150%); }
-}
-
-.mostrando-despues .testimonios-revelar::before,
-.mostrando-despues .testimonios-revelar__chip { animation: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .tst-en-juego.tst-pista-toque .testimonios-revelar::before,
-  .tst-en-juego.tst-pista-toque .testimonios-revelar__chip { animation: none; }
-  .tst-en-juego.tst-pista-toque .testimonios-revelar::before { opacity: .55; }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .testimonios-revelar__chip {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background: rgba(0, 0, 0, .9);
-  }
-}
-
-.mostrando-despues .testimonios-revelar__chip {
-  background: rgba(212, 175, 55, .94);
-  border-color: transparent;
-}
-.mostrando-despues .testimonios-revelar__estado { color: var(--onix); }
-.mostrando-despues .testimonios-revelar__pista { display: none; }
 
 /* ===========================================================================
-   El testimonio en video.
+   Los testimonios en video.
 
-   Es el primero de los circulos y no es una foto: es un video de YouTube. Un
-   iframe no se puede pintar dentro de WebGL, asi que va por fuera del lienzo,
-   en un circulo puesto justo encima del disco de delante. Su tamano no esta
-   escrito aqui: lo mide la propia esfera (diametroDisco, en
-   testimonios-esfera.js) y lo deja en --tst-disco, para que no haya dos
-   cifras que mantener el dia que cambie el encuadre. El 62% de aqui es solo
-   lo que se usa mientras la esfera no se ha creado todavia.
+   Los ocho son videos verticales de YouTube, y por eso la esfera dejo de
+   estar hecha de discos: cada cara es una tarjeta de 9:16 (ver
+   testimonios-esfera.js). Un iframe no se puede pintar dentro de WebGL, asi
+   que el reproductor va por fuera del lienzo, en una tarjeta puesta justo
+   encima de la que esta de frente. Su tamano no esta escrito aqui: lo mide la
+   propia esfera y lo deja en `--tst-ancho`, `--tst-alto` y `--tst-radio`,
+   para que no haya dos cifras que mantener el dia que cambie el encuadre. Los
+   porcentajes del CSS son solo lo que se usa mientras la esfera no existe.
 
-   Dentro, el video NO llena el circulo. Es vertical, y un vertical recortado
-   en redondo se queda sin cabeza y sin pies: lo que se ve es el tronco. Asi
-   que ocupa el rectangulo de 9:16 mas grande que cabe dentro del circulo
-   —48% de ancho, que da 85% de alto y una diagonal del 98%— y lo que queda
-   alrededor lo llena su propio fotograma, desenfocado y oscuro, como el
-   fondo de un reproductor vertical. Los mandos del video quedan enteros y
-   dentro, que es lo que se pierde al recortar.
+   Hubo antes un circulo con el video vertical metido dentro y el hueco
+   relleno con su propio fotograma desenfocado. Funcionaba, pero era un
+   apano: el video ocupaba la mitad del circulo y en un telefono se quedaba en
+   133 px de ancho. Con la tarjeta, el video ES la cara.
 
    La misma pieza aparece dos veces: aqui y en la tarjeta de la lista, que es
    lo que se ve cuando la escena no se enciende (sin WebGL o con menos
-   movimiento pedido).
+   movimiento pedido). Alli no se reproduce nada solo: hay un enlace con el
+   fotograma detras.
    =========================================================================== */
 .tst-video {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 3;
-  /* Un par de pixeles mas que el disco: asi nunca asoma un aro de la foto de
-     debajo por un redondeo. */
-  width: calc(var(--tst-disco, 62%) + 2px);
-  aspect-ratio: 1;
+  /* Un pelo mas que la tarjeta de debajo: asi nunca asoma un filo de la foto
+     por un redondeo. */
+  width: calc(var(--tst-ancho, 42%) + 2px);
+  height: calc(var(--tst-alto, 74%) + 2px);
   transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  overflow: hidden;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -523,55 +394,122 @@
   pointer-events: auto;
 }
 
-/* El fotograma del video, desenfocado, relleno el circulo. Se pasa del borde
-   a proposito: un blur deja el canto transparente y se veria el filo. */
-.tst-video__fondo {
-  position: absolute;
-  inset: -18%;
-  background: url(../imagenes/testimonios/anaela-vertical.webp) center / cover no-repeat;
-  filter: blur(26px) brightness(.32) saturate(.55);
-  pointer-events: none;
-}
-/* Y encima, la sombra que hunde el canto: sin ella el desenfoque deja manchas
-   claras justo donde el circulo tiene que acabar. */
-.tst-video::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(5, 4, 3, .1) 24%, rgba(5, 4, 3, .72) 100%);
-  pointer-events: none;
-}
-/* El filo de oro, que aqui ya no lo pinta el lienzo. */
-.tst-video::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(212, 175, 55, .6);
-  pointer-events: none;
-}
-
 .tst-video__marco {
   position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--tst-radio, 14px);
+  background: #000000;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
+}
+/* El fotograma, mientras el reproductor se monta: sin el ahi hay medio
+   segundo de agujero negro. Se va cuando el video ya esta dando. */
+.tst-video__poster {
+  position: absolute;
+  inset: 0;
+  /* Por encima del reproductor y no por debajo: mientras YouTube arranca
+     ensena su titulo y su canal, y el fotograma es justo lo que hay que ver
+     en ese medio segundo. */
   z-index: 2;
-  width: 48%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity .3s ease .25s;
+}
+.video-listo .tst-video__poster { opacity: 0; }
+/* Se va despacio y vuelve de golpe. El fotograma esta delante siempre que el
+   video no rueda —y no rueda entre que se pide y arranca, ni mientras esta
+   parado—, que es cuando YouTube ensena su titulo y su canal. Si volviera con
+   transicion, ese medio segundo se veria. */
+.tst-video__marco:not(.video-listo) .tst-video__poster { transition: none; }
+/* Y vuelve de golpe cuando el guion rebobina: ahi son seis decimas y una
+   transicion se comeria la mitad. */
+.saltando .tst-video__poster { opacity: 1; transition: none; }
+.tst-video__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+/* El escudo: una capa transparente por delante del reproductor. Es lo que
+   impide que YouTube vea el raton y vuelva a sacar su titulo al pasar por
+   encima, o que pause al hacer clic —y pausado se le ve la interfaz entera—. */
+.tst-video__escudo {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+/* El boton del sonido. Empieza callado porque ningun navegador deja que un
+   video arranque solo con sonido; en cuanto se pulsa una vez, los demas ya
+   salen sonando. */
+.tst-video__son {
+  position: absolute;
+  right: .5rem;
+  bottom: .5rem;
+  z-index: 4;
+  width: 2.3rem;
+  height: 2.3rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 55, .85);
+  border-radius: 50%;
+  background: rgba(10, 8, 6, .6);
+  color: var(--oro-marca);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .3s ease, color .3s ease, transform .3s ease;
+}
+.tst-video__son svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tst-video__son svg path:first-child { fill: currentColor; stroke-width: 1; }
+.tst-video__son .tst-video__raya { opacity: 0; }
+.tst-video__son.esta-callado .tst-video__onda { opacity: 0; }
+.tst-video__son.esta-callado .tst-video__raya { opacity: 1; }
+.tst-video__son:hover,
+.tst-video__son:focus-visible {
+  background: var(--oro-marca);
+  color: var(--onix);
+  transform: scale(1.06);
+}
+
+/* Ninguna cita es una cita: lo que dice el panel presenta el video, no
+   entrecomilla a nadie. */
+.tst-comillas { display: none; }
+.tst-cita { font-style: italic; }
+
+/* ---- La misma pieza en la tarjeta de la lista ----
+   Aqui no se reproduce nada solo. Es un enlace con el fotograma detras: sin
+   JS lleva al video en YouTube, y con JS video-testimonio.js no toca esta
+   parte, asi que lleva al video igual. */
+.tst-tarjeta__fotos {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: var(--radio-tag);
+  overflow: hidden;
+  background: var(--superficie);
+}
+.tst-play {
+  position: relative;
+  display: block;
+  height: 100%;
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 4px;
-  background: #000000;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .55);
-}
-
-/* ---- El boton de ver ------------------------------------------------------
-   Es un enlace y no un boton: sin JS —o donde no quepa verse— lleva al video
-   en YouTube, que es lo que tiene que hacer. Con JS, video-testimonio.js le
-   quita el salto y monta el reproductor en su sitio. */
-.tst-play {
-  position: absolute;
-  inset: 0;
-  display: block;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -629,44 +567,9 @@
 }
 .tst-play:focus-visible { box-shadow: var(--foco); }
 
-.tst-video__iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-}
-.tiene-video .tst-play { display: none; }
-
-/* La cita del panel deja de ser una cita cuando el testimonio es un video:
-   nadie esta citando a nadie, se esta presentando lo que se va a ver. */
-.tst-item-video .tst-comillas { display: none; }
-.tst-item-video .tst-cita { font-style: italic; }
-
-/* ---- La misma pieza en la tarjeta de la lista ---- */
-.tst-tarjeta__fotos--video {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.tst-tarjeta__fotos--video .tst-video__marco {
-  width: auto;
-  height: 96%;
-}
-.tst-tarjeta--video blockquote::before,
-.tst-tarjeta--video blockquote::after { content: none; }
-
-@media (max-width: 991.98px) {
-  /* En el telefono el circulo es mas grande respecto a la pantalla, asi que
-     el rotulo de debajo no hace falta: el triangulo ya dice lo que es, y el
-     video se queda con todo el alto. */
-  .tst-play__txt { font-size: .54rem; letter-spacing: .12em; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .tst-video { transition: none; }
+  .tst-video,
+  .tst-video__poster,
   .tst-play__foto,
   .tst-play__aro { transition: none; }
 }
@@ -689,12 +592,9 @@
     max-width: min(40ch, 100%);
     text-align: center;
   }
-  .tst-comillas { font-size: clamp(2.4rem, 9vw, 3.4rem); }
   .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
   .tst-firma { justify-content: center; }
   .tst-pasos { margin-top: .5rem; justify-content: center; }
-  .testimonios-revelar { width: 66%; }
-  .testimonios-revelar__pista { display: none; }
 }
 
 @media (max-width: 991.98px) and (max-height: 700px) {
@@ -734,5 +634,4 @@
     clip: auto;
     white-space: normal;
   }
-  .tst-foto { transition: none; }
 }

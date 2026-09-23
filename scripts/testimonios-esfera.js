@@ -206,18 +206,40 @@
     }
   };
 
-  function geometriaDisco(pasos, radio) {
+  /* La cara de cada testimonio: un rectangulo vertical con las esquinas
+     redondeadas, en el plano XY y centrado en el origen. Antes era un disco,
+     y un disco esta bien para una foto cuadrada; lo que va dentro ahora es un
+     video vertical, y en redondo un vertical se queda sin cabeza y sin pies.
+
+     Se arma como se armaba el disco —un abanico desde el centro— y lo unico
+     que cambia es por donde pasa el contorno: cuatro arcos de esquina, y los
+     lados rectos salen solos de unir el final de un arco con el principio del
+     siguiente. Las uv mapean el rectangulo entero a 0..1, asi que la foto
+     llena la tarjeta sin deformarse siempre que la celda del atlas tenga su
+     misma proporcion. */
+  function geometriaTarjeta(medioAncho, medioAlto, radio, pasos) {
     var vertices = [0, 0, 0];
     var uvs = [0.5, 0.5];
     var indices = [];
-    for (var i = 0; i < pasos; i++) {
-      var alfa = (2 * Math.PI * i) / pasos;
-      var x = Math.cos(alfa), y = Math.sin(alfa);
-      vertices.push(radio * x, radio * y, 0);
-      uvs.push(x * 0.5 + 0.5, y * 0.5 + 0.5);
-      if (i > 0) indices.push(0, i, i + 1);
+    var centros = [
+      [medioAncho - radio, medioAlto - radio],
+      [-(medioAncho - radio), medioAlto - radio],
+      [-(medioAncho - radio), -(medioAlto - radio)],
+      [medioAncho - radio, -(medioAlto - radio)]
+    ];
+    var n = 0;
+    for (var e = 0; e < 4; e++) {
+      for (var i = 0; i <= pasos; i++) {
+        var alfa = (e * Math.PI / 2) + (i / pasos) * (Math.PI / 2);
+        var x = centros[e][0] + radio * Math.cos(alfa);
+        var y = centros[e][1] + radio * Math.sin(alfa);
+        vertices.push(x, y, 0);
+        uvs.push(x / (2 * medioAncho) + 0.5, y / (2 * medioAlto) + 0.5);
+        n++;
+        if (n > 1) indices.push(0, n - 1, n);
+      }
     }
-    indices.push(0, pasos, 1);
+    indices.push(0, n, 1);
     return {
       vertices: new Float32Array(vertices),
       uvs: new Float32Array(uvs),
@@ -370,12 +392,9 @@ void main() {
   var SHADER_FRAGMENTO = `#version 300 es
 precision highp float;
 
-uniform sampler2D uTexAntes;
-uniform sampler2D uTexDespues;
+uniform sampler2D uTexFoto;
 uniform int uItemCount;
 uniform int uAtlasSize;
-uniform int uActivo;
-uniform float uRevelado;
 
 out vec4 outColor;
 
@@ -397,30 +416,30 @@ void main() {
     st = clamp(st, 0.002, 0.998);
     st = st * cellSize + cellOffset;
 
-    vec4 antes = texture(uTexAntes, st);
-    vec4 despues = texture(uTexDespues, st);
-
-    // Blanco y negro NEUTRO. Aqui habia un vec3(1.05, 0.99, 0.87)
-    // multiplicando el gris: mas rojo, menos azul, o sea un viraje sepia de
-    // los de foto antigua. Sobre una cara sana lo que hacia era darle un
-    // tono amarillento y enfermizo al "antes" -y de paso exagerar el cambio
-    // al revelar el despues, que es justo lo que un antes/despues no debe
-    // hacer-. Ahora el gris se queda gris.
-    float gris = dot(antes.rgb, vec3(0.299, 0.587, 0.114));
-    vec3 blancoYNegro = vec3(gris);
-
-    float revelado = (itemIndex == uActivo) ? uRevelado : 0.0;
-    vec3 color = mix(blancoYNegro, despues.rgb, revelado);
-
-    outColor = vec4(color, antes.a * vAlpha);
+    // A color y sin mas. Hubo aqui un blanco y negro que se revelaba en
+    // color al pasar el raton -el gesto de antes/despues-, y con todos los
+    // testimonios en video ya no hay nada que revelar: lo que se ve es el
+    // primer fotograma de cada uno, y un fotograma en gris no anuncia un
+    // video.
+    vec4 foto = texture(uTexFoto, st);
+    outColor = vec4(foto.rgb, foto.a * vAlpha);
 }
 `;
 
   var RADIO_ESFERA = 2;
-  /* Lo que mide un disco frente al radio de la esfera. Lo usan el bucle que
-     coloca las instancias y diametroDisco(), que tiene que dar la misma
+  /* Lo que mide una tarjeta frente al radio de la esfera. Lo usan el bucle
+     que coloca las instancias y medidaTarjeta(), que tiene que dar la misma
      medida que se ve. */
   var ESC_DISCO = 0.25;
+  /* La tarjeta, en unidades de geometria: alto 1,2 y ancho 9/16 de ese alto,
+     que es la proporcion de un video vertical. Multiplicado por ESC_DISCO da
+     0,30 de media altura en el mundo, y eso son unos dos tercios del alto del
+     lienzo en el ordenador y cuatro quintos en el telefono. Mas grande no
+     cabe: las tarjetas vecinas de la esfera estan a 1,25 unidades y se
+     tocarian. */
+  var TARJETA_ALTO = 1.2;
+  var TARJETA_ANCHO = TARJETA_ALTO * 9 / 16;
+  var TARJETA_RADIO = 0.07;
   var DURACION_CUADRO = 1000 / 60;
 
   function EsferaTestimonios(lienzo, items, opciones) {
@@ -430,8 +449,6 @@ void main() {
     this.escala = opciones.escala || 3.2;
 
     this.encuadre = opciones.encuadre || 0.35;
-
-    this.velocidadRevelado = opciones.velocidadRevelado || 0.14;
 
     this.gl = lienzo.getContext('webgl2', { antialias: true, alpha: true });
     if (!this.gl) throw new Error('Sin WebGL 2');
@@ -449,8 +466,6 @@ void main() {
 
     this.posicion = 0;
     this.activo = 0;
-    this.revelado = 0;
-    this.objetivoRevelado = 0;
 
     this.camara = {
       matriz: M4.crear(),
@@ -494,12 +509,9 @@ void main() {
       vista: gl.getUniformLocation(this.programa, 'uViewMatrix'),
       proyeccion: gl.getUniformLocation(this.programa, 'uProjectionMatrix'),
       giro: gl.getUniformLocation(this.programa, 'uRotationAxisVelocity'),
-      texAntes: gl.getUniformLocation(this.programa, 'uTexAntes'),
-      texDespues: gl.getUniformLocation(this.programa, 'uTexDespues'),
       cantidad: gl.getUniformLocation(this.programa, 'uItemCount'),
       atlas: gl.getUniformLocation(this.programa, 'uAtlasSize'),
-      activo: gl.getUniformLocation(this.programa, 'uActivo'),
-      revelado: gl.getUniformLocation(this.programa, 'uRevelado')
+      texFoto: gl.getUniformLocation(this.programa, 'uTexFoto')
     };
 
     var a = {
@@ -508,23 +520,23 @@ void main() {
       inst: gl.getAttribLocation(this.programa, 'aInstanceMatrix')
     };
 
-    this.disco = geometriaDisco(56, 1);
+    this.tarjeta = geometriaTarjeta(TARJETA_ANCHO, TARJETA_ALTO, TARJETA_RADIO, 8);
     this.vao = gl.createVertexArray();
     gl.bindVertexArray(this.vao);
 
-    var bufPos = crearBuffer(gl, this.disco.vertices, gl.STATIC_DRAW);
+    var bufPos = crearBuffer(gl, this.tarjeta.vertices, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, bufPos);
     gl.enableVertexAttribArray(a.pos);
     gl.vertexAttribPointer(a.pos, 3, gl.FLOAT, false, 0, 0);
 
-    var bufUv = crearBuffer(gl, this.disco.uvs, gl.STATIC_DRAW);
+    var bufUv = crearBuffer(gl, this.tarjeta.uvs, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, bufUv);
     gl.enableVertexAttribArray(a.uv);
     gl.vertexAttribPointer(a.uv, 2, gl.FLOAT, false, 0, 0);
 
     var bufIdx = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufIdx);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.disco.indices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.tarjeta.indices, gl.STATIC_DRAW);
 
     this.posicionesInstancia = posicionesEsfera(1, RADIO_ESFERA);
     this.cantidadInstancias = this.posicionesInstancia.length;
@@ -594,19 +606,22 @@ void main() {
     Q.copiar(this._orientacionPrevia, this.orientaciones[0]);
   };
 
+  /* Un solo atlas y con las celdas en 9:16, como las tarjetas. Eran dos
+     -el antes y el despues- y con eso se bajaba cada foto dos veces; ahora
+     hay una sola imagen por testimonio, que es el fotograma de su video. */
   EsferaTestimonios.prototype._cargarAtlas = function () {
     var gl = this.gl;
     var self = this;
-    var CELDA = 512;
+    var CELDA_ALTO = 512;
+    var CELDA_ANCHO = Math.round(CELDA_ALTO * 9 / 16);
 
-    this.texAntes = crearTextura(gl);
-    this.texDespues = crearTextura(gl);
+    this.texFoto = crearTextura(gl);
     this.tamAtlas = Math.ceil(Math.sqrt(Math.max(1, this.items.length)));
 
     function pintar(claveFuente, textura) {
       var lienzo2d = document.createElement('canvas');
-      lienzo2d.width = self.tamAtlas * CELDA;
-      lienzo2d.height = self.tamAtlas * CELDA;
+      lienzo2d.width = self.tamAtlas * CELDA_ANCHO;
+      lienzo2d.height = self.tamAtlas * CELDA_ALTO;
       var ctx = lienzo2d.getContext('2d');
 
       Promise.all(self.items.map(function (item) {
@@ -630,13 +645,19 @@ void main() {
       })).then(function (imagenes) {
         imagenes.forEach(function (img, i) {
           if (!img) return;
-          var x = (i % self.tamAtlas) * CELDA;
-          var y = Math.floor(i / self.tamAtlas) * CELDA;
+          var x = (i % self.tamAtlas) * CELDA_ANCHO;
+          var y = Math.floor(i / self.tamAtlas) * CELDA_ALTO;
 
-          var lado = Math.min(img.width, img.height);
-          var sx = (img.width - lado) / 2;
-          var sy = (img.height - lado) / 2;
-          ctx.drawImage(img, sx, sy, lado, lado, x, y, CELDA, CELDA);
+          /* Recorte a 9:16 por el centro, que es lo que cabe en la celda. Un
+             fotograma de video vertical ya viene asi y no se recorta nada. */
+          var prop = CELDA_ANCHO / CELDA_ALTO;
+          var anchoFuente = img.width;
+          var altoFuente = img.height;
+          if (anchoFuente / altoFuente > prop) anchoFuente = altoFuente * prop;
+          else altoFuente = anchoFuente / prop;
+          var sx = (img.width - anchoFuente) / 2;
+          var sy = (img.height - altoFuente) / 2;
+          ctx.drawImage(img, sx, sy, anchoFuente, altoFuente, x, y, CELDA_ANCHO, CELDA_ALTO);
           if (img.close) img.close();
         });
         gl.bindTexture(gl.TEXTURE_2D, textura);
@@ -647,8 +668,7 @@ void main() {
       });
     }
 
-    pintar('antes', this.texAntes);
-    pintar('despues', this.texDespues);
+    pintar('foto', this.texFoto);
   };
 
   EsferaTestimonios.prototype.redimensionar = function () {
@@ -677,30 +697,45 @@ void main() {
     this._dormida = false;
   };
 
-/* El disco de delante, medido en pixeles de pantalla. Lo pide la escena para
-   poner el circulo del video justo encima, que un iframe no se puede pintar
-   dentro de WebGL y tiene que ir por fuera, del tamano exacto.
+/* La tarjeta de delante, medida en pixeles de pantalla. Lo pide la escena
+   para poner el video justo encima, que un iframe no se puede pintar dentro
+   de WebGL y tiene que ir por fuera, del tamano exacto.
 
    Se calcula y no se mide a ojo, que asi no hay dos cifras que mantener: si
-   manana cambia la escala o el encuadre, el circulo cambia con ellos.
+   manana cambia la escala, el encuadre o la proporcion de la tarjeta, el
+   video cambia con ellos.
 
-   La cuenta sigue lo que hace el shader. El disco se coloca con su centro a
-   (1 - ESC_DISCO) * RADIO_ESFERA del origen y con radio ESC_DISCO, pero el
-   vertice pasa despues por radius * normalize(...): deja de ser un disco
-   plano y se convierte en un casquete de esa misma esfera. Su borde queda a
-   un angulo atan(ESC_DISCO / centro) del eje, y de ahi salen el desvio
-   lateral y la profundidad reales, que son los que hay que proyectar. */
-  EsferaTestimonios.prototype.diametroDisco = function () {
+   La cuenta sigue lo que hace el shader. La tarjeta se coloca con su centro a
+   (1 - ESC_DISCO) * RADIO_ESFERA del origen, pero el vertice pasa despues por
+   radius * normalize(...): deja de ser plana y se convierte en un casquete de
+   esa misma esfera. Cada borde queda a un angulo atan(medida / centro) del
+   eje, y de ahi salen el desvio lateral y la profundidad reales, que son los
+   que hay que proyectar. Por eso el ancho y el alto no salen exactamente en
+   9:16: el de fuera se curva un poco mas.
+
+   Las dos medidas se escalan con `clientHeight` y no una con cada lado: en la
+   perspectiva el ancho ya viene dividido por el aspecto, y al multiplicar por
+   el ancho del lienzo el aspecto se cancela. */
+  EsferaTestimonios.prototype.medidaTarjeta = function () {
     var centro = (1 - ESC_DISCO) * RADIO_ESFERA;
-    var angulo = Math.atan(ESC_DISCO / centro);
-    var lateral = centro * Math.sin(angulo);
-    var hondo = centro * Math.cos(angulo);
     /* La camara en reposo, no la de ahora: cuando la esfera gira se echa
-       hacia atras, y el circulo del video solo se ve con la esfera parada. */
-    var distancia = 3 * this.escala - hondo;
-    var mitad = distancia * Math.tan(this.camara.fov / 2);
-    if (!(mitad > 0)) return 0;
-    return (lateral / mitad) * this.lienzo.clientHeight;
+       hacia atras, y el video solo se ve con la esfera parada. */
+    var self = this;
+    function lado(medida) {
+      var angulo = Math.atan(medida / centro);
+      var lateral = centro * Math.sin(angulo);
+      var hondo = centro * Math.cos(angulo);
+      var mitad = (3 * self.escala - hondo) * Math.tan(self.camara.fov / 2);
+      if (!(mitad > 0)) return 0;
+      return (lateral / mitad) * self.lienzo.clientHeight;
+    }
+    return {
+      ancho: lado(ESC_DISCO * TARJETA_ANCHO),
+      alto: lado(ESC_DISCO * TARJETA_ALTO),
+      /* El radio va a la mitad: lado() devuelve la medida entera —de canto
+         a canto— y un radio es media. */
+      radio: lado(ESC_DISCO * TARJETA_RADIO) / 2
+    };
   };
 
   EsferaTestimonios.prototype._actualizarCamara = function () {
@@ -714,12 +749,6 @@ void main() {
     var nueva = Math.min(this.items.length - 1, Math.max(0, posicion));
     if (nueva !== this.posicion) this._dormida = false;
     this.posicion = nueva;
-  };
-
-  EsferaTestimonios.prototype.revelar = function (encendido) {
-    var objetivo = encendido ? 1 : 0;
-    if (objetivo !== this.objetivoRevelado) this._dormida = false;
-    this.objetivoRevelado = objetivo;
   };
 
   EsferaTestimonios.prototype._animar = function (delta) {
@@ -766,8 +795,6 @@ void main() {
     this.camara.z += (objetivoZ - this.camara.z) / (5 / escalaTiempo);
     this._actualizarCamara();
 
-    this.revelado += (this.objetivoRevelado - this.revelado) * Math.min(1, this.velocidadRevelado * escalaTiempo);
-
     var arribaY = this._arribaY;
     var arribaX = this._arribaX;
     var origen = this._origen;
@@ -801,8 +828,7 @@ void main() {
 
     var quieta =
       Math.abs(this.velocidadRotacion) < 0.00025 &&
-      Math.abs(this.camara.z - (3 * this.escala)) < 0.004 &&
-      Math.abs(this.revelado - this.objetivoRevelado) < 0.002;
+      Math.abs(this.camara.z - (3 * this.escala)) < 0.004;
 
     this.necesitaPintar = !quieta;
   };
@@ -823,19 +849,13 @@ void main() {
       this.velocidadRotacion * 1.1);
     gl.uniform1i(this.u.cantidad, this.items.length);
     gl.uniform1i(this.u.atlas, this.tamAtlas);
-    gl.uniform1i(this.u.activo, this.activo);
-    gl.uniform1f(this.u.revelado, this.revelado);
 
-    gl.uniform1i(this.u.texAntes, 0);
+    gl.uniform1i(this.u.texFoto, 0);
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, this.texAntes);
-
-    gl.uniform1i(this.u.texDespues, 1);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, this.texDespues);
+    gl.bindTexture(gl.TEXTURE_2D, this.texFoto);
 
     gl.bindVertexArray(this.vao);
-    gl.drawElementsInstanced(gl.TRIANGLES, this.disco.indices.length,
+    gl.drawElementsInstanced(gl.TRIANGLES, this.tarjeta.indices.length,
       gl.UNSIGNED_SHORT, 0, this.cantidadInstancias);
     gl.bindVertexArray(null);
   };
@@ -858,7 +878,7 @@ void main() {
           self._yaPinto = true;
         } else {
           /* Quieta y ya pintada: la imagen no va a cambiar hasta que algo la
-             mueva (irA, revelar, redimensionar o un atlas que llega), y cada
+             mueva (irA, redimensionar o el atlas cuando llega), y cada
              uno de esos la despierta. Mientras, no se calcula nada. */
           self._dormida = true;
         }
@@ -878,8 +898,6 @@ void main() {
 
   function iniciarSeccion(seccion) {
     var lienzo = seccion.querySelector('[data-lienzo-testimonios]');
-    var boton = seccion.querySelector('[data-revelar]');
-    var etiquetaEstado = seccion.querySelector('[data-estado-foto]');
     var panel = seccion.querySelector('[data-panel-testimonio]');
     var salidaCita = seccion.querySelector('[data-cita]');
     var salidaNombre = seccion.querySelector('[data-nombre]');
@@ -890,8 +908,8 @@ void main() {
     var pasos = Array.prototype.slice.call(seccion.querySelectorAll('[data-paso]'));
     var fichas = Array.prototype.slice.call(seccion.querySelectorAll('[data-testimonio]'));
     var cajaEsfera = seccion.querySelector('.testimonios-esfera');
-    var circuloVideo = seccion.querySelector('[data-video-esfera]');
-    var huecoVideo = circuloVideo ? circuloVideo.querySelector('[data-video-hueco]') : null;
+    var marcoVideo = seccion.querySelector('[data-video-esfera]');
+    var huecoVideo = marcoVideo ? marcoVideo.querySelector('[data-video-hueco]') : null;
 
     if (!lienzo || fichas.length < 2) return;
     if (!window.WebGL2RenderingContext) return;
@@ -900,8 +918,7 @@ void main() {
       var cita = ficha.querySelector('blockquote');
       return {
         video: ficha.getAttribute('data-video') || '',
-        antes: ficha.getAttribute('data-antes'),
-        despues: ficha.getAttribute('data-despues'),
+        foto: ficha.getAttribute('data-foto'),
         nombre: ficha.getAttribute('data-nombre') || '',
         tratamiento: ficha.getAttribute('data-tratamiento') || '',
         cita: cita ? cita.textContent.trim() : ''
@@ -910,23 +927,19 @@ void main() {
 
     seccion.classList.add('esfera-activa');
 
-    var hayHover = window.matchMedia('(hover: hover)').matches;
-
     function escalaSegunPantalla() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
 
     /* El encuadre es la altura de escena que cabe en la camara: cuanto mas
-       alta, mas campo y mas pequeno sale el disco. En escritorio la caja mide
-       835 de lado y el disco salia de 425, media caja; con 0.235 llena su
-       sitio sin tocar la perspectiva ni mover la camara. */
+       alta, mas campo y mas pequena sale la tarjeta. */
     function encuadreSegunPantalla() {
       return window.innerWidth < 992 ? 0.232 : 0.235;
     }
 
-    /* La esfera —WebGL y sus dos atlas de catorce fotos— no se crea al abrir
-       la pagina sino cuando la seccion queda a dos pantallas y media. Era lo
-       mas caro de la portada: tres tareas largas y catorce fotos compitiendo
+    /* La esfera —WebGL y su atlas de fotogramas— no se crea al abrir la
+       pagina sino cuando la seccion queda a dos pantallas y media. Era lo
+       mas caro de la portada: tres tareas largas y las fotos compitiendo
        con la de arriba, para algo que esta al final del recorrido. La
        seccion, en cambio, se monta desde el principio (su clase y su alto),
        que de eso depende donde cae todo lo que va detras. */
@@ -939,9 +952,7 @@ void main() {
       try {
         esfera = new EsferaTestimonios(lienzo, items, {
           escala: escalaSegunPantalla(),
-          encuadre: encuadreSegunPantalla(),
-
-          velocidadRevelado: hayHover ? 0.14 : 0.34
+          encuadre: encuadreSegunPantalla()
         });
       } catch (e) {
         fallida = true;
@@ -949,60 +960,40 @@ void main() {
         return null;
       }
       esfera.irA(tActual);
-      esfera.revelar(revelando);
-      fijarDisco();
+      fijarTarjeta();
+      /* La API de YouTube tarda medio segundo en llegar la primera vez, y
+         ese medio segundo se veria como un hueco negro donde va el video.
+         Se pide ahora, que la seccion ya esta cerca. */
+      if (window.SmilersVideo) window.SmilersVideo.preparar();
       return esfera;
     }
 
-    /* El circulo del video se monta encima del disco de delante, asi que
-       tiene que medir lo mismo que el. La esfera lo calcula (diametroDisco)
-       y aqui se escribe en la variable que lee el CSS. */
-    function fijarDisco() {
+    /* El video se monta encima de la tarjeta de delante, asi que tiene que
+       medir lo mismo que ella. La esfera lo calcula (medidaTarjeta) y aqui se
+       escribe en las variables que lee el CSS. */
+    function fijarTarjeta() {
       if (!esfera || !cajaEsfera) return;
-      var d = esfera.diametroDisco();
-      if (d > 0) cajaEsfera.style.setProperty('--tst-disco', Math.round(d) + 'px');
+      var m = esfera.medidaTarjeta();
+      if (!(m.alto > 0)) return;
+      cajaEsfera.style.setProperty('--tst-ancho', Math.round(m.ancho) + 'px');
+      cajaEsfera.style.setProperty('--tst-alto', Math.round(m.alto) + 'px');
+      cajaEsfera.style.setProperty('--tst-radio', Math.round(m.radio) + 'px');
     }
 
-    var revelando = false;
     var videoPuesto = false;
-    var itemConVideo = null;
+    var videoMontado = -1;
+    /* El video no arranca hasta que la seccion esta en pantalla. Sin esto
+       arrancaba al abrir la pagina: la escena empieza en el primer testimonio
+       y la esfera esta quieta en el desde el minuto cero, aunque falten ocho
+       pantallas para llegar. Sin planificador no hay quien avise, asi que ahi
+       se da por bueno. */
+    var enJuego = !window.SmilersScroll;
     var ultimoIndice = -1;
     var ultimoCierre = null;
     var progresoSeccion = 0;
 
     var ultimaOpacidadVelo = -1;
     var ultimaOpacidadPanel = -1;
-    var ultimaOpacidadBoton = -1;
-    var ultimoBotonActivo = null;
-
-    var pistaGastada = false;
-
-    function apagarPista() {
-      if (pistaGastada) return;
-      pistaGastada = true;
-      seccion.classList.remove('tst-pista-toque');
-    }
-
-    function ajustarPista() {
-
-      pistaGastada = false;
-      seccion.classList.remove('tst-pista-toque');
-      requestAnimationFrame(function () {
-
-        if (!pistaGastada) seccion.classList.add('tst-pista-toque');
-      });
-    }
-
-    function fijarRevelado(encendido) {
-      if (revelando === encendido) return;
-
-      if (encendido) apagarPista();
-      revelando = encendido;
-      if (esfera) esfera.revelar(encendido);
-      if (boton) boton.setAttribute('aria-pressed', encendido ? 'true' : 'false');
-      if (etiquetaEstado) etiquetaEstado.textContent = encendido ? 'Después' : 'Antes';
-      seccion.classList.toggle('mostrando-despues', encendido);
-    }
 
     /* Una unidad es casi 1vh de scroll (ver `vhPorUnidad`). El cierre
        (`obturador`) mide lo mismo que el telon de Nosotros antes de las
@@ -1101,28 +1092,32 @@ void main() {
           if (i === indice) paso.setAttribute('aria-current', 'true');
           else paso.removeAttribute('aria-current');
         });
-        ajustarPista();
-        fijarRevelado(false);
-        /* Lo que cambia al cambiar de testimonio es el texto del panel: si
-           el que llega es el del video, la cita no es una cita y no lleva
-           comillas. */
-        var llevaVideo = !!item.video;
-        if (llevaVideo !== itemConVideo) {
-          itemConVideo = llevaVideo;
-          seccion.classList.toggle('tst-item-video', llevaVideo);
-        }
       }
 
-      /* El circulo del video solo se pone con la esfera quieta en el suyo:
-         mientras gira, lo que hay ahi es el disco dando la vuelta, y un
-         iframe encima no gira con el. Al quitarlo se apaga el video, que si
-         no seguiria sonando detras de otro testimonio. */
-      if (circuloVideo) {
-        var toca = !!(items[indice] && items[indice].video) && quietud > 0.55;
-        if (toca !== videoPuesto) {
+      /* El video solo se monta con la esfera quieta en su testimonio:
+         mientras gira, lo que hay ahi es la tarjeta dando la vuelta, y un
+         iframe encima no gira con ella. Al salir se desmonta, que si no
+         seguiria sonando detras de otro.
+
+         La meseta de cada testimonio es ancha —58 unidades, que es casi media
+         pantalla de scroll— y dentro de ella la esfera esta clavada, asi que
+         mover un poco la rueda mientras se ve un video no lo apaga. */
+      if (marcoVideo) {
+        var quien = items[indice] && items[indice].video ? indice : -1;
+        var toca = quien >= 0 && quietud > 0.55 && enJuego;
+        if (toca !== videoPuesto || (toca && quien !== videoMontado)) {
           videoPuesto = toca;
           seccion.classList.toggle('tst-con-video', toca);
-          if (!toca && window.SmilersVideo) window.SmilersVideo.apagar(huecoVideo);
+          if (window.SmilersVideo) {
+            if (toca) {
+              window.SmilersVideo.poner(huecoVideo, items[quien].foto);
+              window.SmilersVideo.montar(huecoVideo, items[quien].video, items[quien].nombre);
+              videoMontado = quien;
+            } else {
+              window.SmilersVideo.apagar(huecoVideo);
+              videoMontado = -1;
+            }
+          }
         }
       }
 
@@ -1133,46 +1128,6 @@ void main() {
         panel.style.transform = 'translateY(' + ((1 - op) * 26).toFixed(1) + 'px)';
       }
 
-      if (quietud < 0.5 && revelando) fijarRevelado(false);
-      if (boton) {
-
-        var pasa = quietud > 0.75 && !videoPuesto;
-        if (pasa !== ultimoBotonActivo) {
-          ultimoBotonActivo = pasa;
-          boton.style.pointerEvents = pasa ? 'auto' : 'none';
-        }
-        var opBoton = videoPuesto ? 0 : op;
-        if (opBoton !== ultimaOpacidadBoton) {
-          ultimaOpacidadBoton = opBoton;
-          boton.style.opacity = String(opBoton);
-        }
-      }
-    }
-
-    if (boton) {
-      if (hayHover) {
-        boton.addEventListener('pointerenter', function () { fijarRevelado(true); });
-        boton.addEventListener('pointerleave', function () { fijarRevelado(false); });
-        boton.addEventListener('click', function () { fijarRevelado(!revelando); });
-        boton.addEventListener('focus', function () { fijarRevelado(true); });
-        boton.addEventListener('blur', function () { fijarRevelado(false); });
-      } else {
-
-        var yaTocado = false;
-
-        boton.addEventListener('pointerdown', function (evento) {
-          if (evento.pointerType === 'mouse') return;
-
-          yaTocado = true;
-          fijarRevelado(!revelando);
-        });
-
-        boton.addEventListener('click', function () {
-
-          if (yaTocado) { yaTocado = false; return; }
-          fijarRevelado(!revelando);
-        });
-      }
     }
 
     function yDeTestimonio(indice) {
@@ -1195,7 +1150,6 @@ void main() {
       function irAlTestimonio() {
         var destino = yDeTestimonio(indice);
         if (destino === null) return;
-        apagarPista();
         var salto = Math.abs(destino - window.scrollY);
         if (window.SmilersScroll && window.SmilersScroll.deslizarA) {
 
@@ -1232,13 +1186,18 @@ void main() {
         esfera.escala = escalaSegunPantalla();
         esfera.encuadre = encuadreSegunPantalla();
         esfera.redimensionar();
-        fijarDisco();
+        fijarTarjeta();
       }, {
 
         guarda: seccion,
         alCambiarVisibilidad: function (dentro) {
 
           seccion.classList.toggle('tst-en-juego', dentro);
+          enJuego = dentro;
+          /* Al salir de pantalla si se para de verdad: dentro de la seccion
+             el video sigue rodando callado entre testimonio y testimonio,
+             que soltarlo de nuevo le hace ensenar el titulo a YouTube. */
+          if (!dentro && window.SmilersVideo) window.SmilersVideo.parar(huecoVideo);
 
           var valor = dentro ? 'transform' : '';
           for (var i = 0; i < hojas.length; i++) hojas[i].style.willChange = valor;
@@ -1263,7 +1222,7 @@ void main() {
           esfera.escala = escalaSegunPantalla();
           esfera.encuadre = encuadreSegunPantalla();
           esfera.redimensionar();
-          fijarDisco();
+          fijarTarjeta();
         }
         pedirActualizacion();
       });
@@ -1307,7 +1266,7 @@ void main() {
         entradas.forEach(function (entrada) {
           var e = entrada.isIntersecting ? crearEsfera() : esfera;
           if (!e) return;
-          if (entrada.isIntersecting) { e.redimensionar(); fijarDisco(); e.arrancar(); }
+          if (entrada.isIntersecting) { e.redimensionar(); fijarTarjeta(); e.arrancar(); }
           else { e.detener(); }
         });
       }, { rootMargin: '200px 0px' }).observe(seccion);

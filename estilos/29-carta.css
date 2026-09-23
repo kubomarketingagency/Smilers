@@ -24,23 +24,31 @@
 
    Y TAMPOCO ES UNA TARJETA. Hubo despues una plancha de onix flotando en su
    mitad, con sombra y cuatro escuadras alrededor: una carta dentro de una
-   caja dentro de una pantalla. Ahora la mitad **es** la carta. El blanco
-   llega a los cuatro cantos de su lado —sin marco, sin sombra y sin nada
-   detras— y lo unico que la enmarca son las dos escuadras de oro del
-   documento: alli eran las del lado izquierdo, la de arriba y la de abajo, y
-   aqui se espejan al canto derecho, que es el que queda libre.
+   caja dentro de una pantalla. Ahora la mitad **es** la carta: llega a los
+   cuatro cantos de su lado, sin marco, sin sombra y sin nada detras, y lo
+   unico que la enmarca son las dos escuadras de oro del documento —alli eran
+   las del lado izquierdo, la de arriba y la de abajo, y aqui se espejan al
+   canto derecho, que es el que queda libre—.
 
-   El logo es el de marmol y no el de onix, y son el mismo logo: oro con la
+   EL FONDO ES PIEDRA, Y VA BAJADA DE LUZ. Es la misma foto que llevan las
+   bandas de Especialidades (`imagenes/fondos/fondo-piedra.webp`), a poco mas
+   de un tercio de opacidad y con dos capas encima: un velo que la hunde y un
+   rescoldo de oro muy bajo en el hombro de arriba. La veta se ve, pero no
+   compite: lo que tiene que leerse es la letra. Estuvo en blanco liso una
+   temporada y el problema era justo ese —el oro sobre blanco no es oro, es
+   amarillo, y la carta se quedaba sin los detalles que la hacen de esta casa.
+
+   El logo es el de onix y no el de marmol, y son el mismo logo: oro con la
    muela de plata, las dos versiones que hay del de la barra. La diferencia
-   esta en el renglon de abajo —"Dental Clinique"—, que en el de onix va en
-   blanco y sobre este fondo desaparecia.
+   esta en el renglon de abajo —"Dental Clinique"—, que en el de marmol va en
+   gris oscuro y sobre la piedra se apagaba.
 
    Dos coreografias con el mismo progreso, y eso lo hace el CSS, no el guion:
 
    - En pantalla ancha las dos mitades conviven —el director a la izquierda,
      la carta a la derecha— y se descubren por orden: primero el retrato, de
-     izquierda a derecha; luego la frase; luego el blanco, que entra desde la
-     juntura hacia fuera.
+     izquierda a derecha; luego la frase; luego la piedra, que entra
+     desde la juntura hacia fuera.
    - En el telefono no caben las dos, asi que se turnan: el retrato ocupa la
      pantalla con la frase encima y, al seguir bajando, la carta sube desde
      abajo y lo tapa. La frase no necesita irse por su cuenta: la tapa la
@@ -146,10 +154,10 @@
 }
 
 /* ---------------------------------------------------------------------------
-   La carta: la mitad en blanco, de canto a canto.
+   La carta: la mitad de piedra, de canto a canto.
 
    `--aire` es lo que se deja entre el texto y los cantos de la mitad, y es
-   tambien donde se apoyan las escuadras. No es un marco: el blanco pasa por
+   tambien donde se apoyan las escuadras. No es un marco: la piedra pasa por
    debajo y llega al filo.
    --------------------------------------------------------------------------- */
 .ns-carta__hoja {
@@ -157,10 +165,37 @@
   display: flex;
   --aire: clamp(1.4rem, 4vh, 3rem);
   padding: var(--aire) clamp(1.4rem, 3vw, 3.2rem);
-  background: #FFFFFF;
+  background: #0B0A09;
+}
+/* La foto, y encima lo que la baja: el velo que la hunde —mas cerrado abajo,
+   que es donde cae la firma— y un rescoldo de oro en el hombro de arriba, que
+   es lo que le quita el gris de foto de piedra y la hace de esta casa. */
+.ns-carta__piedra {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ns-carta__piedra img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .38;
+  filter: saturate(.6) contrast(1.04);
+}
+.ns-carta__piedra::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(124% 72% at 72% 4%, rgba(212, 175, 55, .13), transparent 62%),
+    linear-gradient(180deg, rgba(8, 7, 6, .42) 0%, rgba(8, 7, 6, .58) 52%, rgba(8, 7, 6, .74) 100%);
 }
 .ns-carta__panel {
   position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -184,12 +219,32 @@
   font-size: clamp(.86rem, .34vw + .76rem, 1.02rem);
 }
 
+/* El logo y la rubrica van sobre marmol negro, la misma plancha que llevan
+   las tarjetas de Especialidades (`.tarjeta-piedra`, en el 21): piedra pulida
+   con su veta, un velo que la hunde y un filo de oro muy fino alrededor.
+
+   Son las dos piezas de la carta que no son texto seguido —la marca arriba y
+   la firma abajo—, y sobre la piedra rugosa del fondo se quedaban flotando.
+   En una plancha se leen como lo que son: dos sellos. El marmol es ademas
+   mas oscuro y mas liso que el fondo, asi que las dos superficies no se
+   confunden aunque las dos sean piedra. */
 .cb-logo {
+  position: relative;
+  isolation: isolate;
   display: block;
-  width: min(58%, 15.5rem);
-  margin: 0 auto 1.1em;
+  width: min(74%, 19.5rem);
+  margin: 0 auto 1.15em;
+  padding: .85em 1.15em;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, .34);
 }
-.cb-logo img { display: block; width: 100%; height: auto; }
+.cb-logo > img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* Con el nombre de la escena delante, y no `.cb-tit` a secas: la pagina lleva
    `pagina-clara` en el <body> y `.pagina-clara h2` (0,2,0) pesa mas que una
@@ -202,18 +257,19 @@
   font-size: 1.75em;
   line-height: 1.26;
   letter-spacing: .01em;
-  color: var(--nos-negro);
+  color: #F4F1EA;
 }
-/* El oro de la carta es el hondo, el de piedra clara: sobre blanco el vivo se
-   pierde, porque su tramo claro es casi blanco. Es la misma regla del 22. */
+/* El oro de la carta es el vivo y no el hondo aunque la pagina sea clara: la
+   mitad es piedra oscura, y sobre piedra oscura el hondo se apaga. Es la
+   misma regla del 22, por el otro lado. */
 .ns-carta .cb-tit em {
   font-style: normal;
   font-weight: 500;
-  background-image: var(--gradiente-oro-hondo);
+  background-image: var(--oro-marca-degradado);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-hondo);
+  color: var(--oro-marca);
 }
 
 /* El cuerpo va alineado a la izquierda y no justificado. En el documento
@@ -227,7 +283,7 @@
   font-size: 1em;
   line-height: 1.72;
   text-align: left;
-  color: #2E2E2E;
+  color: rgba(238, 233, 224, .84);
 }
 .cb-p:last-of-type { margin-bottom: 0; }
 
@@ -238,21 +294,31 @@
   font-style: italic;
   font-size: 1.24em;
   line-height: 1.4;
-  background-image: var(--gradiente-oro-hondo);
+  background-image: var(--oro-marca-degradado);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-hondo);
+  color: var(--oro-marca);
 }
 
 /* ---- La rubrica ---- */
-.cb-rub { margin-top: 1.25em; }
+.cb-rub {
+  position: relative;
+  isolation: isolate;
+  margin-top: 1.3em;
+  padding: 1.05em 1.2em 1.15em;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, .34);
+}
+/* Lo que va dentro sube por encima de la plancha, que es lo que hace el 21
+   con las tarjetas de piedra. */
+.cb-rub > *:not(.tarjeta-piedra) { position: relative; z-index: 1; }
 .cb-rub__filo {
   display: block;
   width: 4.2em;
   height: 1px;
   margin: 0 auto .8em;
-  background: var(--gradiente-oro-hondo);
+  background: var(--oro-marca-degradado);
 }
 .cb-rub b {
   display: block;
@@ -261,7 +327,7 @@
   font-weight: 500;
   font-size: 1.1em;
   line-height: 1.25;
-  color: var(--nos-negro);
+  color: #FFFFFF;
 }
 .cb-rub i {
   display: block;
@@ -272,11 +338,11 @@
   font-size: .6em;
   letter-spacing: .24em;
   text-transform: uppercase;
-  background-image: var(--gradiente-oro-hondo);
+  background-image: var(--oro-marca-degradado);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-hondo);
+  color: var(--oro-marca);
 }
 /* La firma se escribe de izquierda a derecha con `--k-firma`, que es lo
    ultimo que mueve la escena: la carta acaba de firmarse delante de quien la
@@ -289,16 +355,18 @@
    gris+alfa a 640 de ancho, que es la mitad de canales que RGBA para el mismo
    resultado, porque el color del trazo es plano.
 
-   Aqui va tal cual, sin invertir: el trazo es oscuro y el fondo es blanco,
-   que es como se firmo. `multiply` remata los bordes del recorte contra el
-   blanco, que a este tamano se notarian. */
+   Y ese color es oscuro, que es como se firma en papel. Aqui el papel es
+   piedra, asi que se invierte: `invert(1)` le da la vuelta al gris y deja el
+   alfa donde estaba, y el trazo sale en blanco. El `screen` remata los bordes
+   del recorte contra el fondo, que a este tamano se notarian. */
 .ns-carta__firma {
   display: block;
   width: min(46%, 9.5rem);
   height: auto;
   margin: 0 auto;
   clip-path: inset(0 calc((1 - var(--k-firma, 1)) * 100%) 0 0);
-  mix-blend-mode: multiply;
+  filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 /* Las dos escuadras de oro, que se dibujan solas: cada una son dos rayas que
@@ -321,7 +389,7 @@
 .ns-carta__esq::after {
   content: "";
   position: absolute;
-  background: var(--gradiente-oro-hondo);
+  background: var(--oro-marca-degradado);
 }
 .ns-carta__esq::before { height: 2px; width: calc(var(--k-filo, 1) * 100%); }
 .ns-carta__esq::after  { width: 2px; height: calc(var(--k-filo, 1) * 100%); }
@@ -420,11 +488,11 @@
   z-index: 3;
   transform: translate3d(0, calc((1 - var(--k-papel, 1)) * 101%), 0);
   /* La barra de navegacion es fija y opaca: el texto empieza por donde ella
-     acaba, o la escuadra de arriba le queda debajo. El blanco si pasa por
+     acaba, o la escuadra de arriba le queda debajo. La piedra si pasa por
      detras, que es lo que tiene que hacer un fondo. */
   padding-top: calc(var(--alto-navbar) + var(--aire));
 }
-/* El blanco entra vacio y la carta aparece despues: primero la mitad, luego
+/* La piedra entra vacia y la carta aparece despues: primero la mitad, luego
    lo que dice. */
 .ns-carta--viva .cb-tinta { opacity: var(--k-texto, 1); }
 
@@ -467,7 +535,7 @@
      mitad, en mas lineas cae el mismo texto. Medido, la carta pide unos 40
      em de alto a partir de 1200 de ancho y casi 46 por debajo, que es donde
      la columna baja de 450 px. Dos tramos, y las dos cifras salen de ahi. */
-  .ns-carta--viva .cb-tinta { --cb-tope: 1.85vh; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.62vh; }
 
   /* Con la escena clavada, la fila de la rejilla mide lo que la pantalla y
      ni un pixel mas. Por defecto una fila implicita es `auto`, es decir,
@@ -495,7 +563,7 @@
     bottom: 16%;
     transform: translate3d(0, calc((1 - var(--k-frase, 1)) * 22px), 0);
   }
-  /* Y el blanco se descubre desde la juntura hacia fuera, en el mismo sentido
+  /* Y la piedra se descubre desde la juntura hacia fuera, en el mismo sentido
      en que se lee y en el mismo en que se abrio el retrato. */
   .ns-carta--viva .ns-carta__hoja {
     position: relative;
@@ -513,14 +581,14 @@
     z-index: 5;
     width: 2px;
     height: calc(var(--k-papel, 1) * 100%);
-    background: var(--gradiente-oro-hondo);
+    background: var(--oro-marca-degradado);
   }
 }
 
 /* A partir de 1200 la columna vuelve a pasar de 450 px, el texto cae en
    menos lineas y el techo puede subir. */
 @media (min-width: 1200px) {
-  .ns-carta--viva .cb-tinta { --cb-tope: 2vh; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.86vh; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -541,7 +609,8 @@
   .ns-carta--viva .cb-tit { margin-bottom: .7em; }
   .ns-carta--viva .cb-p { margin-bottom: .6em; line-height: 1.58; }
   .ns-carta--viva .cb-lem { margin-top: .75em; }
-  .ns-carta--viva .cb-rub { margin-top: .95em; }
+  .ns-carta--viva .cb-logo { padding: .7em .95em; }
+  .ns-carta--viva .cb-rub { margin-top: .95em; padding: .85em 1em .95em; }
   .ns-carta--viva .cb-rub__filo { margin-bottom: .55em; }
   .ns-carta--viva .ns-carta__firma { width: min(34%, 7rem); }
 }
@@ -555,7 +624,8 @@
   .ns-carta--viva .cb-tit { font-size: 1.5em; margin-bottom: .55em; }
   .ns-carta--viva .cb-p { margin-bottom: .5em; line-height: 1.5; }
   .ns-carta--viva .cb-lem { font-size: 1.12em; margin-top: .6em; line-height: 1.32; }
-  .ns-carta--viva .cb-rub { margin-top: .7em; }
+  .ns-carta--viva .cb-logo { padding: .55em .8em; }
+  .ns-carta--viva .cb-rub { margin-top: .7em; padding: .7em .85em .8em; }
   .ns-carta--viva .cb-rub b { margin-top: .15em; }
   .ns-carta--viva .cb-rub i { margin-top: .35em; }
   .ns-carta--viva .ns-carta__firma { width: min(28%, 6rem); }
@@ -572,8 +642,8 @@
    La carta ocupa la mitad en el ordenador y la pantalla entera en el
    telefono: los tres botones fijos —cookies abajo a la izquierda, WhatsApp y
    volver arriba abajo a la derecha— le caen encima. Sobre el retrato tapaban
-   el nombre del director; sobre la carta, el final y la firma, y ademas son
-   tres piezas oscuras sobre blanco. No hay sitio al que moverlos, asi que se
+   el nombre del director; sobre la carta, el final y la firma. No hay
+   sitio al que moverlos, asi que se
    van y vuelven solos en cuanto la escena deja la pantalla. Es un tramo corto
    —tres pantallas de scroll— y mientras dura no hay nada que pulsar ahi: lo
    que hay que hacer es leer. Se van con un fundido, no de golpe, y sin

@@ -131,7 +131,7 @@
 .pagina-clara .faq-categoria-titulo,
 .pagina-clara .ns-portada,
 /* Las especialidades pares van sobre pizarra: el numero del acordeon, la
-   flecha y las esquinas del comparador caen sobre roca oscura. */
+   flecha y las esquinas de la foto caen sobre roca oscura. */
 .pagina-clara .bloque-tratamiento--piedra {
   --oro-vivo-degradado: var(--oro-marca-degradado);
   --oro-plano: var(--oro-marca);

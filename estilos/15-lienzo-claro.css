@@ -5,7 +5,7 @@
   --nos-dorado: #B8942A;
   --nos-dorado-claro: #D4AF37;
   /* Era #9C7A1C, un tercer oro que no usaba nadie mas: lo pintaba la pregunta
-     abierta del acordeon de FAQ y el icono de la manija del comparador, y en
+     abierta del acordeon de FAQ, y en
      las dos el resto de la pagina ya iba en #A8801E. */
   --nos-dorado-texto: var(--oro-hondo);
   --nos-linea: rgba(212, 175, 55, .55);
@@ -445,10 +445,24 @@
 /* En el telefono la muela deja de ser una pieza al lado del titulo y pasa a
    ser **la esquina de arriba a la derecha**. Antes flotaba junto al texto, del
    alto justo del titulo, y se leia como un adorno puesto ahi por no dejar el
-   hueco vacio. Ahora es grande, se sienta en el vertice del marco —asomando
-   un poco por arriba y por el canto— y el filo de oro entra por su costado:
-   la linea y la muela son la misma pieza, y lo que cierran es el rincon donde
-   vive el texto.
+   hueco vacio. Ahora es grande, se sienta a caballo sobre el filo de oro y lo
+   que cierra es el rincon donde vive el texto.
+
+   Y EL FILO LE ENTRA POR DENTRO. Antes moria contra el canto de la muela: dos
+   piezas de oro tocandose, que a ese tamano se lee como un borron. Esta
+   dibujada abierta —la linea de la corona baja por la izquierda, se corta a
+   media altura y el resto es hueco hasta la raiz—, asi que por debajo de ese
+   corte se le puede pasar por dentro sin rozarla. Medido sobre el propio
+   vector: el trazo izquierdo acaba al 38% de su alto, y de ahi para abajo no
+   hay nada a la izquierda hasta el 85% de su ancho, que es donde empieza la
+   raiz. El filo cruza al 46% del alto —ya dentro del hueco— y se para al 76%
+   del ancho: un dedo de aire antes de la raiz. Las dos cifras van juntas en
+   `--bp-muela-cruce` y en el ancho del filo, y si se cambia una hay que
+   cambiar la otra.
+
+   `--bp-muela-cruce` es lo que la muela asoma por encima del filo, contado en
+   anchos de muela: el 46% de su alto, y su alto es 1,0242 veces su ancho
+   (458,4 x 469,47 del vector). De ahi sale el .471.
 
    El titulo no le pasa por debajo: se le acorta el ancho a lo que queda libre
    a su izquierda, con un dedo de solape para que las dos lineas caigan a
@@ -459,10 +473,11 @@
 @media (max-width: 767.98px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
-    --bp-muela-ancho: clamp(112px, 34vw, 172px);
+    --bp-muela-ancho: clamp(118px, 36vw, 182px);
+    --bp-muela-cruce: .471;
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
-    max-width: calc(100% - var(--bp-muela-ancho) + 2.2rem);
+    max-width: calc(100% - var(--bp-muela-ancho) + 2.4rem);
     font-size: var(--bp-titulo);
   }
   .pagina-clara .banner-pagina--hero .bp-muela {
@@ -470,52 +485,61 @@
     z-index: 3;
     width: var(--bp-muela-ancho);
     height: auto;
-    top: calc(var(--bp-marco-aire-y, 2.6rem) * -1 - .55rem);
+    top: calc(var(--bp-marco-aire-y, 2.6rem) * -1
+              - var(--bp-muela-ancho) * var(--bp-muela-cruce));
     right: calc(var(--bp-lado) - var(--bp-marco-aire, 1.1rem) - .35rem);
     filter: drop-shadow(0 6px 16px rgba(4, 3, 2, .6));
   }
-  /* El filo de arriba, alargado hasta meterse debajo de la muela. Es la
-     escuadra de siempre; lo unico que cambia es donde termina. */
+  /* El filo de arriba, alargado hasta meterse por el hueco de la muela y
+     pararse antes de la raiz. Es la escuadra de siempre; lo unico que cambia
+     es donde termina. */
   .pagina-clara .banner-pagina--hero:has(.bp-muela) .bp-marco::before {
-    width: calc(100% + .35rem - var(--bp-muela-ancho) + 1.6rem);
+    width: calc(100% + .35rem - var(--bp-muela-ancho) * .24);
   }
 }
 
-/* `--bp-muela-adentro` es lo que la muela se mete hacia dentro del bloque en
-   vez de quedarse pegada al margen de la pagina. Colgada del canto derecho
-   miraba a la nada: entre ella y el filo de oro del marco no habia nada que
-   mirar, y entre ella y el titulo quedaba un desierto. Metida hacia dentro,
-   el titulo y la muela se leen como una sola linea. Lo que se mete se le suma
-   tambien al sitio que el texto le reserva, para que no haya combinacion de
-   pantalla y titulo en la que le pise la letra. */
+/* En la tableta y el ordenador la muela tiene tamano propio y no el del
+   bloque de texto. Antes media lo mismo de alto que el texto (`top: 0` y
+   `height: 100%`), lo cual la ataba a algo que cambia solo: con el titulo en
+   una linea el bloque baja a 223px y la muela se quedaba en 217 de ancho,
+   una pieza pequena al lado de un titular de 83px de alto. Ahora manda
+   `--bp-muela-ancho`, se apoya por el pie en el mismo renglon en que acaba el
+   texto y crece hacia arriba, que es hacia donde hay sitio: por ese lado el
+   marco no tiene filo —las escuadras son la de arriba a la izquierda y la de
+   abajo a la derecha— y puede pasar por encima sin tocar ninguna linea.
+
+   `--bp-muela-adentro` es lo que se mete hacia dentro del bloque en vez de
+   quedarse pegada al margen de la pagina. Colgada del canto derecho miraba a
+   la nada: entre ella y el filo del marco no habia nada que mirar, y entre
+   ella y el titulo quedaba un desierto. Metida hacia dentro, el titulo y la
+   muela se leen como una sola linea. Lo que se mete se le suma tambien al
+   sitio que el texto le reserva, para que no haya combinacion de pantalla y
+   titulo en la que le pise la letra. */
 @media (min-width: 768px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-muela-hueco: clamp(1.9rem, 3vw, 2.6rem);
-    /* Crece con la pantalla, pero desde una base que deja el titulo de FAQ
-       —el mas largo de los tres— en una sola linea a 1280, que es donde la
-       hoja promete que los tres caben en una. Con un `vw` limpio, a 1280 le
-       faltaban nueve pixeles y se partia en dos. */
-    --bp-muela-adentro: clamp(1.2rem, 6vw - 40px, 5rem);
-    --bp-muela-reserva: calc(14vw + 140px);
+    --bp-muela-ancho: clamp(190px, 17vw, 300px);
+    --bp-muela-adentro: clamp(1.6rem, 7.6vw - 50px, 7rem);
+    --bp-muela-reserva: calc(var(--bp-muela-ancho) + var(--bp-muela-hueco));
     padding-right: calc(var(--bp-lado) + var(--bp-muela-reserva) + var(--bp-muela-adentro));
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: 11em; }
   .pagina-clara .banner-pagina--hero .bp-muela {
     position: absolute;
-    top: 0;
+    bottom: 0;
+    top: auto;
     right: calc(var(--bp-lado) + var(--bp-muela-adentro));
-    width: auto;
-    height: 100%;
-    max-width: calc(var(--bp-muela-reserva) - var(--bp-muela-hueco));
-    object-fit: contain;
-    object-position: 100% 50%;
+    width: var(--bp-muela-ancho);
+    height: auto;
     filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
   }
 }
-@media (min-width: 1280px) {
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
-    --bp-muela-reserva: calc(224px + var(--bp-muela-hueco));
-  }
+/* Desde 1360 los tres titulos caben en una linea y se les suelta el ancho.
+   La cifra esta medida, y el que manda es el de Privacidad, que es el mas
+   largo de los tres (851px): a 1320 le faltaba un pelo y a 1280, 25px. Por
+   debajo van los tres en dos lineas (`max-width: 11em`), que es como se
+   parten igual en las tres paginas en vez de cada uno por donde le toque. */
+@media (min-width: 1360px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: none; }
 }
 
@@ -662,16 +686,7 @@
 .pagina-clara .enlace-card:hover,
 .pagina-clara .tarjeta-tratamiento-compacta .enlace-card:hover { color: var(--nos-negro); }
 
-.pagina-clara .comparador-tag { border-radius: 0; }
 
-.pagina-clara .comparador-tag-despues { background: #D4AF37; color: #0A0A0A; }
-.pagina-clara .comparador-nota {
-  text-align: left;
-  font-style: normal;
-  font-size: .74rem;
-  letter-spacing: .04em;
-  color: #6F6F6F;
-}
 
 .pagina-clara .banda-cta {
   min-height: 0;
@@ -776,7 +791,7 @@
 }
 
 .pagina-clara .bloque-tratamiento-foto,
-.pagina-clara .comparador-marco {
+.pagina-clara .tz-foto {
   border-radius: 0;
   box-shadow: none;
 }

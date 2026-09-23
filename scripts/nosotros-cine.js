@@ -708,6 +708,22 @@ document.addEventListener('DOMContentLoaded', function () {
        cambie de alto para que el pixel calculado se quede corto y la carta
        aparezca a medio montar. Solo se repite si nadie ha tocado el scroll
        desde entonces: si la persona ya se ha movido, mandar ella. */
+    /* Llegar por una ancla a una escena clavada no es llegar a un elemento:
+       es llegar a un PUNTO del recorrido de esa escena, que es donde el
+       apartado se ve entero. El elemento con ese identificador esta en el
+       sitio donde arranca la escena, asi que el salto normal del navegador
+       deja el apartado sin empezar —o directamente en otro—.
+
+       Y no basta con corregirlo una vez. El navegador vuelve a saltar al
+       fragmento cada vez que el documento cambia de alto mientras no se haya
+       tocado el scroll: entran las fotos, se recolocan las escenas y el salto
+       nativo nos devuelve al elemento, deshaciendo lo que habiamos puesto.
+       Por eso se recoloca en varias pasadas —dos fotogramas, la carga, y un
+       respiro despues— y lo unico que lo detiene es que la persona haya
+       movido la pagina de verdad. Hubo una version que en vez de eso
+       comparaba la posicion actual con la que habia puesto, y como el salto
+       nativo la cambiaba, la comparacion fallaba y se rendia: el ancla caia
+       unas veces bien y otras no, segun lo que tardaran las fotos. */
     if (location.hash.length > 1) {
       var pedido = location.hash.slice(1);
       var suya = null;
@@ -715,21 +731,33 @@ document.addEventListener('DOMContentLoaded', function () {
         if (paradas[iP].id === pedido) { suya = paradas[iP]; break; }
       }
       if (suya) {
-        var puesta = -1;
+        var tocado = false;
+        var apuntarTocado = function () { tocado = true; };
+        ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (que) {
+          window.addEventListener(que, apuntarTocado, { passive: true, once: true });
+        });
+
         var colocar = function () {
-          puesta = destinoDe(suya);
-          window.scrollTo(0, puesta);
+          if (tocado) return;
+          window.scrollTo(0, destinoDe(suya));
           SmilersScroll.pedir();
         };
         requestAnimationFrame(function () { requestAnimationFrame(colocar); });
-        if (document.readyState !== 'complete') {
+        if (document.readyState === 'complete') {
+          setTimeout(colocar, 0);
+        } else {
           window.addEventListener('load', function () {
-            requestAnimationFrame(function () {
-              if (puesta < 0 || Math.abs(window.scrollY - puesta) > 4) return;
-              colocar();
-            });
+            requestAnimationFrame(colocar);
           }, { once: true });
         }
+        /* La ultima, cuando ya no queda nada por cargar que mueva el alto. */
+        setTimeout(function () {
+          colocar();
+          window.removeEventListener('wheel', apuntarTocado);
+          window.removeEventListener('touchstart', apuntarTocado);
+          window.removeEventListener('pointerdown', apuntarTocado);
+          window.removeEventListener('keydown', apuntarTocado);
+        }, 900);
       }
     }
 

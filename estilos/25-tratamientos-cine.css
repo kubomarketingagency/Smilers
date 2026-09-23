@@ -10,7 +10,7 @@
    Asi que aqui cada bloque mide una pantalla —descontada la barra, que va
    fija y tapa— y se centra dentro. La foto manda: se lleva siete columnas de
    doce y toda la altura que sobra despues del texto de debajo del
-   comparador. El panel de informacion se queda con cinco.
+   foto. El panel de informacion se queda con cinco.
 
    Tres avisos para quien toque esto:
 
@@ -18,13 +18,12 @@
      el bloque crece y se sale de la pantalla; lo que no hace nunca es cortar
      el contenido. Cortar es el unico fallo que no se puede recuperar
      haciendo scroll.
-   - La altura de la foto se escribe en la COLUMNA, no en el marco. El marco
-     es un hijo flexible que se come lo que sobra despues del deslizador y su
-     nota; si le pusieramos la altura a el, esos dos se saldrian por abajo.
+   - La altura de la foto se escribe en la COLUMNA y la foto se estira a lo
+     que le den: asi lo que decide cuanto mide es la pantalla, no la imagen.
    - La entrada usa `clip-path`, que ademas de tapar quita el elemento del
      mapa de clics. Por eso el reset de `prefers-reduced-motion` que hay al
      final no es cosmetico: sin el, quien navegue sin animaciones se queda
-     con los comparadores invisibles y muertos.
+     con las diez fotos invisibles y muertas.
 
    Va la ultima de las hojas de esta pagina, y solo la carga esta pagina.
    =========================================================================== */
@@ -101,23 +100,12 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
       820px
     );
   }
-  .pagina-tratamientos .bloque-tratamiento .comparador {
-    display: flex;
-    flex-direction: column;
+  .pagina-tratamientos .bloque-tratamiento .tz-foto {
     width: 100%;
     height: 100%;
     max-width: none;
     margin: 0;
-  }
-  .pagina-tratamientos .bloque-tratamiento .comparador-marco {
-    flex: 1 1 auto;
-    min-height: 0;
     aspect-ratio: auto;
-  }
-  .pagina-tratamientos .bloque-tratamiento .comparador-rango { flex: 0 0 auto; }
-  .pagina-tratamientos .bloque-tratamiento .comparador-nota {
-    flex: 0 0 auto;
-    margin-bottom: 0;
   }
 
   /* --- La entrada --------------------------------------------------------
@@ -143,13 +131,13 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     --retraso: .16s;
   }
 
-  .pagina-tratamientos .bloque-tratamiento .comparador-marco {
+  .pagina-tratamientos .bloque-tratamiento .tz-foto {
     clip-path: inset(0 0 100% 0);
     transform: scale(.965);
     transition: clip-path 1.05s cubic-bezier(.16, 1, .3, 1) .1s,
                 transform 1.15s cubic-bezier(.16, 1, .3, 1) .1s;
   }
-  .pagina-tratamientos .bloque-tratamiento .revelar.visible .comparador-marco {
+  .pagina-tratamientos .bloque-tratamiento .revelar.visible .tz-foto {
     clip-path: inset(0 0 0 0);
     transform: scale(1);
   }
@@ -167,7 +155,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     .pagina-tratamientos .bloque-tratamiento .lista-incluye { margin: .8rem 0; padding-top: .7rem; }
     .pagina-tratamientos .bloque-tratamiento .lista-incluye li { padding-block: .24rem; line-height: 1.5; }
     .pagina-tratamientos .bloque-tratamiento .lista-incluye i { top: 1rem; }
-    .pagina-tratamientos .bloque-tratamiento .comparador-nota { font-size: .68rem; }
   }
 }
 
@@ -227,8 +214,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
    punto de luz de oro, el mismo que llevan las bandas de piedra del sitio.
 
    Las crestas quedan en 150 como mucho: dentro del panel la letra va sobre
-   su marmol negro, y lo unico que se lee directamente sobre la piedra es la
-   nota del comparador, que lleva su sombra. */
+   su marmol negro, y sobre la piedra no se lee nada directamente. */
 .trat-piedra::after {
   content: '';
   position: absolute;
@@ -250,12 +236,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
 
 /* El panel se queda con su marmol negro: es liso y mas oscuro que la
    pizarra, y con el filo de oro se despega de la roca sin tener que volverse
-   translucido. Lo que vive fuera del panel es lo que cambia: la nota del
-   comparador pasa a claro, con una sombra que la separa de las crestas. */
-.pagina-tratamientos .bloque-tratamiento--piedra .comparador-nota {
-  color: rgba(255, 255, 255, .74);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, .85);
-}
+   translucido. */
 
 @media (max-width: 767.98px) {
   /* En el movil el bloque es un acordeon cerrado y la piedra solo viste el
@@ -313,7 +294,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     transparent, rgba(212, 175, 55, .55) 18%, rgba(212, 175, 55, .55) 82%, transparent);
   pointer-events: none;
 }
-/* El aro del sello y las cuatro esquinas del comparador iban en `--gold-200`
+/* El aro del sello y las dos esquinas de la foto iban en `--gold-200`
    (#E6C95F), que es un tono de dentro del degradado y no uno de los dos
    planos del sitio. Sobre negro la diferencia se ve: el #E6C95F sale
    amarillo al lado del #D4AF37 de su propio filo. */
@@ -321,8 +302,8 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   border-color: rgba(212, 175, 55, .62);
   color: var(--oro-plano);
 }
-.pagina-tratamientos .comparador-marco::before,
-.pagina-tratamientos .comparador-marco::after { border-color: var(--oro-plano); }
+.pagina-tratamientos .tz-foto::before,
+.pagina-tratamientos .tz-foto::after { border-color: var(--oro-plano); }
 
 /* El panel de cada especialidad sube de 1px a 2px por la misma razon que el
    filo de las tarjetas: es la pieza que sostiene la afirmacion de su
@@ -344,10 +325,10 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
 
    `clip-path: inset(0 0 100% 0)` no es solo invisible: tampoco recibe clics.
    Si alguien navega con las animaciones apagadas y esto no se deshiciera,
-   los diez comparadores estarian ahi, en blanco y sin responder.
+   las diez fotos estarian ahi, en blanco.
    --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .pagina-tratamientos .bloque-tratamiento .comparador-marco {
+  .pagina-tratamientos .bloque-tratamiento .tz-foto {
     clip-path: none;
     transform: none;
     transition: none;

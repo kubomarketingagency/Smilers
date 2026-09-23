@@ -67,15 +67,22 @@ window.SmilersAvisoCookies = {
         translations: {
           es: {
             consentModal: {
-              title: 'Cookies de publicidad',
-              /* Lo que dice depende de si los pixeles ya estan midiendo, que
-                 es lo que manda la politica de consentimiento.js. Decirlo de
-                 otra forma seria mentir en la primera frase que alguien lee. */
-              description: opciones.yaMiden
-                ? 'Meta y Google usan cookies para medir nuestros anuncios, y ahora mismo ' +
-                  'están funcionando. Si las rechazas, las apagamos y las borramos.'
-                : 'Con tu permiso, Meta y Google usarán cookies para medir nuestros ' +
-                  'anuncios. Si las rechazas, el sitio funciona igual.',
+              title: 'Cookies y caché',
+              /* El texto es el que pidio la clinica, tal cual. Nombra tres
+                 cosas: las cookies nuestras, las de Meta y Google, y la cache
+                 del navegador —los archivos temporales que guarda para no
+                 volver a descargarlos—. La cache no se elige aqui porque no
+                 es una cookie ni identifica a nadie: se explica en el panel y
+                 en la politica, que es donde se cuenta lo que hace el sitio.
+
+                 Lo que si depende de si los pixeles estan puestos es el
+                 detalle del panel (`todavia`, mas abajo): ahi es donde se
+                 dice si hay algo funcionando o no. */
+              description: 'Utilizamos cookies propias, de terceros (como Google y Meta) y ' +
+                'tecnologías de almacenamiento en caché para mejorar tu experiencia de ' +
+                'navegación, optimizar los tiempos de carga del sitio, analizar el tráfico y ' +
+                'mostrarte publicidad personalizada. Puedes aceptar todas las cookies, ' +
+                'rechazarlas o configurar tus preferencias en cualquier momento.',
               acceptAllBtn: 'Aceptar',
               acceptNecessaryBtn: 'Rechazar',
               showPreferencesBtn: 'Ver cuáles',
@@ -115,6 +122,20 @@ window.SmilersAvisoCookies = {
                     'a quien ya nos visitó. Las ponen Meta y Google, cada uno con su propia ' +
                     'política. Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
                   linkedCategory: categoria
+                },
+                {
+                  /* La cache no es una cookie y no se puede apagar desde aqui:
+                     es el navegador guardandose las fotos y los estilos para
+                     no bajarlos dos veces. Va sin `linkedCategory` a proposito
+                     —no hay nada que elegir— pero se cuenta, porque el aviso
+                     la nombra. */
+                  title: 'Archivos temporales (caché)',
+                  description:
+                    'Además de las cookies, tu navegador guarda copias temporales de las ' +
+                    'imágenes, los estilos y los guiones de la página. Sirven para una sola ' +
+                    'cosa: que la próxima vez no haya que descargarlos otra vez y el sitio ' +
+                    'abra más rápido. No llevan datos tuyos, no se envían a nadie y se ' +
+                    'borran desde tu navegador cuando quieras.'
                 },
                 {
                   title: 'Más información',

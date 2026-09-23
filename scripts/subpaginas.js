@@ -78,61 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  document.querySelectorAll('[data-comparador]').forEach(function (contenedor) {
-    const marco = contenedor.querySelector('.comparador-marco');
-    const rango = contenedor.querySelector('.comparador-rango');
-    if (!marco || !rango) return;
-
-    function fijarPosicion(porcentaje) {
-      const acotado = Math.min(100, Math.max(0, porcentaje));
-      marco.style.setProperty('--pos', acotado + '%');
-      rango.value = acotado;
-    }
-
-    function porcentajeDesdeEvento(evento) {
-      const rect = marco.getBoundingClientRect();
-      const x = evento.clientX - rect.left;
-      return (x / rect.width) * 100;
-    }
-
-    let punteroActivo = null;
-
-    marco.addEventListener('pointerdown', function (evento) {
-      punteroActivo = evento.pointerId;
-
-      if (marco.setPointerCapture) {
-        try { marco.setPointerCapture(evento.pointerId); } catch (e) {}
-      }
-      fijarPosicion(porcentajeDesdeEvento(evento));
-    });
-
-    marco.addEventListener('pointermove', function (evento) {
-
-      if (punteroActivo === evento.pointerId) {
-
-        if (evento.cancelable) evento.preventDefault();
-        fijarPosicion(porcentajeDesdeEvento(evento));
-        return;
-      }
-      if (evento.pointerType === 'mouse' && evento.buttons === 0) return;
-      if (evento.pointerType === 'mouse') fijarPosicion(porcentajeDesdeEvento(evento));
-    });
-
-    function soltar(evento) {
-      if (punteroActivo !== evento.pointerId) return;
-      punteroActivo = null;
-      if (marco.releasePointerCapture) {
-        try { marco.releasePointerCapture(evento.pointerId); } catch (e) {}
-      }
-    }
-    marco.addEventListener('pointerup', soltar);
-    marco.addEventListener('pointercancel', soltar);
-
-    rango.addEventListener('input', function () {
-      fijarPosicion(Number(rango.value));
-    });
-  });
-
   var acordeones = {};
   document.querySelectorAll('.acordeon-tratamiento-boton').forEach(function (boton) {
     var panel = document.getElementById(boton.getAttribute('aria-controls'));

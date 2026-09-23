@@ -42,12 +42,12 @@ default:'es',
 translations:{
 es:{
 consentModal:{
-title:'Cookies de publicidad',
-description:opciones.yaMiden
-?'Meta y Google usan cookies para medir nuestros anuncios, y ahora mismo ' +
-'están funcionando. Si las rechazas, las apagamos y las borramos.'
-:'Con tu permiso, Meta y Google usarán cookies para medir nuestros ' +
-'anuncios. Si las rechazas, el sitio funciona igual.',
+title:'Cookies y caché',
+description:'Utilizamos cookies propias, de terceros (como Google y Meta) y ' +
+'tecnologías de almacenamiento en caché para mejorar tu experiencia de ' +
+'navegación, optimizar los tiempos de carga del sitio, analizar el tráfico y ' +
+'mostrarte publicidad personalizada. Puedes aceptar todas las cookies, ' +
+'rechazarlas o configurar tus preferencias en cualquier momento.',
 acceptAllBtn:'Aceptar',
 acceptNecessaryBtn:'Rechazar',
 showPreferencesBtn:'Ver cuáles',
@@ -84,6 +84,15 @@ description:
 'a quien ya nos visitó. Las ponen Meta y Google, cada uno con su propia ' +
 'política. Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
 linkedCategory:categoria
+},
+{
+title:'Archivos temporales (caché)',
+description:
+'Además de las cookies, tu navegador guarda copias temporales de las ' +
+'imágenes, los estilos y los guiones de la página. Sirven para una sola ' +
+'cosa: que la próxima vez no haya que descargarlos otra vez y el sitio ' +
+'abra más rápido. No llevan datos tuyos, no se envían a nadie y se ' +
+'borran desde tu navegador cuando quieras.'
 },
 {
 title:'Más información',
