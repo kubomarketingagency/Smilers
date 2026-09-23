@@ -154,48 +154,30 @@
 }
 
 /* ---------------------------------------------------------------------------
-   La carta: la mitad de piedra, de canto a canto.
+   La carta: la mitad, en blanco y de canto a canto.
 
-   `--aire` es lo que se deja entre el texto y los cantos de la mitad, y es
-   tambien donde se apoyan las escuadras. No es un marco: la piedra pasa por
-   debajo y llega al filo.
+   `--aire` es lo que se deja entre el texto y los cantos de arriba y abajo, y
+   `--lado` lo que se deja a los costados; ahi se apoyan las escuadras. No es
+   un marco: el blanco pasa por debajo y llega al filo. `--lado` va en una
+   variable y no suelto dentro del `padding` porque las dos franjas de marmol
+   se lo comen con un margen negativo para llegar a los cantos, y esa es la
+   unica cifra que necesitan saber.
+
+   Estuvo con la piedra de Especialidades de fondo, bajada de luz y con un
+   velo encima: el oro se veia mejor sobre ella, pero esto es una carta y lo
+   que se lee se lee sobre papel. El oro lo pone aqui el hondo, que es el de
+   piedra clara, y el negro lo ponen las dos franjas.
    --------------------------------------------------------------------------- */
 .ns-carta__hoja {
   position: relative;
   display: flex;
   --aire: clamp(1.4rem, 4vh, 3rem);
-  padding: var(--aire) clamp(1.4rem, 3vw, 3.2rem);
-  background: #0B0A09;
-}
-/* La foto, y encima lo que la baja: el velo que la hunde —mas cerrado abajo,
-   que es donde cae la firma— y un rescoldo de oro en el hombro de arriba, que
-   es lo que le quita el gris de foto de piedra y la hace de esta casa. */
-.ns-carta__piedra {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.ns-carta__piedra img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: .38;
-  filter: saturate(.6) contrast(1.04);
-}
-.ns-carta__piedra::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(124% 72% at 72% 4%, rgba(212, 175, 55, .13), transparent 62%),
-    linear-gradient(180deg, rgba(8, 7, 6, .42) 0%, rgba(8, 7, 6, .58) 52%, rgba(8, 7, 6, .74) 100%);
+  --lado: clamp(1.4rem, 3vw, 3.2rem);
+  padding: var(--aire) var(--lado);
+  background: #FFFFFF;
 }
 .ns-carta__panel {
   position: relative;
-  z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -213,37 +195,80 @@
    hace falta cuando la escena la clava a pantalla completa: ahi no hay a
    donde seguir, de modo que lo que no cabe se pierde. Con una cifra, cabe. */
 .cb-tinta {
+  --medida: 38rem;
   width: 100%;
-  max-width: 38rem;
   text-align: center;
   font-size: clamp(.86rem, .34vw + .76rem, 1.02rem);
 }
+/* La medida de lectura ya no la lleva `.cb-tinta` sino cada una de sus
+   piezas, y es por las franjas: tienen que llegar a los cantos de la mitad, y
+   desde dentro de una caja de 38rem centrada no hay manera de saber cuanto
+   sobra a cada lado. Asi la capa que se funde ocupa la mitad entera, el texto
+   se queda en su columna y las franjas solo tienen que comerse `--lado`.
 
-/* El logo y la rubrica van sobre marmol negro, la misma plancha que llevan
-   las tarjetas de Especialidades (`.tarjeta-piedra`, en el 21): piedra pulida
-   con su veta, un velo que la hunde y un filo de oro muy fino alrededor.
+   Con el nombre de la escena delante para ganarle en peso a `.cb-p`, que
+   lleva sus margenes en forma corta. */
+.ns-carta .cb-tinta > *:not(.cb-franja) {
+  max-width: var(--medida);
+  margin-inline: auto;
+}
 
-   Son las dos piezas de la carta que no son texto seguido —la marca arriba y
-   la firma abajo—, y sobre la piedra rugosa del fondo se quedaban flotando.
-   En una plancha se leen como lo que son: dos sellos. El marmol es ademas
-   mas oscuro y mas liso que el fondo, asi que las dos superficies no se
-   confunden aunque las dos sean piedra. */
-.cb-logo {
+/* ---------------------------------------------------------------------------
+   Las dos franjas de marmol.
+
+   Es la misma plancha que llevan las tarjetas de Especialidades
+   (`.tarjeta-piedra`, en el 21: piedra pulida con su veta y un velo que la
+   hunde), y cruza la carta de canto a canto, sin dejar aire a los lados: una
+   detras del logo y otra detras del nombre de quien firma. Son las dos piezas
+   que no son texto de leer —la marca y el nombre—, y sobre el papel se
+   quedaban sueltas; en una franja se leen como lo que son, dos sellos.
+
+   Fueron recuadros una version: una caja de marmol alrededor de cada una, con
+   su filo de oro a los cuatro lados. Una caja dentro de la carta se lee como
+   una tarjeta pegada encima; una franja que llega a los dos cantos se lee
+   como parte del papel.
+
+   De canto a canto quiere decir comerse `--lado`, el aire lateral de la
+   mitad, con un margen negativo. Por eso son hijas directas de `.cb-tinta`:
+   desde dentro de otra caja no sabrian cuanto tienen que salirse. */
+.cb-franja {
   position: relative;
   isolation: isolate;
   display: block;
-  width: min(74%, 19.5rem);
-  margin: 0 auto 1.15em;
-  padding: .85em 1.15em;
+  margin-inline: calc(var(--lado) * -1);
+  padding-inline: var(--lado);
   overflow: hidden;
-  border: 1px solid rgba(212, 175, 55, .34);
+  color: #FFFFFF;
+}
+/* Lo que va dentro sube por encima de la plancha, que es lo que hace el 21
+   con las tarjetas de piedra. */
+.cb-franja > *:not(.tarjeta-piedra) { position: relative; z-index: 1; }
+/* Un filo de oro arriba y otro abajo: es lo que la corta contra el papel en
+   vez de dejarla como un tajo. Aqui el oro es el vivo y no el hondo, que lo
+   que hay debajo es piedra oscura; es la misma regla del 22, por el otro
+   lado. */
+.cb-franja::before,
+.cb-franja::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 1px;
+  background: var(--oro-marca-degradado);
+}
+.cb-franja::before { top: 0; }
+.cb-franja::after  { bottom: 0; }
+
+.cb-logo {
+  margin-bottom: 1.15em;
+  padding-block: 1.05em;
 }
 .cb-logo > img {
-  position: relative;
-  z-index: 1;
   display: block;
-  width: 100%;
+  width: min(58%, 15.5rem);
   height: auto;
+  margin-inline: auto;
 }
 
 /* Con el nombre de la escena delante, y no `.cb-tit` a secas: la pagina lleva
@@ -257,19 +282,19 @@
   font-size: 1.75em;
   line-height: 1.26;
   letter-spacing: .01em;
-  color: #F4F1EA;
+  color: var(--nos-negro);
 }
-/* El oro de la carta es el vivo y no el hondo aunque la pagina sea clara: la
-   mitad es piedra oscura, y sobre piedra oscura el hondo se apaga. Es la
-   misma regla del 22, por el otro lado. */
+/* El oro de la carta es el hondo, el de piedra clara: sobre blanco el vivo se
+   pierde, porque su tramo claro es casi blanco. Es la regla del 22. El vivo
+   se queda para lo que cae sobre marmol: los filos de las dos franjas. */
 .ns-carta .cb-tit em {
   font-style: normal;
   font-weight: 500;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 
 /* El cuerpo va alineado a la izquierda y no justificado. En el documento
@@ -283,7 +308,7 @@
   font-size: 1em;
   line-height: 1.72;
   text-align: left;
-  color: rgba(238, 233, 224, .84);
+  color: #2E2E2E;
 }
 .cb-p:last-of-type { margin-bottom: 0; }
 
@@ -294,55 +319,53 @@
   font-style: italic;
   font-size: 1.24em;
   line-height: 1.4;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 
-/* ---- La rubrica ---- */
-.cb-rub {
-  position: relative;
-  isolation: isolate;
-  margin-top: 1.3em;
-  padding: 1.05em 1.2em 1.15em;
-  overflow: hidden;
-  border: 1px solid rgba(212, 175, 55, .34);
-}
-/* Lo que va dentro sube por encima de la plancha, que es lo que hace el 21
-   con las tarjetas de piedra. */
-.cb-rub > *:not(.tarjeta-piedra) { position: relative; z-index: 1; }
+/* ---- La rubrica: la raya, la firma, la franja del nombre y el cargo ----
+
+   Solo el nombre va en la franja. La firma es un trazo de tinta y el cargo un
+   renglon de oro fino: los dos se leen mejor sobre el papel, y en negro se
+   perderian. Las tres piezas cuelgan de `.cb-tinta` y no una de otra, porque
+   la franja tiene que poder salirse a los cantos. */
+.cb-rub { margin-top: 1.25em; }
 .cb-rub__filo {
   display: block;
   width: 4.2em;
   height: 1px;
   margin: 0 auto .8em;
-  background: var(--oro-marca-degradado);
+  background: var(--gradiente-oro-hondo);
 }
-.cb-rub b {
+.cb-nombre {
+  margin-top: .7em;
+  padding-block: .6em;
+}
+.cb-nombre b {
   display: block;
-  margin-top: .25em;
   font-family: var(--fuente-titulo);
   font-weight: 500;
   font-size: 1.1em;
-  line-height: 1.25;
+  line-height: 1.3;
   color: #FFFFFF;
 }
-.cb-rub i {
+.cb-cargo {
   display: block;
-  margin-top: .45em;
+  margin-top: .55em;
   font-family: var(--fuente-cuerpo);
   font-style: normal;
   font-weight: 700;
   font-size: .6em;
   letter-spacing: .24em;
   text-transform: uppercase;
-  background-image: var(--oro-marca-degradado);
+  background-image: var(--gradiente-oro-hondo);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--oro-marca);
+  color: var(--oro-hondo);
 }
 /* La firma se escribe de izquierda a derecha con `--k-firma`, que es lo
    ultimo que mueve la escena: la carta acaba de firmarse delante de quien la
@@ -355,18 +378,16 @@
    gris+alfa a 640 de ancho, que es la mitad de canales que RGBA para el mismo
    resultado, porque el color del trazo es plano.
 
-   Y ese color es oscuro, que es como se firma en papel. Aqui el papel es
-   piedra, asi que se invierte: `invert(1)` le da la vuelta al gris y deja el
-   alfa donde estaba, y el trazo sale en blanco. El `screen` remata los bordes
-   del recorte contra el fondo, que a este tamano se notarian. */
+   Y ese color es oscuro, que es como se firma en papel. Aqui el papel
+   tambien es blanco, asi que va tal cual, sin invertir: `multiply` remata los
+   bordes del recorte contra el blanco, que a este tamano se notarian. */
 .ns-carta__firma {
   display: block;
   width: min(46%, 9.5rem);
   height: auto;
   margin: 0 auto;
   clip-path: inset(0 calc((1 - var(--k-firma, 1)) * 100%) 0 0);
-  filter: invert(1);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
 /* Las dos escuadras de oro, que se dibujan solas: cada una son dos rayas que
@@ -528,7 +549,8 @@
   }
   .ns-carta__hoja {
     grid-column: 2;
-    padding: clamp(1.8rem, 5vh, 3.6rem) clamp(2rem, 3.4vw, 4rem);
+    --lado: clamp(2rem, 3.4vw, 4rem);
+    padding: clamp(1.8rem, 5vh, 3.6rem) var(--lado);
   }
   /* El techo del alto, en dos tramos. No es el mismo porque lo que decide
      cuanto mide la carta no es solo el alto: cuanto mas estrecha es la
@@ -588,7 +610,7 @@
 /* A partir de 1200 la columna vuelve a pasar de 450 px, el texto cae en
    menos lineas y el techo puede subir. */
 @media (min-width: 1200px) {
-  .ns-carta--viva .cb-tinta { --cb-tope: 1.86vh; }
+  .ns-carta--viva .cb-tinta { --cb-tope: 1.78vh; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -596,7 +618,7 @@
    minimo y todo lo que mide se ata tambien al alto, que ahi es lo que escasea.
    --------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {
-  .ns-carta__hoja { --aire: 1rem; padding-inline: 1.2rem; }
+  .ns-carta__hoja { --aire: 1rem; --lado: 1.2rem; padding-inline: var(--lado); }
   .ns-carta__esq { width: 26px; height: 26px; }
   .ns-carta--viva .cb-tinta { --cb-tope: 2.15vh; }
 }
@@ -605,13 +627,14 @@
    primero que cede es el aire; el cuerpo de la letra no baja de lo que se
    lee. */
 @media (max-width: 991.98px) and (max-height: 760px) {
-  .ns-carta--viva .cb-logo { width: min(46%, 10rem); margin-bottom: .8em; }
+  .ns-carta--viva .cb-logo { margin-bottom: .8em; padding-block: .85em; }
+  .ns-carta--viva .cb-logo > img { width: min(46%, 10rem); }
   .ns-carta--viva .cb-tit { margin-bottom: .7em; }
   .ns-carta--viva .cb-p { margin-bottom: .6em; line-height: 1.58; }
   .ns-carta--viva .cb-lem { margin-top: .75em; }
-  .ns-carta--viva .cb-logo { padding: .7em .95em; }
-  .ns-carta--viva .cb-rub { margin-top: .95em; padding: .85em 1em .95em; }
+  .ns-carta--viva .cb-rub { margin-top: .95em; }
   .ns-carta--viva .cb-rub__filo { margin-bottom: .55em; }
+  .ns-carta--viva .cb-nombre { margin-top: .55em; padding-block: .5em; }
   .ns-carta--viva .ns-carta__firma { width: min(34%, 7rem); }
 }
 /* Y un escalon mas para las de verdad bajas —un iPhone SE, un telefono de
@@ -620,14 +643,14 @@
 @media (max-width: 991.98px) and (max-height: 700px) {
   .ns-carta--viva .cb-tinta { --cb-tope: 2.05vh; }
   .ns-carta--viva .ns-carta__hoja { --aire: .7rem; }
-  .ns-carta--viva .cb-logo { width: min(38%, 8.5rem); margin-bottom: .6em; }
+  .ns-carta--viva .cb-logo { margin-bottom: .6em; padding-block: .68em; }
+  .ns-carta--viva .cb-logo > img { width: min(38%, 8.5rem); }
   .ns-carta--viva .cb-tit { font-size: 1.5em; margin-bottom: .55em; }
   .ns-carta--viva .cb-p { margin-bottom: .5em; line-height: 1.5; }
   .ns-carta--viva .cb-lem { font-size: 1.12em; margin-top: .6em; line-height: 1.32; }
-  .ns-carta--viva .cb-logo { padding: .55em .8em; }
-  .ns-carta--viva .cb-rub { margin-top: .7em; padding: .7em .85em .8em; }
-  .ns-carta--viva .cb-rub b { margin-top: .15em; }
-  .ns-carta--viva .cb-rub i { margin-top: .35em; }
+  .ns-carta--viva .cb-rub { margin-top: .7em; }
+  .ns-carta--viva .cb-nombre { margin-top: .45em; padding-block: .42em; }
+  .ns-carta--viva .cb-cargo { margin-top: .4em; }
   .ns-carta--viva .ns-carta__firma { width: min(28%, 6rem); }
   .ns-carta--viva .ns-carta__esq { width: 20px; height: 20px; }
 }
