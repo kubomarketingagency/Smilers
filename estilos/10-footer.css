@@ -124,18 +124,25 @@
 
 /* Y los seis botones de redes encogen un punto, porque el relleno del
    recuadro se come lo que les sobraba: seis circulos de 42 con su aire piden
-   300px seguidos y la columna, a 1200, se queda en 296. Un boton menos de
-   ancho y una hilera en vez de dos. */
+   300px seguidos. Un boton menos de ancho y una hilera en vez de dos. */
 .pie-ficha .redes-sociales { gap: .5rem; }
 .pie-ficha .redes-sociales a { width: 40px; height: 40px; }
-/* De 992 a 1199 la caja de la pagina se queda en 960 y la columna en 272, que
-   es lo mas estrecha que llega a ser con las tres en fila; ahi los botones se
-   partian en cuatro y dos ya antes del recuadro. Encogen lo justo para
-   quedarse en una hilera, que es el trato en todos los demas tamanos. */
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  .pie-ficha { padding: 1rem; }
-  .pie-ficha .redes-sociales { gap: .4rem; }
-  .pie-ficha .redes-sociales a { width: 34px; height: 34px; font-size: .9rem; }
+
+/* Las tres columnas del pie no van a tercios.
+
+   La de la ficha lleva dentro las dos direcciones enteras, con su calle, su
+   numero, su edificio y su ciudad; a un tercio de pagina cada una caia en
+   tres renglones y el recuadro salia estrecho y larguisimo, y con el estiraba
+   el pie entero. Las otras dos llevan un mapa y un formulario, que se
+   apanan con menos: el mapa es un cuadro y los campos, cuanto mas cortos,
+   mejor se leen.
+
+   Solo de 992 para arriba, que es donde hay tres columnas; por debajo van
+   una debajo de otra y la ficha se lleva el ancho entero. */
+@media (min-width: 992px) {
+  .pie-rejilla > :nth-child(1) { width: 40%; }
+  .pie-rejilla > :nth-child(2) { width: 28%; }
+  .pie-rejilla > :nth-child(3) { width: 32%; }
 }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
