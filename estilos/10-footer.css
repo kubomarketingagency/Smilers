@@ -13,6 +13,12 @@
   color: rgba(250, 248, 244, .78);
   padding: 100px 0 0;
 }
+/* En el telefono empieza antes: 100px de negro por encima de la primera
+   linea son media pantalla de nada justo donde el fundido acaba de dejar
+   todo en onix. */
+@media (max-width: 767.98px) {
+  .footer { padding-top: 54px; }
+}
 
 .footer::before {
   content: '';
@@ -20,6 +26,38 @@
   top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(192, 192, 192, .5) 20%, var(--gold-500) 50%, rgba(192, 192, 192, .5) 80%, transparent);
+}
+
+/* EL PIE NO EMPIEZA CON UN CORTE.
+
+   Encima del pie hay siempre el mismo collage de fotos a plena luz —la banda
+   de la llamada, que en la portada ademas llega clavada a pantalla entera—, y
+   entre sus fotos y el onix del pie se veia un canto duro, y debajo de el un
+   recuadro de negro muerto antes de que empezara nada. Bajando en el telefono
+   parecian tres cosas seguidas: fotos, un rectangulo negro y una franja de
+   oro.
+
+   Esta capa es el onix del pie subiendo por encima de lo que haya delante:
+   las fotos se apagan dentro de el y el filo de oro queda al final del
+   apagado, haciendo de juntura en vez de parecer una franja suelta.
+
+   Va por fuera de la caja (`top` negativo) y no tapa nada del pie. Y se
+   dibuja por encima del collage sin disputarle capas a nadie: el pie va
+   detras en el documento, asi que pinta despues. */
+.footer {
+  --pie-fundido: clamp(96px, 9vw, 130px);
+}
+.footer::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(var(--pie-fundido) * -1);
+  height: var(--pie-fundido);
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, .55) 48%,
+    var(--onix) 100%);
 }
 
 /* La marca del pie son dos logos, no uno: el de la casa y el aval de OAD,
@@ -141,11 +179,18 @@
    vuelva a estrecharse.
 
    Solo de 992 para arriba, que es donde hay tres columnas; por debajo van
-   una debajo de otra y la ficha se lleva el ancho entero. */
+   una debajo de otra y la ficha se lleva el ancho entero.
+
+   Y la canal entre columnas es la mitad de la que traia Bootstrap: `gx-4`
+   en vez de `g-5`, o sea 24px de aire entre una y otra en vez de 48. Eran
+   dos dedos de negro entre tres bloques que ya estan separados por lo que
+   son —un recuadro de oro, un mapa con marco y un formulario—, y esos 48
+   pixeles salian del ancho de las tres. Lo vertical se queda en 48 (`gy-5`),
+   que es lo que hace falta cuando se apilan en el telefono. */
 @media (min-width: 992px) {
-  .pie-rejilla > :nth-child(1) { width: 38%; }
-  .pie-rejilla > :nth-child(2) { width: 34%; }
-  .pie-rejilla > :nth-child(3) { width: 28%; }
+  .pie-rejilla > :nth-child(1) { width: 37%; }
+  .pie-rejilla > :nth-child(2) { width: 36%; }
+  .pie-rejilla > :nth-child(3) { width: 27%; }
 }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
@@ -227,7 +272,42 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
   line-height: 0;
 }
-.mapa-iframe { display: none; width: 100%; height: 260px; border: 0; filter: grayscale(.3) contrast(1.05); }
+/* El alto de partida, que es el que vale con el mapa a pagina completa: de
+   992 para abajo, cuando las tres columnas se apilan. Arriba de ahi el mapa
+   se estira hasta el suelo de su fila (ver mas abajo). */
+.mapa-iframe {
+  display: none;
+  width: 100%;
+  height: 260px;
+  border: 0;
+  filter: grayscale(.3) contrast(1.05);
+}
+
+/* Y CON TRES COLUMNAS EL MAPA LLEGA ABAJO.
+
+   Con 260px fijos su columna acababa cien pixeles antes que las otras dos
+   —el alto de la fila lo manda la ficha, que es la mas larga— y debajo del
+   marco quedaba un palmo de negro muerto. Estirandolo, el mapa acaba justo
+   donde acaba la ficha, midan lo que midan las direcciones ese dia: a 1440
+   son 354 y a 1280, donde la direccion se parte en tres renglones y la ficha
+   crece, 397. Ninguna cuenta en `vw` daba las dos.
+
+   El techo de 430 es para que no se vuelva un mapa de pie en una pantalla
+   estrecha, donde la columna es angosta y la ficha muy alta. */
+@media (min-width: 992px) {
+  .pie-rejilla > :nth-child(2) { display: flex; flex-direction: column; }
+  .pie-rejilla > :nth-child(2) .mapa-contenedor {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 260px;
+    max-height: 430px;
+  }
+  .pie-rejilla > :nth-child(2) .mapa-iframe.activo {
+    flex: 1 1 auto;
+    height: auto;
+    align-self: stretch;
+  }
+}
 .mapa-iframe.activo { display: block; }
 
 .form-footer .form-label {

@@ -87,7 +87,13 @@
   letter-spacing: .04em;
 }
 
-.testimonios-escena { display: none; }
+/* La caja de la escena no se apaga: cuando la escena no se enciende —sin
+   WebGL o con menos movimiento pedido— se queda de bloque suelto y lo unico
+   que lleva dentro es el rotulo, que asi sigue encabezando la lista de
+   tarjetas. Lo que se apaga son sus dos piezas. */
+.testimonios-escena { display: block; }
+.testimonios-texto,
+.testimonios-esfera { display: none; }
 
 .testimonios-velo {
   display: none;
@@ -216,22 +222,27 @@
   overflow: hidden;
 }
 
-/* El rotulo es una banda fija pegada al techo, asi que la escena se centra en
-   lo que el rotulo deja y no en la pantalla entera. En una pantalla baja —un
-   portatil de 1366x768, un monitor de 1280x720— el circulo subia hasta
-   metersele por debajo a la palabra «Testimonios»: la esfera se centra en el
-   pin y el rotulo cuelga siempre a la misma altura, asi que cuanto menos alto
-   hay, mas cerca se ponen. En el telefono no hace falta, que ahi la escena ya
-   trae su propio aire de arriba. */
+/* Lo unico que el pin guarda por arriba es la barra de navegacion, que es
+   fija y opaca; lo demas se centra en lo que queda. Guardo una temporada
+   ademas el alto del rotulo, que iba colgado del techo en una banda fija: la
+   escena tenia que caber por debajo de el, y en una pantalla baja —un
+   portatil de 1366x768, un monitor de 1280x720— el circulo subia igualmente
+   hasta metersele por debajo a la palabra «Testimonios». Ahora el rotulo va
+   dentro de la escena y baja con ella, asi que no hay nada que esquivar: el
+   circulo se centra de verdad en la pantalla y de paso cabe mas grande. */
 @media (min-width: 992px) {
-  .esfera-activa .testimonios-pin { padding-top: calc(var(--alto-navbar) + 3.6rem); }
+  .esfera-activa .testimonios-pin { padding-top: var(--alto-navbar); }
 }
 
+/* Con la escena encendida el rotulo es la entradilla de la cita: va en la
+   columna de la izquierda, justo encima de ella y a ras de su margen. Fue
+   una banda fija pegada al techo, centrada a lo ancho de la pantalla, y ahi
+   no encabezaba nada: la cita estaba a un lado y el circulo al otro, y el
+   rotulo flotaba en medio del techo por encima de los dos. */
 .esfera-activa .testimonios-etiqueta {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  padding: calc(var(--alto-navbar) + 22px) 2rem 20px;
-  background: linear-gradient(180deg, rgba(10, 8, 6, .55) 0%, transparent 100%);
+  padding: 0 0 1.1rem;
+  text-align: left;
+  background: none;
 }
 
 .esfera-activa .testimonios-lista {
@@ -246,17 +257,36 @@
   border: 0;
 }
 
+/* Dos columnas: a la izquierda el rotulo y la cita, uno encima de la otra, y
+   a la derecha el circulo, alto de las dos.
+
+   Va en rejilla y no en fila porque el rotulo y la cita tienen que quedar
+   pegados el uno a la otra —son un bloque— mientras el circulo, que mide el
+   doble que los dos juntos, se centra al lado. Las dos filas de `1fr` de los
+   extremos son las que se comen lo que el circulo saca de mas: sin ellas,
+   una fila `auto` que el circulo atraviesa crece con el, y el rotulo se
+   separaria de la cita medio palmo.
+
+   `minmax(0, 46ch)` es el ancho de la cita, y se encoge si no cabe: es lo
+   mismo que hacia `flex: 0 1 46ch`. */
 .esfera-activa .testimonios-escena {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 46ch) auto;
+  grid-template-rows: 1fr auto auto 1fr;
   justify-content: center;
-  gap: clamp(1rem, 2.6vw, 2.8rem);
+  column-gap: clamp(1rem, 2.6vw, 2.8rem);
   width: 100%;
   padding: 0 clamp(1rem, 2.6vw, 2.4rem);
 }
+.esfera-activa .testimonios-etiqueta { grid-area: 2 / 1; }
+.esfera-activa .testimonios-texto { grid-area: 3 / 1; display: block; }
+.esfera-activa .testimonios-esfera {
+  grid-area: 1 / 2 / -1 / 2;
+  display: block;
+  align-self: center;
+}
 
 .testimonios-texto {
-  flex: 0 1 46ch;
   min-width: 0;
   opacity: 0;
 }
@@ -355,10 +385,21 @@
   box-shadow: 0 0 0 2px rgba(212, 175, 55, .45);
 }
 
+/* Lo que mide el lienzo, que es cuadrado; el disco de delante son cuatro
+   quintos de eso (0,798 medido, y 0,88 en el telefono, que ahi la camara va
+   mas cerca).
+
+   Manda el que menos deja de los tres: el ancho, para que el circulo crezca
+   con la pagina sin comerse la columna de la cita; el alto, que es lo que de
+   verdad lo limita —la cuenta descuenta la barra de navegacion y deja un
+   dedo de aire por arriba y por abajo, y lo que queda se divide por lo que
+   el disco ocupa del lienzo—; y un techo en pixeles, que en un monitor muy
+   grande un circulo de mil pixeles deja de ser un retrato y pasa a ser una
+   pared. */
 .testimonios-esfera {
   position: relative;
   flex: 0 0 auto;
-  width: min(58vw, 94svh);
+  width: min(63vw, calc((100svh - var(--alto-navbar) - 3.5rem) / .8), 1060px);
   aspect-ratio: 1;
   /* Lo que mide el disco de delante en pixeles. Lo calcula la esfera y lo
      reescribe aqui en cuanto existe (`fijarDisco`); esta cifra es solo el
@@ -711,21 +752,47 @@
   .tst-play__aro { transition: none; }
 }
 
+/* En el telefono los tres se apilan: rotulo, circulo y cita. El orden no es
+   el del documento —ahi el rotulo y la cita van juntos, que es como se leen
+   en el ordenador— y lo pone `order`.
+
+   El rotulo lleva su propio aire por debajo: pegado al techo como iba antes,
+   en un telefono real —donde la pantalla util es la pequena, con la barra
+   del navegador fuera— el canto del circulo le llegaba a tocar la caja. */
 @media (max-width: 991.98px) {
   .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
-  .esfera-activa .testimonios-etiqueta { padding: 84px 1.2rem 14px; }
-  .testimonios-etiqueta { font-size: clamp(1.6rem, 7vw, 2.3rem); }
+  .testimonios-etiqueta { font-size: clamp(1.45rem, 6.2vw, 2.1rem); }
+  .esfera-activa .testimonios-etiqueta {
+    order: -2;
+    padding: 0 1.2rem;
+    margin-bottom: clamp(.8rem, 2vh, 1.3rem);
+    text-align: center;
+  }
   .esfera-activa .testimonios-escena {
+    display: flex;
     flex-direction: column;
-    gap: clamp(.6rem, 2vh, 1.4rem);
-    padding: 104px clamp(1.2rem, 6vw, 2.5rem) 26px;
+    gap: clamp(.5rem, 1.6vh, 1.1rem);
+    padding: calc(var(--alto-navbar) + 10px) clamp(1.2rem, 6vw, 2.5rem) 34px;
   }
-  .testimonios-esfera {
+  /* Y el circulo mide lo que quede: la pantalla pequena menos lo que se
+     llevan la barra de navegacion (72), el rotulo con su aire (61), los dos
+     respiros (24), la cita con su firma y sus pasos (170) y el suelo (34).
+     Son 361, contados uno a uno y medidos despues en pantalla.
+
+     Va escrito asi y no en tanto por ciento de pantalla, que es lo que hacia
+     que en una pantalla corta el circulo se comiera al rotulo. Y la pantalla
+     es la PEQUENA (`svh`), que es lo que se ve con la barra del navegador
+     fuera; el pin mide la grande, pero lo que lleva dentro se centra en la
+     pequena.
+
+     El techo de 620 es para la tableta, que ahi el alto sobra y el circulo
+     se iba a seiscientos y pico. */
+  .esfera-activa .testimonios-esfera {
     order: -1;
-    width: min(132vw, 52svh);
+    width: min(132vw, calc(100svh - 362px), 620px);
   }
-  .testimonios-texto {
-    flex: 0 0 auto;
+  .esfera-activa .testimonios-texto {
+    order: 0;
     max-width: min(40ch, 100%);
     text-align: center;
   }
@@ -735,9 +802,12 @@
 }
 
 @media (max-width: 991.98px) and (max-height: 700px) {
-  .testimonios-esfera { width: min(132vw, 42svh); }
-  .esfera-activa .testimonios-etiqueta { padding: 74px 1.2rem 10px; }
-  .esfera-activa .testimonios-escena { padding: 88px 1.2rem 18px; }
+  .esfera-activa .testimonios-escena { padding: calc(var(--alto-navbar) + 6px) 1.2rem 24px; }
+  .esfera-activa .testimonios-etiqueta { margin-bottom: .7rem; }
+  /* Aqui el reparto es mas corto —menos relleno arriba y abajo, menos aire
+     bajo el rotulo, la cita en un cuerpo mas chico—, asi que al circulo le
+     toca mas de lo que queda. */
+  .esfera-activa .testimonios-esfera { width: min(132vw, calc(100svh - 344px), 620px); }
   .tst-cita { font-size: 1rem; }
   .tst-pasos { margin-top: .2rem; }
 }
@@ -760,7 +830,16 @@
 @media (prefers-reduced-motion: reduce) {
   .testimonios-cine.esfera-activa { height: auto; }
   .esfera-activa .testimonios-pin { position: static; height: auto; }
-  .esfera-activa .testimonios-escena { display: none; }
+  /* La caja se queda con el rotulo dentro, que es el titulo de la seccion;
+     lo que se va es la escena. */
+  .esfera-activa .testimonios-escena { display: block; padding: 0; }
+  .esfera-activa .testimonios-etiqueta {
+    padding: 0 2rem 1.4rem;
+    margin-bottom: 0;
+    text-align: center;
+  }
+  .esfera-activa .testimonios-texto,
+  .esfera-activa .testimonios-esfera { display: none; }
   .esfera-activa .testimonios-lista {
     position: static;
     width: auto;
