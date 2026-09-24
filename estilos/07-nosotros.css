@@ -604,6 +604,17 @@
   bottom: 8%; right: -190px;
   background: radial-gradient(circle, rgba(212, 175, 55, .32) 0%, rgba(212, 175, 55, .12) 45%, transparent 72%);
 }
+/* Y en el telefono el de oro se va. Son dos halos sueltos en el apartado
+   entero, no en una pantalla suya, y ahi dentro vive la escena clavada: en
+   una pantalla ancha el de oro cae fuera del texto —520px de circulo
+   colgando 190 por el canto derecho— pero en uno de 390 eso es casi la
+   pantalla entera, y como las pantallas de la escena no pintan fondo, sale
+   por detras del apartado de Instalaciones como una mancha dorada en mitad
+   del marmol. El de plata se queda: cae arriba a la izquierda y sobre marmol
+   blanco no se ve. */
+@media (max-width: 991.98px) {
+  .nosotros-halo--oro { display: none; }
+}
 
 
 @media (min-width: 992px) {

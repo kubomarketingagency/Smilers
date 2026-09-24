@@ -22,8 +22,27 @@
   background: linear-gradient(90deg, transparent, rgba(192, 192, 192, .5) 20%, var(--gold-500) 50%, rgba(192, 192, 192, .5) 80%, transparent);
 }
 
+/* La marca del pie son dos logos, no uno: el de la casa y el aval de OAD,
+   separados por el mismo filo de oro que los separa en la barra (ver el 04,
+   que es donde vive `.marca-oad` entero; aqui solo cambian las medidas).
+
+   El alto va en una sola variable porque lo comparten los dos logos y el filo
+   que los separa —que mide dos pixeles mas, para asomar por arriba y por
+   abajo—. Y baja de los 72px que tenia el de la casa cuando iba solo: los dos
+   juntos piden casi 330px de ancho y la columna del pie es un tercio de la
+   pagina, que en 1200 son 332. Medido a 992, 1200 y 1400. */
+.marca-pie {
+  display: flex;
+  align-items: center;
+  --alto-marca-pie: clamp(40px, 4.4vw, 56px);
+}
 .marca-footer { display: inline-flex; }
-.marca-footer .marca-logo { height: 72px; }
+.marca-footer .marca-logo { height: var(--alto-marca-pie, 72px); }
+/* En la barra el aval se lleva todo el hueco sobrante a su derecha, para
+   quedarse pegado a la marca; aqui no hay nada detras de el. */
+.marca-oad--pie { margin-right: 0; }
+.marca-oad--pie img { height: var(--alto-marca-pie); }
+.marca-oad--pie::before { height: calc(var(--alto-marca-pie) + 2px); }
 
 /* Las cabeceras del pie, sueltas y en plata: el mismo degradado recortado
    contra la letra que lleva la cinta de Especialidades, que es la otra pieza
