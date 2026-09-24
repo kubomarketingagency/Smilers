@@ -99,12 +99,12 @@
    vertical que el texto del final del pie. El relleno es el que puede ser sin
    estrechar la direccion de la matriz, que es la linea mas larga del sitio.
 
-   Por dentro lleva un rescoldo de oro muy bajo desde la esquina de arriba, lo
-   justo para que el recuadro no sea una linea suelta sobre el negro. */
+   Y por dentro no lleva nada: el oro es el filo y solo el filo. Llevo un
+   rescoldo de oro muy bajo desde la esquina de arriba, y sobre el onix del
+   pie ensuciaba el negro sin aportar nada. */
 .pie-ficha {
   position: relative;
   padding: clamp(1.15rem, 1.9vw, 1.7rem);
-  background: radial-gradient(120% 90% at 0% 0%, rgba(212, 175, 55, .08) 0%, transparent 62%);
 }
 .pie-ficha::before {
   content: '';
@@ -133,16 +133,19 @@
    La de la ficha lleva dentro las dos direcciones enteras, con su calle, su
    numero, su edificio y su ciudad; a un tercio de pagina cada una caia en
    tres renglones y el recuadro salia estrecho y larguisimo, y con el estiraba
-   el pie entero. Las otras dos llevan un mapa y un formulario, que se
-   apanan con menos: el mapa es un cuadro y los campos, cuanto mas cortos,
-   mejor se leen.
+   el pie entero.
+
+   El sitio se lo paga el formulario, que es la que menos necesita: dos campos
+   y un boton se leen mejor cortos que largos. Asi el mapa gana casi cien
+   pixeles —que es una vista de barrio y no de manzana— sin que la ficha
+   vuelva a estrecharse.
 
    Solo de 992 para arriba, que es donde hay tres columnas; por debajo van
    una debajo de otra y la ficha se lleva el ancho entero. */
 @media (min-width: 992px) {
-  .pie-rejilla > :nth-child(1) { width: 40%; }
-  .pie-rejilla > :nth-child(2) { width: 28%; }
-  .pie-rejilla > :nth-child(3) { width: 32%; }
+  .pie-rejilla > :nth-child(1) { width: 38%; }
+  .pie-rejilla > :nth-child(2) { width: 34%; }
+  .pie-rejilla > :nth-child(3) { width: 28%; }
 }
 
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }

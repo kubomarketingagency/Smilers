@@ -234,6 +234,9 @@ document.addEventListener('DOMContentLoaded', function () {
       guarda: envoltorio,
       alCambiarVisibilidad: function (dentro) {
 
+        /* Fuera de pantalla se para la cinta del collage y se sueltan las
+           capas: ver 09-cierre-cta.css. */
+        envoltorio.classList.toggle('cc-en-juego', dentro);
         var valor = dentro ? 'opacity' : '';
         negro.style.willChange = valor;
         if (contenido) contenido.style.willChange = dentro ? 'opacity, transform' : '';

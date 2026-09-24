@@ -18,6 +18,25 @@
   height: 100%;
   min-height: 0;
 }
+/* EL COLLAGE LLEGA AL CANTO DE VERDAD DEL PIN, no al del bloque que lleva
+   dentro. Lo que el pin guarda por abajo es `--sobra-barra`, y esa medida
+   **no es fija en un telefono**: es `100lvh - 100dvh`, o sea lo que ocupa la
+   barra del navegador, que se retira sola al bajar y vuelve al subir. Con el
+   collage atado al canto del bloque, cada vez que la barra se movia el
+   collage cambiaba de alto: sus tres filas de fotos se repartian otro alto,
+   `object-fit` volvia a recortarlas y se veia una sacudida justo al llegar al
+   pie. Estirandolo por debajo, el collage mide siempre lo mismo —la pantalla
+   grande— y lo unico que se reajusta es el texto, que es lo que tiene que
+   quedarse centrado en lo que se ve. */
+.cierre-cine-pin .banda-cta-masonry { bottom: calc(var(--sobra-barra) * -1); }
+/* Y fuera de juego la cinta suelta su capa. Correr ya no corre —de eso se
+   encarga secciones.js, que le para la animacion en cuanto la banda sale de
+   pantalla— pero `will-change: transform` la mantiene promovida igualmente, y
+   es una tira del doble de ancho que la ventana pegada justo encima del pie.
+   `cc-en-juego` lo pone hero.js. */
+.cierre-cine.cc-montado:not(.cc-en-juego) .banda-cta-masonry__cinta {
+  will-change: auto;
+}
 /* Clavada a pantalla entera, las tres fotos de cada columna se reparten el
    alto en vez de traer el suyo: a 3/4 se quedaban cortas en un telefono y
    por debajo asomaba una franja negra. */

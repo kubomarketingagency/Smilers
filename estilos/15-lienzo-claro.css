@@ -454,10 +454,17 @@
      lo que de verdad la limita esta arriba: por encima del titulo hay media
      muela y ahi esta la barra de navegacion, que es fija y opaca. En un
      portatil de 768 de alto el bloque de texto sube, y atada solo al ancho
-     la corona acababa tocando la barra. */
-  --bp-muela-ancho: clamp(150px, min(19.5vw, 36vh), 360px);
+     la corona acababa tocando la barra. Y el techo de 280 es lo que cabe
+     entre la barra y el techo del titulo en una pantalla ancha: por encima
+     del titulo la muela asoma casi media, y ahi arriba no hay mas sitio. */
+  --bp-muela-ancho: max(150px, min(20.5vw, 31svh, 280px));
   --bp-muela-alto: calc(var(--bp-muela-ancho) * 1.0234);
-  --bp-muela-sitio: .33;
+  --bp-muela-sitio: .44;
+  /* Lo que el titulo guarda a su derecha, contado en muelas: la letra puede
+     llegar hasta el 57% de su ancho, que es donde empieza el gancho de la
+     raiz. Todo lo que hay a la izquierda de esa raya es hueco. */
+  --bp-muela-reserva: .43;
+  --bp-muela-aire: clamp(.4rem, .8vw, .9rem);
 }
 /* La palabra marcada del titulo ya no es el origen de nada —lo fue cuando la
    muela colgaba de ella— pero la clase se queda en el HTML: es la misma
@@ -473,18 +480,21 @@
   filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
   pointer-events: none;
 }
-/* La caja del titulo: se encoge a lo que ocupa el texto, con un suelo para
-   las pantallas anchas y el sitio de la muela guardado a su derecha. Si el
-   titulo no cabe asi en una linea, se parte en dos y la caja pasa a medir el
-   ancho entero —que es como funciona `fit-content`—; entonces la muela se
-   queda en el canto y el titulo, con dos lineas, se le pone al lado. Las dos
-   maneras cuadran. */
+/* La caja del titulo ocupa el ancho entero y la muela se cuelga de su canto
+   derecho, que es el de la pagina. Estuvo encogiendose a lo que ocupaba el
+   texto, con la muela pegada al final del titulo: la muela se movia de sitio
+   segun lo largo que fuese el titular —en Galeria caia en mitad del hero, en
+   FAQ casi en el canto— y a la derecha quedaban cuatrocientos pixeles de
+   madera vacia. Colgada del canto ocupa ese lado, que es lo que se le pedia,
+   y los tres heros se ven igual.
+
+   Y el titulo YA NO LE GUARDA EL SITIO ENTERO: guarda lo que la muela tiene
+   de tinta por ese lado —el 43% de su ancho— y se mete en el resto, que es
+   hueco. Es la misma cuenta del telefono; la unica diferencia es lo que mide
+   la muela. */
 .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
   position: relative;
-  width: fit-content;
-  min-width: 86%;
-  max-width: 100%;
-  padding-right: calc(var(--bp-muela-ancho) + clamp(.9rem, 1.4vw, 1.5rem));
+  padding-right: calc(var(--bp-muela-ancho) * var(--bp-muela-reserva) + var(--bp-muela-aire));
 }
 
 /* En el telefono la muela es mas grande de lo que le tocaria por regla de
@@ -505,17 +515,11 @@
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
     --bp-muela-ancho: clamp(110px, 38vw, 150px);
-    /* Y sube: en el ordenador la letra no le entra y la muela puede caer
-       donde mejor cuadre con el bloque; aqui le entra, asi que el techo de
-       la primera linea tiene que caer justo por debajo del 42%, que es
-       donde acaba la corona y empieza la franja limpia. */
-    --bp-muela-sitio: .44;
+    --bp-muela-aire: .2rem;
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
     font-size: var(--bp-titulo);
     margin-top: clamp(3.9rem, 17vw, 4.8rem);
-    min-width: 0;
-    padding-right: calc(var(--bp-muela-ancho) * .43 + .2rem);
   }
   /* Y la bajada se aparta un poco mas. Con el titulo en una sola linea —de
      576 a 767, o un telefono tumbado— la caja del titulo se encoge a lo que

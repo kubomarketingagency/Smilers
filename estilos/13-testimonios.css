@@ -441,23 +441,34 @@
    hasta que la cara queda en el centro (`--tst-foco`, la altura a la que cae
    la cara en el fotograma, contada de arriba abajo).
 
-   Las dos cifras son las mismas que usa el atlas de la esfera para recortar
-   la foto del disco (`ZOOM_VIDEO` y `FOCO_VIDEO` en testimonios-esfera.js):
-   si se cambia una hay que cambiar las dos, o el disco y el video ensenaran
-   trozos distintos del fotograma y el relevo entre ellos se vera.
+   Las tres cifras son las mismas que usa el atlas de la esfera para recortar
+   la foto del disco (`ZOOM_VIDEO`, `FOCO_VIDEO` y `EJE_VIDEO` en
+   testimonios-esfera.js): si se cambia una hay que cambiarla en los dos
+   sitios, o el disco y el video ensenaran trozos distintos del fotograma y el
+   relevo entre ellos se vera. Los valores de aqui son los de reserva; los de
+   cada testimonio los escribe el guion en este mismo elemento, sacados de su
+   `data-foco` y su `data-eje`.
 
-   La cuenta del `top`: el alto del video es `lado * zoom * 16/9`, la cara cae
-   a `foco` de ese alto y tiene que quedar a medio circulo del borde de
-   arriba. */
+   Las dos cuentas son la misma: el alto del video es `lado * zoom * 16/9` y
+   su ancho `lado * zoom`; el punto que se quiere ver cae a `foco` de ese alto
+   y a `eje` de ese ancho, y tiene que quedar a medio circulo del borde.
+
+   El `clamp` es para que el eje no se salga de lo que el zoom permite: mas
+   alla de `1 - 1/(2*zoom)` el video dejaria de cubrir el circulo por un
+   lado. */
 .tst-video__medio {
-  --tst-zoom: 1.4;
+  --tst-zoom: 1.5;
   --tst-foco: .375;
+  --tst-eje: .5;
+  --tst-eje-usado: clamp(
+    calc(.5 / var(--tst-zoom)),
+    var(--tst-eje),
+    calc(1 - .5 / var(--tst-zoom)));
   position: absolute;
-  left: 50%;
+  left: calc((.5 - var(--tst-eje-usado) * var(--tst-zoom)) * var(--tst-lado));
   top: calc((.5 - var(--tst-foco) * var(--tst-zoom) * 16 / 9) * var(--tst-lado));
   width: calc(var(--tst-lado) * var(--tst-zoom));
   aspect-ratio: 9 / 16;
-  transform: translateX(-50%);
 }
 /* El fotograma, mientras el reproductor se monta: sin el ahi hay medio
    segundo de agujero negro. Se va cuando el video ya esta dando. */
@@ -493,10 +504,15 @@
 /* El escudo: una capa transparente por delante del reproductor. Es lo que
    impide que YouTube vea el raton y vuelva a sacar su titulo al pasar por
    encima, o que pause al hacer clic —y pausado se le ve la interfaz entera—. */
+/* Y es ademas donde se pausa: el clic se queda aqui y lo recoge
+   video-testimonio.js, en vez de llegar a YouTube, que pausaria por su cuenta
+   y sacaria su interfaz entera. */
 .tst-video__escudo {
   position: absolute;
   inset: 0;
   z-index: 3;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* El boton de play, en oro y en el centro del circulo.

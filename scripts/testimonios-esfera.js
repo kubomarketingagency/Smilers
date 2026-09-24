@@ -431,8 +431,24 @@ void main() {
      foto del disco, de modo que el disco y el video que se pone encima
      ensenan lo mismo y el relevo entre uno y otro no se nota. Si se cambia
      una hay que cambiarla en los dos sitios. */
-  var ZOOM_VIDEO = 1.4;
+  /* El encuadre de un testimonio: cuanto se acerca el circulo (`zoom`) y en
+     que punto del fotograma se centra (`foco` a lo alto, `eje` a lo ancho,
+     los dos en tanto por uno). Son los valores por defecto; cada testimonio
+     trae los suyos en el HTML, porque cada uno se grabo a su manera —uno
+     esta de pie en el centro, otro sentado abajo, otro se acerca a la
+     camara— y con un encuadre unico habia caras que salian fuera del disco.
+
+     Lo que el zoom deja ver es `1/zoom` del ancho del fotograma, asi que el
+     eje no puede salirse de [1/(2z), 1 - 1/(2z)]: mas alla, el video no
+     llegaria a cubrir el circulo. Se recorta aqui y tambien en el CSS. */
+  var ZOOM_VIDEO = 1.5;
   var FOCO_VIDEO = 0.375;
+  var EJE_VIDEO = 0.5;
+
+  function acotarEje(eje, zoom) {
+    var borde = 0.5 / zoom;
+    return Math.max(borde, Math.min(1 - borde, eje));
+  }
   var DURACION_CUADRO = 1000 / 60;
 
   function EsferaTestimonios(lienzo, items, opciones) {
@@ -642,14 +658,19 @@ void main() {
           var y = Math.floor(i / self.tamAtlas) * CELDA;
 
           /* El mismo recorte que hace el circulo sobre el video: un cuadrado
-             de lo ancho que tiene la foto partido por ZOOM_VIDEO, centrado a
-             lo ancho y puesto a la altura de la cara (FOCO_VIDEO). Asi el
-             disco de la esfera y el video que se le pone encima ensenan el
-             mismo trozo del fotograma. */
-          var lado = Math.min(img.width / ZOOM_VIDEO, img.height);
-          var sx = (img.width - lado) / 2;
+             de lo ancho que tiene la foto partido por el zoom, puesto a la
+             altura de la cara (`foco`) y en su vertical (`eje`). Asi el disco
+             de la esfera y el video que se pone encima ensenan el mismo trozo
+             del fotograma, y el relevo entre ellos no se ve. */
+          var ficha = self.items[i] || {};
+          var zoom = ficha.zoom || ZOOM_VIDEO;
+          var foco = ficha.foco || FOCO_VIDEO;
+          var eje = acotarEje(ficha.eje || EJE_VIDEO, zoom);
+          var lado = Math.min(img.width / zoom, img.height);
+          var sx = Math.max(0, Math.min(img.width - lado,
+                                        img.width * eje - lado / 2));
           var sy = Math.max(0, Math.min(img.height - lado,
-                                        img.height * FOCO_VIDEO - lado / 2));
+                                        img.height * foco - lado / 2));
           ctx.drawImage(img, sx, sy, lado, lado, x, y, CELDA, CELDA);
           if (img.close) img.close();
         });
@@ -905,7 +926,10 @@ void main() {
         foto: ficha.getAttribute('data-foto'),
         nombre: ficha.getAttribute('data-nombre') || '',
         tratamiento: ficha.getAttribute('data-tratamiento') || '',
-        cita: cita ? cita.textContent.trim() : ''
+        cita: cita ? cita.textContent.trim() : '',
+        zoom: parseFloat(ficha.getAttribute('data-zoom')) || ZOOM_VIDEO,
+        foco: parseFloat(ficha.getAttribute('data-foco')) || FOCO_VIDEO,
+        eje: parseFloat(ficha.getAttribute('data-eje')) || EJE_VIDEO
       };
     });
 
@@ -960,6 +984,15 @@ void main() {
       var lado = esfera.medidaDisco();
       if (!(lado > 0)) return;
       cajaEsfera.style.setProperty('--tst-lado', Math.round(lado) + 'px');
+    }
+
+    /* El encuadre del testimonio que toca, escrito donde lo lee el CSS. Son
+       las mismas tres cifras con las que el atlas recorto su disco. */
+    function encuadrar(item) {
+      if (!huecoVideo || !item) return;
+      huecoVideo.style.setProperty('--tst-zoom', String(item.zoom));
+      huecoVideo.style.setProperty('--tst-foco', String(item.foco));
+      huecoVideo.style.setProperty('--tst-eje', String(item.eje));
     }
 
     var videoPuesto = false;
@@ -1089,21 +1122,28 @@ void main() {
          La meseta de cada testimonio es ancha —58 unidades, que es casi media
          pantalla de scroll— y dentro de ella la esfera esta clavada, asi que
          mover un poco la rueda mientras se ve un video no lo apaga. */
-      if (marcoVideo) {
+      if (marcoVideo && window.SmilersVideo) {
         var quien = items[indice] && items[indice].video ? indice : -1;
+        /* Dos umbrales y no uno: el video SE PIDE mucho antes de que SE VEA.
+           Pedirlo cuesta —YouTube tarda de medio segundo a dos en tener el
+           nuevo rodando— y, pidiendolo en el mismo momento en que aparecia el
+           circulo, esa espera se veia entera, con el fotograma quieto
+           delante. Ahora se pide con la esfera todavia llegando (el circulo
+           sigue apagado, asi que no se ve nada) y cuando aparece ya rueda. */
+        var pide = quien >= 0 && quietud > 0.3 && enJuego;
         var toca = quien >= 0 && quietud > (videoPuesto ? 0.5 : 0.82) && enJuego;
-        if (toca !== videoPuesto || (toca && quien !== videoMontado)) {
+        if (pide && quien !== videoMontado) {
+          encuadrar(items[quien]);
+          window.SmilersVideo.poner(huecoVideo, items[quien].foto);
+          window.SmilersVideo.montar(huecoVideo, items[quien].video, items[quien].nombre);
+          videoMontado = quien;
+        }
+        if (toca !== videoPuesto) {
           videoPuesto = toca;
           seccion.classList.toggle('tst-con-video', toca);
-          if (window.SmilersVideo) {
-            if (toca) {
-              window.SmilersVideo.poner(huecoVideo, items[quien].foto);
-              window.SmilersVideo.montar(huecoVideo, items[quien].video, items[quien].nombre);
-              videoMontado = quien;
-            } else {
-              window.SmilersVideo.apagar(huecoVideo);
-              videoMontado = -1;
-            }
+          if (!toca) {
+            window.SmilersVideo.apagar(huecoVideo);
+            videoMontado = -1;
           }
         }
       }

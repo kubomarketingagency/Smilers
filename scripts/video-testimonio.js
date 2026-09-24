@@ -138,9 +138,26 @@ window.SmilersVideo = (function () {
       }
       caja.__reloj = reloj;
       var rodando = estado === 1 && caja.__quieto < 3;
+      /* Pausado a mano: ni se le ruega que arranque ni se le rebobina. El
+         fotograma se queda delante —que es lo que tapa lo que YouTube saca
+         en cuanto un video se para— y encima queda el play de la casa. */
+      if (caja.__pausa) {
+        caja.classList.remove('video-listo');
+        caja.classList.add('video-parado');
+        return;
+      }
       caja.classList.toggle('video-listo', !!(rodando && caja.__video));
       /* Y si esta parado de verdad, sale el boton de play de la casa. */
       caja.classList.toggle('video-parado', !!(caja.__video && !rodando));
+      /* El fotograma se aparta EN CUANTO el video rueda de verdad, sin
+         esperar a que se cumpla el plazo de `taparUnMomento`: ese plazo es un
+         tope, no un tiempo de espera. Con los dos segundos fijos del cambio
+         de video, cada testimonio empezaba dos segundos tarde aunque YouTube
+         estuviera dando desde el primero. */
+      if (rodando && reloj > 0.25 && caja.classList.contains('saltando')) {
+        clearTimeout(caja.__volver);
+        caja.classList.remove('saltando');
+      }
       if (!caja.__video) return;
       /* Antes de rendirse se le pide un par de veces mas. No lo pausa nadie
          de aqui —soltar un video pausado es justo lo que hace salir el
@@ -168,6 +185,8 @@ window.SmilersVideo = (function () {
     caja.__video = id;
     caja.__ruegos = 0;
     caja.__quieto = 0;
+    /* Cada testimonio empieza solo, aunque el anterior se dejara pausado. */
+    caja.__pausa = false;
     caja.classList.add('tiene-video');
     pintarBoton(caja);
 
@@ -248,6 +267,7 @@ window.SmilersVideo = (function () {
   function apagar(caja) {
     if (!caja || !caja.__video) return false;
     caja.__video = null;
+    caja.__pausa = false;
     caja.classList.remove('tiene-video', 'video-listo', 'saltando', 'video-parado');
     clearTimeout(caja.__volver);
     var r = caja.__reproductor;
@@ -268,23 +288,48 @@ window.SmilersVideo = (function () {
     if (img && foto && img.getAttribute('src') !== foto) img.setAttribute('src', foto);
   }
 
-  /* El play de la casa. Va aqui y no en el guion de la esfera porque es el
-     reproductor quien sabe si hace falta, y tiene que salir de un gesto de
-     verdad: es justo lo que le falta a iOS para dejarlo arrancar. */
+  /* PAUSA Y SIGUE, con el dedo o con el raton.
+
+     Quien recoge el toque es el escudo, la capa que ya estaba por delante del
+     reproductor para que YouTube no viera el raton: ahi el clic no llega a
+     YouTube —que pausaria por su cuenta y sacaria su interfaz entera— sino
+     aqui. Y el play de la casa, que ya salia cuando el video se quedaba
+     parado por su cuenta, sirve ademas para volver a soltarlo.
+
+     Pausar a mano es lo unico que para un video dentro de la escena: mientras
+     `__pausa` este puesto, el vigia no le ruega que arranque. Al cambiar de
+     testimonio se olvida, que es lo que hace que el siguiente empiece solo.
+
+     El gesto tiene que ser de verdad ademas por iOS: con el ahorro de energia
+     puesto no deja arrancar ningun video que no pida el dedo. */
+  function alternar(caja) {
+    var r = caja && caja.__reproductor;
+    if (!r || !r.playVideo) return;
+    if (caja.__pausa) {
+      caja.__pausa = false;
+      caja.__ruegos = 0;
+      caja.__quieto = 0;
+      taparUnMomento(caja, 900);
+      try { if (conSonido) r.unMute(); else r.mute(); } catch (e) {}
+      r.playVideo();
+      return;
+    }
+    caja.__pausa = true;
+    clearTimeout(caja.__volver);
+    caja.classList.add('saltando', 'video-parado');
+    caja.classList.remove('video-listo');
+    try { r.pauseVideo(); } catch (e) {}
+  }
+
   document.addEventListener('click', function (evento) {
     var destino = evento.target;
     if (!destino || destino.nodeType !== 1 || !destino.closest) return;
-    var play = destino.closest('[data-video-play]');
-    if (!play) return;
+    var mando = destino.closest('[data-video-play], [data-video-toque]');
+    if (!mando) return;
     evento.preventDefault();
-    var caja = play.parentNode.querySelector('[data-video-hueco]');
-    var r = caja && caja.__reproductor;
-    if (!r || !r.playVideo) return;
-    caja.__ruegos = 0;
-    caja.__quieto = 0;
-    taparUnMomento(caja, 900);
-    try { if (conSonido) r.unMute(); else r.mute(); } catch (e) {}
-    r.playVideo();
+    var marco = mando.closest('.tst-video__marco') || mando.parentNode;
+    var caja = marco && marco.querySelector('[data-video-hueco]');
+    if (caja) alternar(caja);
   });
 
   document.addEventListener('click', function (evento) {
