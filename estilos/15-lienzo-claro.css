@@ -449,7 +449,10 @@
    que la muela salia cortada por arriba y por abajo. De ahi que estos tres
    heros usen `entrada-velo-muela`, la misma mascara abriendo mas. */
 .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
-  /* El ancho mira a los dos lados de la ventana, y manda el que menos deja.
+  /* Estas cifras son las de la tableta, de 768 a 991: el ordenador y el
+     telefono cambian la muela de sitio y de medida mas abajo.
+
+     El ancho mira a los dos lados de la ventana, y manda el que menos deja.
      A lo ancho, para que la muela crezca con la pagina. Y a lo alto, porque
      lo que de verdad la limita esta arriba: por encima del titulo hay media
      muela y ahi esta la barra de navegacion, que es fija y opaca. En un
@@ -497,6 +500,43 @@
   padding-right: calc(var(--bp-muela-ancho) * var(--bp-muela-reserva) + var(--bp-muela-aire));
 }
 
+/* EN EL ORDENADOR LA MUELA VA DENTRO DEL MARCO. Asomaba casi media por
+   encima del titulo, pegada a la barra y por fuera del marco; ahora baja a
+   la esquina que el marco deja abierta —arriba a la derecha—, se aparta un
+   poco del canto y mide lo que el bloque de texto, de la ruta a la bajada,
+   centrada en su alto. Es un pelo mas grande que antes en un portatil (218
+   frente a 196 a 1280x630) y acompana al titulo a su altura.
+
+   A esa altura el titulo ya no le pasa por dentro: cae a la altura de la
+   corona, que tiene tinta en el canto izquierdo. Asi que el `h1` le guarda
+   la muela entera —su ancho, su margen y un dedo de aire— y la muela deja de
+   colgarse del titulo: el `h1` vuelve a `static` y la caja de la muela es el
+   `.container`, que es lo que la deja centrarse en el alto del bloque.
+
+   `--bp-muela-margen` es lo que se aparta del canto derecho del texto:
+   2,25rem en una pantalla ancha, y nada por debajo de 1244, donde el titulo
+   todavia crece con la pantalla y el sitio no da. El ancho sale de ahi: es
+   lo que cabe al lado del titulo mas largo de los tres, «Politica de
+   privacidad» (15,6em), con un dedo de holgura; medido de 992 a 1920. El
+   techo de 222 es lo que mide de alto el bloque de texto en una pantalla
+   ancha: mas grande, la muela se saldria del marco por abajo. */
+@media (min-width: 992px) {
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
+    --bp-muela-ancho: clamp(160px, 17vw, 222px);
+    --bp-muela-margen: clamp(0px, 100vw - 1244px, 2.25rem);
+    --bp-muela-aire: 12px;
+  }
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
+    position: static;
+    padding-right: calc(var(--bp-muela-margen) + var(--bp-muela-ancho) + var(--bp-muela-aire));
+  }
+  .pagina-clara .banner-pagina--hero .bp-muela {
+    top: 50%;
+    right: calc(var(--bp-lado) + var(--bp-muela-margen));
+    transform: translateY(-50%);
+  }
+}
+
 /* En el telefono la muela es mas grande de lo que le tocaria por regla de
    tres, y el titulo le pasa por dentro: con el titulo partido en dos lineas,
    las dos caen en la franja limpia de la muela y ahi no hay tinta que
@@ -529,6 +569,43 @@
      del hero quedan casi doscientos pixeles de madera vacia. */
   .pagina-clara .banner-pagina--hero:has(.bp-muela) .banner-subtitulo {
     margin-top: clamp(2.8rem, 6vw, 3.4rem);
+  }
+}
+
+/* EN EL TELEFONO LA MUELA EMPIEZA DONDE ACABA LA PRIMERA LINEA. Colgada del
+   canto caia donde caia: en un telefono de 430 de ancho arrancaba justo
+   despues de «Preguntas», en FAQ, y era lo que se buscaba; pero en Galeria
+   la patita izquierda de la corona quedaba posada sobre la A de «Un vistazo
+   a», en Privacidad sobre la E de «Politica de», y en FAQ tambien, sobre la
+   S, en cuanto el telefono era un poco mas estrecho.
+
+   Asi que aqui se cuelga del texto y no del canto: `--bp-muela-desde` es
+   donde empieza, contado desde el arranque del titulo y en `em`, para que
+   siga a la letra en cualquier telefono. En FAQ, un dedo despues de la S
+   —exactamente donde caia a 430—; en Galeria, en la punta de la A; en
+   Privacidad, un dedo despues de la E.
+
+   A lo ancho mide lo de siempre, pero como mucho llega hasta el filo derecho
+   del marco (el canto del `h1` menos lo que este sobresale, `.1em`, mas el
+   aire del marco, 1,1rem): en un telefono chico encoge lo que haga falta
+   para no salirse.
+
+   Y en Galeria sube un pelo, del 44% al 47% de su alto: la patita queda
+   justo encima de la punta de la A, y con la cuenta de siempre le pasaba a
+   cinco pixeles. En las otras dos se aparta de lado y no hace falta.
+
+   Solo por debajo de 480, que es donde los tres titulos van en dos lineas.
+   De 480 a 767 la muela colgada del canto ya cae lejos de la ultima letra. */
+@media (max-width: 479.98px) {
+  .pagina-faq .bp-muela { --bp-muela-desde: 7.34em; }
+  .pagina-galeria .bp-muela { --bp-muela-desde: 7.85em; --bp-muela-sitio: .47; }
+  .pagina-legal .bp-muela { --bp-muela-desde: 7.85em; }
+  .pagina-clara .banner-pagina--hero .bp-muela {
+    top: .24em;
+    right: auto;
+    left: var(--bp-muela-desde);
+    width: min(var(--bp-muela-ancho), 100% - .1em + 1.1rem - var(--bp-muela-desde));
+    transform: translateY(calc(var(--bp-muela-sitio) * -100%));
   }
 }
 

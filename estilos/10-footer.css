@@ -11,13 +11,14 @@
   position: relative;
   background: var(--onix);
   color: rgba(250, 248, 244, .78);
-  padding: 100px 0 0;
+  padding: 60px 0 0;
 }
-/* En el telefono empieza antes: 100px de negro por encima de la primera
-   linea son media pantalla de nada justo donde el fundido acaba de dejar
-   todo en onix. */
+/* Arriba lleva poco aire, y en el telefono menos: el fundido de encima
+   (`::after`, mas abajo) ya pone un palmo de negro antes de la juntura, y lo
+   que se sumaba por dentro —100px, 60 en el telefono— eran dos franjas de
+   nada seguidas antes de la primera linea. */
 @media (max-width: 767.98px) {
-  .footer { padding-top: 54px; }
+  .footer { padding-top: 40px; }
 }
 
 .footer::before {
@@ -347,9 +348,11 @@
 .form-aviso.exito { color: var(--turquesa-claro); }
 .form-aviso.error { color: var(--naranja); }
 
+/* Y abajo, lo mismo: entre las columnas y la raya del final iban 70px, y
+   la raya ya separa sola. */
 .footer-bottom {
-  margin-top: 70px;
-  padding: 24px 0 28px;
+  margin-top: 40px;
+  padding: 18px 0 22px;
   padding-right: 80px;
   border-top: 1px solid rgba(255, 255, 255, .1);
   display: flex;
@@ -362,6 +365,24 @@
 }
 .footer-bottom a { color: rgba(255, 255, 255, .55); }
 .footer-bottom a:hover { color: var(--gold-200); }
+/* A la izquierda le pasa lo mismo que a la derecha con WhatsApp, pero con el
+   boton de las cookies, que va fijo en la esquina de abajo: con la pagina
+   bajada del todo tapaba el «© 2026» y el enlace de privacidad en cuanto el
+   contenedor se acercaba al canto, de 768 a unos 1060 de ancho. El texto se
+   aparta lo justo: lo que le falte al margen de la pagina —que es
+   `(100vw - 100%) / 2`— para llegar a 80px, donde acaba el boton con su
+   aire. En una pantalla ancha no le falta nada, y en el telefono el texto va
+   centrado y por encima de los botones. */
+@media (min-width: 768px) {
+  .footer-bottom { padding-left: max(0px, 80px - (100vw - 100%) / 2); }
+}
+/* Por debajo de 992 las columnas se apilan y la ultima es el formulario, que
+   acaba en su aviso: un renglon vacio que se guarda para el mensaje de
+   enviado y que ya pone 33px de aire. Sumados a los 40 de arriba, el hueco
+   hasta la raya era casi el doble que en el ordenador. */
+@media (max-width: 991.98px) {
+  .footer-bottom { margin-top: 8px; }
+}
 
 .wsp-flotante {
   position: fixed;

@@ -235,13 +235,17 @@
 }
 
 /* Con la escena encendida el rotulo es la entradilla de la cita: va en la
-   columna de la izquierda, justo encima de ella y a ras de su margen. Fue
-   una banda fija pegada al techo, centrada a lo ancho de la pantalla, y ahi
-   no encabezaba nada: la cita estaba a un lado y el circulo al otro, y el
-   rotulo flotaba en medio del techo por encima de los dos. */
+   columna de la izquierda, justo encima de ella, y centrado en esa columna.
+   Fue una banda fija pegada al techo, centrada a lo ancho de la pantalla, y
+   ahi no encabezaba nada: la cita estaba a un lado y el circulo al otro, y
+   el rotulo flotaba en medio del techo por encima de los dos. Estuvo despues
+   a ras del margen de la cita, y cargaba el bloque a la izquierda: la caja
+   acababa en el primer tercio de la columna y encima de las dos lineas largas
+   de la cita quedaba un hueco. Centrado en la columna hace de cabecera de
+   todo el bloque, que es lo que es. */
 .esfera-activa .testimonios-etiqueta {
   padding: 0 0 1.1rem;
-  text-align: left;
+  text-align: center;
   background: none;
 }
 
