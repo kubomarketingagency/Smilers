@@ -18,8 +18,10 @@
      el bloque crece y se sale de la pantalla; lo que no hace nunca es cortar
      el contenido. Cortar es el unico fallo que no se puede recuperar
      haciendo scroll.
-   - La altura de la foto se escribe en la COLUMNA y la foto se estira a lo
-     que le den: asi lo que decide cuanto mide es la pantalla, no la imagen.
+   - La altura se escribe en la COLUMNA, y el collage cabe dentro con su
+     proporcion: lo que decide cuanto mide es la pantalla, pero no lo
+     deforma. Estirado a la columna, en un 1440x900 salia mas alto que ancho
+     y las fotos apaisadas se recortaban en vertical.
    - Las fotos del mosaico entran con `clip-path`, que ademas de tapar quita
      el elemento del mapa de clics. Por eso el 30 solo las esconde cuando hay
      animaciones: sin eso, quien navegue sin ellas se quedaria con las fotos
@@ -93,19 +95,17 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
      deja de crecer y lo que crece es el aire, que es lo que hace que la
      pieza siga pareciendo una lamina y no un poster. */
   .pagina-tratamientos .bloque-tratamiento .row > [class*="col-"]:not(:has(.pz-panel)) {
+    --tz-alto: min(calc(100svh - var(--alto-navbar) - clamp(3rem, 6vw, 6rem)), 820px);
     display: flex;
     align-items: center;
-    height: min(
-      calc(100svh - var(--alto-navbar) - clamp(3rem, 6vw, 6rem)),
-      820px
-    );
+    height: var(--tz-alto);
   }
+  /* El collage no se estira a la columna: lleva su proporcion (el 30) y
+     cabe entero en ella, tan ancho como la columna o tan alto como ella. */
   .pagina-tratamientos .bloque-tratamiento .tz-mosaico {
-    width: 100%;
-    height: 100%;
+    width: min(100%, var(--tz-alto) * var(--prop));
     max-width: none;
-    margin: 0;
-    aspect-ratio: auto;
+    margin: 0 auto;
   }
 
   /* --- La entrada --------------------------------------------------------

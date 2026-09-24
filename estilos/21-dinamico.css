@@ -370,67 +370,7 @@
     linear-gradient(180deg, rgba(8, 8, 8, .42) 0%, rgba(8, 8, 8, .24) 44%, rgba(8, 8, 8, .5) 100%);
 }
 
-.ns-riel {
-  position: fixed;
-  z-index: 1020;
-  top: 50%;
-  right: clamp(16px, 1.7vw, 30px);
-  transform: translateY(-50%);
-  display: none;
-  flex-direction: column;
-  gap: clamp(14px, 1.5vw, 20px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.ns-riel__boton {
-  position: relative;
-  display: block;
-  width: 11px;
-  height: 11px;
-  padding: 0;
-  border: 1px solid var(--gm-borde-vivo);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transition: background .45s var(--gm-curva), transform .45s var(--gm-curva),
-              border-color .45s var(--gm-curva);
-}
-.ns-riel__boton::after {
-  content: attr(data-nombre);
-  position: absolute;
-  right: calc(100% + 14px);
-  top: 50%;
-  transform: translateY(-50%) translateX(8px);
-  padding: .4rem .75rem;
-  border: 1px solid var(--gm-borde);
-  border-radius: var(--gm-radio);
-  background: rgba(10, 10, 10, .92);
-  font-family: var(--fuente-cuerpo);
-  font-weight: 700;
-  font-size: .6rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--gm-oro-vivo);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .4s var(--gm-curva), transform .4s var(--gm-curva);
-}
-.ns-riel__boton--activo {
-  background: var(--gradiente-oro);
-  transform: scale(1.32);
-  border-color: transparent;
-}
-.ns-riel__boton:hover::after,
-.ns-riel__boton:focus-visible::after {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
-@media (min-width: 1280px) and (min-height: 660px) {
-  .ns-riel { display: flex; }
-}
+/* El riel de puntos lateral se viste en el 31, que tambien lo carga la portada. */
 
 .crsl { position: relative; }
 .crsl__pista {
@@ -814,9 +754,7 @@
 .pagina-tratamientos .bloque-tratamiento + .bloque-tratamiento::before,
 .ns-fondo img,
 .crsl__toma,
-.crsl__toma img,
-.ns-riel__boton,
-.ns-riel__boton::after { transition: none; }
+.crsl__toma img { transition: none; }
   .crsl__punto--activo::after { animation: none; }
     .crsl__toma img { transform: none; }
 }

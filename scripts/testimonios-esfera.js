@@ -1172,6 +1172,11 @@ void main() {
       return Math.round(tope + progreso * recorrido);
     }
 
+    /* El punto de Testimonios del riel lateral (riel.js) lleva al primero
+       en reposo, como el primer paso: el arranque de la seccion es la
+       apertura, todavia a oscuras. */
+    seccion.smilersRiel = { destino: function () { return yDeTestimonio(0); } };
+
     pasos.forEach(function (paso, indice) {
       var quien = items[indice];
       if (quien && quien.nombre) {

@@ -69,6 +69,7 @@
     clearTimeout(relojCierre);
     grupo = piezas;
     foco = document.activeElement;
+    esconderPuntero();
     pintar(desde);
 
     if (!abierto) {
@@ -162,4 +163,83 @@
     if (grupo.length < 2 || Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
     pintar(dx < 0 ? indice + 1 : indice - 1);
   });
+
+  /* EL PUNTERO «VER». Con raton, al pasar por una foto el puntero se vuelve
+     un circulo claro que lo dice, y la sigue con un pelo de retraso. Es lo
+     que sustituye a la lupa de oro que llevaba cada foto encima: la foto
+     queda limpia y el aviso aparece solo donde esta la mano. En una pantalla
+     tactil no hay puntero que cambiar y cada foto lleva su aviso fijo (el
+     30). Sin este guion queda el puntero de lupa del navegador. */
+  var puntero = null;
+  var dentro = false;
+  var ratonX = 0;
+  var ratonY = 0;
+  var punteroX = 0;
+  var punteroY = 0;
+  var relojPuntero = 0;
+  var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function esconderPuntero() {
+    if (!puntero || !dentro) return;
+    dentro = false;
+    puntero.classList.remove('tz-puntero--visible', 'tz-puntero--pulsa');
+  }
+
+  function seguir() {
+    relojPuntero = 0;
+    var paso = quietud.matches ? 1 : 0.3;
+    punteroX += (ratonX - punteroX) * paso;
+    punteroY += (ratonY - punteroY) * paso;
+    puntero.style.transform = 'translate3d(' + punteroX.toFixed(1) + 'px,' + punteroY.toFixed(1) + 'px,0)';
+    if (Math.abs(ratonX - punteroX) > 0.3 || Math.abs(ratonY - punteroY) > 0.3) {
+      relojPuntero = requestAnimationFrame(seguir);
+    }
+  }
+
+  /* Mira que hay debajo del raton: al moverlo, y tambien al hacer scroll con
+     el quieto, que la foto pasa por debajo sin que el raton se mueva. */
+  function revisar(debajo) {
+    var pieza = debajo && debajo.closest && debajo.closest('.tz-mosaico__pieza');
+    if (!pieza || abierto) { esconderPuntero(); return; }
+    if (!dentro) {
+      dentro = true;
+      punteroX = ratonX;
+      punteroY = ratonY;
+      puntero.classList.add('tz-puntero--visible');
+    }
+    if (!relojPuntero) relojPuntero = requestAnimationFrame(seguir);
+  }
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    puntero = document.createElement('span');
+    puntero.className = 'tz-puntero';
+    puntero.setAttribute('aria-hidden', 'true');
+    puntero.textContent = 'Ver';
+    document.body.appendChild(puntero);
+    document.documentElement.classList.add('con-puntero');
+
+    document.addEventListener('pointermove', function (ev) {
+      if (ev.pointerType !== 'mouse') return;
+      ratonX = ev.clientX;
+      ratonY = ev.clientY;
+      revisar(ev.target);
+    }, { passive: true });
+
+    var relojScroll = 0;
+    window.addEventListener('scroll', function () {
+      if (!dentro || relojScroll) return;
+      relojScroll = requestAnimationFrame(function () {
+        relojScroll = 0;
+        revisar(document.elementFromPoint(ratonX, ratonY));
+      });
+    }, { passive: true });
+
+    document.documentElement.addEventListener('mouseleave', esconderPuntero);
+    document.addEventListener('pointerdown', function () {
+      if (dentro) puntero.classList.add('tz-puntero--pulsa');
+    });
+    document.addEventListener('pointerup', function () {
+      if (puntero) puntero.classList.remove('tz-puntero--pulsa');
+    });
+  }
 })();

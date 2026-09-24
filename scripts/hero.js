@@ -228,6 +228,15 @@ document.addEventListener('DOMContentLoaded', function () {
        guion no se monta, y la pregunta nunca se queda escondida. */
     envoltorio.classList.add('cc-velado', 'cc-montado');
 
+    /* El punto de Contacto del riel lateral (riel.js). Montado, el cierre no
+       se ve hasta que se clava y ha corrido ENTRA pixeles: antes esta
+       escondido detras de la ultima pantalla de los testimonios, y llevar a
+       su arranque era llevar a una pantalla negra. */
+    envoltorio.smilersRiel = {
+      destino: function () { return envoltorio.getBoundingClientRect().top + window.scrollY + 40; },
+      desde: function () { return envoltorio.getBoundingClientRect().top + window.scrollY + ENTRA; }
+    };
+
     SmilersScroll.registrar(leerCierre, actualizarCierre, function () {
       ultimoDesplazado = -1;
     }, {

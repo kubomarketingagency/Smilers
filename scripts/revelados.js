@@ -270,6 +270,23 @@ document.addEventListener('DOMContentLoaded', function () {
       pon('--pn-ev-dos', segundo ? 'auto' : 'none');
     }
 
+    /* El punto de «Instalaciones» del riel lateral (riel.js). Dentro del pin
+       las dos pantallas caen en el mismo sitio del documento, y esta se ve
+       entera al final de la escena, con el telon ya abierto: ahi lleva el
+       punto, y cuenta como la que se ve desde que el telon empieza a
+       abrirse. Con la escena apagada vale su sitio en la pagina. */
+    function puntoDeEscena(p) {
+      var caja = escena.getBoundingClientRect();
+      var recorrido = Math.max(0, caja.height - SmilersScroll.alto());
+      return caja.top + window.scrollY + p * recorrido;
+    }
+    if (fondoDos[0]) {
+      fondoDos[0].smilersRiel = {
+        destino: function () { return viva ? puntoDeEscena(.99) : null; },
+        desde: function () { return viva ? puntoDeEscena(.78) : null; }
+      };
+    }
+
     revisarModo();
 
     SmilersScroll.registrar(leerEscena, escribirEscena, function () {

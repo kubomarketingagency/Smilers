@@ -1,0 +1,138 @@
+/* ===========================================================================
+   El riel de puntos: la navegacion lateral por secciones.
+
+   Lo montan riel.js (la portada y Tratamientos) y nosotros-cine.js
+   (Nosotros); aqui solo se viste. Lo cargan esas tres paginas: la Galeria,
+   las preguntas y la politica de privacidad no lo llevan.
+
+   Se ve de la tableta para arriba. En el telefono no cabe: el borde derecho
+   es donde va el pulgar, y cualquier cosa fija ahi se pulsa sin querer.
+   Tampoco con el telefono tumbado, que pasa de 768 de ancho pero no llega a
+   520 de alto.
+
+   El punto de la seccion en la que se esta se alarga en capsula de oro, y
+   los de las diez especialidades de Tratamientos van mas pequenos y mas
+   juntos: cuelgan de «Especialidades». Al pasar el raton sale el nombre.
+
+   El punto dibuja 10px pero se pulsa en 34x24: en una tableta, con el dedo,
+   un blanco de 10px no se acierta.
+   =========================================================================== */
+
+.ns-riel-nav {
+  --riel-oro: #D4AF37;
+  --riel-curva: cubic-bezier(.22, 1, .36, 1);
+}
+
+.ns-riel {
+  position: fixed;
+  z-index: 1020;
+  top: 50%;
+  right: clamp(14px, 1.6vw, 28px);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  translate: 0 -50%;
+  transition: opacity .5s ease, translate .6s var(--riel-curva), visibility 0s linear 0s;
+}
+.ns-riel > li { display: flex; line-height: 0; }
+
+/* Las especialidades, mas juntas entre si. */
+.ns-riel > li:has(> .ns-riel__boton--menor) + li:has(> .ns-riel__boton--menor) { margin-top: -5px; }
+
+@media (min-width: 768px) and (min-height: 520px) {
+  .ns-riel { display: flex; }
+}
+
+/* Antes de la primera parada no hay riel (en la portada, el hero). */
+.ns-riel-nav--oculto .ns-riel {
+  opacity: 0;
+  visibility: hidden;
+  translate: 12px -50%;
+  transition: opacity .4s ease, translate .5s var(--riel-curva), visibility 0s linear .5s;
+}
+
+.ns-riel__boton {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid rgba(212, 175, 55, .85);
+  border-radius: 999px;
+  /* Relleno oscuro y no hueco: el riel pasa por encima de marmol claro, de
+     pizarra y de fotos, y un aro de oro solo se perdia en el claro. */
+  background-color: rgba(10, 8, 6, .34);
+  cursor: pointer;
+  transition: height .55s var(--riel-curva), background-color .4s ease,
+              border-color .4s ease, box-shadow .45s ease;
+}
+.ns-riel__boton::before {
+  content: '';
+  position: absolute;
+  inset: -7px -12px;
+}
+.ns-riel__boton--menor { width: 7px; height: 7px; }
+
+.ns-riel__boton:hover { background-color: rgba(212, 175, 55, .6); }
+
+.ns-riel__boton--activo {
+  height: 28px;
+  border-color: transparent;
+  background-color: var(--riel-oro);
+  background-image: linear-gradient(180deg, #F7E7A6 0%, #D4AF37 55%, #B08D22 100%);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, .2), 0 4px 12px rgba(10, 8, 6, .35);
+}
+.ns-riel__boton--menor.ns-riel__boton--activo { height: 20px; }
+
+/* El nombre, en su cajita negra, a la izquierda del punto. */
+.ns-riel__boton::after {
+  content: attr(data-nombre);
+  position: absolute;
+  right: calc(100% + 16px);
+  top: 50%;
+  padding: .42rem .8rem;
+  border: 1px solid rgba(212, 175, 55, .34);
+  border-radius: 4px;
+  background: rgba(10, 10, 10, .92);
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: .6rem;
+  line-height: 1.2;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--riel-oro);
+  opacity: 0;
+  translate: 8px -50%;
+  pointer-events: none;
+  transition: opacity .35s ease, translate .4s var(--riel-curva);
+}
+.ns-riel__boton:hover::after,
+.ns-riel__boton:focus-visible::after {
+  opacity: 1;
+  translate: 0 -50%;
+}
+.ns-riel__boton:focus-visible {
+  outline: 2px solid var(--riel-oro);
+  outline-offset: 4px;
+}
+
+/* Ventanas bajas: con quince paradas (Tratamientos) el riel mide unos
+   340px y se acercaba a los botones de abajo. */
+@media (max-height: 700px) {
+  .ns-riel { gap: 10px; }
+  .ns-riel > li:has(> .ns-riel__boton--menor) + li:has(> .ns-riel__boton--menor) { margin-top: -4px; }
+  .ns-riel__boton--activo { height: 22px; }
+  .ns-riel__boton--menor.ns-riel__boton--activo { height: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-riel,
+  .ns-riel-nav--oculto .ns-riel,
+  .ns-riel__boton,
+  .ns-riel__boton::after { transition: none; }
+}

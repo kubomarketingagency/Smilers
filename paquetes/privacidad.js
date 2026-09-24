@@ -394,6 +394,17 @@ pon('--pn-dos',String(segundo));
 pon('--pn-ev-uno',segundo?'none':'auto');
 pon('--pn-ev-dos',segundo?'auto':'none');
 }
+function puntoDeEscena(p){
+var caja=escena.getBoundingClientRect();
+var recorrido=Math.max(0,caja.height - SmilersScroll.alto());
+return caja.top + window.scrollY + p*recorrido;
+}
+if(fondoDos[0]){
+fondoDos[0].smilersRiel={
+destino:function(){return viva?puntoDeEscena(.99):null;},
+desde:function(){return viva?puntoDeEscena(.78):null;}
+};
+}
 revisarModo();
 SmilersScroll.registrar(leerEscena,escribirEscena,function(){
 revisarModo();

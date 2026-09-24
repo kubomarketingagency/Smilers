@@ -1,44 +1,55 @@
 /* ===========================================================================
    El mosaico de cada especialidad (Tratamientos).
 
-   La mitad de la foto de cada especialidad ya no lleva una foto sola: lleva
-   un collage de dos o tres, cada una en su marco de oro, y la que se pulsa se
-   abre en grande en el visor (visor.js), con flechas para pasar a las otras
-   de la misma especialidad. Es el mismo visor de la Galeria —sus estilos
-   viven en el 12— sin el guion de Bootstrap, que eran 60 KB para esto.
+   La mitad de la foto de cada especialidad lleva un collage de sus fotos,
+   cada una con su filo de oro, y la que se pulsa se abre en grande en el
+   visor (visor.js), con flechas para pasar a las otras de la misma
+   especialidad. Es el mismo visor de la Galeria —sus estilos viven en el
+   12— sin el guion de Bootstrap, que eran 60 KB para esto.
 
-   LAS FOTOS SE PISAN A PROPOSITO. Casi todas las especialidades juntan una
-   foto apaisada de la clinica (la que ya estaba) con uno o dos retratos
-   verticales del especialista, y una reja sin solapes no casa las dos cosas
-   en una caja casi cuadrada: o el retrato sale en tira o la apaisada pierde
-   la mitad. Montadas en collage cada una conserva casi su proporcion: la de
-   la clinica arriba, grande, y el retrato delante, abajo y del lado del
-   texto. Lo que el retrato tapa es la esquina de la foto de fondo, y cada
-   pieza corre su encuadre (`--fx`, `--fy`) para que lo tapado no sea la
-   cara de nadie. En el visor se ven enteras.
+   LA CAJA TIENE SU PROPORCION Y NO SE ESTIRA. El primer collage se estiraba
+   a la columna, que en un portatil de 1440x900 es mas alta que ancha: la
+   foto de la clinica, que es apaisada, salia recortada en vertical y las
+   piezas se pisaban de mas. Ahora cada modelo dice su proporcion
+   (`--prop`, ancho entre alto) y la caja cabe entera en la columna: tan
+   ancha como la columna o tan alta como ella, lo que llegue antes. Asi cada
+   foto conserva casi la forma con la que se hizo, a cualquier tamano.
 
    Los modelos, por numero y forma de las fotos:
 
-     - `--una`     una foto a toda la caja (Ortodoncia).
-     - `--dos`     la de la clinica arriba a la izquierda y el retrato
-                   delante, abajo a la derecha.
-     - `--tres`    la de la clinica arriba a la izquierda, un retrato alto a
-                   la derecha y el otro abajo a la izquierda.
-     - `--cascada` tres apaisadas que bajan en escalera (Odontologia
-                   General, donde las tres son horizontales).
+     - `--retrato`  el retrato del especialista, grande, en el lado de
+                    fuera, y la foto de la clinica delante, abajo, en el
+                    lado del texto, montada con paspartu. Lo que tapa es la
+                    franja de fuera del retrato, donde no hay nadie: cada
+                    foto corre su encuadre (`--fx`, `--fy`) para eso.
+     - `--escalera` dos apaisadas que bajan en escalera, la segunda
+                    montada sobre el pie de la primera (Odontologia General).
+     - `--triptico` el retrato alto a un lado y dos fotos apiladas al otro,
+                    en reja y sin pisarse (Cirugia Oral y Endodoncia).
+     - `--una`      una sola foto (Ortodoncia).
 
-   Las posiciones van en tanto por ciento de la caja, asi que el collage es el
-   mismo en el ordenador —donde la caja mide lo que le da la columna, casi
-   cuadrada— y en el telefono, donde la caja lleva su proporcion propia.
+   Detras de la foto principal va un marco de oro desplazado, que asoma por
+   dos de sus lados: es lo que ata el collage al oro del panel de al lado.
    =========================================================================== */
 
 .tz-mosaico {
+  --prop: 1.1;
+  --aro: 8px;
+  --fondo-aro: #FAF8F5;
   position: relative;
   width: 100%;
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
-  aspect-ratio: 10 / 9;
+  aspect-ratio: var(--prop);
 }
+/* El paspartu es del color de lo que hay detras: crema sobre el marmol,
+   casi negro sobre la pizarra. */
+.bloque-tratamiento--piedra .tz-mosaico { --fondo-aro: #0E0C0A; }
+
+.tz-mosaico--retrato  { --prop: 1.1; }
+.tz-mosaico--escalera { --prop: 1; }
+.tz-mosaico--triptico { --prop: 1.1; }
+.tz-mosaico--una      { --prop: .9; }
 
 .tz-mosaico__pieza {
   position: absolute;
@@ -46,30 +57,40 @@
   top: var(--y, 0%);
   width: var(--w, 100%);
   height: var(--h, 100%);
+  z-index: 1;
   display: block;
   overflow: hidden;
   background: #0E0C0A;
-  box-shadow: 0 26px 48px -22px rgba(12, 9, 5, .6);
+  box-shadow: 0 28px 52px -26px rgba(12, 9, 5, .6);
   cursor: zoom-in;
   -webkit-tap-highlight-color: transparent;
 }
-/* La que va delante pesa mas: su sombra es la que dice que esta encima. */
-.tz-mosaico__pieza + .tz-mosaico__pieza {
-  box-shadow: 0 30px 60px -20px rgba(12, 9, 5, .72), 0 2px 8px rgba(12, 9, 5, .25);
+
+/* --- Las posiciones, en tanto por ciento de la caja ---------------------
+   `--m*` es el marco desplazado de detras. */
+.tz-mosaico--retrato                 { --mx: 32%; --my: 0%; --mw: 64%; --mh: 97%; }
+.tz-mosaico--retrato > :nth-child(1) { --x: 36%; --y: 3%;  --w: 64%; --h: 97%; }
+.tz-mosaico--retrato > :nth-child(2) { --x: 0%;  --y: 57%; --w: 50%; --h: 39%; }
+
+.tz-mosaico--escalera                 { --mx: 4%;  --my: 0%;  --mw: 76%; --mh: 50%; }
+.tz-mosaico--escalera > :nth-child(1) { --x: 0%;  --y: 4%;  --w: 76%; --h: 50%; }
+.tz-mosaico--escalera > :nth-child(2) { --x: 24%; --y: 48%; --w: 76%; --h: 52%; }
+
+.tz-mosaico--triptico                 { --mx: 0%;  --my: 0%;  --mw: 44%; --mh: 97%; }
+.tz-mosaico--triptico > :nth-child(1) { --x: 3%;  --y: 3%;  --w: 44%; --h: 97%; }
+.tz-mosaico--triptico > :nth-child(2) { --x: 50%; --y: 0%;  --w: 50%; --h: 47%; }
+.tz-mosaico--triptico > :nth-child(3) { --x: 50%; --y: 50%; --w: 50%; --h: 47%; }
+
+.tz-mosaico--una                      { --mx: 0%;  --my: 0%;  --mw: 95%; --mh: 96%; }
+.tz-mosaico--una > :nth-child(1)      { --x: 5%;  --y: 4%;  --w: 95%; --h: 96%; }
+
+/* La que va montada encima lleva el paspartu —un aro del color del fondo,
+   que la despega de la de debajo sin sombra sobre sombra— y pesa mas. */
+.tz-mosaico--retrato > :nth-child(2),
+.tz-mosaico--escalera > :nth-child(2) {
+  z-index: 2;
+  box-shadow: 0 0 0 var(--aro) var(--fondo-aro), 0 34px 60px -22px rgba(12, 9, 5, .72);
 }
-
-.tz-mosaico--una > :nth-child(1)     { --x: 0%;  --y: 0%;  --w: 100%; --h: 100%; }
-
-.tz-mosaico--dos > :nth-child(1)     { --x: 0%;  --y: 0%;  --w: 70%;  --h: 66%; }
-.tz-mosaico--dos > :nth-child(2)     { --x: 55%; --y: 24%; --w: 45%;  --h: 76%; }
-
-.tz-mosaico--tres > :nth-child(1)    { --x: 0%;  --y: 0%;  --w: 60%;  --h: 52%; }
-.tz-mosaico--tres > :nth-child(2)    { --x: 56%; --y: 8%;  --w: 44%;  --h: 92%; }
-.tz-mosaico--tres > :nth-child(3)    { --x: 4%;  --y: 57%; --w: 46%;  --h: 43%; }
-
-.tz-mosaico--cascada > :nth-child(1) { --x: 0%;  --y: 0%;  --w: 62%;  --h: 50%; }
-.tz-mosaico--cascada > :nth-child(2) { --x: 40%; --y: 27%; --w: 60%;  --h: 46%; }
-.tz-mosaico--cascada > :nth-child(3) { --x: 8%;  --y: 60%; --w: 56%;  --h: 40%; }
 
 .tz-mosaico__pieza img {
   display: block;
@@ -77,130 +98,227 @@
   height: 100%;
   object-fit: cover;
   object-position: var(--fx, 50%) var(--fy, 45%);
-  transition: transform 1.1s var(--gm-curva, cubic-bezier(.22, 1, .36, 1));
+  scale: var(--zoom, 1);
+  transition: scale 1.2s var(--gm-curva, cubic-bezier(.22, 1, .36, 1)),
+              filter .6s ease;
 }
 
-/* EL MARCO DE ORO, en dos capas.
-
-   `::before` es el filo de 1px por los cuatro lados, en el degradado de la
-   marca, como el marco de los heros de madera: cuatro capas de fondo y no un
-   `border`, que un borde solo admite color plano. `::after` son las dos
-   escuadras de 2px en diagonal —arriba a la izquierda y abajo a la derecha—
-   que llevan todas las fotos de esta pagina.
-
-   Van en oro vivo aunque la seccion sea de marmol claro: no se apoyan en el
-   marmol sino en la foto, que es oscura. */
-.tz-mosaico__pieza::before,
+/* EL ORO. `::after` es el filo de 1px de cada foto; `.tz-mosaico::before`,
+   el marco desplazado de detras. Los dos con cuatro capas de fondo y no con
+   un `border`, para poder dibujarlos tramo a tramo al entrar. Van en oro
+   vivo aunque la seccion sea de marmol claro: el filo se apoya en la foto,
+   que es oscura, y el marco asoma poco. */
+.tz-mosaico::before,
 .tz-mosaico__pieza::after {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: 2;
   pointer-events: none;
   background-repeat: no-repeat;
-}
-.tz-mosaico__pieza::before {
   background-image:
     var(--oro-marca-degradado), var(--oro-marca-degradado),
     var(--oro-marca-degradado), var(--oro-marca-degradado);
   background-position: left top, left top, right bottom, right bottom;
   background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
-  opacity: .85;
+}
+.tz-mosaico::before {
+  left: var(--mx);
+  top: var(--my);
+  width: var(--mw);
+  height: var(--mh);
+  z-index: 0;
+  opacity: .8;
 }
 .tz-mosaico__pieza::after {
-  --esc: 26px;
-  background-image:
-    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca)),
-    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca));
-  background-position: left top, left top, right bottom, right bottom;
-  background-size: var(--esc) 2px, 2px var(--esc), var(--esc) 2px, 2px var(--esc);
+  inset: 0;
+  z-index: 3;
+  opacity: .9;
 }
 
-/* La lupa: dice que la foto se abre. Con raton sale al pasar por encima; en
-   una pantalla tactil, donde no hay encima, esta siempre, mas callada. */
-.tz-mosaico__lupa {
+/* Ampliar. Con raton no hace falta nada encima de la foto: al pasar por
+   ella el puntero se vuelve un circulo que dice «Ver» (visor.js). En una
+   pantalla tactil, donde no hay puntero, cada foto lleva en la esquina un
+   aviso callado: cuatro esquinas en blanco, sin oro. */
+.tz-mosaico__ampliar {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 3;
-  display: grid;
+  right: 10px;
+  bottom: 10px;
+  z-index: 4;
+  display: none;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(212, 175, 55, .85);
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: rgba(10, 8, 6, .62);
-  color: var(--oro-marca);
-  font-size: .9rem;
-  opacity: 0;
-  transform: scale(.82);
-  transition: opacity .35s ease, transform .45s var(--gm-curva, cubic-bezier(.22, 1, .36, 1));
-}
-@media (hover: hover) {
-  .tz-mosaico__pieza:hover img { transform: scale(1.045); }
-  .tz-mosaico__pieza:hover .tz-mosaico__lupa { opacity: 1; transform: none; }
+  background: rgba(10, 8, 6, .5);
+  color: #FFFFFF;
+  font-size: 15px;
+  pointer-events: none;
 }
 @media (hover: none) {
-  .tz-mosaico__lupa { opacity: .88; transform: none; width: 32px; height: 32px; right: 9px; bottom: 9px; font-size: .8rem; }
+  .tz-mosaico__ampliar { display: grid; }
 }
 .tz-mosaico__pieza:focus-visible {
   outline: 2px solid var(--oro-marca);
   outline-offset: 3px;
 }
-.tz-mosaico__pieza:focus-visible .tz-mosaico__lupa { opacity: 1; transform: none; }
+.tz-mosaico__pieza:focus-visible .tz-mosaico__ampliar { display: grid; }
 
-/* En el telefono las piezas son pequenas y las escuadras de 26px se comian
-   la esquina de la foto. */
+@media (hover: hover) {
+  .tz-mosaico__pieza:hover img {
+    scale: calc(var(--zoom, 1) * 1.06);
+    filter: brightness(1.06);
+  }
+}
+
 @media (max-width: 767.98px) {
-  .tz-mosaico__pieza::after { --esc: 18px; }
+  .tz-mosaico { --aro: 5px; }
+  .tz-mosaico__ampliar { right: 8px; bottom: 8px; width: 28px; height: 28px; font-size: 14px; }
 }
 
 /* Telefono tumbado: la caja no puede ser mas alta que la pantalla. Se
    estrecha hasta que su alto cabe, y el collage conserva su forma. */
 @media (max-height: 480px) and (orientation: landscape) {
-  .tz-mosaico { width: min(100%, 118vh); }
+  .tz-mosaico { width: min(100%, (100vh - 4rem) * var(--prop)); }
 }
 
-/* LA ENTRADA, solo con animaciones. Cada foto se descubre de arriba abajo y
-   se asienta —como entraba la foto sola—, una detras de otra; despues se
-   dibuja su filo, cada tramo desde su esquina, y al final asoman las
-   escuadras.
+/* ---------------------------------------------------------------------------
+   LA ENTRADA, solo con animaciones.
 
-   La mascara acaba en negativo y no en `inset(0)`: un recorte a ras se come
-   la sombra de la pieza, que es lo que dice que una esta encima de la otra.
+   Cada foto la descubre una cortina de oro: entra desde un lado, tapa la
+   pieza y sale por el otro, y detras queda la foto, que se asienta desde un
+   poco mas cerca. Una detras de otra. Despues se dibuja su filo, tramo a
+   tramo desde las esquinas, y al final el marco de detras.
+
+   La pieza entera va recortada hasta que llega la cortina, con el aro y la
+   sombra: sin eso se veia la caja vacia esperando. El recorte acaba en
+   negativo y no en `inset(0)`, que a ras se comeria el aro y la sombra.
 
    Sin animaciones no se esconde nada: `clip-path` no solo tapa, tambien
-   quita la pieza del mapa de clics. */
+   quita la pieza del mapa de clics.
+
+   Tres propiedades distintas para tres movimientos que se cruzan: la
+   entrada mueve `transform`, la deriva del scroll `translate` y el zoom del
+   raton `scale`. Si compartieran una, la entrada, al acabar quieta, dejaria
+   sin zoom al raton.
+   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   .tz-mosaico__pieza {
-    --espera: .1s;
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(22px) scale(.97);
-    transition: clip-path 1.05s cubic-bezier(.16, 1, .3, 1) var(--espera),
-                transform 1.15s cubic-bezier(.16, 1, .3, 1) var(--espera);
+    --espera: .05s;
+    clip-path: inset(0 100% 0 0);
   }
-  .tz-mosaico__pieza:nth-child(2) { --espera: .32s; }
-  .tz-mosaico__pieza:nth-child(3) { --espera: .54s; }
-  .revelar.visible .tz-mosaico__pieza {
-    clip-path: inset(-60px -60px -80px -60px);
-    transform: none;
+  .tz-mosaico__pieza:nth-child(2) { --espera: .45s; }
+  .tz-mosaico__pieza:nth-child(3) { --espera: .8s; }
+
+  /* La cortina. */
+  .tz-mosaico__pieza::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: var(--oro-marca-degradado);
+    transform: scaleX(0);
+    pointer-events: none;
   }
 
-  .tz-mosaico__pieza::before {
-    background-size: 0 1px, 1px 0, 0 1px, 1px 0;
-    transition: background-size 1s cubic-bezier(.5, 0, .3, 1) calc(var(--espera) + .55s);
+  .revelar.visible .tz-mosaico__pieza {
+    animation: tz-caja 1.15s cubic-bezier(.77, 0, .18, 1) var(--espera) both;
   }
   .revelar.visible .tz-mosaico__pieza::before {
+    animation: tz-cortina 1.15s cubic-bezier(.77, 0, .18, 1) var(--espera) both;
+  }
+  .revelar.visible .tz-mosaico__pieza img {
+    animation: tz-asoma 1.9s cubic-bezier(.16, 1, .3, 1) calc(var(--espera) + .52s) backwards;
+  }
+
+  .tz-mosaico::before,
+  .tz-mosaico__pieza::after {
+    background-size: 0 1px, 1px 0, 0 1px, 1px 0;
+    transition: background-size 1s cubic-bezier(.5, 0, .3, 1) calc(var(--espera, 0s) + 1.05s);
+  }
+  .tz-mosaico::before { --espera: 1.2s; }
+  .revelar.visible .tz-mosaico::before,
+  .revelar.visible .tz-mosaico__pieza::after {
     background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
   }
-  .tz-mosaico__pieza::after {
-    background-size: 0 2px, 2px 0, 0 2px, 2px 0;
-    transition: background-size .55s cubic-bezier(.22, 1, .36, 1) calc(var(--espera) + 1.25s);
-  }
-  .revelar.visible .tz-mosaico__pieza::after {
-    background-size: var(--esc) 2px, 2px var(--esc), var(--esc) 2px, 2px var(--esc);
+}
+
+@keyframes tz-caja {
+  0%   { clip-path: inset(0 100% 0 0); }
+  46%  { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(-90px -90px -110px -90px); }
+}
+@keyframes tz-cortina {
+  0%   { transform: scaleX(0); transform-origin: left center; }
+  46%  { transform: scaleX(1); transform-origin: left center; }
+  54%  { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
+@keyframes tz-asoma {
+  0%   { opacity: 0; transform: scale(1.24); }
+  8%   { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+
+/* LA DERIVA. Con el scroll, la foto que va montada encima sube un poco mas
+   deprisa que la de debajo, y dentro de cada marco la foto se mueve un pelo
+   al reves: da fondo al collage sin mover nada de sitio. La lleva el propio
+   navegador, atada al scroll (`animation-timeline: view()`), sin guion: donde
+   no se sabe hacer, el collage se queda quieto y no pasa nada. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .tz-mosaico__pieza img { --zoom: 1.1; }
+
+    .revelar.visible .tz-mosaico__pieza img {
+      animation: tz-asoma 1.9s cubic-bezier(.16, 1, .3, 1) calc(var(--espera) + .52s) backwards,
+                 tz-deriva-foto linear both;
+      animation-timeline: auto, view();
+    }
+    .revelar.visible .tz-mosaico--retrato > :nth-child(2),
+    .revelar.visible .tz-mosaico--escalera > :nth-child(2) {
+      animation: tz-caja 1.15s cubic-bezier(.77, 0, .18, 1) var(--espera) both,
+                 tz-deriva linear both;
+      animation-timeline: auto, view();
+    }
   }
 }
+@keyframes tz-deriva {
+  from { translate: 0 34px; }
+  to   { translate: 0 -34px; }
+}
+@keyframes tz-deriva-foto {
+  from { translate: 0 -3.5%; }
+  to   { translate: 0 3.5%; }
+}
+
+/* El puntero «Ver», que pone visor.js al pasar con raton por una foto. */
+.tz-puntero {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1025;
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  margin: -43px 0 0 -43px;
+  border-radius: 50%;
+  background: rgba(250, 248, 245, .94);
+  box-shadow: 0 12px 34px -10px rgba(10, 8, 6, .55);
+  color: #141210;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: .62rem;
+  letter-spacing: .26em;
+  text-indent: .26em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  scale: .35;
+  transition: opacity .3s ease, scale .45s cubic-bezier(.34, 1.56, .64, 1);
+  will-change: transform;
+}
+.tz-puntero--visible { opacity: 1; scale: 1; }
+.tz-puntero--pulsa { scale: .86; transition-duration: .12s; }
+.con-puntero .tz-mosaico__pieza { cursor: none; }
 
 /* ===========================================================================
    El visor, con lo que la Galeria no necesita: flechas para pasar de una
