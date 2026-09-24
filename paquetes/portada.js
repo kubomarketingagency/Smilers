@@ -1364,8 +1364,8 @@ void main() {
 var RADIO_ESFERA=2;
 var ESC_DISCO=0.25;
 var DISCO_RADIO=1.3;
-var ZOOM_VIDEO=1.5;
-var FOCO_VIDEO=0.375;
+var ZOOM_VIDEO=1.1;
+var FOCO_VIDEO=0.55;
 var EJE_VIDEO=0.5;
 function acotarEje(eje,zoom){
 var borde=0.5 / zoom;

@@ -434,15 +434,21 @@ void main() {
   /* El encuadre de un testimonio: cuanto se acerca el circulo (`zoom`) y en
      que punto del fotograma se centra (`foco` a lo alto, `eje` a lo ancho,
      los dos en tanto por uno). Son los valores por defecto; cada testimonio
-     trae los suyos en el HTML, porque cada uno se grabo a su manera —uno
-     esta de pie en el centro, otro sentado abajo, otro se acerca a la
-     camara— y con un encuadre unico habia caras que salian fuera del disco.
+     trae los suyos en el HTML (`data-zoom`, `data-foco`, `data-eje`), porque
+     cada uno se grabo a su manera —uno esta de pie en el centro, otro
+     sentado, otro se acerca a la camara—. La regla con la que se sacan esta
+     alli: la persona de la cabeza a las rodillas, centrada.
+
+     Los de reserva son los de un video de cuerpo entero con la cabeza a un
+     tercio del fotograma, que es como estan grabados casi todos. Iban en
+     1,5 y 0,375, un encuadre de la cabeza al pecho, y el resto del circulo
+     era pared.
 
      Lo que el zoom deja ver es `1/zoom` del ancho del fotograma, asi que el
      eje no puede salirse de [1/(2z), 1 - 1/(2z)]: mas alla, el video no
      llegaria a cubrir el circulo. Se recorta aqui y tambien en el CSS. */
-  var ZOOM_VIDEO = 1.5;
-  var FOCO_VIDEO = 0.375;
+  var ZOOM_VIDEO = 1.1;
+  var FOCO_VIDEO = 0.55;
   var EJE_VIDEO = 0.5;
 
   function acotarEje(eje, zoom) {

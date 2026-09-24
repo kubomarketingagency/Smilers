@@ -435,16 +435,21 @@
    esta escrito aqui: lo mide la propia esfera y lo deja en `--tst-lado`,
    para que no haya dos cifras que mantener el dia que cambie el encuadre.
 
-   EL VIDEO VA MAS ANCHO QUE EL CIRCULO. Un video vertical metido en un
-   circulo de su mismo ancho se queda en una tira: se ve el suelo, se ve el
-   techo y no se ve la cara. Aqui va al reves —el video es mas ancho que el
-   circulo y el circulo recorta—, y ademas sube hasta que la cara cae en el
-   centro. Recorta por arriba y por abajo, que es justo lo que sobra.
+   EL VIDEO VA MAS ANCHO QUE EL CIRCULO. Un video vertical metido entero en
+   un circulo se queda en una tira: se ve el suelo, se ve el techo y la
+   persona sale diminuta. Aqui va al reves —el video es mas ancho que el
+   circulo y el circulo recorta—, y ademas se mueve hasta que la persona
+   queda centrada, de la cabeza a las rodillas. Recorta por arriba y por
+   abajo, que es justo lo que sobra.
 
-   Y de paso resuelve lo otro: lo que YouTube dibuja encima de sus videos
-   —el sello de Shorts arriba a la izquierda, los botones del canto derecho,
-   el titulo abajo— se queda fuera del recorte. Con el video al ancho justo
-   se veia entero, y no hay parametro que lo apague.
+   Y de paso resuelve lo otro: lo que YouTube dibuja arriba y abajo de sus
+   videos —el titulo, el canal, la marca— se queda fuera del recorte, que el
+   circulo solo coge la franja de en medio. Estuvo acercado a 1,5 tambien
+   para esconder los botones de Shorts del canto derecho, y asi solo cabia
+   la persona de la cabeza al pecho; desde que el reproductor es uno solo,
+   YouTube ya no sirve esa interfaz (ver video-testimonio.js) y el circulo
+   se pudo abrir hasta casi el ancho del video. Comprobado en la escena, en
+   los ocho: a 1,04 no asoma nada por los cantos.
 
    Hubo en medio una version con tarjetas de 9:16 en vez de discos, que era lo
    que pedia un video vertical entero. El circulo es lo que quiso la clinica y
@@ -493,9 +498,11 @@
   box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
 }
 
-/* El video dentro del circulo: mas ancho que el (`--tst-zoom`) y subido
-   hasta que la cara queda en el centro (`--tst-foco`, la altura a la que cae
-   la cara en el fotograma, contada de arriba abajo).
+/* El video dentro del circulo: un poco mas ancho que el (`--tst-zoom`) y
+   subido hasta que el punto que se quiere ver queda en el centro
+   (`--tst-foco`, su altura en el fotograma, contada de arriba abajo). Cada
+   testimonio encuadra a su persona de la cabeza a las rodillas (ver el
+   comentario de la lista en index.html).
 
    Las tres cifras son las mismas que usa el atlas de la esfera para recortar
    la foto del disco (`ZOOM_VIDEO`, `FOCO_VIDEO` y `EJE_VIDEO` en
@@ -513,8 +520,8 @@
    alla de `1 - 1/(2*zoom)` el video dejaria de cubrir el circulo por un
    lado. */
 .tst-video__medio {
-  --tst-zoom: 1.5;
-  --tst-foco: .375;
+  --tst-zoom: 1.1;
+  --tst-foco: .55;
   --tst-eje: .5;
   --tst-eje-usado: clamp(
     calc(.5 / var(--tst-zoom)),
