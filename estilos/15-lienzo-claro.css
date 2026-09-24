@@ -856,12 +856,6 @@
   letter-spacing: .04em;
 }
 
-.pagina-clara .bloque-tratamiento-foto,
-.pagina-clara .tz-foto {
-  border-radius: 0;
-  box-shadow: none;
-}
-
 .pagina-clara .lista-incluye {
   margin: clamp(1rem, 1.7vw, 1.4rem) 0;
   padding: clamp(.85rem, 1.4vw, 1.15rem) 0 0;

@@ -88,13 +88,6 @@
               box-shadow .5s var(--gm-curva);
 }
 
-.pagina-tratamientos .tz-foto {
-  border-radius: var(--gm-radio);
-  overflow: hidden;
-  border-color: var(--gm-borde-vivo);
-  box-shadow: var(--gm-sombra);
-}
-
 .pagina-tratamientos .btn {
   transition: background .45s var(--gm-curva), color .45s var(--gm-curva),
               transform .45s var(--gm-curva), box-shadow .45s var(--gm-curva);

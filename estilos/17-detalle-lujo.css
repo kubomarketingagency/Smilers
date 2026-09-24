@@ -46,33 +46,6 @@
 @media (max-width: 767.98px) {
 }
 
-.pagina-tratamientos .tz-foto {
-  max-width: none;
-  border: 1px solid rgba(212, 175, 55, .40);
-}
-
-/* Las dos escuadras de oro en diagonal, como en el resto de la pagina. */
-.pagina-tratamientos .tz-foto::before,
-.pagina-tratamientos .tz-foto::after {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 0 solid var(--gold-200);
-  pointer-events: none;
-  z-index: 2;
-}
-.pagina-tratamientos .tz-foto::before {
-  top: 0; left: 0;
-  border-top-width: 2px;
-  border-left-width: 2px;
-}
-.pagina-tratamientos .tz-foto::after {
-  right: 0; bottom: 0;
-  border-bottom-width: 2px;
-  border-right-width: 2px;
-}
-
 .pagina-tratamientos .bloque-tratamiento-numero {
   position: relative;
   padding-left: 2.6rem;
