@@ -344,7 +344,18 @@
    clase sola. Empatando en peso manda el que va despues, y el 29 va el
    ultimo. */
 .ns-carta .cb-tit {
-  /* `auto` arriba: es uno de los dos huecos donde se reparte lo que sobra. */
+  /* `auto` arriba: es uno de los CINCO huecos donde se reparte lo que sobra.
+
+     Fueron dos —uno debajo del logo y otro encima del pie— y con eso la carta
+     quedaba con un palmo de blanco arriba y la firma pegada a la franja de
+     abajo. Repartido entre cinco, el aire va donde se lee: entre el titulo y
+     el texto, entre los dos parrafos, antes del lema y antes de la firma. Y
+     la firma acaba justo encima de la franja del nombre, que es donde tiene
+     que acabar una carta.
+
+     Los minimos los ponen los margenes de ABAJO de la pieza anterior, no los
+     de arriba de esta: un `auto` no tiene minimo, y sin escena viva vale cero
+     y la carta se queda con los margenes de siempre. */
   margin: auto 0 .9em;
   font-family: var(--fuente-titulo);
   font-weight: 400;
@@ -366,6 +377,38 @@
   color: var(--oro-hondo);
 }
 
+/* La raya de oro debajo de la pregunta.
+
+   Se abre desde el centro con la escena (`--k-filo`, la misma que dibuja los
+   filos de las dos franjas) y no con el ancho sino con `scaleX`, que es una
+   transformacion y se la lleva el compositor: una raya de dos pixeles
+   creciendo por `width` obliga a rehacer la linea del titulo en cada
+   fotograma.
+
+   Y luego le pasa un destello cada cuatro segundos y medio, de izquierda a
+   derecha. Son dos capas de fondo: el oro debajo, quieto, y por encima una
+   veta de luz que cruza; se mueven las dos posiciones a la vez porque
+   `background-position` no sabe animar una sola capa.
+
+   El oro es el hondo, el de piedra clara: esta raya cae sobre el papel. */
+.ns-carta .cb-tit::after {
+  content: "";
+  display: block;
+  width: min(8.5em, 62%);
+  height: 2px;
+  margin: .75em auto 0;
+  background:
+    linear-gradient(90deg, rgba(255, 249, 226, 0) 0%, rgba(255, 249, 226, .95) 50%, rgba(255, 249, 226, 0) 100%) -60% 0 / 42% 100% no-repeat,
+    var(--gradiente-oro-hondo) 0 0 / 100% 100% no-repeat;
+  transform: scaleX(var(--k-filo, 1));
+  transform-origin: 50% 50%;
+  animation: cb-destello 4.5s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+@keyframes cb-destello {
+  0%, 18%   { background-position: -60% 0, 0 0; }
+  62%, 100% { background-position: 160% 0, 0 0; }
+}
+
 /* El cuerpo va alineado a la izquierda y no justificado. En el documento
    estaba justificado, pero eso era una columna de papel de 12 cm; en una
    pantalla de telefono justificar abre rios entre las palabras y la carta se
@@ -379,10 +422,13 @@
   text-align: left;
   color: #2E2E2E;
 }
-.cb-p:last-of-type { margin-bottom: 0; }
+/* Los dos parrafos se separan tambien con lo que sobre, y el ultimo lleva
+   el aire que antes ponia el lema por arriba. */
+.cb-p + .cb-p { margin-top: auto; }
+.cb-p:last-of-type { margin-bottom: 1em; }
 
 .cb-lem {
-  margin: 1em 0 0;
+  margin: auto 0 1.25em;
   font-family: var(--fuente-titulo);
   font-weight: 400;
   font-style: italic;
@@ -401,7 +447,7 @@
    renglon de oro fino: los dos se leen mejor sobre el papel, y en negro se
    perderian. Las tres piezas cuelgan de `.cb-tinta` y no una de otra, porque
    la franja tiene que poder salirse a los cantos. */
-.cb-rub { margin-top: 1.25em; margin-bottom: .7em; }
+.cb-rub { margin-top: auto; margin-bottom: .7em; }
 .cb-rub__filo {
   display: block;
   width: 4.2em;
@@ -699,8 +745,8 @@
   .ns-carta--viva .cb-logo > img { width: min(46%, 10rem); }
   .ns-carta--viva .cb-tit { margin-bottom: .7em; }
   .ns-carta--viva .cb-p { margin-bottom: .6em; line-height: 1.58; }
-  .ns-carta--viva .cb-lem { margin-top: .75em; }
-  .ns-carta--viva .cb-rub { margin-top: .95em; }
+  .ns-carta--viva .cb-p:last-of-type { margin-bottom: .75em; }
+  .ns-carta--viva .cb-lem { margin-bottom: .95em; }
   .ns-carta--viva .cb-rub__filo { margin-bottom: .55em; }
   .ns-carta--viva .cb-nombre { padding-top: calc(.5em + var(--tapa-baja) / 2); padding-bottom: .5em; }
   .ns-carta--viva .cb-cargo { padding-bottom: calc(.5em + var(--tapa-baja) / 2); }
@@ -716,8 +762,8 @@
   .ns-carta--viva .cb-logo > img { width: min(38%, 8.5rem); }
   .ns-carta--viva .cb-tit { font-size: 1.5em; margin-bottom: .55em; }
   .ns-carta--viva .cb-p { margin-bottom: .5em; line-height: 1.5; }
-  .ns-carta--viva .cb-lem { font-size: 1.12em; margin-top: .6em; line-height: 1.32; }
-  .ns-carta--viva .cb-rub { margin-top: .7em; }
+  .ns-carta--viva .cb-p:last-of-type { margin-bottom: .6em; }
+  .ns-carta--viva .cb-lem { font-size: 1.12em; margin-bottom: .7em; line-height: 1.32; }
   .ns-carta--viva .cb-nombre { padding-top: calc(.42em + var(--tapa-baja) / 2); padding-bottom: .42em; }
   .ns-carta--viva .cb-cargo { margin-top: .4em; padding-bottom: calc(.42em + var(--tapa-baja) / 2); }
   .ns-carta--viva .ns-carta__firma { width: min(28%, 6rem); }
@@ -753,8 +799,10 @@
               transform .45s cubic-bezier(.22, 1, .36, 1),
               visibility .45s;
 }
-/* Con menos movimiento pedido no hay escena: ni firma a medias. */
+/* Con menos movimiento pedido no hay escena: ni firma a medias, ni destello
+   dando vueltas en la raya del titulo. */
 @media (prefers-reduced-motion: reduce) {
   .ns-carta__firma { clip-path: none; }
+  .ns-carta .cb-tit::after { animation: none; }
   .con-carta .btn-cookies { transition: none; }
 }
