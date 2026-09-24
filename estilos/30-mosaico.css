@@ -21,7 +21,9 @@
                     fuera, y la foto de la clinica delante, abajo, en el
                     lado del texto, montada con paspartu. Lo que tapa es la
                     franja de fuera del retrato, donde no hay nadie: cada
-                    foto corre su encuadre (`--fx`, `--fy`) para eso.
+                    foto corre su encuadre (`--fx`, `--fy`) para eso. Si
+                    lleva un segundo retrato, va pequeno en el hueco de
+                    arriba, sobre la foto de la clinica.
      - `--escalera` dos apaisadas que bajan en escalera, la segunda
                     montada sobre el pie de la primera (Odontologia General).
      - `--triptico` el retrato alto a un lado y dos fotos apiladas al otro,
@@ -71,6 +73,11 @@
 .tz-mosaico--retrato                 { --mx: 32%; --my: 0%; --mw: 64%; --mh: 97%; }
 .tz-mosaico--retrato > :nth-child(1) { --x: 36%; --y: 3%;  --w: 64%; --h: 97%; }
 .tz-mosaico--retrato > :nth-child(2) { --x: 0%;  --y: 57%; --w: 50%; --h: 39%; }
+/* Con un segundo retrato (Armonizacion Orofacial) este ocupa el hueco de
+   arriba, en el lado del texto, y el marco pasa detras de el: detras del
+   principal, su canto izquierdo caia justo entre los dos retratos. */
+.tz-mosaico--retrato:has(> :nth-child(3)) { --mx: 0%; --my: 0%; --mw: 28%; --mh: 48%; }
+.tz-mosaico--retrato > :nth-child(3) { --x: 4%;  --y: 3%;  --w: 28%; --h: 48%; }
 
 .tz-mosaico--escalera                 { --mx: 4%;  --my: 0%;  --mw: 76%; --mh: 50%; }
 .tz-mosaico--escalera > :nth-child(1) { --x: 0%;  --y: 4%;  --w: 76%; --h: 50%; }
