@@ -897,8 +897,8 @@ var DESTINOS_CARTA={
 '--k-frase':pieza(carta,'.ns-carta__frase'),
 '--k-papel':pieza(carta,'.ns-carta__hoja'),
 '--k-texto':pieza(carta,'.cb-tinta'),
-'--k-filo':pieza(carta,'.ns-carta__escuadras'),
-'--k-firma':pieza(carta,'.ns-carta__firma')
+'--k-filo':pieza(carta,'.cb-tinta'),
+'--k-firma':pieza(carta,'.cb-rub')
 };
 function borrar(destinos){
 Object.keys(destinos).forEach(function(nombre){

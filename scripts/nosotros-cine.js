@@ -244,8 +244,18 @@ document.addEventListener('DOMContentLoaded', function () {
       /* Lo impreso se funde sobre la hoja ya puesta, y se funde de una pieza:
          la variable va en la capa que lo lleva todo y la usa ella sola. */
       '--k-texto': pieza(carta, '.cb-tinta'),
-      '--k-filo': pieza(carta, '.ns-carta__escuadras'),
-      '--k-firma': pieza(carta, '.ns-carta__firma')
+      /* El filo se escribe en la capa de tinta y lo leen los tres sitios
+         donde hay oro que dibujar: los dos cantos de las franjas y la raya
+         de debajo de la pregunta. Apuntaba a `.ns-carta__escuadras`, que
+         eran las cuatro escuadras de oro del marco; con las franjas
+         llegando a los cantos ya no hay escuadras ni nodo al que apuntar, y
+         la variable se quedaba sin escribir: todo salia dibujado de
+         entrada. */
+      '--k-filo': pieza(carta, '.cb-tinta'),
+      /* Y la firma, en la rubrica y no en la imagen: debajo de la firma hay
+         ahora una raya que se dibuja con ella, y desde la imagen no la
+         alcanza. */
+      '--k-firma': pieza(carta, '.cb-rub')
     };
     function borrar(destinos) {
       Object.keys(destinos).forEach(function (nombre) {

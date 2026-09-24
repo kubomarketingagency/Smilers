@@ -163,6 +163,23 @@
     to   { opacity: 1; clip-path: inset(-50%); }
   }
 
+  /* El titular de los tres heros de madera lleva la muela de oro colgada de
+     su ultima palabra (ver el 15), y la muela se sale de la caja del titulo
+     por arriba y por abajo: mide dos veces y media lo que el renglon. El
+     medio por ciento de holgura del recorte esta puesto para que no se coma
+     la sombra de las letras, y a la muela la cortaba por los dos lados.
+     Mismo movimiento y mismo escalon; lo unico que cambia es hasta donde
+     abre la mascara al final, que aqui tiene que dar para la muela entera.
+     Y sigue siendo una mascara: la muela se descubre con el titulo, que es
+     lo que tiene que pasar cuando forman una sola pieza. */
+  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
+    animation-name: entrada-velo-muela;
+  }
+  @keyframes entrada-velo-muela {
+    from { opacity: 0; clip-path: inset(0 -50% 102% -50%); }
+    to   { opacity: 1; clip-path: inset(-280% -50% -140% -50%); }
+  }
+
   /* --- 5. la placa de la intro de Tratamientos -------------------------- */
 
   /* El texto de dentro ya entra con la secuencia de arriba —es un `p`, le

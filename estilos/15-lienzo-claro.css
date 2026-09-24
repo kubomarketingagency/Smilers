@@ -397,150 +397,150 @@
 }
 
 /* ---------------------------------------------------------------------------
-   La muela de oro, a la derecha del texto, dentro del marco. La llevan los
-   tres heros de madera: Galeria, FAQ y Privacidad.
+   La muela de oro, metida en el titular. La llevan los tres heros de madera:
+   Galeria, FAQ y Privacidad.
 
    Es un vector (`imagenes/muela-oro.svg`): el contorno va en curvas y por
    dentro lleva el brillo del original, asi que el filo sale nitido a
    cualquier tamano y en cualquier pantalla. La de antes era una foto de
    480px sacada de un original borroso, y el borde se veia pixelado.
 
-   En la tableta y el ordenador cuadra con el texto por construccion: mide
-   lo mismo de alto que el bloque de texto (de la ruta a la bajada: `top: 0`
-   y `height: 100%` del `.container`, que no tiene relleno vertical), asi
-   que queda a la misma distancia de los filos de arriba y de abajo que el
-   texto; y su canto derecho cae en `--bp-lado`, a la misma distancia del
-   filo derecho que el texto del izquierdo. El ancho sale solo, de la
-   proporcion de la imagen.
+   VA COLGADA DE LA ULTIMA PALABRA DEL TITULO, no del canto de la pagina, y
+   la palabra le entra por el hueco. Estuvo pegada al canto derecho, con el
+   texto guardandole sitio a su izquierda, y lo que salia eran dos cosas
+   sueltas en la misma fila con un desierto en medio: en el ordenador el
+   titulo acababa a doscientos pixeles de ella, y en el telefono se subia a
+   la esquina, se metia debajo de la barra de navegacion y se cruzaba con la
+   ruta. Colgada de la palabra no hay desierto posible —se mueve con el
+   texto, mida lo que mida el titulo y la pantalla— y las dos piezas se leen
+   como una sola.
 
-   El texto le deja sitio: el `.container` le reserva a la derecha
-   `--bp-muela-reserva` (la muela mas el hueco entre los dos), y la muela no
-   pasa nunca de ese sitio (`max-width`, con `object-fit: contain` por si un
-   titulo mas alto de la cuenta la hiciera crecer): no hay combinacion de
-   pantalla y titulo en la que pise la letra.
+   EL HUECO ESTA MEDIDO SOBRE EL PROPIO VECTOR. La muela esta dibujada
+   abierta: la linea de la corona baja por la izquierda, se corta al 40% de
+   su alto, y de ahi para abajo no hay tinta a la izquierda hasta el 85% de
+   su ancho, que es por donde el otro trazo baja hacia la raiz. Entre el 44%
+   y el 80% de su alto queda libre su mitad izquierda entera y parte de la
+   otra. Ahi es donde se mete la palabra.
 
-   En el ordenador, desde 1280px, los tres titulos caben en una linea y la
-   reserva es la de una muela de ~220px. En la tableta no caben con la muela
-   al lado, y cada uno se partia por donde le tocaba —unos si y otros no,
-   segun la pagina y el ancho—; ahi el titulo va siempre en dos lineas
-   (`max-width: 11em`: «Un vistazo a / Smilers», «Preguntas / frecuentes»,
-   «Politica de / privacidad») y los tres heros quedan iguales.
+   Dos cifras la colocan, y las dos se cuentan en muelas:
 
-   En el telefono va a la derecha del titulo y no del bloque entero: la ruta
-   de FAQ y de Privacidad llega casi al canto y arriba no deja sitio. Flota
-   a la derecha —por eso va en el HTML justo despues de la ruta: un flotante
-   solo aparta a lo que viene detras— y mide de alto lo mismo que el titulo,
-   de la primera linea al filo de oro. El titulo va siempre en dos lineas
-   (`max-width: 11em`), asi que esa altura se sabe sin medir: dos lineas de
-   1,18 de interlineado, mas el filo (1,4rem de margen y 1px de linea). Y el
-   cuerpo del titulo es el que deja caber la palabra mas larga de los tres
-   —FRECUENTES, 7,9em con su espaciado y un margen— al lado de la muela con
-   1rem de hueco: el de siempre (30,4px) desde 412px de ancho y un poco
-   menos por debajo (28,9px a 393, 25,7px a 360). */
+   - `--bp-muela-sitio`, a que altura de la muela cae el centro de la
+     palabra, contado desde su techo. Va en .55: por encima del 42% la
+     palabra daria con la corona, y cuanto mas abajo se ponga mas muela
+     queda por encima —y por encima estan la ruta y la barra de navegacion,
+     que es fija y opaca y la cortaria—.
+   - `--bp-muela-entra`, cuanto de la muela tapa la palabra, contado en
+     anchos de muela. Poco mas de la mitad: a esa altura la tinta no empieza
+     hasta el 80% largo, asi que queda un dedo de aire antes del oro.
+
+   El alto sale del ancho y no del archivo (1,0234 veces, la proporcion del
+   vector: 458,4 x 469,47), que es lo que deja contar `--bp-muela-sitio`
+   sobre algo que el CSS sabe cuanto mide.
+
+   Y se pinta POR DETRAS de la palabra —`z-index: -1` dentro del contexto de
+   apilado que abre `isolation`—, que es el seguro de todo lo demas: si algun
+   dia un titulo mas largo o una pantalla rara la acercan de mas, lo que se
+   cruce pasa por debajo de la letra y no por encima.
+
+   El titulo solo tiene que guardarle sitio a su derecha, que es lo unico que
+   la muela asoma fuera de la palabra; lo de la izquierda cae sobre la propia
+   palabra y no le quita nada a nadie. */
+.pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
+  /* El ancho mira a los dos lados de la ventana, y el que manda es el que
+     menos deja. A lo ancho, para que la muela crezca con el titulo. Y a lo
+     alto, porque lo que de verdad la limita esta arriba: la barra de
+     navegacion es fija y opaca, y por encima de la palabra hay media muela.
+     En un portatil de 768 de alto el bloque de texto sube, y con la muela
+     atada solo al ancho la corona acababa tocando la barra. */
+  --bp-muela-ancho: clamp(170px, min(17vw, 26vh), 245px);
+  --bp-muela-alto: calc(var(--bp-muela-ancho) * 1.0234);
+  --bp-muela-entra: .52;
+  --bp-muela-sitio: .55;
+  /* Lo que la rayita de debajo del titulo le suma de alto a su caja: su
+     margen y su pixel. Hace falta para centrar la muela en las LINEAS del
+     titulo y no en su caja, que es medio dedo mas alta por culpa de la
+     rayita (solo en el telefono, ver mas abajo). */
+  --bp-raya: calc(clamp(1.4rem, 2.6vw, 2.2rem) + 1px);
+}
+/* El remate del titular: la ultima palabra, que ya venia marcada en el HTML
+   para ir en otro color. En linea y como bloque, que es lo que la deja ser
+   el origen de la muela; y una palabra no se parte, asi que no hay riesgo de
+   que la caja se rompa en dos lineas y el origen se quede a medias. */
+.pagina-clara .banner-pagina--hero .bp-remate {
+  position: relative;
+  display: inline-block;
+}
 .pagina-clara .banner-pagina--hero .bp-muela {
-  display: block;
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: calc(100% - var(--bp-muela-ancho) * var(--bp-muela-entra));
+  width: var(--bp-muela-ancho);
+  height: auto;
+  transform: translateY(calc(var(--bp-muela-alto) * var(--bp-muela-sitio) * -1));
+  filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
   pointer-events: none;
 }
+.pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
+  position: relative;
+  padding-right: calc(var(--bp-muela-ancho) * (1 - var(--bp-muela-entra)) + .5rem);
+}
 
-/* En el telefono la muela deja de ser una pieza al lado del titulo y pasa a
-   ser **la esquina de arriba a la derecha**. Antes flotaba junto al texto, del
-   alto justo del titulo, y se leia como un adorno puesto ahi por no dejar el
-   hueco vacio. Ahora es grande, se sienta a caballo sobre el filo de oro y lo
-   que cierra es el rincon donde vive el texto.
+/* En el telefono la muela mide menos, y no por gusto: por encima de la
+   palabra esta la ruta —en FAQ, «Inicio > Preguntas frecuentes», que llega
+   casi al canto— y la muela no puede subir hasta ella. Lo que cabe entre la
+   ruta y la palabra es lo que mide. Estuvo en 36vw y a caballo sobre el filo
+   del marco, y ahi es justo donde se cruzaba con esa ruta.
 
-   Y EL FILO LE ENTRA POR DENTRO. Antes moria contra el canto de la muela: dos
-   piezas de oro tocandose, que a ese tamano se lee como un borron. Esta
-   dibujada abierta —la linea de la corona baja por la izquierda, se corta a
-   media altura y el resto es hueco hasta la raiz—, asi que por debajo de ese
-   corte se le puede pasar por dentro sin rozarla. Medido sobre el propio
-   vector: el trazo izquierdo acaba al 38% de su alto, y de ahi para abajo no
-   hay nada a la izquierda hasta el 85% de su ancho, que es donde empieza la
-   raiz. El filo cruza al 46% del alto —ya dentro del hueco— y se para al 76%
-   del ancho: un dedo de aire antes de la raiz. Las dos cifras van juntas en
-   `--bp-muela-cruce` y en el ancho del filo, y si se cambia una hay que
-   cambiar la otra.
+   Entra un poco mas que en el ordenador: a este tamano el hueco da para
+   ello, y con el titulo en dos lineas la palabra de abajo es corta. */
+/* EN EL TELEFONO NO CUELGA DE LA PALABRA SINO DEL TITULO ENTERO, y no se
+   mete debajo de la letra: se pone a su derecha, centrada en las dos lineas.
 
-   `--bp-muela-cruce` es lo que la muela asoma por encima del filo, contado en
-   anchos de muela: el 46% de su alto, y su alto es 1,0242 veces su ancho
-   (458,4 x 469,47 del vector). De ahi sale el .471.
+   No es un capricho. Ahi el titulo va siempre en dos lineas, y la palabra de
+   la que colgaria es la de ABAJO: media muela queda por encima de ella, o
+   sea justo encima de la primera linea. En Galeria, ademas, la linea de
+   arriba —«UN VISTAZO A»— es mas larga que la de abajo —«SMILERS»—, asi que
+   no hay tamano ni posicion que evite el cruce. Y una muela cruzada por
+   delante de la mitad del titular es precisamente lo que habia que quitar.
 
-   El titulo no le pasa por debajo: se le acorta el ancho a lo que queda libre
-   a su izquierda, con un dedo de solape para que las dos lineas caigan a
-   plomo. La bajada empieza por debajo de la muela y se lleva el ancho entero.
+   Asi que se cuelga del titulo: `position: static` en la palabra devuelve el
+   origen al `h1`, y el titulo le guarda a su derecha la muela entera. Lo que
+   se centra son las LINEAS y no la caja del `h1`, que lleva colgando la
+   rayita de oro y su margen; de ahi el descuento de `--bp-raya`.
 
-   La muela va por encima del marco (`z-index`), que en el HTML va detras: sin
-   eso la linea de oro se le dibujaba encima. */
+   El ancho es el que deja la palabra mas larga de las tres —FRECUENTES— sin
+   partirse ni llegar a tocarla: una palabra no se parte, y si no cabe se
+   sale de su caja. Medido a 320, 360 y 412. */
 @media (max-width: 767.98px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
-    --bp-muela-ancho: clamp(118px, 36vw, 182px);
-    --bp-muela-cruce: .471;
+    --bp-muela-ancho: clamp(76px, 24vw, 112px);
   }
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
-    max-width: calc(100% - var(--bp-muela-ancho) + 2.4rem);
     font-size: var(--bp-titulo);
+    /* Un palmo mas de aire entre la ruta y el titulo: por debajo del titular
+       sobra madera y por encima la muela no tenia donde crecer. De paso la
+       ruta deja de ir pegada al titulo. */
+    margin-top: clamp(2.2rem, 8vw, 3rem);
+    padding-right: calc(var(--bp-muela-ancho) + .75rem);
+    /* Y la caja del titulo se encoge a lo que ocupe. Es lo que quita el
+       desierto cuando el titulo cabe en una linea —de 540 a 767, y en los
+       telefonos tumbados—: ahi la muela se pega al final del texto en vez de
+       quedarse colgada del canto. Con dos lineas la caja vuelve a medir el
+       ancho entero, que es como funciona `fit-content` —lo que no cabe de
+       una pieza se lleva todo el sitio— y es justo lo que hace falta: con el
+       titulo partido, la muela tiene que quedarse fuera de las dos lineas. */
+    width: fit-content;
+    max-width: 100%;
   }
+  .pagina-clara .banner-pagina--hero .bp-remate { position: static; }
   .pagina-clara .banner-pagina--hero .bp-muela {
-    position: absolute;
-    z-index: 3;
-    width: var(--bp-muela-ancho);
-    height: auto;
-    top: calc(var(--bp-marco-aire-y, 2.6rem) * -1
-              - var(--bp-muela-ancho) * var(--bp-muela-cruce));
-    right: calc(var(--bp-lado) - var(--bp-marco-aire, 1.1rem) - .35rem);
-    filter: drop-shadow(0 6px 16px rgba(4, 3, 2, .6));
+    top: calc((100% - var(--bp-raya)) / 2);
+    left: auto;
+    right: 0;
+    transform: translateY(-50%);
   }
-  /* El filo de arriba, alargado hasta meterse por el hueco de la muela y
-     pararse antes de la raiz. Es la escuadra de siempre; lo unico que cambia
-     es donde termina. */
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) .bp-marco::before {
-    width: calc(100% + .35rem - var(--bp-muela-ancho) * .24);
-  }
-}
-
-/* En la tableta y el ordenador la muela tiene tamano propio y no el del
-   bloque de texto. Antes media lo mismo de alto que el texto (`top: 0` y
-   `height: 100%`), lo cual la ataba a algo que cambia solo: con el titulo en
-   una linea el bloque baja a 223px y la muela se quedaba en 217 de ancho,
-   una pieza pequena al lado de un titular de 83px de alto. Ahora manda
-   `--bp-muela-ancho`, se apoya por el pie en el mismo renglon en que acaba el
-   texto y crece hacia arriba, que es hacia donde hay sitio: por ese lado el
-   marco no tiene filo —las escuadras son la de arriba a la izquierda y la de
-   abajo a la derecha— y puede pasar por encima sin tocar ninguna linea.
-
-   `--bp-muela-adentro` es lo que se mete hacia dentro del bloque en vez de
-   quedarse pegada al margen de la pagina. Colgada del canto derecho miraba a
-   la nada: entre ella y el filo del marco no habia nada que mirar, y entre
-   ella y el titulo quedaba un desierto. Metida hacia dentro, el titulo y la
-   muela se leen como una sola linea. Lo que se mete se le suma tambien al
-   sitio que el texto le reserva, para que no haya combinacion de pantalla y
-   titulo en la que le pise la letra. */
-@media (min-width: 768px) {
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
-    --bp-muela-hueco: clamp(1.9rem, 3vw, 2.6rem);
-    --bp-muela-ancho: clamp(190px, 17vw, 300px);
-    --bp-muela-adentro: clamp(1.6rem, 7.6vw - 50px, 7rem);
-    --bp-muela-reserva: calc(var(--bp-muela-ancho) + var(--bp-muela-hueco));
-    padding-right: calc(var(--bp-lado) + var(--bp-muela-reserva) + var(--bp-muela-adentro));
-  }
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: 11em; }
-  .pagina-clara .banner-pagina--hero .bp-muela {
-    position: absolute;
-    bottom: 0;
-    top: auto;
-    right: calc(var(--bp-lado) + var(--bp-muela-adentro));
-    width: var(--bp-muela-ancho);
-    height: auto;
-    filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
-  }
-}
-/* Desde 1360 los tres titulos caben en una linea y se les suelta el ancho.
-   La cifra esta medida, y el que manda es el de Privacidad, que es el mas
-   largo de los tres (851px): a 1320 le faltaba un pelo y a 1280, 25px. Por
-   debajo van los tres en dos lineas (`max-width: 11em`), que es como se
-   parten igual en las tres paginas en vez de cada uno por donde le toque. */
-@media (min-width: 1360px) {
-  .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 { max-width: none; }
 }
 
 @media (max-width: 991.98px) {
