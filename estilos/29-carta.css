@@ -427,6 +427,14 @@
 .cb-p + .cb-p { margin-top: auto; }
 .cb-p:last-of-type { margin-bottom: 1em; }
 
+/* El lema va en la tinta de la carta, no en oro. Es la ultima frase que se
+   lee —una invitacion, no un adorno— y en el sitio el texto de leer nunca va
+   dorado: sobre papel claro el oro pierde contraste y se lee peor cuanto mas
+   bonito queda. Lo que lo separa de los parrafos es la letra de titulos, la
+   cursiva y el cuerpo, que ya es de sobra.
+
+   El oro se queda donde marca: la raya del titulo, los filos de las franjas
+   y el cargo, que cae sobre marmol oscuro. */
 .cb-lem {
   margin: auto 0 1.25em;
   font-family: var(--fuente-titulo);
@@ -434,11 +442,7 @@
   font-style: italic;
   font-size: 1.24em;
   line-height: 1.4;
-  background-image: var(--gradiente-oro-hondo);
-  -webkit-background-clip: text;
-          background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--oro-hondo);
+  color: #1F1D1A;
 }
 
 /* ---- La rubrica: la raya, la firma, la franja del nombre y el cargo ----
@@ -496,11 +500,15 @@
   margin-top: auto;
   padding-top: calc(.55em + var(--tapa-baja) / 2);
 }
+/* El nombre y el cargo van un punto por encima de lo que pedirian sus
+   cuerpos: son la unica letra de la carta que se lee sobre marmol oscuro y a
+   dos pantallas de distancia —la firma queda arriba, en el papel—, y a 1,1em
+   el nombre se perdia contra la plancha. */
 .cb-nombre b {
   display: block;
   font-family: var(--fuente-titulo);
   font-weight: 500;
-  font-size: 1.1em;
+  font-size: 1.26em;
   line-height: 1.3;
   color: #FFFFFF;
 }
@@ -516,7 +524,7 @@
   font-family: var(--fuente-cuerpo);
   font-style: normal;
   font-weight: 700;
-  font-size: .6em;
+  font-size: .68em;
   letter-spacing: .24em;
   text-transform: uppercase;
   /* El vivo y no el hondo: el cargo cae sobre el marmol de la franja de
@@ -762,6 +770,17 @@
 @media (max-width: 991.98px) {
   .ns-carta__hoja { --aire: 1rem; --lado: 1.2rem; padding-inline: var(--lado); }
   .ns-carta--viva .cb-tinta { --cb-tope: 2.15vh; }
+}
+
+/* Y en el telefono de verdad el nombre no crece tanto. No es por el alto sino
+   por el ancho: con la carta a pantalla completa la franja del final es tan
+   ancha como la pantalla, el nombre va centrado en ella y ahi abajo a la
+   derecha estan los dos botones flotantes. A 1,26em la ultima letra se le
+   metia debajo del de WhatsApp. En una ventana de ordenador, por estrecha que
+   sea, eso no pasa: el nombre acaba a mitad de camino. */
+@media (max-width: 767.98px) {
+  .cb-nombre b { font-size: 1.12em; }
+  .cb-cargo { font-size: .62em; }
 }
 
 /* Pantallas bajas —un telefono pequeno, o uno grande en horizontal—: lo

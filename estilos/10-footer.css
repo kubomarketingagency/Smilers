@@ -67,6 +67,77 @@
   color: #C0C0C0;
 }
 
+/* Y debajo de cada cabecera, su franja de oro. La cabecera en plata se
+   quedaba flotando sobre el negro y lo que encabeza —un mapa y un
+   formulario— empieza medio palmo mas abajo; la franja la ata a lo suyo. Mide
+   lo que mide la cabecera, que para eso va en `fit-content`, y el oro es el
+   vivo, que aqui el fondo es onix. */
+.footer-titulo::after {
+  content: '';
+  display: block;
+  height: 2px;
+  margin-top: .6rem;
+  background: var(--gradiente-oro);
+}
+
+/* ---------------------------------------------------------------------------
+   La ficha de la casa: la primera columna, dentro de un recuadro de oro.
+
+   Encierra lo que es la ficha de la clinica —los dos logos, la linea de
+   presentacion, las direcciones, los telefonos, el correo, el horario y los
+   botones de redes— y la separa de las otras dos columnas, que no son datos
+   sino dos herramientas: el mapa y el formulario.
+
+   El filo va en cuatro capas de fondo y no en un `border` porque el oro del
+   sitio es un degradado y un borde solo admite color plano; es la misma
+   manera que el marco de los heros de madera (15-lienzo-claro.css). Y va en
+   un `::before` con `inset: 0` para que no cuente en la caja: asi el relleno
+   es el aire que se ve y no hay que descontarle dos pixeles.
+
+   El recuadro se queda en la caja de la columna, sin salirse a la canal: ahi
+   su filo izquierdo cae justo en el canto del `container`, en la misma
+   vertical que el texto del final del pie. El relleno es el que puede ser sin
+   estrechar la direccion de la matriz, que es la linea mas larga del sitio.
+
+   Por dentro lleva un rescoldo de oro muy bajo desde la esquina de arriba, lo
+   justo para que el recuadro no sea una linea suelta sobre el negro. */
+.pie-ficha {
+  position: relative;
+  padding: clamp(1.15rem, 1.9vw, 1.7rem);
+  background: radial-gradient(120% 90% at 0% 0%, rgba(212, 175, 55, .08) 0%, transparent 62%);
+}
+.pie-ficha::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .78;
+  background:
+    var(--gradiente-oro) left top / 100% 1px no-repeat,
+    var(--gradiente-oro) left bottom / 100% 1px no-repeat,
+    var(--gradiente-oro) left top / 1px 100% no-repeat,
+    var(--gradiente-oro) right top / 1px 100% no-repeat;
+}
+/* Dentro de la ficha el texto no necesita tanto aire por abajo: el recuadro
+   ya lo cierra. */
+.pie-ficha .footer-contacto { margin-bottom: 1.2rem; }
+
+/* Y los seis botones de redes encogen un punto, porque el relleno del
+   recuadro se come lo que les sobraba: seis circulos de 42 con su aire piden
+   300px seguidos y la columna, a 1200, se queda en 296. Un boton menos de
+   ancho y una hilera en vez de dos. */
+.pie-ficha .redes-sociales { gap: .5rem; }
+.pie-ficha .redes-sociales a { width: 40px; height: 40px; }
+/* De 992 a 1199 la caja de la pagina se queda en 960 y la columna en 272, que
+   es lo mas estrecha que llega a ser con las tres en fila; ahi los botones se
+   partian en cuatro y dos ya antes del recuadro. Encogen lo justo para
+   quedarse en una hilera, que es el trato en todos los demas tamanos. */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .pie-ficha { padding: 1rem; }
+  .pie-ficha .redes-sociales { gap: .4rem; }
+  .pie-ficha .redes-sociales a { width: 34px; height: 34px; font-size: .9rem; }
+}
+
 .footer-texto { font-size: .93rem; color: rgba(255, 255, 255, .68); line-height: 1.8; }
 
 .footer-contacto { list-style: none; padding: 0; margin: 1.5rem 0; }
