@@ -173,6 +173,12 @@
   line-height: 1.65;
   color: var(--texto);
 }
+/* Las mismas comillas de oro que el panel: es la misma cita. */
+.tst-tarjeta blockquote::before,
+.tst-tarjeta blockquote::after {
+  color: var(--oro-marca);
+  -webkit-text-fill-color: var(--oro-marca);
+}
 .tst-tarjeta blockquote::before { content: '\201C'; }
 .tst-tarjeta blockquote::after  { content: '\201D'; }
 
@@ -254,18 +260,6 @@
   min-width: 0;
   opacity: 0;
 }
-.tst-comillas {
-  display: block;
-  font-family: var(--fuente-titulo);
-  font-size: clamp(3rem, 7vw, 5rem);
-  line-height: 1;
-  margin-bottom: -.5em;
-  background: var(--gradiente-oro);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--gold-500);
-}
 .tst-cita {
   margin: .9rem 0 1.4rem;
   font-family: var(--fuente-titulo);
@@ -273,6 +267,23 @@
   line-height: 1.45;
   color: var(--marmol);
 }
+/* Y va entre comillas de oro, que es lo que dice que esas palabras son de
+   quien firma y no de la casa. Son las dos, abre y cierra, y van en la linea
+   —no de adorno colgando encima—: con una comilla suelta arriba el texto no
+   quedaba entrecomillado, y en el telefono, donde el adorno no cabia, no
+   quedaba nada.
+
+   El oro es el vivo: el panel cae sobre la madera oscura de la escena. Y va
+   plano y no en degradado porque son dos glifos de nada; un degradado de
+   cuatro tonos en un signo de puntuacion no se ve, y si se viera seria un
+   gradiente en mitad de una palabra. */
+.tst-cita::before,
+.tst-cita::after {
+  color: var(--oro-marca);
+  -webkit-text-fill-color: var(--oro-marca);
+}
+.tst-cita::before { content: '\201C'; }
+.tst-cita::after { content: '\201D'; }
 .tst-firma {
   margin: 0;
   display: flex;
@@ -610,9 +621,9 @@
   transform: translateX(-50%) scale(1.06);
 }
 
-/* Ninguna cita es una cita: lo que dice el panel presenta el video, no
-   entrecomilla a nadie. */
-.tst-comillas { display: none; }
+/* La cita va en cursiva. Y va entrecomillada, que ahora SI es una cita: son
+   las palabras que cada uno dice en su video, no un renglon de la casa
+   presentandolo. */
 .tst-cita { font-style: italic; }
 
 /* ---- La misma pieza en la tarjeta de la lista ----
