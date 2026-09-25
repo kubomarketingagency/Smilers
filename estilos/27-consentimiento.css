@@ -512,11 +512,17 @@ html.show--preferences .navbar-principal { pointer-events: none; }
   flex: 1 1 auto;
   gap: .55rem;
 }
-/* LOS BOTONES, los del aviso y los del panel. Una pildora con un filo de oro
-   de un pixel y un velo de oro al 7% por dentro, y la letra de los botones
-   del sitio: versales de Bodoni espaciadas, en oro. Al tocarla se llena del
-   degradado de marca y la letra pasa a onix, como el boton del sitio al
-   pasar por encima. Todos del mismo ancho (`flex: 1`), y aceptar y rechazar
+/* LOS BOTONES, los del aviso y los del panel. El boton de oro del sitio
+   (16-oro.css) hecho pildora: fondo negro, filo de oro de degradado y la
+   letra en el oro de la marca, en versales de Bodoni espaciadas. Al tocarlo
+   se llena del degradado y la letra pasa a onix, como el del sitio al pasar
+   por encima. Llevaron un velo de oro al 7% por dentro y el filo a media
+   luz, y sobre el onix de la tarjeta se leian como un marron dorado.
+
+   El filo va pintado como FONDO, en dos capas —negro hasta el relleno, el
+   degradado hasta el borde— y no con `border-image`, que es como lo lleva
+   el boton del sitio: `border-image` no respeta las esquinas redondas, y la
+   pildora saldria cuadrada. Todos del mismo ancho (`flex: 1`), y aceptar y rechazar
    iguales en todo. Iban como texto suelto con una raya debajo, y no se
    leian como algo que se pulsa. El `padding-left` de mas es el aire que el
    interletrado deja detras de la ultima letra: sin el, la palabra quedaba
@@ -532,18 +538,19 @@ html.show--preferences .navbar-principal { pointer-events: none; }
   min-height: 42px;
   margin: 0;
   padding: 0 .6rem 0 calc(.6rem + .2em);
-  border: 1px solid rgba(212, 175, 55, .62);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: rgba(212, 175, 55, .07);
+  background:
+    linear-gradient(#000, #000) padding-box,
+    var(--oro-marca-degradado) border-box;
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .64rem;
   letter-spacing: .2em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: #E6C95F;
-  transition: background .3s ease, border-color .3s ease, color .3s ease,
-              transform .15s ease;
+  color: var(--oro-marca, #D4AF37);
+  transition: color .3s ease, transform .15s ease;
 }
 :root #cc-main .cm__btn::after,
 :root #cc-main .pm__btn::after,
@@ -553,21 +560,27 @@ html.show--preferences .navbar-principal { pointer-events: none; }
 :root #cc-main .pm__btn:hover,
 :root #cc-main .pm__btn:focus-visible {
   border-color: transparent;
-  background: var(--oro-marca-degradado);
+  background:
+    var(--oro-marca-degradado) padding-box,
+    var(--oro-marca-degradado) border-box;
   color: #0A0806;
 }
 :root #cc-main .cm__btn:active,
 :root #cc-main .pm__btn:active { transform: scale(.97); }
-/* Guardar, en plata: es confirmar lo del interruptor, no contestar. */
+/* Guardar, en plata: es confirmar lo del interruptor, no contestar. Hecho
+   igual que los de oro —fondo negro y filo de degradado—, con la plata. */
 :root #cc-main .pm__btn[data-role="save"] {
-  border-color: rgba(214, 214, 214, .5);
-  background: rgba(214, 214, 214, .06);
-  color: #DCDEE1;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    var(--gradiente-plata) border-box;
+  color: #D6D6D6;
 }
 :root #cc-main .pm__btn[data-role="save"]:hover,
 :root #cc-main .pm__btn[data-role="save"]:focus-visible {
   border-color: transparent;
-  background: var(--gradiente-plata);
+  background:
+    var(--gradiente-plata) padding-box,
+    var(--gradiente-plata) border-box;
   color: #0A0806;
 }
 
