@@ -302,7 +302,7 @@ const cierresCortina=new WeakMap();
 if('IntersectionObserver' in window){
 const obsCortinas=new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
-if(entrada.intersectionRatio===0){
+if(!entrada.isIntersecting){
 const pendiente=retrasosCortina.get(entrada.target);
 if(pendiente){
 clearTimeout(pendiente);
@@ -317,7 +317,6 @@ cierresCortina.set(entrada.target,idCierre);
 }
 return;
 }
-if(entrada.intersectionRatio < 0.1)return;
 const cierrePendiente=cierresCortina.get(entrada.target);
 if(cierrePendiente){
 clearTimeout(cierrePendiente);
@@ -336,7 +335,7 @@ retrasosCortina.set(entrada.target,id);
 entrada.target.classList.add('abierta');
 }
 });
-},{threshold:[0,0.1],rootMargin:'0px 0px -5% 0px'});
+},{threshold:0,rootMargin:'0px 0px -10% 0px'});
 cortinas.forEach(function(el){obsCortinas.observe(el);});
 }else{
 cortinas.forEach(function(el){el.classList.add('abierta');});

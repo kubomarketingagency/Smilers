@@ -1539,8 +1539,56 @@
 }
 @keyframes ns-umbral-fin { to { visibility: hidden; } }
 
-/* El negro son las lamas (su forma, en el 02, que las comparte con el video
-   de la portada). Aqui salen solas, por reloj. */
+/* Las lamas: el negro del umbral son cinco franjas horizontales que se van
+   deslizando hacia la derecha, de arriba abajo, cada una con un canto de oro
+   que brilla mientras corre. Asi la pagina se descubre en escalera y el oro
+   barre la pantalla de izquierda a derecha, que es el sentido en que se lee.
+   Cada lama es una capa propia (su animacion ya se la da, puesta desde el
+   principio) y solo se mueve con `transform`. Solapan 2px entre ellas: con
+   la pantalla partida en quintos alguna cae a medio pixel y, al moverlas,
+   asomaba una raya de pagina entre dos. Salen hasta 40px mas alla del canto
+   derecho, que es lo que mide el brillo de su filo. Salen solas, por reloj.
+
+   La portada no las lleva: alli la bienvenida es el video del logo, que se
+   va como siempre, desvaneciendose. */
+.lamas-oro {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.lamas-oro > i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: calc(var(--n) * 20% - 1px);
+  height: calc(20% + 2px);
+  background: #050505;
+}
+.lamas-oro > i:nth-child(1) { --n: 0; }
+.lamas-oro > i:nth-child(2) { --n: 1; }
+.lamas-oro > i:nth-child(3) { --n: 2; }
+.lamas-oro > i:nth-child(4) { --n: 3; }
+.lamas-oro > i:nth-child(5) { --n: 4; }
+.lamas-oro > i::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #B08D22 0%, #F7E7A6 45%, #D4AF37 75%, #E6C95F 100%);
+  box-shadow: 0 0 22px 2px rgba(212, 175, 55, .42);
+  opacity: 0;
+}
+@keyframes lama-sale {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(100% + 40px), 0, 0); }
+}
+@keyframes lama-canto {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  100% { opacity: 1; }
+}
 .ns-umbral > .lamas-oro > i {
   animation: lama-sale .68s cubic-bezier(.77, 0, .18, 1) calc(1s + var(--n) * .055s) both;
 }

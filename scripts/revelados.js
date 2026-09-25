@@ -94,10 +94,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const retrasosCortina = new WeakMap();
   const cierresCortina = new WeakMap();
 
+  /* La cortina se abre cuando la seccion ha entrado una decima parte de la
+     PANTALLA, no de ella misma. Iba por proporcion de la seccion (el 10%), y
+     eso vale para una seccion de una pantalla, pero la de Nosotros de la
+     portada es una escena clavada de 300vh (360 en el ordenador): su 10% son
+     253px en un telefono, y hasta entonces la escena subia tapada de negro.
+     Era el tramo muerto entre el hero y «Quienes somos», un tercio de
+     pantalla de scroll sin nada. Ahora la raya esta en el 90% de la
+     pantalla, mida lo que mida la seccion. */
   if ('IntersectionObserver' in window) {
     const obsCortinas = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
-        if (entrada.intersectionRatio === 0) {
+        if (!entrada.isIntersecting) {
           const pendiente = retrasosCortina.get(entrada.target);
           if (pendiente) {
             clearTimeout(pendiente);
@@ -113,8 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
           }
           return;
         }
-
-        if (entrada.intersectionRatio < 0.1) return;
 
         const cierrePendiente = cierresCortina.get(entrada.target);
         if (cierrePendiente) {
@@ -136,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
           entrada.target.classList.add('abierta');
         }
       });
-    }, { threshold: [0, 0.1], rootMargin: '0px 0px -5% 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
 
     cortinas.forEach(function (el) { obsCortinas.observe(el); });
   } else {

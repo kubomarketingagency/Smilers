@@ -988,7 +988,6 @@ if(recorrido <=0)return 0;
 return Math.min(1,Math.max(0,-caja.top / recorrido));
 }
 var anchoFund=0;
-var altoInfra=0;
 function px(v){
 var escala=window.devicePixelRatio||1;
 return(Math.round(v*escala)/ escala)+ 'px';
@@ -1005,7 +1004,6 @@ var rielPintado=-1;
 function leer(ctx){
 if(viva){
 if(!anchoFund&&capaFund)anchoFund=capaFund.offsetWidth;
-if(!altoInfra&&capaInfra)altoInfra=capaInfra.offsetHeight;
 pCine=progresoDe(escena,ctx);
 if(carta&&cartaViva){
 pCarta=progresoDe(carta,ctx);
@@ -1033,20 +1031,20 @@ var der=sale > 0?sale:(1 - entra);
 var corre=der*anchoFund;
 ponCine('--f-corre',px(-corre));
 ponCine('--e-x',px((1 - sale)*.12*anchoFund));
-ponCine('--f-op',texto.toFixed(3));
-ponCine('--f-filtro',texto >=1?'none':'blur(' +((1 - texto)*12).toFixed(1)+ 'px)');
+ponCine('--f-op',Math.max(texto,.001).toFixed(3));
+ponCine('--f-filtro',texto <=0||texto >=1?'none':'blur(' +((1 - texto)*12).toFixed(1)+ 'px)');
 ponCine('--f-ent',(1 - texto).toFixed(3));
 ponCine('--f-filo',px(anchoFund - corre));
 ponCine('--f-filo-op',der > 0&&der < 1?'1':'0');
-var fundViva=texto > 0&&sale < 1;
+var fundViva=texto > 0;
 if(capaFund&&fundViva !==fundPintada){
 fundPintada=fundViva;
 capaFund.classList.toggle('ns-fund--viva',fundViva);
 }
-var baja=(1 - sube)*altoInfra;
+var baja=(1 - sube)*SmilersScroll.alto();
 ponCine('--i-corre',px(baja));
-ponCine('--i-op',textoI.toFixed(3));
-ponCine('--i-filtro',textoI >=1?'none':'blur(' +((1 - textoI)*10).toFixed(1)+ 'px)');
+ponCine('--i-op',Math.max(textoI,.001).toFixed(3));
+ponCine('--i-filtro',textoI <=0||textoI >=1?'none':'blur(' +((1 - textoI)*10).toFixed(1)+ 'px)');
 ponCine('--i-y',px((1 - textoI)*42));
 ponCine('--i-filo',px(baja));
 ponCine('--i-filo-op',sube > 0&&sube < 1?'1':'0');
@@ -1125,7 +1123,6 @@ escritoCine={};
 escritoCierre={};
 escritoCarta={};
 anchoFund=0;
-altoInfra=0;
 });
 var paradas=[
 {id:'historia',nombre:'Historia',bloque:escena,p:0,desde:0},

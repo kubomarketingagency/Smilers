@@ -275,12 +275,11 @@ document.addEventListener('DOMContentLoaded', function () {
       retirado = true;
       temporizadores.forEach(clearTimeout);
       splash.classList.add('oculto');
-      /* La ultima lama sale a los .34s y tarda .68 (ver el 02). */
       setTimeout(function () {
         splash.remove();
         window.SmilersSplashTerminado = true;
         document.dispatchEvent(new CustomEvent('smilers:splash-fin'));
-      }, 1100);
+      }, 700);
     }
 
     /* Plan B: la misma animacion como imagen animada (WebP, ya a la

@@ -214,8 +214,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var envFund = pieza(capaFund, ':scope > .ns-envoltura');
     var envInfra = pieza(capaInfra, ':scope > .ns-envoltura');
     /* Fundamentos enciende su entrada (32-fundamentos.css) en cuanto su texto
-       empieza a aparecer, y la apaga cuando ya no se ve, para que vuelva a
-       entrar la proxima vez. */
+       empieza a aparecer, y la apaga al volver por arriba, con el texto otra
+       vez transparente, para que vuelva a entrar la proxima vez. */
     var fundPintada = false;
     var DESTINOS_CINE = {
       '--c-uno': pieza(escena, '.ns-capa--historia'),
@@ -400,12 +400,22 @@ document.addEventListener('DOMContentLoaded', function () {
       return Math.min(1, Math.max(0, -caja.top / recorrido));
     }
 
-    /* Lo que miden las dos capas con cortina, que es lo que tienen que
-       recorrer. Se mide una vez y otra cada vez que cambia la ventana: con
-       `offsetWidth` y `offsetHeight`, que no cuentan el `transform`, asi que
-       da igual por donde vaya la cortina al medir. */
+    /* Lo que tienen que recorrer los dos paneles para quedar fuera.
+
+       Fundamentos sale de lado: lo que mide de ancho, que se mide una vez y
+       otra cada vez que cambia la ventana, con `offsetWidth`, que no cuenta
+       el `transform`.
+
+       Infraestructura sale por abajo, y ahi no vale lo que mide ella: su
+       alto es lo que se ve (`bottom: var(--sobra-barra)`), y en el telefono
+       crece y encoge con la barra del navegador, sin que la ventana avise
+       de ningun cambio (planificador.js no recalcula nada por eso, a
+       proposito). Medida con la barra fuera y corrida esa medida, al
+       esconderse la barra el panel se quedaba corto y asomaba por abajo
+       —90px de la foto de la recepcion debajo de Fundamentos—. Se corre lo
+       que mide el pin, la pantalla grande (`SmilersScroll.alto()`), que es
+       la misma con la barra dentro o fuera: con eso queda fuera siempre. */
     var anchoFund = 0;
-    var altoInfra = 0;
 
     /* Y lo que se corren va a pixel entero de la pantalla. Una capa propia
        que se para a medio pixel —523,4px— no se puede mover sin mas: el
@@ -430,7 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function leer(ctx) {
       if (viva) {
         if (!anchoFund && capaFund) anchoFund = capaFund.offsetWidth;
-        if (!altoInfra && capaInfra) altoInfra = capaInfra.offsetHeight;
         pCine = progresoDe(escena, ctx);
         if (carta && cartaViva) {
           pCarta = progresoDe(carta, ctx);
@@ -483,26 +492,40 @@ document.addEventListener('DOMContentLoaded', function () {
         var corre = der * anchoFund;
         ponCine('--f-corre', px(-corre));
         ponCine('--e-x', px((1 - sale) * .12 * anchoFund));
-        ponCine('--f-op', texto.toFixed(3));
-        ponCine('--f-filtro', texto >= 1 ? 'none' : 'blur(' + ((1 - texto) * 12).toFixed(1) + 'px)');
+        /* La envoltura nunca baja de una milesima de opacidad, que no se ve:
+           a opacidad cero el navegador no pinta la capa hasta que hace falta,
+           y entonces pintaba las seis tarjetas con sus sombras de golpe, en
+           el primer fotograma en que el texto empezaba a asomar. Asi las
+           pinta antes, en un rato libre. El desenfoque solo mientras entra:
+           quieta e invisible no tiene que desenfocar nada en cada fotograma. */
+        ponCine('--f-op', Math.max(texto, .001).toFixed(3));
+        ponCine('--f-filtro', texto <= 0 || texto >= 1 ? 'none' : 'blur(' + ((1 - texto) * 12).toFixed(1) + 'px)');
         ponCine('--f-ent', (1 - texto).toFixed(3));
         ponCine('--f-filo', px(anchoFund - corre));
         ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 
         /* Fundamentos: su entrada se enciende con el primer asomo del texto,
            cuando la envoltura aun es transparente —asi lo que la entrada
-           esconde al empezar no desaparece a la vista—, y se apaga cuando el
-           texto se ha ido o el telon la ha tapado entera. */
-        var fundViva = texto > 0 && sale < 1;
+           esconde al empezar no desaparece a la vista—, y se apaga solo
+           cuando el texto vuelve a serlo, al subir por encima.
+
+           Se apagaba tambien al salir el panel por la izquierda, y eso
+           costaba: quitar la clase obliga a volver a pintar las seis tarjetas
+           con sus sombras, y el panel, aunque ya este fuera, sigue pintado
+           por si vuelve. Era un rasterizado entero de la envoltura justo
+           cuando el Equipo acaba de entrar. Y al volver desde el Equipo el
+           panel entra deslizandose con lo suyo dentro: ahi no pinta nada que
+           las tarjetas vuelvan a nacer. */
+        var fundViva = texto > 0;
         if (capaFund && fundViva !== fundPintada) {
           fundPintada = fundViva;
           capaFund.classList.toggle('ns-fund--viva', fundViva);
         }
 
-        var baja = (1 - sube) * altoInfra;
+        var baja = (1 - sube) * SmilersScroll.alto();
         ponCine('--i-corre', px(baja));
-        ponCine('--i-op', textoI.toFixed(3));
-        ponCine('--i-filtro', textoI >= 1 ? 'none' : 'blur(' + ((1 - textoI) * 10).toFixed(1) + 'px)');
+        ponCine('--i-op', Math.max(textoI, .001).toFixed(3));
+        ponCine('--i-filtro', textoI <= 0 || textoI >= 1 ? 'none' : 'blur(' + ((1 - textoI) * 10).toFixed(1) + 'px)');
         ponCine('--i-y', px((1 - textoI) * 42));
         ponCine('--i-filo', px(baja));
         ponCine('--i-filo-op', sube > 0 && sube < 1 ? '1' : '0');
@@ -623,7 +646,6 @@ document.addEventListener('DOMContentLoaded', function () {
       escritoCierre = {};
       escritoCarta = {};
       anchoFund = 0;
-      altoInfra = 0;
     });
 
     /* -------------------------------------------------------------------
