@@ -25,7 +25,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; }
 
 html.smilers-deslizando { scroll-behavior: auto; }
 
-/* Con el menu o el visor abiertos la pagina no se mueve por detras, y se para
+/* Con el menu, el visor o el panel de cookies abiertos (`show--preferences`
+   lo pone la libreria de cookies) la pagina no se mueve por detras, y se para
    el documento y solo el. Con `overflow: hidden` en `body`, body pasaba a ser
    un contenedor de scroll quieto, y lo clavado (`position: sticky`) y lo
    atado al scroll (`view()`) dejaban de contar con la ventana: las escenas
@@ -39,7 +40,8 @@ html.smilers-deslizando { scroll-behavior: auto; }
    que nada salta de lado al quitarse la barra; y se pinta del oscuro del
    velo, que en ese hueco se ve el fondo del documento. */
 html.menu-desplegado,
-html.visor-abierto {
+html.visor-abierto,
+html.show--preferences {
   overflow: hidden;
   scrollbar-gutter: stable;
   background-color: #080706;

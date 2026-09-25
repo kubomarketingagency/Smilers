@@ -66,67 +66,149 @@
 /* ---------------------------------------------------------------------------
    EL PANEL DE PREFERENCIAS, la segunda capa («Elegir cuales»).
 
-   Va con la misma mano que el aviso: onix, un filo de oro arriba, la letra
-   del sitio y nada de cajas. La libreria lo trae con cada categoria metida
-   en su recuadro con fondo, la flecha en un circulo gris, la X en otro
-   recuadro y tres botones de caja uno encima de otro; aqui cada categoria es
-   una fila con un hilo debajo, la flecha y la X van sueltas en oro, y los
-   tres botones son los botones de texto gemelos del aviso: pesan igual,
-   aceptar todas, rechazar todas y guardar. */
+   Una hoja que sube desde abajo, como el menu entra desde un lado, hasta
+   media pantalla y no mas: lo de encima se queda a la vista, desenfocado
+   (el velo, `.pm-overlay`), y la barra de navegacion sin tapar —el velo
+   empieza donde acaba ella, `--cc-techo`, que mide el guion al abrir—. En el
+   ordenador la misma hoja, flotando en la esquina del aviso. La libreria lo
+   traia como una ventana a pantalla completa, con cada categoria en su
+   recuadro, un interruptor gris para las necesarias y tres botones de caja
+   apilados.
+
+   Dentro, dos parrafos que lo cuentan todo y un solo interruptor: el de la
+   publicidad, que es lo unico que se elige (consentimiento-aviso.js). Los
+   detalles van en PLATA —la asa de arriba, los hilos, la X, el nombre de
+   quien pone las cookies, el interruptor apagado y «Guardar»— y el oro se
+   queda para lo que responde: el interruptor encendido, aceptar y rechazar.
+
+   Mientras esta abierto la pagina no se mueve (02-base.css, igual que con el
+   menu) y la barra no recoge toques: se ve, pero no se usa por debajo del
+   panel. */
 :root #cc-main .pm {
-  border: 1px solid rgba(212, 175, 55, .22);
-  border-radius: 2px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  top: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: 62vh !important;
+  max-height: 62svh !important;
+  margin: 0 !important;
+  border: 0;
+  border-radius: 18px 18px 0 0 !important;
+  background: #0B0A08;
+  box-shadow: 0 -16px 48px rgba(0, 0, 0, .5);
+  transform: translateY(100%) !important;
 }
+:root #cc-main .cc--anim .pm {
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1), opacity .3s ease,
+              visibility 0s linear .55s !important;
+}
+:root.show--preferences #cc-main .cc--anim .pm {
+  transform: translateY(0) !important;
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1), opacity .3s ease,
+              visibility 0s !important;
+}
+/* El filo de arriba, en plata, que se apaga hacia los lados. */
 :root #cc-main .pm::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 8%;
+  right: 8%;
   z-index: 2;
   display: block;
   height: 1px;
-  background: var(--oro-marca-degradado);
+  background: linear-gradient(90deg, rgba(214, 214, 214, 0), rgba(236, 236, 236, .7) 30%,
+              #F7F7F7 50%, rgba(236, 236, 236, .7) 70%, rgba(214, 214, 214, 0));
   pointer-events: none;
 }
-:root #cc-main .pm__header { border-bottom-color: rgba(212, 175, 55, .14); }
+/* La asa: dice sin palabras que es una hoja que ha subido y que se baja. */
+:root #cc-main .pm::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 2;
+  display: block;
+  width: 36px;
+  height: 3px;
+  margin-left: -18px;
+  border-radius: 3px;
+  background: rgba(214, 214, 214, .38);
+  pointer-events: none;
+}
+
+/* El velo: lo de detras, desenfocado y un punto mas oscuro, desde la barra
+   hacia abajo. Tocarlo cierra el panel (lo hace la libreria). */
+:root #cc-main .pm-overlay {
+  top: var(--cc-techo, var(--alto-navbar, 62px));
+  background: rgba(8, 7, 6, .32);
+  -webkit-backdrop-filter: blur(12px) saturate(.9);
+          backdrop-filter: blur(12px) saturate(.9);
+  transition: opacity .45s ease, visibility .45s;
+}
+/* Con el panel abierto el aviso de la primera capa sobra: estaria debajo,
+   en la misma esquina. Vuelve solo si se cierra el panel sin contestar. */
+:root.show--preferences #cc-main .cm { opacity: 0 !important; visibility: hidden !important; }
+html.show--preferences .navbar-principal { pointer-events: none; }
+
+:root #cc-main .pm__header {
+  padding: 1.25rem 1.3rem .2rem !important;
+  border-bottom: 0;
+}
 :root #cc-main .pm__title {
+  margin-right: 1rem;
   font-family: var(--fuente-titulo);
   font-weight: 600;
-  font-size: 1.12em;
-  letter-spacing: .02em;
+  font-size: 1.05rem;
+  letter-spacing: .03em;
+  color: #F4EFE6;
 }
 :root #cc-main .pm__close-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  margin-right: -.5rem;
   border: 0;
   background: none;
 }
-:root #cc-main .pm__close-btn svg { stroke: #E6C95F; }
+:root #cc-main .pm__close-btn svg { stroke: #C9CBCE; transform: scale(.42); }
 :root #cc-main .pm__close-btn:hover { background: none; }
-:root #cc-main .pm__close-btn:hover svg { stroke: #F7E7A6; }
+:root #cc-main .pm__close-btn:hover svg { stroke: #FFFFFF; }
 
-:root #cc-main .pm__body { padding-top: 1.3em; }
+:root #cc-main .pm__body {
+  padding: .45rem 1.3rem .15rem !important;
+  scrollbar-width: none;
+}
+:root #cc-main .pm__body::-webkit-scrollbar { display: none; }
+:root #cc-main .pm__section:first-child { margin-bottom: .75rem; }
 :root #cc-main .pm__section-desc,
 :root #cc-main .pm__section-desc-wrapper {
   font-weight: 400;
-  line-height: 1.6;
-  color: rgba(244, 239, 230, .8);
+  font-size: .79rem;
+  line-height: 1.56;
+  color: rgba(244, 239, 230, .78);
 }
-:root #cc-main .pm__section:first-child .pm__section-title { font-family: var(--fuente-titulo); font-size: 1em; }
-/* Los enlaces de dentro (la politica, el correo), como los del aviso: oro
-   claro con su raya, y no el blanco en negrita de la libreria. */
+:root #cc-main .pm-parrafo { display: block; }
+:root #cc-main .pm-parrafo + .pm-parrafo { margin-top: .55rem; }
+/* La politica, en oro claro con su raya, y no el blanco en negrita de la
+   libreria. */
 :root #cc-main .pm__section-desc a {
   font-weight: 400;
   color: #E6C95F;
   background-size: 100% 1px;
 }
 :root #cc-main .pm__section-desc a:hover { color: #F7E7A6; }
-:root #cc-main .pm__section:first-child { margin-bottom: 1.4em; }
 
-/* Las categorias, sin recuadro: una fila con su nombre, su flecha y su
-   interruptor, y un hilo de oro debajo. */
+/* La fila de la publicidad: nombre, quien la pone en plata y el
+   interruptor, entre dos hilos de plata. Sin recuadro y sin flecha (no
+   lleva descripcion propia: la tiene el parrafo de encima). */
+/* La libreria deja en linea el contenedor de las filas (`all: unset`) y crea
+   la flecha de desplegar tambien en las que no se despliegan: vacia y sin su
+   estilo, media 152px de alto y se llevaba la fila entera fuera de la hoja. */
+:root #cc-main .pm__section-toggles { display: block; }
+:root #cc-main .pm__section--toggle:not(.pm__section--expandable) .pm__section-arrow { display: none; }
 :root #cc-main .pm__section--toggle {
   margin: 0;
   border: 0;
@@ -134,51 +216,121 @@
   background: transparent;
 }
 :root #cc-main .pm__section--toggle .pm__section-title {
-  min-height: 56px;
-  padding-left: 1.9em;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .65rem;
+  min-height: 50px;
+  padding: 0 3.4rem 0 0;
   border: 0;
-  border-bottom: 1px solid rgba(212, 175, 55, .16);
+  border-top: 1px solid rgba(192, 192, 192, .16);
+  border-bottom: 1px solid rgba(192, 192, 192, .16);
   border-radius: 0;
   background: transparent;
-  font-weight: 600;
+  font-family: var(--fuente-cuerpo);
+  font-weight: 700;
+  font-size: .84rem;
+  color: #F4EFE6;
 }
 :root #cc-main .pm__section--toggle .pm__section-title:hover { background: transparent; }
-:root #cc-main .pm__section--toggle .pm__section-desc-wrapper {
-  border: 0;
-  border-bottom: 1px solid rgba(212, 175, 55, .16);
-  border-radius: 0;
-  background: transparent;
+:root #cc-main .pm-quien {
+  display: inline-block;
+  margin: 0;
+  white-space: nowrap;
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .56rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #A9ACB0;
 }
-:root #cc-main .pm__section--toggle .pm__section-desc { padding: .85em 0 1em 1.9em; }
-:root #cc-main .pm__section--expandable .pm__section-arrow {
-  left: 0;
-  background: none;
-}
-:root #cc-main .pm__section--expandable .pm__section-arrow svg { stroke: #E6C95F; }
+
+/* El interruptor, mas pequeno y sin los dibujos de dentro: apagado, una
+   pista de plata con la bola de plata; encendido, la pista de oro con la
+   bola de onix. */
 :root #cc-main .section__toggle-wrapper { right: 0; }
-
-/* Los apartados de texto (la cache, mas informacion), sueltos. */
-:root #cc-main .pm__section:not(:first-child):not(.pm__section--toggle) {
-  margin-top: 1.4em;
-  padding: 0;
-  border: 0;
-  background: transparent;
+:root #cc-main .section__toggle,
+:root #cc-main .section__toggle-wrapper,
+:root #cc-main .toggle__icon,
+:root #cc-main .toggle__label {
+  width: 38px;
+  height: 20px;
+  border-radius: 20px;
 }
-:root #cc-main .pm__section:not(:first-child):hover {
-  background: transparent;
-  border-color: transparent;
+:root #cc-main .toggle__icon {
+  background: rgba(192, 192, 192, .16);
+  box-shadow: inset 0 0 0 1px rgba(214, 214, 214, .45);
 }
-:root #cc-main .pm__section-toggles + .pm__section { margin-top: 1.6em; }
+:root #cc-main .toggle__icon-circle {
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #D6D6D6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+}
+:root #cc-main .toggle__icon-on,
+:root #cc-main .toggle__icon-off { display: none; }
+:root #cc-main .section__toggle:checked ~ .toggle__icon {
+  background: var(--oro-marca-degradado);
+  box-shadow: none;
+}
+:root #cc-main .section__toggle:checked ~ .toggle__icon .toggle__icon-circle {
+  background: #0B0A08;
+  transform: translateX(18px);
+}
+:root #cc-main .section__toggle:focus-visible ~ .toggle__icon { outline: 1px solid #E6C95F; outline-offset: 3px; }
 
+/* El pie: las tres respuestas en una fila, a la derecha. Aceptar y rechazar
+   en oro y gemelas; guardar —que es confirmar el interruptor— en plata. */
 :root #cc-main .pm__footer {
-  align-items: center;
-  border-top-color: rgba(212, 175, 55, .14);
-  padding-top: .35em;
-  padding-bottom: .45em;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 1.5rem;
+  padding: .25rem 1.3rem .45rem !important;
+  padding-bottom: max(.45rem, env(safe-area-inset-bottom)) !important;
+  border-top: 0;
 }
-:root #cc-main .pm__btn-group { gap: 1.7rem; }
+:root #cc-main .pm__btn-group {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1.5rem;
+}
 :root #cc-main .pm__btn + .pm__btn,
-:root #cc-main .pm__btn-group + .pm__btn-group { margin: 0; }
+:root #cc-main .pm__btn-group + .pm__btn-group { margin: 0 !important; }
+:root #cc-main .pm__btn[data-role="save"] { color: #C9CBCE; }
+:root #cc-main .pm__btn[data-role="save"]::after { background: linear-gradient(90deg, #8C8C8C, #F2F2F2, #C0C0C0); }
+:root #cc-main .pm__btn[data-role="save"]:hover,
+:root #cc-main .pm__btn[data-role="save"]:focus-visible { color: #FFFFFF; }
+
+/* En una pantalla baja (un SE con sus barras) media pantalla no da para los
+   dos parrafos y la fila del interruptor, que quedaba debajo del pie: ahi
+   sube un poco mas. */
+@media (max-width: 767.98px) and (max-height: 620px) {
+  :root #cc-main .pm { max-height: 72vh !important; max-height: 72svh !important; }
+}
+
+/* En el ordenador la hoja flota en la esquina del aviso, con las cuatro
+   esquinas redondas y sin asa: ahi no se arrastra nada. */
+@media (min-width: 768px) {
+  :root #cc-main .pm {
+    left: 1.25rem !important;
+    right: auto !important;
+    bottom: 1.25rem !important;
+    width: 25rem !important;
+    max-height: min(70vh, 34rem) !important;
+    border-radius: 18px !important;
+    transform: translateY(calc(100% + 1.5rem)) !important;
+  }
+  :root #cc-main .pm::after { display: none; }
+  :root #cc-main .pm__header { padding-top: 1.15rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root #cc-main .cc--anim .pm,
+  :root.show--preferences #cc-main .cc--anim .pm { transition: opacity .2s ease, visibility 0s !important; }
+}
 
 /* ---------------------------------------------------------------------------
    EL AVISO, LA PRIMERA CAPA.
@@ -436,16 +588,6 @@
   :root #cc-main .cm__btn-group { flex-direction: row !important; }
   :root #cc-main .cm__btn + .cm__btn { margin: 0 !important; }
 
-  /* El pie del panel: aceptar y rechazar todas en una fila y guardar debajo,
-     los tres a la derecha; la libreria los apila a lo ancho, uno por fila. */
-  :root #cc-main .pm__footer {
-    flex-direction: column !important;
-    align-items: flex-end !important;
-    gap: 0;
-  }
-  :root #cc-main .pm__btn-group { flex-direction: row !important; }
-  :root #cc-main .pm__btn + .pm__btn,
-  :root #cc-main .pm__btn-group + .pm__btn-group { margin: 0 !important; }
 }
 
 /* El pie: la politica y el boton para volver a elegir, juntos. El boton

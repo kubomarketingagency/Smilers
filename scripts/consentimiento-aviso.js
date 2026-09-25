@@ -20,8 +20,7 @@ window.SmilersAvisoCookies = {
        lo dice: hoy no hay ninguna de estas cookies puesta. La respuesta se
        guarda igual, y sirve el dia que las haya. */
     var todavia = opciones.hayPixeles === false
-      ? ' Ahora mismo no hay ninguna funcionando: guardamos tu respuesta para ' +
-        'cuando las pongamos en marcha.'
+      ? ' Hoy no hay ninguna activa: guardamos tu respuesta para cuando las haya.'
       : '';
 
     /* Los dos caminos, y solo uno de los dos cada vez. Quien decide si hay
@@ -88,6 +87,18 @@ window.SmilersAvisoCookies = {
       categories: categorias,
       onConsent: revisar,
       onChange: revisar,
+      /* El velo del panel empieza donde acaba la barra de navegacion, que se
+         queda a la vista y sin tapar: se mide al abrir, porque la barra mide
+         distinto arriba del todo que a media pagina (01-variables.css), y
+         con el panel abierto la pagina esta quieta, asi que no cambia. */
+      onModalShow: function (evento) {
+        if (!evento || evento.modalName !== 'preferencesModal') return;
+        var barra = document.querySelector('.navbar-principal');
+        var raiz = document.getElementById('cc-main');
+        if (!barra || !raiz) return;
+        var abajo = Math.max(0, Math.round(barra.getBoundingClientRect().bottom));
+        raiz.style.setProperty('--cc-techo', abajo + 'px');
+      },
       language: {
         default: 'es',
         translations: {
@@ -135,61 +146,35 @@ window.SmilersAvisoCookies = {
               acceptNecessaryBtn: 'Rechazar'
             },
             preferencesModal: {
-              title: 'Preferencias de cookies',
-              acceptAllBtn: 'Aceptar todas',
-              acceptNecessaryBtn: 'Rechazar todas',
-              savePreferencesBtn: 'Guardar mi elección',
+              /* EL PANEL, la segunda capa: una hoja que sube desde abajo hasta
+                 media pantalla (27-consentimiento.css). Dos parrafos que lo
+                 cuentan todo y un solo interruptor, el de la publicidad, que
+                 es lo unico que se elige. La cookie necesaria no lleva fila
+                 ni interruptor gris: no se puede apagar, asi que no hay nada
+                 que elegir, y se dice en el primer parrafo con la cache. Iban
+                 cinco apartados —las cookies, las necesarias, la publicidad,
+                 la cache y mas informacion—, cada uno en su recuadro. */
+              title: 'Tus cookies',
+              acceptAllBtn: 'Aceptar',
+              acceptNecessaryBtn: 'Rechazar',
+              savePreferencesBtn: 'Guardar',
               closeIconLabel: 'Cerrar',
               sections: [
                 {
-                  title: 'Las cookies de este sitio',
                   description:
-                    'Una cookie es un archivo diminuto que la página deja en tu navegador. ' +
-                    'Aquí eliges cuáles permites. Tu respuesta dura seis meses y la puedes ' +
-                    'cambiar cuando quieras con el botón de cookies, abajo a la izquierda.'
+                    '<span class="pm-parrafo">Solo una cookie está siempre, y es nuestra: ' +
+                    'recuerda tu respuesta seis meses, no te identifica y no se puede apagar. ' +
+                    'El navegador guarda además copias de imágenes y estilos (la caché) para ' +
+                    'que el sitio abra más rápido, sin ningún dato tuyo.</span>' +
+                    '<span class="pm-parrafo">Las de publicidad, de Meta y Google, duran tres ' +
+                    'meses y son opcionales: miden si nuestros anuncios traen visitas y los ' +
+                    'muestran a quien ya nos visitó. Rechazarlas no cambia nada de lo que ves.' +
+                    todavia + ' El detalle, en la <a href="/privacidad">política de ' +
+                    'privacidad</a>.</span>'
                 },
                 {
-                  title: 'Necesarias <span class="pm__badge">Siempre activas</span>',
-                  /* La chapa de "Siempre activas" que la libreria pone al lado
-                     del titulo la esconde ella misma en pantallas estrechas, asi
-                     que lo que no se puede apagar se dice aqui, con palabras. */
-                  description:
-                    'Una sola, y es nuestra: recuerda qué respondiste aquí para no ' +
-                    'preguntártelo en cada página. Dura seis meses, no sirve para ' +
-                    'identificarte y no se puede apagar, porque sin ella no podríamos ' +
-                    'recordar tu «no».',
-                  linkedCategory: 'necesarias'
-                },
-                {
-                  title: 'Publicidad (Meta y Google Ads)',
-                  description:
-                    'Son tres y duran tres meses. Sirven para saber si nuestros anuncios en ' +
-                    'Facebook, Instagram y Google traen visitas, y para mostrar los nuestros ' +
-                    'a quien ya nos visitó. Las ponen Meta y Google, cada uno con su propia ' +
-                    'política. Rechazarlas no cambia nada de lo que ves aquí.' + todavia,
+                  title: 'Publicidad <span class="pm-quien">Meta · Google Ads</span>',
                   linkedCategory: categoria
-                },
-                {
-                  /* La cache no es una cookie y no se puede apagar desde aqui:
-                     es el navegador guardandose las fotos y los estilos para
-                     no bajarlos dos veces. Va sin `linkedCategory` a proposito
-                     —no hay nada que elegir— pero se cuenta, porque el aviso
-                     la nombra. */
-                  title: 'Archivos temporales (caché)',
-                  description:
-                    'Además de las cookies, tu navegador guarda copias temporales de las ' +
-                    'imágenes, los estilos y los guiones de la página. Sirven para una sola ' +
-                    'cosa: que la próxima vez no haya que descargarlos otra vez y el sitio ' +
-                    'abra más rápido. No llevan datos tuyos, no se envían a nadie y se ' +
-                    'borran desde tu navegador cuando quieras.'
-                },
-                {
-                  title: 'Más información',
-                  description:
-                    'Cuáles son, una por una, y qué hacemos con tus datos: está todo en la ' +
-                    '<a href="/privacidad">política de privacidad</a>. Si te queda una duda, ' +
-                    'escríbenos a ' +
-                    '<a href="mailto:smilersdentalclinique@gmail.com">smilersdentalclinique@gmail.com</a>.'
                 }
               ]
             }
