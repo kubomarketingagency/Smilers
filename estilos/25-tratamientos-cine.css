@@ -199,8 +199,11 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
    crestas pelean con la foto y con el oro, asi que el velo va en negro —aqui
    si, que la piedra ya es oscura y el negro no la ensucia, la hunde— y no
    parejo: mas cerrado arriba y abajo, donde se junta con el marmol claro, y
-   mas abierto en medio, que es donde tiene que verse la veta. Arriba un
-   punto de luz de oro, el mismo que llevan las bandas de piedra del sitio.
+   mas abierto en medio, que es donde tiene que verse la veta. Solo negro:
+   llevaba arriba un punto de luz de oro (un radial al 8%), y sobre la roca
+   gris se leia como un difuminado dorado ensuciando la piedra; a la clinica
+   no le gustaba y se quito (25-9-2026). El oro de estas bandas es el de sus
+   dos costuras y el del panel.
 
    Las crestas quedan en 150 como mucho: dentro del panel la letra va sobre
    su marmol negro, y sobre la piedra no se lee nada directamente. */
@@ -208,10 +211,8 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .08), transparent 62%),
-    linear-gradient(180deg,
-      rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .34) 45%, rgba(8, 8, 8, .58) 100%);
+  background: linear-gradient(180deg,
+    rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .34) 45%, rgba(8, 8, 8, .58) 100%);
 }
 
 /* Las dos costuras. La pizarra y el marmol claro se tocan con un escalon
@@ -232,9 +233,7 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
      titulo, asi que el velo va mas parejo y mas cerrado: el nombre de la
      especialidad va en letra pequena directamente sobre la roca. */
   .trat-piedra::after {
-    background:
-      radial-gradient(120% 80% at 50% 0%, rgba(212, 175, 55, .08), transparent 62%),
-      linear-gradient(180deg, rgba(8, 8, 8, .6) 0%, rgba(8, 8, 8, .5) 100%);
+    background: linear-gradient(180deg, rgba(8, 8, 8, .6) 0%, rgba(8, 8, 8, .5) 100%);
   }
 
   /* El nombre del acordeon, que en la pagina clara va en negro, sobre la
