@@ -32,6 +32,32 @@ window.SmilersAvisoCookies = {
       else if (opciones.alRechazar) opciones.alRechazar();
     }
 
+    /* «Mas informacion»: despliega dentro del aviso el texto entero de la
+       clinica y los dos caminos para saber mas (elegir cuales y la politica).
+       Va por delegacion en el documento porque la libreria monta el aviso
+       cuando lo ensena, no ahora. Cerrado, lo de dentro va `inert`: no se ve
+       y tampoco se alcanza con el tabulador. */
+    if (!window.SmilersAvisoCookies.__mas) {
+      window.SmilersAvisoCookies.__mas = true;
+      document.addEventListener('click', function (evento) {
+        var boton = evento.target && evento.target.closest && evento.target.closest('.cm-mas');
+        if (!boton) return;
+        evento.preventDefault();
+        var abrir = boton.getAttribute('aria-expanded') !== 'true';
+        boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+        var txt = boton.querySelector('.cm-mas__txt');
+        if (txt) txt.textContent = abrir ? 'Menos información' : 'Más información';
+        var detalle = document.getElementById(boton.getAttribute('aria-controls'));
+        if (!detalle) return;
+        detalle.classList.toggle('esta-abierto', abrir);
+        var dentro = detalle.firstElementChild;
+        if (dentro) {
+          if (abrir) { dentro.removeAttribute('inert'); dentro.removeAttribute('aria-hidden'); }
+          else { dentro.setAttribute('inert', ''); dentro.setAttribute('aria-hidden', 'true'); }
+        }
+      });
+    }
+
     var categorias = {
       necesarias: { enabled: true, readOnly: true }
     };
@@ -52,9 +78,9 @@ window.SmilersAvisoCookies = {
       autoShow: opciones.mostrar,
       hideFromBots: true,
       cookie: { name: 'cc_cookie', expiresAfterDays: 182 },
-      /* Los tres botones pesan lo mismo y se ven iguales: son el boton del
-         sitio, con su filo de oro y su brillo al pasar (27-consentimiento.css).
-         Rechazar tiene que costar lo mismo que aceptar. */
+      /* Aceptar y rechazar pesan lo mismo y se ven iguales: dos botones de
+         texto gemelos (27-consentimiento.css). Rechazar tiene que costar lo
+         mismo que aceptar. */
       guiOptions: {
         consentModal: { layout: 'box inline', position: 'bottom left', equalWeightButtons: true, flipButtons: false },
         preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false }
@@ -67,26 +93,46 @@ window.SmilersAvisoCookies = {
         translations: {
           es: {
             consentModal: {
-              title: 'Cookies y caché',
-              /* El texto es el que pidio la clinica, tal cual. Nombra tres
-                 cosas: las cookies nuestras, las de Meta y Google, y la cache
-                 del navegador —los archivos temporales que guarda para no
-                 volver a descargarlos—. La cache no se elige aqui porque no
-                 es una cookie ni identifica a nadie: se explica en el panel y
-                 en la politica, que es donde se cuenta lo que hace el sitio.
+              /* EL AVISO EN DOS CAPAS. Sin titulo y con una sola frase: lo que
+                 pasa, quien y para que. Debajo, «Mas informacion» despliega
+                 el texto que pidio la clinica, tal cual, con los dos caminos
+                 para saber mas —elegir cuales, que abre el panel, y la
+                 politica—. Iba todo a la vez —titulo, cinco lineas y tres
+                 botones grandes— y en un telefono se llevaba dos tercios de
+                 la pantalla para hacer una pregunta de si o no.
 
-                 Lo que si depende de si los pixeles estan puestos es el
-                 detalle del panel (`todavia`, mas abajo): ahi es donde se
-                 dice si hay algo funcionando o no. */
-              description: 'Utilizamos cookies propias, de terceros (como Google y Meta) y ' +
-                'tecnologías de almacenamiento en caché para mejorar tu experiencia de ' +
-                'navegación, optimizar los tiempos de carga del sitio, analizar el tráfico y ' +
-                'mostrarte publicidad personalizada. Puedes aceptar todas las cookies, ' +
-                'rechazarlas o configurar tus preferencias en cualquier momento.',
+                 El texto de la clinica nombra tres cosas: las cookies
+                 nuestras, las de Meta y Google, y la cache del navegador —los
+                 archivos temporales que guarda para no volver a
+                 descargarlos—. La cache no se elige aqui porque no es una
+                 cookie ni identifica a nadie: se explica en el panel y en la
+                 politica. Lo que si depende de si los pixeles estan puestos
+                 es el detalle del panel (`todavia`, mas abajo).
+
+                 Sin titulo, el dialogo se nombra con `label`. «Elegir cuales»
+                 abre el panel con `data-cc`, que la libreria conecta dentro
+                 del aviso igual que sus propios botones. */
+              label: 'Aviso de cookies',
+              description:
+                '<span class="cm-corto">Usamos cookies —nuestras y de Google y Meta— para ' +
+                'mejorar tu visita y medir nuestros anuncios.</span> ' +
+                '<button type="button" class="cm-mas" aria-expanded="false" aria-controls="cmDetalle">' +
+                '<span class="cm-mas__txt">Más información</span>' +
+                '<svg class="cm-mas__flecha" viewBox="0 0 12 12" aria-hidden="true" focusable="false">' +
+                '<path d="M2.5 4.5 6 8l3.5-3.5"/></svg></button>' +
+                '<span class="cm-detalle" id="cmDetalle">' +
+                '<span class="cm-detalle__dentro" inert aria-hidden="true">' +
+                '<span class="cm-detalle__texto">Utilizamos cookies propias, de terceros (como ' +
+                'Google y Meta) y tecnologías de almacenamiento en caché para mejorar tu ' +
+                'experiencia de navegación, optimizar los tiempos de carga del sitio, analizar ' +
+                'el tráfico y mostrarte publicidad personalizada. Puedes aceptar todas las ' +
+                'cookies, rechazarlas o configurar tus preferencias en cualquier momento.</span>' +
+                '<span class="cm-detalle__enlaces">' +
+                '<button type="button" class="cm-enlace" data-cc="show-preferencesModal">Elegir cuáles</button>' +
+                '<a class="cm-enlace" href="/privacidad">Política de privacidad</a>' +
+                '</span></span></span>',
               acceptAllBtn: 'Aceptar',
-              acceptNecessaryBtn: 'Rechazar',
-              showPreferencesBtn: 'Ver cuáles',
-              footer: '<a href="/privacidad">Política de privacidad</a>'
+              acceptNecessaryBtn: 'Rechazar'
             },
             preferencesModal: {
               title: 'Preferencias de cookies',
