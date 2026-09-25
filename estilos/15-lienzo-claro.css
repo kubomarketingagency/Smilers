@@ -1200,8 +1200,8 @@
   box-shadow: none;
   overflow: hidden;
 }
-/* Las fotos van siempre a color. Lo que cambia al pasar el raton es el velo
-   blanco-oro y la lupa del centro, que es la que abre la imagen. */
+/* Las fotos van siempre a color. Lo que dice que se abren son sus esquinas de
+   oro (abajo), y al pasar el raton el puntero «Ver» del visor. */
 .pagina-clara .galeria-item img {
   width: 100%;
   object-fit: cover;
@@ -1209,46 +1209,56 @@
   transition: transform 1.1s cubic-bezier(.22, 1, .36, 1);
 }
 
+/* LAS ESQUINAS DE ORO. Cada foto va enmarcada por sus cuatro esquinas, en
+   escuadras de 2px del oro de la marca, un poco hacia dentro del canto. Es
+   lo que dice que la foto se abre, sin tapar nada de ella: antes lo decia un
+   velo blanco con una lupa en medio que solo salia al pasar el raton, y en
+   el telefono, donde no hay raton, no lo decia nada.
+
+   Al pasar el raton las esquinas se cierran un poco hacia el centro y crecen,
+   la foto se acerca y el puntero se vuelve el «Ver» del visor (el 33).
+
+   Las ocho rayas son ocho capas de fondo de una sola pieza, el `span` que
+   antes era el velo; y la sombra, muy corta, es para que el oro no se pierda
+   cuando la esquina cae sobre una pared clara. */
 .pagina-clara .galeria-overlay {
-  display: grid;
-  place-items: center;
-  background: linear-gradient(155deg,
-    rgba(255, 255, 255, .60) 0%,
-    rgba(240, 224, 178, .54) 46%,
-    rgba(212, 175, 55, .50) 100%);
-  color: #14110C;
-  font-size: 1rem;
-  opacity: 0;
-  transition: opacity .5s cubic-bezier(.22, 1, .36, 1);
-}
-.pagina-clara .galeria-overlay i {
-  display: grid;
-  place-items: center;
-  width: clamp(44px, 4.2vw, 56px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, .85);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .92);
-  color: #A8801E;
-  font-size: 1.05rem;
-  box-shadow: 0 12px 28px rgba(43, 35, 20, .26);
-  transform: scale(.84);
-  transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+  inset: clamp(8px, 1vw, 12px);
+  display: block;
+  background: none;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca)),
+    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca)),
+    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca)),
+    linear-gradient(var(--oro-marca), var(--oro-marca)), linear-gradient(var(--oro-marca), var(--oro-marca));
+  background-position:
+    left top, left top, right top, right top,
+    left bottom, left bottom, right bottom, right bottom;
+  background-size:
+    22px 2px, 2px 22px, 22px 2px, 2px 22px,
+    22px 2px, 2px 22px, 22px 2px, 2px 22px;
+  opacity: .95;
+  filter: drop-shadow(0 0 1.5px rgba(10, 8, 6, .45));
+  transition: transform .6s cubic-bezier(.22, 1, .36, 1),
+              background-size .6s cubic-bezier(.22, 1, .36, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .pagina-clara .galeria-item:hover img,
   .pagina-clara .galeria-item:focus-visible img { transform: scale(1.05); }
   .pagina-clara .galeria-item:hover .galeria-overlay,
-  .pagina-clara .galeria-item:focus-visible .galeria-overlay { opacity: 1; }
-  .pagina-clara .galeria-item:hover .galeria-overlay i,
-  .pagina-clara .galeria-item:focus-visible .galeria-overlay i { transform: scale(1); }
+  .pagina-clara .galeria-item:focus-visible .galeria-overlay {
+    opacity: 1;
+    transform: scale(.93);
+    background-size:
+      34px 2px, 2px 34px, 34px 2px, 2px 34px,
+      34px 2px, 2px 34px, 34px 2px, 2px 34px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pagina-clara .galeria-item img,
-  .pagina-clara .galeria-overlay,
-  .pagina-clara .galeria-overlay i { transition: none; }
+  .pagina-clara .galeria-overlay { transition: none; }
 }
 
 /* ---------------------------------------------------------------------------

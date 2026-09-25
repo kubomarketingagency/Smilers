@@ -227,7 +227,9 @@ relojesCapa.delete(el);
 elementosRevelar.forEach(function(el){
 el.addEventListener('transitionend',soltarCapa);
 });
-const unaVez=document.body.dataset.revelar==='una-vez';
+const modoRevelar=document.body.dataset.revelar;
+const unaVez=modoRevelar==='una-vez';
+const soloAbajo=modoRevelar==='al-bajar';
 if('IntersectionObserver' in window){
 const observador=new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
@@ -243,6 +245,7 @@ pedirCapa(entrada.target);
 entrada.target.classList.add('visible');
 }
 }else if(razon===0&&!unaVez){
+if(soloAbajo&&!(entrada.boundingClientRect.top > 0))return;
 if(!temporizadoresOcultarRevelar.has(entrada.target)){
 const idOcultar=setTimeout(function(){
 pedirCapa(entrada.target);

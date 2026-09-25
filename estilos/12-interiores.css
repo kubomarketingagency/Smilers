@@ -188,56 +188,7 @@
   cursor: zoom-in;
 }
 
-/* El visor respeta el tamaño real de la foto: no la estira ni la deforma.
-   El marco la centra y, cuando la imagen se queda corta, es el borde el que
-   sostiene la caja en lugar de estirar la foto. */
-#modalLightbox .modal-dialog {
-  width: -moz-fit-content;
-  width: fit-content;
-  max-width: min(94vw, 1280px);
-}
-#modalLightbox .modal-content {
-  background: transparent;
-  border: 0;
-  align-items: center;
-}
-#modalLightbox .modal-body { padding: 0; position: relative; }
-#modalLightbox .lightbox-marco {
-  display: grid;
-  place-items: center;
-  min-width: min(320px, 86vw);
-  min-height: min(220px, 34svh);
-  padding: clamp(.45rem, .9vw, .8rem);
-  border: 1px solid rgba(212, 175, 55, .55);
-  border-radius: var(--radio-sm);
-  background: rgba(12, 10, 8, .92);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, .5);
-}
-#modalLightbox img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: min(92vw, 1240px);
-  max-height: 76svh;
-  object-fit: contain;
-  border-radius: 2px;
-}
-#modalLightbox .btn-close {
-  position: absolute;
-  top: -46px; right: 0;
-  background-color: var(--marmol);
-  border-radius: 50%;
-  opacity: 1;
-  padding: .6rem;
-  z-index: 2;
-}
-#modalLightbox .lightbox-leyenda {
-  color: #fff;
-  text-align: center;
-  margin-top: 1rem;
-  font-family: var(--fuente-cuerpo);
-  font-weight: 600;
-}
+/* El visor en que se abren las fotos de la Galeria vive en el 33. */
 
 .faq-categoria-titulo {
   display: flex;

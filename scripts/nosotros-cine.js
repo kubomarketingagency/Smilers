@@ -211,6 +211,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function pieza(bloque, selector) { return bloque ? bloque.querySelector(selector) : null; }
     var capaFund = pieza(escena, '.ns-capa--fundamentos');
     var capaInfra = pieza(escena, '.ns-capa--infra');
+    /* Si Fundamentos esta a la vista y se deja leer: enciende su entrada
+       (32-fundamentos.css), y se apaga al irse para que vuelva a entrar. */
+    var fundPintada = false;
     var DESTINOS_CINE = {
       '--c-uno': pieza(escena, '.ns-capa--historia'),
       '--c-ev-uno': pieza(escena, '.ns-capa--historia'),
@@ -222,6 +225,9 @@ document.addEventListener('DOMContentLoaded', function () {
       '--f-ent': pieza(capaFund, ':scope > .ns-envoltura'),
       '--f-filo': pieza(escena, '.ns-filo--vertical'),
       '--f-filo-op': pieza(escena, '.ns-filo--vertical'),
+      /* La deriva de las tarjetas de Fundamentos: en la reja, que es donde
+         cuelgan las seis y nada mas (el 32 la registra con herencia). */
+      '--f-deriva': pieza(capaFund, '.ns-doble__reja'),
       '--i-sube': capaInfra,
       '--i-op': pieza(capaInfra, ':scope > .ns-envoltura'),
       '--i-desenfoque': pieza(capaInfra, ':scope > .ns-envoltura'),
@@ -335,6 +341,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       if (!viva) {
+        if (capaFund) capaFund.classList.remove('ns-fund--viva');
+        fundPintada = false;
         borrar(DESTINOS_CINE);
         borrar(DESTINOS_CIERRE);
         borrar(DESTINOS_CARTA);
@@ -446,6 +454,16 @@ document.addEventListener('DOMContentLoaded', function () {
         ponCine('--f-ent', (1 - texto).toFixed(3));
         ponCine('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
         ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
+
+        /* Fundamentos, mientras se deja leer: su entrada corre cada vez que
+           se llega a ella, y mientras esta quieta sus tarjetas derivan con
+           el scroll (de que el texto ha entrado a que el telon se va). */
+        var fundViva = texto > .55 && sale < .5;
+        if (capaFund && fundViva !== fundPintada) {
+          fundPintada = fundViva;
+          capaFund.classList.toggle('ns-fund--viva', fundViva);
+        }
+        ponCine('--f-deriva', tramo(pCine, .26, .52).toFixed(3));
 
         ponCine('--i-sube', ((1 - sube) * 100).toFixed(2) + '%');
         ponCine('--i-op', textoI.toFixed(3));

@@ -59,24 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('hashchange', filtrarSegunDireccion);
   }
 
-  const modalLightboxEl = document.getElementById('modalLightbox');
-  const disparadoresLightbox = document.querySelectorAll('[data-lightbox-src]');
-
-  if (modalLightboxEl && disparadoresLightbox.length) {
-    const imagenModal = modalLightboxEl.querySelector('img');
-    const leyendaModal = modalLightboxEl.querySelector('.lightbox-leyenda');
-    const modalBootstrap = new bootstrap.Modal(modalLightboxEl);
-
-    disparadoresLightbox.forEach(function (disparador) {
-      disparador.addEventListener('click', function (evento) {
-        evento.preventDefault();
-        imagenModal.src = disparador.dataset.lightboxSrc;
-        imagenModal.alt = disparador.dataset.lightboxAlt || '';
-        leyendaModal.textContent = disparador.dataset.lightboxAlt || '';
-        modalBootstrap.show();
-      });
-    });
-  }
+  /* Las fotos de la Galeria (`[data-lightbox-src]`) las abre visor.js, el
+     mismo visor que las de Tratamientos. Aqui vivia un `Modal` de Bootstrap
+     que obligaba a la Galeria a cargar su guion entero. */
 
   var acordeones = {};
   document.querySelectorAll('.acordeon-tratamiento-boton').forEach(function (boton) {

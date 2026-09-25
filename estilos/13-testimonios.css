@@ -284,6 +284,30 @@
 }
 .esfera-activa .testimonios-etiqueta { grid-area: 2 / 1; }
 .esfera-activa .testimonios-texto { grid-area: 3 / 1; display: block; }
+
+/* EL ROTULO NO SE MUEVE. Iba pegado encima de la cita y el par se centraba
+   junto al lado del circulo, asi que cada testimonio lo dejaba a otra altura:
+   una cita de dos lineas lo bajaba y una de cuatro lo subia. Ahora vive en la
+   parte de arriba de la columna, a la altura del canto de arriba del circulo
+   —el disco de delante mide el 80% de la caja de la esfera, asi que ese canto
+   cae a un 10% del lado de la caja—, centrado en la columna, y la cita se
+   centra sola con el circulo por debajo de el. El margen de la cita, igual
+   arriba y abajo, es lo que ocupa el rotulo: la mantiene centrada sin que
+   pueda subirle nunca por encima. */
+@media (min-width: 992px) {
+  .esfera-activa .testimonios-escena { grid-template-rows: minmax(0, 1fr); }
+  .esfera-activa .testimonios-etiqueta {
+    grid-area: 1 / 1;
+    align-self: start;
+    margin-top: calc(var(--tst-caja) * .1);
+  }
+  .esfera-activa .testimonios-texto {
+    grid-area: 1 / 1;
+    align-self: center;
+    margin-block: calc(var(--tst-caja) * .1 + 5.6rem);
+  }
+  .esfera-activa .testimonios-esfera { grid-area: 1 / 2; }
+}
 .esfera-activa .testimonios-esfera {
   grid-area: 1 / 2 / -1 / 2;
   display: block;
@@ -400,10 +424,13 @@
    el disco ocupa del lienzo—; y un techo en pixeles, que en un monitor muy
    grande un circulo de mil pixeles deja de ser un retrato y pasa a ser una
    pared. */
+/* El lado de la caja de la esfera, en una variable: lo usa tambien el
+   rotulo de Testimonios para ponerse a la altura del circulo. */
+.testimonios-escena { --tst-caja: min(63vw, calc((100svh - var(--alto-navbar) - 3.5rem) / .8), 1060px); }
 .testimonios-esfera {
   position: relative;
   flex: 0 0 auto;
-  width: min(63vw, calc((100svh - var(--alto-navbar) - 3.5rem) / .8), 1060px);
+  width: var(--tst-caja);
   aspect-ratio: 1;
   /* Lo que mide el disco de delante en pixeles. Lo calcula la esfera y lo
      reescribe aqui en cuanto existe (`fijarDisco`); esta cifra es solo el
@@ -495,7 +522,48 @@
   overflow: hidden;
   border-radius: 50%;
   background: #000000;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
+  /* El aro de oro del circulo: 2px del oro de la marca y un halo muy bajo. */
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, .92), 0 0 34px rgba(212, 175, 55, .16),
+              0 14px 40px rgba(0, 0, 0, .5);
+}
+
+/* EN PAUSA, EL ARO LATE Y SUELTA ONDAS. Cuando el video esta parado —lo
+   pauso quien mira, o el telefono no lo dejo arrancar—, el aro se enciende al
+   ritmo de un latido y de el salen dos ondas de oro que se abren y se apagan,
+   una detras de otra: es lo que dice que ahi hay algo esperando a que le den
+   al play. Van por detras del circulo (`z-index: -1` dentro de su caja), asi
+   que solo se ven por fuera. `video-parado` lo pone video-testimonio.js en la
+   pieza de dentro; el `:has()` lo sube hasta aqui. */
+.tst-video::before,
+.tst-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 2px solid rgba(212, 175, 55, .9);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tst-video:has(.video-parado)::before { animation: tst-onda 2.4s cubic-bezier(.22, .61, .36, 1) infinite; }
+  .tst-video:has(.video-parado)::after { animation: tst-onda 2.4s cubic-bezier(.22, .61, .36, 1) 1.2s infinite; }
+  .tst-video:has(.video-parado) .tst-video__marco { animation: tst-latido 1.2s ease-in-out infinite; }
+}
+@keyframes tst-onda {
+  0%   { transform: scale(1); opacity: .9; }
+  70%  { opacity: .22; }
+  100% { transform: scale(1.14); opacity: 0; }
+}
+@keyframes tst-latido {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, .92), 0 0 34px rgba(212, 175, 55, .16),
+                0 14px 40px rgba(0, 0, 0, .5);
+  }
+  45% {
+    box-shadow: 0 0 0 3px rgba(247, 231, 166, 1), 0 0 52px rgba(212, 175, 55, .45),
+                0 14px 40px rgba(0, 0, 0, .5);
+  }
 }
 
 /* El video dentro del circulo: un poco mas ancho que el (`--tst-zoom`) y
@@ -806,6 +874,11 @@
     order: 0;
     max-width: min(40ch, 100%);
     text-align: center;
+    /* Con su sitio guardado: la pila rotulo-circulo-cita va centrada en la
+       pantalla, y con la cita midiendo lo que midiera cada testimonio la pila
+       entera subia o bajaba, y el rotulo con ella. 11rem es la cita mas
+       larga con su firma y sus pasos, medida de 360 a 820 de ancho. */
+    min-height: 11rem;
   }
   .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
   .tst-firma { justify-content: center; }

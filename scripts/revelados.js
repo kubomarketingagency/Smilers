@@ -40,8 +40,17 @@ document.addEventListener('DOMContentLoaded', function () {
      cortos eso da vida. En Tratamientos no: cada especialidad ocupa una
      pantalla entera, y al subir por la pagina uno se encontraba pantallas
      vacias que se volvian a montar delante de el. En un equipo lento eso se
-     lee como una pagina que no termina de cargar. */
-  const unaVez = document.body.dataset.revelar === 'una-vez';
+     lee como una pagina que no termina de cargar.
+
+     Y hay un punto medio, `<body data-revelar="al-bajar">`, que es el de
+     Tratamientos: lo que sale por ABAJO —porque se ha subido por la pagina y
+     ha quedado debajo— se vuelve a esconder, y lo que sale por arriba se
+     queda. Asi cada especialidad repite su entrada (la cortina de oro de sus
+     fotos) cada vez que se llega a ella bajando, y subiendo no hay pantallas
+     vacias: lo que se encuentra uno al subir ya esta montado. */
+  const modoRevelar = document.body.dataset.revelar;
+  const unaVez = modoRevelar === 'una-vez';
+  const soloAbajo = modoRevelar === 'al-bajar';
 
   if ('IntersectionObserver' in window) {
     const observador = new IntersectionObserver(function (entradas) {
@@ -62,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
             entrada.target.classList.add('visible');
           }
         } else if (razon === 0 && !unaVez) {
+          if (soloAbajo && !(entrada.boundingClientRect.top > 0)) return;
           if (!temporizadoresOcultarRevelar.has(entrada.target)) {
             const idOcultar = setTimeout(function () {
               pedirCapa(entrada.target);

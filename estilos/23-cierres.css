@@ -23,8 +23,45 @@
   /* Color de respaldo del onix, no del negro que habia antes: si la piedra
      tarda en llegar, lo que se ve es una banda de miel, no un agujero. */
   background: #F3E3CB;
-  border-top: 1px solid rgba(212, 175, 55, .38);
-  border-bottom: 1px solid rgba(212, 175, 55, .38);
+  /* Arriba va la franja de oro (`::before`, mas abajo) y abajo nada: la
+     juntura con el pie ya la hace el filo de oro con que empieza el pie. */
+  border-top: 0;
+  border-bottom: 0;
+}
+
+/* LA FRANJA DE ORO CON QUE EMPIEZA EL ONIX. La misma idea que el filo con que
+   empieza el pie, pero con mas cuerpo: 3px del degradado de la marca, a todo
+   el ancho, con un halo muy bajo, y un brillo que la recorre despacio. Es la
+   costura entre el marmol blanco de la pagina y la piedra de miel, que
+   apenas se diferencian en luz y sin ella se juntaban sin corte.
+
+   Dos clases: el 15 apaga los `::before` de toda `.banda-cta` de pagina
+   clara, y con una sola esta no salia. */
+.banda-cta.banda-cta--onyx::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: 3px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(90deg, transparent 0%, transparent 42%, rgba(255, 246, 214, .95) 50%, transparent 58%, transparent 100%),
+    var(--oro-marca-degradado);
+  background-size: 260% 100%, 100% 100%;
+  background-position: 170% 0, 0 0;
+  box-shadow: 0 0 14px rgba(212, 175, 55, .38);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .banda-cta.banda-cta--onyx::before { animation: onix-brillo 6s ease-in-out 1s infinite; }
+}
+@keyframes onix-brillo {
+  0%   { background-position: 170% 0, 0 0; }
+  50%  { background-position: -70% 0, 0 0; }
+  100% { background-position: -70% 0, 0 0; }
 }
 .banda-cta--onyx > .container { position: relative; z-index: 1; }
 
@@ -100,9 +137,11 @@
 .banda-cta--onyx p,
 .pagina-clara .banda-cta--onyx p {
   font-family: var(--fuente-cuerpo);
-  font-weight: 300;
-  line-height: 1.9;
-  color: rgba(22, 17, 10, .82);
+  /* En negrita y en la tinta del titular: en la 300 y al 82%, sobre las
+     vetas de miel, la frase de debajo de la pregunta no se leia. */
+  font-weight: 700;
+  line-height: 1.8;
+  color: #16110A;
 }
 
 /* El boton de la banda es el de 16-oro.css, sin retoques: alli el oro sale

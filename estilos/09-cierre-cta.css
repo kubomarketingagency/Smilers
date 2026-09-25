@@ -28,7 +28,16 @@
    pie. Estirandolo por debajo, el collage mide siempre lo mismo —la pantalla
    grande— y lo unico que se reajusta es el texto, que es lo que tiene que
    quedarse centrado en lo que se ve. */
-.cierre-cine-pin .banda-cta-masonry { bottom: calc(var(--sobra-barra) * -1); }
+.cierre-cine-pin .banda-cta-masonry,
+.cierre-cine-pin .banda-cta-overlay { bottom: calc(var(--sobra-barra) * -1); }
+/* Y la banda NO recorta. Llevaba `overflow: hidden` de serie (lo necesita
+   suelta, para que la cinta del doble de ancho no se salga), y con eso el
+   collage estirado por debajo se cortaba en su canto igualmente: en el
+   telefono, al subir desde el pie, la barra del navegador volvia, la banda
+   encogia y por debajo del collage asomaba una franja negra —el fondo del
+   pin— que ademas cambiaba de alto con el gesto. Aqui quien recorta es el
+   pin, que ya lleva su `overflow: hidden` y mide la pantalla grande. */
+.cierre-cine-pin .banda-cta { overflow: visible; }
 /* Y fuera de juego la cinta suelta su capa. Correr ya no corre —de eso se
    encarga secciones.js, que le para la animacion en cuanto la banda sale de
    pantalla— pero `will-change: transform` la mantiene promovida igualmente, y

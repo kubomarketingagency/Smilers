@@ -808,6 +808,7 @@ else cintaInfra.dormir();
 function pieza(bloque,selector){return bloque?bloque.querySelector(selector):null;}
 var capaFund=pieza(escena,'.ns-capa--fundamentos');
 var capaInfra=pieza(escena,'.ns-capa--infra');
+var fundPintada=false;
 var DESTINOS_CINE={
 '--c-uno':pieza(escena,'.ns-capa--historia'),
 '--c-ev-uno':pieza(escena,'.ns-capa--historia'),
@@ -819,6 +820,7 @@ var DESTINOS_CINE={
 '--f-ent':pieza(capaFund,':scope > .ns-envoltura'),
 '--f-filo':pieza(escena,'.ns-filo--vertical'),
 '--f-filo-op':pieza(escena,'.ns-filo--vertical'),
+'--f-deriva':pieza(capaFund,'.ns-doble__reja'),
 '--i-sube':capaInfra,
 '--i-op':pieza(capaInfra,':scope > .ns-envoltura'),
 '--i-desenfoque':pieza(capaInfra,':scope > .ns-envoltura'),
@@ -887,6 +889,8 @@ ultimoCarta=-1;
 pCarta=0;
 }
 if(!viva){
+if(capaFund)capaFund.classList.remove('ns-fund--viva');
+fundPintada=false;
 borrar(DESTINOS_CINE);
 borrar(DESTINOS_CIERRE);
 borrar(DESTINOS_CARTA);
@@ -967,6 +971,12 @@ ponCine('--f-desenfoque',((1 - texto)*12).toFixed(1)+ 'px');
 ponCine('--f-ent',(1 - texto).toFixed(3));
 ponCine('--f-filo',((1 - der)*100).toFixed(2)+ '%');
 ponCine('--f-filo-op',der > 0&&der < 1?'1':'0');
+var fundViva=texto > .55&&sale < .5;
+if(capaFund&&fundViva !==fundPintada){
+fundPintada=fundViva;
+capaFund.classList.toggle('ns-fund--viva',fundViva);
+}
+ponCine('--f-deriva',tramo(pCine,.26,.52).toFixed(3));
 ponCine('--i-sube',((1 - sube)*100).toFixed(2)+ '%');
 ponCine('--i-op',textoI.toFixed(3));
 ponCine('--i-desenfoque',((1 - textoI)*10).toFixed(1)+ 'px');

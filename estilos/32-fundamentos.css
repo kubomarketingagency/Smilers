@@ -1,0 +1,196 @@
+/* ===========================================================================
+   Fundamentos, con vida (Nosotros).
+
+   La capa de Fundamentos —mision, vision y los cuatro valores— entraba bien
+   (el telon de marmol y el texto que se enfoca) pero despues se quedaba
+   quieta: dos tarjetas negras y cuatro mas sobre un marmol parado, durante
+   todo el tramo de scroll en que la escena la deja a la vista. Se leia plana.
+
+   Aqui se le da movimiento con los elementos de la casa, y nada que no lo
+   sea: el oro, el marmol, la letra de los titulares y el filo que viaja.
+
+     - LA ENTRADA. Cada vez que la capa se deja leer (`ns-fund--viva`, que
+       pone nosotros-cine.js), cada tarjeta se descubre de izquierda a
+       derecha con un filo de oro en el canto que avanza, una detras de otra;
+       despues los iconos saltan a su sitio y la raya de oro de cada valor se
+       dibuja. Se repite cada vez que se vuelve a la capa.
+     - LA DERIVA. Mientras la capa esta quieta en pantalla y se sigue
+       bajando, las tarjetas suben un poco, cada una a su ritmo
+       (`--f-deriva`, de 0 a 1, lo escribe el guion en la reja). Da fondo sin
+       mover nada de sitio.
+     - LA LUZ. Por el marmol pasa despacio una luz de oro, como un reflejo.
+     - LOS NUMEROS de mision y vision, grandes y en hueco, con el filo en oro.
+     - LOS ICONOS llevan un arco de oro que les da la vuelta, sin prisa.
+
+   Solo con la escena encendida y con animaciones: sin ellas todo se queda
+   como estaba, a la vista y quieto.
+   =========================================================================== */
+
+@property --f-deriva { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --fund-p { syntax: '<percentage>'; inherits: true; initial-value: 100%; }
+
+/* --- Los numeros, grandes y en hueco ------------------------------------- */
+.ns-capa--fundamentos .ns-mvo__ficha { position: relative; }
+.ns-capa--fundamentos .ns-mvo__num {
+  position: absolute;
+  top: clamp(.5rem, 1.1vw, 1rem);
+  right: clamp(.8rem, 1.6vw, 1.5rem);
+  z-index: 1;
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 4.6vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: 0;
+  /* En hueco de verdad: el 22 le pone el degradado de oro recortado a la
+     letra, y con el relleno de oro el numero pesaba mas que el titulo. */
+  background-image: none;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(212, 175, 55, .72);
+  pointer-events: none;
+}
+
+/* --- Los iconos, con su arco de oro -------------------------------------- */
+.ns-capa--fundamentos .ns-mvo__icono,
+.ns-capa--fundamentos .ns-valor__icono { position: relative; }
+.ns-capa--fundamentos .ns-mvo__icono::after,
+.ns-capa--fundamentos .ns-valor__icono::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    transparent 0 60%, rgba(212, 175, 55, .2) 70%, rgba(247, 231, 166, .95) 86%, transparent 97%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 1px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 1px));
+  pointer-events: none;
+}
+
+/* --- Al pasar el raton -------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .ns-capa--fundamentos .ns-mvo__ficha:hover,
+  .ns-capa--fundamentos .ns-valor:hover {
+    border-color: rgba(212, 175, 55, .72);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, .3), 0 0 44px rgba(212, 175, 55, .14),
+                0 32px 70px rgba(6, 6, 6, .44);
+  }
+  .ns-capa--fundamentos .ns-mvo__ficha:hover .ns-mvo__num {
+    -webkit-text-stroke-color: rgba(247, 231, 166, .95);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- La luz que pasa por el marmol ------------------------------------ */
+  .ns-cine--viva .ns-capa--fundamentos::after {
+    content: '';
+    position: absolute;
+    inset: -25%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(30% 28% at 30% 36%, rgba(212, 175, 55, .22), transparent 70%),
+      radial-gradient(26% 24% at 72% 66%, rgba(247, 231, 166, .18), transparent 72%);
+    animation: fund-luz 16s ease-in-out infinite alternate;
+  }
+  .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura { position: relative; z-index: 1; }
+
+  /* --- El arco de los iconos -------------------------------------------- */
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__icono::after,
+  .ns-cine--viva .ns-capa--fundamentos .ns-valor__icono::after {
+    animation: fund-arco 6.5s linear infinite;
+  }
+  .ns-cine--viva .ns-capa--fundamentos .ns-valor:nth-child(even) .ns-valor__icono::after {
+    animation-direction: reverse;
+  }
+
+  /* --- La deriva -------------------------------------------------------- */
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__ficha,
+  .ns-cine--viva .ns-capa--fundamentos .ns-valor {
+    translate: 0 calc((.5 - var(--f-deriva, .5)) * var(--vel, 24px));
+  }
+  .ns-capa--fundamentos .ns-mvo__ficha:nth-child(1) { --vel: 26px; --espera: .05s; }
+  .ns-capa--fundamentos .ns-mvo__ficha:nth-child(2) { --vel: 44px; --espera: .22s; }
+  .ns-capa--fundamentos .ns-valor:nth-child(1) { --vel: 18px; --espera: .36s; }
+  .ns-capa--fundamentos .ns-valor:nth-child(2) { --vel: 32px; --espera: .46s; }
+  .ns-capa--fundamentos .ns-valor:nth-child(3) { --vel: 24px; --espera: .56s; }
+  .ns-capa--fundamentos .ns-valor:nth-child(4) { --vel: 40px; --espera: .66s; }
+
+  /* --- La entrada ------------------------------------------------------- */
+  .ns-cine--viva .ns-fund--viva .ns-mvo__ficha,
+  .ns-cine--viva .ns-fund--viva .ns-valor {
+    animation: fund-entra 1.1s cubic-bezier(.77, 0, .18, 1) var(--espera, 0s) both;
+  }
+  /* El filo que viaja con el canto: una raya de oro en `--fund-p`, que la
+     animacion de la tarjeta lleva de 0 a 100% mientras la descubre. */
+  .ns-cine--viva .ns-fund--viva .ns-mvo__ficha::after,
+  .ns-cine--viva .ns-fund--viva .ns-valor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      transparent calc(var(--fund-p) - 3px),
+      rgba(247, 231, 166, .95) calc(var(--fund-p) - 1.5px),
+      #D4AF37 var(--fund-p),
+      transparent calc(var(--fund-p) + .5px));
+    animation: fund-filo 1.1s linear var(--espera, 0s) both;
+  }
+  .ns-cine--viva .ns-fund--viva .ns-mvo__icono,
+  .ns-cine--viva .ns-fund--viva .ns-valor__icono {
+    animation: fund-icono .75s cubic-bezier(.34, 1.56, .64, 1) calc(var(--espera, 0s) + .6s) both;
+  }
+  .ns-cine--viva .ns-fund--viva .ns-mvo__num {
+    animation: fund-numero 1.2s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .55s) both;
+  }
+  .ns-cine--viva .ns-fund--viva .ns-valor__nombre::after {
+    transform-origin: left center;
+    animation: fund-raya .9s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .75s) both;
+  }
+}
+
+/* En el telefono las tarjetas van apretadas, a medio dedo unas de otras: la
+   deriva es la mitad, para que ninguna se monte sobre la de al lado. */
+@media (max-width: 991.98px) {
+  .ns-capa--fundamentos .ns-mvo__ficha:nth-child(1) { --vel: 12px; }
+  .ns-capa--fundamentos .ns-mvo__ficha:nth-child(2) { --vel: 20px; }
+  .ns-capa--fundamentos .ns-valor:nth-child(1) { --vel: 8px; }
+  .ns-capa--fundamentos .ns-valor:nth-child(2) { --vel: 14px; }
+  .ns-capa--fundamentos .ns-valor:nth-child(3) { --vel: 10px; }
+  .ns-capa--fundamentos .ns-valor:nth-child(4) { --vel: 16px; }
+  .ns-capa--fundamentos .ns-mvo__num { font-size: 2.2rem; top: .45rem; right: .6rem; }
+}
+
+@keyframes fund-luz {
+  from { transform: translate3d(-7%, -5%, 0) rotate(0deg); }
+  to   { transform: translate3d(7%, 6%, 0) rotate(9deg); }
+}
+@keyframes fund-arco {
+  to { transform: rotate(1turn); }
+}
+@keyframes fund-entra {
+  0%   { clip-path: inset(0 100% 0 0); --fund-p: 0%; }
+  72%  { clip-path: inset(0 0 0 0); --fund-p: 100%; }
+  100% { clip-path: inset(-60px -60px -90px -60px); --fund-p: 100%; }
+}
+@keyframes fund-filo {
+  0%   { opacity: 0; }
+  4%   { opacity: 1; }
+  66%  { opacity: 1; }
+  78%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes fund-icono {
+  from { opacity: 0; transform: scale(.4); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fund-numero {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fund-raya {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}

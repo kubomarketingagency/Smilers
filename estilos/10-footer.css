@@ -461,3 +461,10 @@
 .btn-subir:active {
   transform: translateY(0) scale(.94);
 }
+
+/* Detras del onix, sin fundido. El fundido es para el collage de fotos que
+   hay encima del pie en la portada y en Nosotros; en las paginas que acaban
+   en la banda de onix (Tratamientos, Galeria, FAQ y privacidad) apagaba de
+   negro la mitad de abajo de la piedra, justo donde va la frase de debajo de
+   la pregunta. Ahi la juntura es solo el filo de oro. */
+main:has(> .banda-cta--onyx:last-child) + .footer::after { content: none; }

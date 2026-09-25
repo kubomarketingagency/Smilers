@@ -3,9 +3,8 @@
 
    La mitad de la foto de cada especialidad lleva un collage de sus fotos,
    cada una con su filo de oro, y la que se pulsa se abre en grande en el
-   visor (visor.js), con flechas para pasar a las otras de la misma
-   especialidad. Es el mismo visor de la Galeria —sus estilos viven en el
-   12— sin el guion de Bootstrap, que eran 60 KB para esto.
+   visor (visor.js y el 33), con flechas para pasar a las otras de la misma
+   especialidad. Es el mismo visor que el de la Galeria.
 
    LA CAJA TIENE SU PROPORCION Y NO SE ESTIRA. El primer collage se estiraba
    a la columna, que en un portatil de 1440x900 es mas alta que ancha: la
@@ -296,95 +295,5 @@
   to   { translate: 0 3.5%; }
 }
 
-/* El puntero «Ver», que pone visor.js al pasar con raton por una foto. */
-.tz-puntero {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1025;
-  display: grid;
-  place-items: center;
-  width: 86px;
-  height: 86px;
-  margin: -43px 0 0 -43px;
-  border-radius: 50%;
-  background: rgba(250, 248, 245, .94);
-  box-shadow: 0 12px 34px -10px rgba(10, 8, 6, .55);
-  color: #141210;
-  font-family: var(--fuente-cuerpo);
-  font-weight: 700;
-  font-size: .62rem;
-  letter-spacing: .26em;
-  text-indent: .26em;
-  text-transform: uppercase;
-  pointer-events: none;
-  opacity: 0;
-  scale: .35;
-  transition: opacity .3s ease, scale .45s cubic-bezier(.34, 1.56, .64, 1);
-  will-change: transform;
-}
-.tz-puntero--visible { opacity: 1; scale: 1; }
-.tz-puntero--pulsa { scale: .86; transition-duration: .12s; }
-.con-puntero .tz-mosaico__pieza { cursor: none; }
-
-/* ===========================================================================
-   El visor, con lo que la Galeria no necesita: flechas para pasar de una
-   foto a otra de la misma especialidad y la cuenta («2 / 3»). Lo demas —el
-   marco, la foto, el boton de cerrar, la leyenda— es el del 12, tal cual.
-   =========================================================================== */
-/* El velo, mas cerrado que el de Bootstrap (.5): la leyenda y la cuenta van
-   sobre el, y con la pagina transparentandose detras se mezclaban con el
-   titular de la seccion que quedara debajo. */
-.modal-backdrop.visor-velo.show { opacity: .88; }
-
-.visor .modal-body { display: grid; justify-items: center; }
-.visor .lightbox-marco { position: relative; }
-.visor .lightbox-img { transition: opacity .25s ease; }
-.visor.cargando .lightbox-img { opacity: 0; }
-
-.visor__flecha {
-  position: absolute;
-  top: calc(50% - 1.6rem);
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
-  border: 1px solid rgba(212, 175, 55, .85);
-  border-radius: 50%;
-  background: rgba(10, 8, 6, .72);
-  color: var(--oro-marca);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color .3s ease, color .3s ease, transform .3s ease;
-}
-.visor__flecha[hidden] { display: none; }
-.visor__flecha--ant { left: -1.5rem; }
-.visor__flecha--ant .icono { transform: rotate(180deg); }
-.visor__flecha--sig { right: -1.5rem; }
-.visor__flecha:hover,
-.visor__flecha:focus-visible {
-  background: var(--oro-marca);
-  color: #0E0C0A;
-}
-.visor__flecha:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
-
-.visor .lightbox-leyenda { margin-bottom: 0; max-width: 60ch; }
-.visor__cuenta {
-  margin: .35rem 0 0;
-  font-family: var(--fuente-menu);
-  font-size: .8rem;
-  letter-spacing: .2em;
-  color: var(--oro-marca);
-}
-.visor__cuenta:empty { display: none; }
-
-/* Por debajo de 992 las flechas no caben a los lados de la foto —el visor
-   llega casi al canto de la pantalla—: bajan y se quedan dentro de su marco,
-   en los dos cantos de abajo. */
-@media (max-width: 991.98px) {
-  .visor__flecha { top: auto; bottom: 1rem; width: 2.6rem; height: 2.6rem; }
-  .visor__flecha--ant { left: 1rem; }
-  .visor__flecha--sig { right: 1rem; }
-}
+/* El puntero «Ver» y el visor en que se abren estas fotos viven en el 33,
+   que comparten Tratamientos y la Galeria. */

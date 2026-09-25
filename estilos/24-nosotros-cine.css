@@ -331,9 +331,10 @@ main:has(.ns-cine--viva) { background: #050505; }
     left: 0;
     top: 56%;
   }
-  /* Dentro de la escena la juntura cae donde acaba la foto, que es a los tres
-     cuartos de la pantalla: la foto va a sangre y la rejilla reparte 3 a 1. */
-  .ns-cine--viva .ns-fondo--elenco { top: 75%; }
+  /* Dentro de la escena la juntura cae donde acaba la foto: la foto va a
+     sangre y la rejilla reparte 2,6 a 1 (ver `.ns-elenco__lado` mas abajo),
+     asi que es el 2,6/3,6 de la pantalla. */
+  .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2.6 / 3.6); }
   .ns-fondo--elenco::after {
     border-left: 0;
     border-top: 3px solid transparent;
@@ -454,7 +455,7 @@ main:has(.ns-cine--viva) { background: #050505; }
 @media (max-width: 991.98px) {
   .ns-cine--viva .ns-capa--elenco .ns-elenco {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 3fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 2.6fr) minmax(0, 1fr);
   }
   .ns-cine--viva .ns-elenco__lado {
     display: flex;
@@ -463,8 +464,14 @@ main:has(.ns-cine--viva) { background: #050505; }
     min-height: 0;
     /* A la derecha, el hueco de los dos botones fijos -WhatsApp y subir, que
        ocupan los 81px del canto y bajan justo por este cuarto-: sin el,
-       tapaban el final de cada linea del parrafo. */
-    padding: .7rem calc(81px + .7rem) .6rem clamp(1.1rem, 5vw, 2rem);
+       tapaban el final de cada linea del parrafo.
+
+       Y abajo, el del boton de las cookies, que vive en la esquina de abajo a
+       la izquierda: 44px a 20 del suelo. Se tapaba los puntos del carrusel y
+       rozaba la ultima linea. El texto sube lo justo para pasar por encima
+       (64px y un respiro), y para que quepa con la letra algo mas grande la
+       foto cede un poco de alto: 2,6 a 1 en vez de 3 a 1. */
+    padding: .7rem calc(81px + .7rem) calc(64px + .45rem) clamp(1.1rem, 5vw, 2rem);
   }
   .ns-cine--viva .ns-elenco__lado .ns-titulo,
   .ns-cine--viva .ns-elenco .ns-ficha__cabeza,
@@ -868,7 +875,15 @@ main:has(.ns-cine--viva) { background: #050505; }
   bottom: var(--sobra-barra); /* lo que se ve: ver `--sobra-barra` en el 01 */
   height: auto;
   min-height: 0;
+  /* La banda no recorta: el collage de detras llega hasta el canto de
+     verdad del pin (lo recorta el pin), como en la portada. Atado al canto
+     de la banda, cada vez que la barra del navegador aparecia o se iba el
+     collage cambiaba de alto —sus fotos se volvian a repartir y a recortar,
+     que se veia como una sacudida— y por debajo asomaba una franja negra. */
+  overflow: visible;
 }
+.ns-cierre--viva .banda-cta--cine .banda-cta-masonry,
+.ns-cierre--viva .banda-cta--cine .banda-cta-overlay { bottom: calc(var(--sobra-barra) * -1); }
 /* Cada columna de la mamposteria son tres fotos a 3/4, y tres fotos a 3/4
    miden lo que miden: en un telefono de 844 se quedaban en 771 y por debajo
    asomaba una franja negra. Clavada a pantalla entera, las fotos se reparten
@@ -1134,7 +1149,7 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-elenco__area { font-size: .66rem; }
   .ns-elenco__lado .ns-rotulo { margin-bottom: .4rem; }
   .ns-elenco .ns-ficha { margin-top: .7rem; padding: .8rem .9rem; gap: .5rem; }
-  #nsCine .ns-ficha__texto { font-size: .82rem; line-height: 1.55; }
+  #nsCine .ns-ficha__texto { font-size: .92rem; line-height: 1.55; }
   #nsCine .ns-ficha__puntos { gap: .3rem; }
   #nsCine .ns-ficha__puntos li { padding-left: 1.35rem; font-size: .8rem; line-height: 1.45; }
   .ns-elenco__puntos { justify-content: center; margin-top: .7rem; }
@@ -1155,6 +1170,12 @@ main:has(.ns-cine--viva) { background: #050505; }
    especialista, que repite lo que dice el rotulo de encima. */
 @media (max-width: 991.98px) and (max-height: 700px) {
   .ns-cine--viva .ns-capa--elenco { --alto-retrato: 43svh; }
+  /* El texto del especialista, por encima del boton de las cookies y con la
+     letra un pelo mas grande, no cabia en un cuarto de 640: la foto cede un
+     tercio de pantalla en vez de un cuarto largo. */
+  .ns-cine--viva .ns-capa--elenco .ns-elenco { grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
+  .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2 / 3); }
+  #nsCine .ns-ficha__texto { font-size: .88rem; line-height: 1.5; }
   .ns-cine--viva .ns-elenco__lado .ns-titulo { display: none; }
   .ns-cine--viva .ns-capa--fundamentos .ns-mvo__texto { font-size: .72rem; line-height: 1.44; }
   #nsCine .ns-parrafo { font-size: .85rem; line-height: 1.5; }
