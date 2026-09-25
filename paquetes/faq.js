@@ -216,7 +216,7 @@ const abierto=menu.classList.contains('menu-abierto');
 const nuevoEstado=forzarCerrado?false:!abierto;
 menu.classList.toggle('menu-abierto',nuevoEstado);
 botonMenu.setAttribute('aria-expanded',String(nuevoEstado));
-document.body.style.overflow=nuevoEstado?'hidden':'';
+document.documentElement.classList.toggle('menu-desplegado',nuevoEstado);
 if(nuevoEstado)mostrarNavbar();
 else SmilersScroll.pedir();
 }
@@ -453,6 +453,12 @@ if(fondoDos[0]){
 fondoDos[0].smilersRiel={
 destino:function(){return viva?puntoDeEscena(.99):null;},
 desde:function(){return viva?puntoDeEscena(.78):null;}
+};
+}
+var envoltorio=escena.parentNode&&escena.parentNode.closest?escena.parentNode.closest('[data-pantalla]'):null;
+if(envoltorio){
+envoltorio.smilersRiel={
+destino:function(){return viva?puntoDeEscena(0):null;}
 };
 }
 revisarModo();

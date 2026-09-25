@@ -38,6 +38,7 @@
   var PIEZAS = '.tz-mosaico__pieza, .galeria-item-lb';
 
   var navbar = document.getElementById('navbarPrincipal');
+  var hueco = !!(window.CSS && CSS.supports && CSS.supports('scrollbar-gutter', 'stable'));
   var marco = visor.querySelector('.visor__marco');
   var foto = visor.querySelector('.visor__foto');
   var leyenda = visor.querySelector('.visor__leyenda');
@@ -193,10 +194,12 @@
 
     if (!abierto) {
       abierto = true;
-      /* El scroll se bloquea sin que la pagina salte de lado: el ancho de la
-         barra de scroll que se quita se devuelve en relleno, a la pagina y a
-         la barra de navegacion, que es fija y se ensancharia. */
-      var barra = window.innerWidth - document.documentElement.clientWidth;
+      /* El scroll se bloquea sin que la pagina salte de lado: el 02 deja
+         reservado el hueco de la barra (`scrollbar-gutter`). Donde eso no se
+         sabe hacer, el ancho de la barra que se quita se devuelve en relleno,
+         a la pagina y a la barra de navegacion, que es fija y se
+         ensancharia. */
+      var barra = hueco ? 0 : window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.classList.add('visor-abierto');
       if (barra > 0) {
         document.body.style.paddingRight = barra + 'px';

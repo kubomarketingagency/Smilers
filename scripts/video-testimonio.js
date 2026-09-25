@@ -6,13 +6,22 @@ window.SmilersVideo = (function () {
 
      Los ocho testimonios de la portada son videos verticales de YouTube. En la
      pagina no hay ningun <iframe> escrito: el reproductor se crea la primera
-     vez que la esfera se para en un testimonio, y a partir de ahi es SIEMPRE
-     EL MISMO. Al cambiar de testimonio no se tira y se hace otro: se le pide
-     el video nuevo (`loadVideoById`).
+     vez que alguien le da al play, y a partir de ahi es SIEMPRE EL MISMO. Al
+     cambiar de testimonio no se tira y se hace otro: se le pide el video
+     nuevo (`loadVideoById`).
 
-     Eso ultimo no es una optimizacion, es lo que hace que se vea bien. Creando
-     un reproductor por testimonio, a partir del segundo YouTube servia la
-     **interfaz de Shorts** —su logotipo, el boton de me gusta, el de
+     CADA VIDEO EMPIEZA EN PAUSA. Cuando la esfera se para en un testimonio
+     sale su fotograma con el play de la casa encima, y el aro respira
+     despacio (13-testimonios.css); rueda cuando se pulsa. Hasta ese primer
+     play no se pide nada a YouTube: ni su API ni el reproductor. Es lo que
+     dice la politica de privacidad («No se carga solo»), y es ademas lo que
+     deja girar la esfera sin cargar con un reproductor entero —su iframe es
+     un megabyte largo de guion que en el telefono corre en el mismo hilo que
+     la pagina—. Mientras se pide, el play lleva un filo de oro que gira.
+
+     Lo de un solo reproductor no es una optimizacion, es lo que hace que se
+     vea bien. Creando uno por testimonio, a partir del segundo YouTube servia
+     la **interfaz de Shorts** —su logotipo, el boton de me gusta, el de
      compartir, el canal y el titulo—, y en el telefono la servia desde el
      primero. Con un solo reproductor que cambia de video, no aparece.
 
@@ -28,21 +37,21 @@ window.SmilersVideo = (function () {
        todo—. El escudo se come el raton y el dedo, asi que YouTube no se
        entera de que hay nadie ahi.
      - El fotograma por delante siempre que el video no este rodando: entre
-       que se pide y arranca, y en cada salto, YouTube ensena lo suyo.
+       que se pide y arranca, en cada salto y mientras esta en pausa, YouTube
+       ensena lo suyo.
 
      Ojo con `loop=1&playlist=ID`, que es la forma documentada de repetir: en
      un video subido como Short le cambia la cara al reproductor y saca la
      interfaz de Shorts entera. Se probo y se descarto. La vuelta la da el
      guion, rebobinando medio segundo antes del final (`vigilar`).
 
-     EL SONIDO EMPIEZA APAGADO, y no por gusto: ningun navegador deja que un
-     video arranque solo con sonido. Quien quiera oirlo pulsa el boton, y a
-     partir de ahi los demas ya salen sonando, porque la eleccion se recuerda
-     mientras dure la visita.
+     EL SONIDO EMPIEZA APAGADO: el play lo pulsa la pagina y no el iframe, y
+     un video que arranca asi solo puede hacerlo callado (en iOS, siempre).
+     Quien quiera oirlo pulsa el boton, y a partir de ahi los demas ya salen
+     sonando, porque la eleccion se recuerda mientras dure la visita.
 
      Se pide a `youtube-nocookie.com`, que es el dominio que YouTube mantiene
-     para no dejar nada en el navegador hasta que el video arranca. Aqui
-     arranca solo, asi que se deja constancia en la politica de privacidad.
+     para no dejar nada en el navegador hasta que el video arranca.
      ========================================================================= */
 
   var API = 'https://www.youtube.com/iframe_api';
@@ -59,6 +68,10 @@ window.SmilersVideo = (function () {
     iv_load_policy: 3
   };
   var MARGEN = 0.45;
+  /* Lo que se espera a que un video pedido ruede antes de darlo por parado y
+     devolver el play: la primera vez hay que traer la API y el reproductor
+     entero, y en una conexion lenta eso son varios segundos. */
+  var ESPERA = 9000;
 
   var conSonido = false;
   var apiPedida = false;
@@ -86,17 +99,22 @@ window.SmilersVideo = (function () {
     document.head.appendChild(guion);
   }
 
-  /* Se pide en cuanto la seccion esta cerca y no cuando hace falta: la primera
-     vez la API tarda medio segundo largo en llegar, y ese medio segundo se
-     veria como un hueco donde tendria que haber un video. */
-  function preparar() { conApi(function () {}); }
-
   function pintarBoton(caja) {
     var boton = caja && caja.querySelector('[data-video-son]');
     if (!boton) return;
     boton.classList.toggle('esta-callado', !conSonido);
     boton.setAttribute('aria-pressed', conSonido ? 'true' : 'false');
     boton.setAttribute('aria-label', conSonido ? 'Quitar el sonido' : 'Activar el sonido');
+  }
+
+  /* Los tres estados que ve el CSS, y solo uno a la vez: `video-parado`
+     (en pausa: el play y el aro respirando), `video-pidiendo` (se le ha dado
+     al play y todavia no rueda: el play con su filo girando) y `video-listo`
+     (rueda: se aparta el fotograma). */
+  function ponerEstado(caja, estado) {
+    caja.classList.toggle('video-parado', estado === 'parado');
+    caja.classList.toggle('video-pidiendo', estado === 'pidiendo');
+    caja.classList.toggle('video-listo', estado === 'listo');
   }
 
   /* El fotograma por delante un momento. Rebobinar le hace ensenar un
@@ -119,6 +137,9 @@ window.SmilersVideo = (function () {
     caja.__vigia = setInterval(function () {
       var r = caja.__reproductor;
       if (!r || !r.getDuration) return;
+      /* En pausa no hay nada que mirar: el fotograma esta delante y encima el
+         play de la casa. */
+      if (caja.__pausa || !caja.__video) return;
       /* El fotograma se aparta solo mientras el video RUEDA de verdad, y eso
          se mira aqui y no en `onStateChange`: los avisos de la API llegan
          tarde o no llegan —al rebobinar, al cambiar de video, al volver de
@@ -138,75 +159,51 @@ window.SmilersVideo = (function () {
       }
       caja.__reloj = reloj;
       var rodando = estado === 1 && caja.__quieto < 3;
-      /* Pausado a mano: ni se le ruega que arranque ni se le rebobina. El
-         fotograma se queda delante —que es lo que tapa lo que YouTube saca
-         en cuanto un video se para— y encima queda el play de la casa. */
-      if (caja.__pausa) {
-        caja.classList.remove('video-listo');
-        caja.classList.add('video-parado');
+
+      if (!rodando) {
+        /* Se le pidio y no rueda. Si esta cargando (3) o arrancando (-1) se
+           le deja; si esta quieto (pausado por el navegador, que para los
+           iframes que llevan un rato sin verse, o sin arrancar) se le vuelve
+           a pedir un par de veces. Y si pasado el plazo sigue sin rodar se
+           deja en pausa, con el play fuera: quien no deja arrancar un video
+           solo (iOS con el ahorro de energia puesto) no va a cambiar de idea,
+           y para eso esta el boton. */
+        ponerEstado(caja, 'pidiendo');
+        if (Date.now() - (caja.__pedido || 0) > ESPERA) {
+          caja.__pausa = true;
+          ponerEstado(caja, 'parado');
+          return;
+        }
+        if (estado !== 3 && estado !== -1 && (caja.__ruegos || 0) < 3) {
+          caja.__ruegos = (caja.__ruegos || 0) + 1;
+          r.playVideo();
+        }
         return;
       }
-      caja.classList.toggle('video-listo', !!(rodando && caja.__video));
-      /* Y si esta parado de verdad, sale el boton de play de la casa. */
-      caja.classList.toggle('video-parado', !!(caja.__video && !rodando));
+
+      /* Rueda. El plazo cuenta desde la ultima vez que rodo: si luego se
+         queda cargando a medias, se le vuelve a esperar entero. */
+      caja.__pedido = Date.now();
+      caja.__rodo = true;
+      caja.__ruegos = 0;
+      ponerEstado(caja, 'listo');
       /* El fotograma se aparta EN CUANTO el video rueda de verdad, sin
          esperar a que se cumpla el plazo de `taparUnMomento`: ese plazo es un
-         tope, no un tiempo de espera. Con los dos segundos fijos del cambio
-         de video, cada testimonio empezaba dos segundos tarde aunque YouTube
-         estuviera dando desde el primero. */
-      if (rodando && reloj > 0.25 && caja.classList.contains('saltando')) {
+         tope, no un tiempo de espera. */
+      if (reloj > 0.25 && caja.classList.contains('saltando')) {
         clearTimeout(caja.__volver);
         caja.classList.remove('saltando');
       }
-      if (!caja.__video) return;
-      /* Antes de rendirse se le pide un par de veces mas. No lo pausa nadie
-         de aqui —soltar un video pausado es justo lo que hace salir el
-         titulo—, pero el navegador si lo para por su cuenta cuando el iframe
-         lleva un rato sin verse. Si a la tercera sigue parado, se deja: quien
-         no deja arrancar un video solo no va a cambiar de idea, y para eso
-         esta el boton. */
-      if (!rodando && (caja.__ruegos || 0) < 3) {
-        caja.__ruegos = (caja.__ruegos || 0) + 1;
-        taparUnMomento(caja, 900);
-        r.playVideo();
-        return;
-      }
-      if (rodando) caja.__ruegos = 0;
       var largo = r.getDuration();
-      if (!(largo > 0) || r.getCurrentTime() < largo - MARGEN) return;
+      if (!(largo > 0) || reloj < largo - MARGEN) return;
       taparUnMomento(caja);
       r.seekTo(0, true);
     }, 180);
   }
 
-  function montar(caja, id, quien) {
-    if (!caja || !id) return;
-    if (caja.__video === id) return;
-    caja.__video = id;
-    caja.__ruegos = 0;
-    caja.__quieto = 0;
-    /* Cada testimonio empieza solo, aunque el anterior se dejara pausado. */
-    caja.__pausa = false;
-    caja.classList.add('tiene-video');
-    pintarBoton(caja);
-
-    var r = caja.__reproductor;
-    if (r && r.loadVideoById) {
-      /* Si el que ya tiene cargado es este, no se vuelve a pedir ni se toca:
-         estaba rodando, callado, detras del telon. Pedirlo otra vez —o
-         siquiera pausarlo y soltarlo— hace que YouTube ensene su titulo y su
-         canal encima un par de segundos. */
-      if (caja.__cargado !== id) {
-        caja.__cargado = id;
-        taparUnMomento(caja, 2000);
-        r.loadVideoById(id);
-      } else if (r.getPlayerState && r.getPlayerState() !== 1) {
-        taparUnMomento(caja, 1400);
-        r.playVideo();
-      }
-      if (conSonido) r.unMute(); else r.mute();
-      return;
-    }
+  /* El reproductor, la primera vez que se le da al play. Hasta aqui no se ha
+     pedido nada a YouTube. */
+  function crear(caja) {
     if (caja.__creando) return;
     caja.__creando = true;
 
@@ -220,9 +217,10 @@ window.SmilersVideo = (function () {
       for (var clave in PARAMETROS) {
         if (Object.prototype.hasOwnProperty.call(PARAMETROS, clave)) suyos[clave] = PARAMETROS[clave];
       }
+      var id = caja.__video;
       caja.__reproductor = new window.YT.Player(semilla, {
         host: SERVIDOR,
-        videoId: caja.__video || id,
+        videoId: id,
         playerVars: suyos,
         events: {
           onReady: function (ev) {
@@ -233,18 +231,23 @@ window.SmilersVideo = (function () {
               marco.setAttribute('tabindex', '-1');
             }
             if (conSonido) ev.target.unMute(); else ev.target.mute();
-            /* La esfera puede haberse llevado el testimonio mientras llegaba
-               la API: entonces se queda quieto, esperando al siguiente. */
-            caja.__cargado = caja.__video || id;
-            if (caja.__video) ev.target.playVideo(); else ev.target.pauseVideo();
+            caja.__cargado = id;
+            /* Mientras llegaba, la esfera puede haberse llevado el testimonio
+               o quien miraba puede haberlo vuelto a pausar: entonces se queda
+               quieto. Y si ya toca otro, se le pide ese. */
+            if (caja.__pausa || !caja.__video) {
+              ev.target.pauseVideo();
+            } else if (caja.__video !== id) {
+              caja.__cargado = caja.__video;
+              ev.target.loadVideoById(caja.__video);
+            } else {
+              ev.target.playVideo();
+            }
             vigilar(caja);
           },
-          /* El fotograma se quita cuando el video esta DANDO (1), no cuando el
-             reproductor esta listo: entre una cosa y otra YouTube ensena su
-             titulo y su canal. Mientras no rueda, delante va el fotograma. */
+          /* 0 = terminado, y aqui no deberia llegar nunca: la vuelta se da
+             antes (ver `vigilar`). Si llega, se da igual. */
           onStateChange: function (ev) {
-            /* 0 = terminado, y aqui no deberia llegar nunca: la vuelta se da
-               antes (ver `vigilar`). Si llega, se da igual. */
             if (ev.data === 0) { ev.target.seekTo(0, true); ev.target.playVideo(); }
           }
         }
@@ -253,34 +256,35 @@ window.SmilersVideo = (function () {
     });
   }
 
-  /* Apagar es callar y tapar, no pausar ni tirar el reproductor.
+  /* Un testimonio nuevo delante: su fotograma, el play y nada mas. */
+  function montar(caja, id) {
+    if (!caja || !id) return;
+    if (caja.__video === id) return;
+    caja.__video = id;
+    caja.__pausa = true;
+    caja.classList.add('tiene-video');
+    caja.classList.remove('saltando');
+    clearTimeout(caja.__volver);
+    ponerEstado(caja, 'parado');
+    pintarBoton(caja);
+  }
 
-     Tirarlo obligaba a crear otro para el testimonio siguiente, y de ahi
-     salia la interfaz de Shorts. Pausarlo y volver a soltarlo tambien tiene
-     precio: YouTube ensena su titulo y su canal un par de segundos cada vez
-     que se le suelta, y eso pasaba en cada giro de la esfera. Rodando y
-     callado detras del telon no pasa nada de eso, y el telon —la tarjeta
-     entera— esta escondido.
-
-     Quien lo para de verdad es `parar`, cuando la seccion deja la pantalla:
-     ahi ya no hay giro que estropear. */
+  /* Apagar es dejarlo quieto y tapado: la tarjeta entera se esconde con la
+     esfera girando, y ahi no hay nada que ver. En pausa y tapado por el
+     fotograma, YouTube no ensena nada al soltarlo luego. */
   function apagar(caja) {
     if (!caja || !caja.__video) return false;
     caja.__video = null;
-    caja.__pausa = false;
-    caja.classList.remove('tiene-video', 'video-listo', 'saltando', 'video-parado');
+    caja.__pausa = true;
+    caja.classList.remove('tiene-video', 'video-listo', 'video-pidiendo', 'saltando', 'video-parado');
     clearTimeout(caja.__volver);
     var r = caja.__reproductor;
-    if (r && r.mute) { try { r.mute(); } catch (e) {} }
+    if (r && r.pauseVideo) { try { r.pauseVideo(); } catch (e) {} }
     return true;
   }
 
-  function parar(caja) {
-    if (!caja) return;
-    apagar(caja);
-    var r = caja.__reproductor;
-    if (r && r.pauseVideo) { try { r.pauseVideo(); } catch (e) {} }
-  }
+  /* Cuando la seccion deja la pantalla. */
+  function parar(caja) { apagar(caja); }
 
   /* El fotograma de cada video, el mismo que lleva su tarjeta en la esfera. */
   function poner(caja, foto) {
@@ -288,37 +292,61 @@ window.SmilersVideo = (function () {
     if (img && foto && img.getAttribute('src') !== foto) img.setAttribute('src', foto);
   }
 
-  /* PAUSA Y SIGUE, con el dedo o con el raton.
+  /* Por si el reproductor no llega nunca (sin red, o YouTube bloqueado): ahi
+     no hay vigia que lo mire, y el filo giraria para siempre. Pasado el
+     plazo sin haber rodado, vuelve el play. */
+  function plazo(caja) {
+    clearTimeout(caja.__plazo);
+    caja.__plazo = setTimeout(function () {
+      if (caja.__pausa || !caja.__video || caja.__rodo) return;
+      caja.__pausa = true;
+      ponerEstado(caja, 'parado');
+      var r = caja.__reproductor;
+      if (r && r.pauseVideo) { try { r.pauseVideo(); } catch (e) {} }
+    }, ESPERA);
+  }
+
+  /* PLAY Y PAUSA, con el dedo o con el raton.
 
      Quien recoge el toque es el escudo, la capa que ya estaba por delante del
      reproductor para que YouTube no viera el raton: ahi el clic no llega a
      YouTube —que pausaria por su cuenta y sacaria su interfaz entera— sino
-     aqui. Y el play de la casa, que ya salia cuando el video se quedaba
-     parado por su cuenta, sirve ademas para volver a soltarlo.
+     aqui. Y el play de la casa hace lo mismo.
 
-     Pausar a mano es lo unico que para un video dentro de la escena: mientras
-     `__pausa` este puesto, el vigia no le ruega que arranque. Al cambiar de
-     testimonio se olvida, que es lo que hace que el siguiente empiece solo.
-
-     El gesto tiene que ser de verdad ademas por iOS: con el ahorro de energia
-     puesto no deja arrancar ningun video que no pida el dedo. */
+     Un toque cambia entre «quiero verlo» y «no»: en pausa lo suelta, y
+     rodando o pidiendose lo para. Al cambiar de testimonio vuelve a pausa. */
   function alternar(caja) {
-    var r = caja && caja.__reproductor;
-    if (!r || !r.playVideo) return;
+    if (!caja || !caja.__video) return;
     if (caja.__pausa) {
       caja.__pausa = false;
       caja.__ruegos = 0;
       caja.__quieto = 0;
-      taparUnMomento(caja, 900);
+      caja.__pedido = Date.now();
+      caja.__rodo = false;
+      ponerEstado(caja, 'pidiendo');
+      plazo(caja);
+      var r = caja.__reproductor;
+      if (!r) { crear(caja); return; }
+      if (!r.playVideo) return; /* se esta creando: al llegar, rueda */
       try { if (conSonido) r.unMute(); else r.mute(); } catch (e) {}
-      r.playVideo();
+      /* Si el que tiene cargado es otro, se le pide este (y arranca solo);
+         si es este, sigue por donde se quedo. */
+      if (caja.__cargado !== caja.__video) {
+        caja.__cargado = caja.__video;
+        taparUnMomento(caja, 2000);
+        r.loadVideoById(caja.__video);
+      } else {
+        taparUnMomento(caja, 900);
+        r.playVideo();
+      }
       return;
     }
     caja.__pausa = true;
     clearTimeout(caja.__volver);
-    caja.classList.add('saltando', 'video-parado');
-    caja.classList.remove('video-listo');
-    try { r.pauseVideo(); } catch (e) {}
+    caja.classList.add('saltando');
+    ponerEstado(caja, 'parado');
+    var rep = caja.__reproductor;
+    if (rep && rep.pauseVideo) { try { rep.pauseVideo(); } catch (e) {} }
   }
 
   document.addEventListener('click', function (evento) {
@@ -348,7 +376,6 @@ window.SmilersVideo = (function () {
   });
 
   return {
-    preparar: preparar,
     montar: montar,
     apagar: apagar,
     parar: parar,

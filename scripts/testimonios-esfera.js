@@ -1008,10 +1008,6 @@ void main() {
       }
       esfera.irA(tActual);
       fijarDisco();
-      /* La API de YouTube tarda medio segundo en llegar la primera vez, y
-         ese medio segundo se veria como un hueco negro donde va el video.
-         Se pide ahora, que la seccion ya esta cerca. */
-      if (window.SmilersVideo) window.SmilersVideo.preparar();
       return esfera;
     }
 
@@ -1163,12 +1159,10 @@ void main() {
          mover un poco la rueda mientras se ve un video no lo apaga. */
       if (marcoVideo && window.SmilersVideo) {
         var quien = items[indice] && items[indice].video ? indice : -1;
-        /* Dos umbrales y no uno: el video SE PIDE mucho antes de que SE VEA.
-           Pedirlo cuesta —YouTube tarda de medio segundo a dos en tener el
-           nuevo rodando— y, pidiendolo en el mismo momento en que aparecia el
-           circulo, esa espera se veia entera, con el fotograma quieto
-           delante. Ahora se pide con la esfera todavia llegando (el circulo
-           sigue apagado, asi que no se ve nada) y cuando aparece ya rueda. */
+        /* Dos umbrales y no uno: el testimonio SE MONTA antes de que SE VEA
+           —su fotograma y su play, en pausa: ningun video arranca solo—, con
+           la esfera todavia llegando y el circulo apagado, asi que cuando
+           aparece ya esta en su sitio y no cambia de foto delante de nadie. */
         var pide = quien >= 0 && quietud > 0.3 && enJuego;
         var toca = quien >= 0 && quietud > (videoPuesto ? 0.5 : 0.82) && enJuego;
         if (pide && quien !== videoMontado) {
@@ -1265,9 +1259,8 @@ void main() {
 
           seccion.classList.toggle('tst-en-juego', dentro);
           enJuego = dentro;
-          /* Al salir de pantalla si se para de verdad: dentro de la seccion
-             el video sigue rodando callado entre testimonio y testimonio,
-             que soltarlo de nuevo le hace ensenar el titulo a YouTube. */
+          /* Al salir de pantalla el video se para (si alguien lo habia
+             puesto) y se desmonta. */
           if (!dentro && window.SmilersVideo) window.SmilersVideo.parar(huecoVideo);
 
           var valor = dentro ? 'transform' : '';

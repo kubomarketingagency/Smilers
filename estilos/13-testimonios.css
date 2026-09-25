@@ -527,43 +527,52 @@
               0 14px 40px rgba(0, 0, 0, .5);
 }
 
-/* EN PAUSA, EL ARO LATE Y SUELTA ONDAS. Cuando el video esta parado —lo
-   pauso quien mira, o el telefono no lo dejo arrancar—, el aro se enciende al
-   ritmo de un latido y de el salen dos ondas de oro que se abren y se apagan,
-   una detras de otra: es lo que dice que ahi hay algo esperando a que le den
-   al play. Van por detras del circulo (`z-index: -1` dentro de su caja), asi
-   que solo se ven por fuera. `video-parado` lo pone video-testimonio.js en la
-   pieza de dentro; el `:has()` lo sube hasta aqui. */
+/* EN PAUSA, EL ARO RESPIRA Y SUELTA UNA ONDA. Cada video empieza en pausa
+   (video-testimonio.js), asi que esto es lo que se ve cada vez que la esfera
+   se para en un testimonio: el aro se aviva y se apaga despacio, y de el
+   sale una onda fina que se abre y se desvanece. Es lo que dice que ahi hay
+   algo esperando a que le den al play.
+
+   Tranquilo a proposito. Antes el aro latia cada 1,2 s y soltaba dos ondas
+   de 2px cada 2,4 s; para un aviso que sale de vez en cuando valia, pero
+   estando ahi siempre se veia nervioso. Ahora es una respiracion de 4 s y
+   una sola onda de 1px, que se abre menos (1,12).
+
+   Son dos capas que solo cambian de opacidad y de escala, que el navegador
+   mueve sin repintar: el brillo (`::before`, por encima del aro del marco;
+   es solo sombra por fuera, asi que no tapa la cara) y la onda (`::after`,
+   por detras del circulo, asi que solo se ve por fuera). El latido de antes
+   animaba la sombra del marco y lo repintaba en cada fotograma.
+   `video-parado` lo pone video-testimonio.js en la pieza de dentro; el
+   `:has()` lo sube hasta aqui. */
 .tst-video::before,
 .tst-video::after {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
-  border: 2px solid rgba(212, 175, 55, .9);
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
 }
+.tst-video::before {
+  z-index: 1;
+  box-shadow: 0 0 0 2px rgba(247, 231, 166, .85), 0 0 44px rgba(212, 175, 55, .3);
+}
+.tst-video::after {
+  z-index: -1;
+  border: 1px solid rgba(212, 175, 55, .8);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .tst-video:has(.video-parado)::before { animation: tst-onda 2.4s cubic-bezier(.22, .61, .36, 1) infinite; }
-  .tst-video:has(.video-parado)::after { animation: tst-onda 2.4s cubic-bezier(.22, .61, .36, 1) 1.2s infinite; }
-  .tst-video:has(.video-parado) .tst-video__marco { animation: tst-latido 1.2s ease-in-out infinite; }
+  .tst-video:has(.video-parado)::before { animation: tst-respira 4s ease-in-out infinite; }
+  .tst-video:has(.video-parado)::after { animation: tst-onda 4s cubic-bezier(.25, .6, .3, 1) 1.2s infinite; }
+}
+@keyframes tst-respira {
+  0%, 100% { opacity: 0; }
+  45%      { opacity: .7; }
 }
 @keyframes tst-onda {
-  0%   { transform: scale(1); opacity: .9; }
-  70%  { opacity: .22; }
-  100% { transform: scale(1.14); opacity: 0; }
-}
-@keyframes tst-latido {
-  0%, 100% {
-    box-shadow: 0 0 0 2px rgba(212, 175, 55, .92), 0 0 34px rgba(212, 175, 55, .16),
-                0 14px 40px rgba(0, 0, 0, .5);
-  }
-  45% {
-    box-shadow: 0 0 0 3px rgba(247, 231, 166, 1), 0 0 52px rgba(212, 175, 55, .45),
-                0 14px 40px rgba(0, 0, 0, .5);
-  }
+  0%   { transform: scale(1); opacity: .55; }
+  100% { transform: scale(1.12); opacity: 0; }
 }
 
 /* El video dentro del circulo: un poco mas ancho que el (`--tst-zoom`) y
@@ -654,9 +663,11 @@
    glifo de pausa puesto en medio de la cara. El fotograma tapa el glifo y
    encima va este boton, que es el mismo gesto pero de la casa.
 
-   Solo sale cuando el video esta parado de verdad (`video-parado`, que pone
-   video-testimonio.js mirando si el reloj del video avanza y no solo lo que
-   diga su estado). */
+   Sale mientras el video esta en pausa, que es como empieza cada uno
+   (`video-parado`, que pone video-testimonio.js), y se queda mientras se
+   pide (`video-pidiendo`), con un filo de oro dandole la vuelta: la primera
+   vez hay que traer el reproductor de YouTube entero, y eso es un segundo o
+   dos con el fotograma quieto. */
 .tst-video__play {
   position: absolute;
   left: 50%;
@@ -680,12 +691,28 @@
   transition: opacity .28s ease, visibility .28s, transform .28s ease,
               background .3s ease, color .3s ease;
 }
-.tst-video__medio.video-parado ~ .tst-video__play {
+.tst-video__medio.video-parado ~ .tst-video__play,
+.tst-video__medio.video-pidiendo ~ .tst-video__play {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translate(-50%, -50%) scale(1);
 }
+.tst-video__play::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1.5px solid transparent;
+  border-top-color: #F7E7A6;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.tst-video__medio.video-pidiendo ~ .tst-video__play::after { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .tst-video__medio.video-pidiendo ~ .tst-video__play::after { animation: tst-gira .9s linear infinite; }
+}
+@keyframes tst-gira { to { transform: rotate(360deg); } }
 .tst-video__play svg {
   width: 1.7rem;
   height: 1.7rem;

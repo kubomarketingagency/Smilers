@@ -216,7 +216,7 @@ const abierto=menu.classList.contains('menu-abierto');
 const nuevoEstado=forzarCerrado?false:!abierto;
 menu.classList.toggle('menu-abierto',nuevoEstado);
 botonMenu.setAttribute('aria-expanded',String(nuevoEstado));
-document.body.style.overflow=nuevoEstado?'hidden':'';
+document.documentElement.classList.toggle('menu-desplegado',nuevoEstado);
 if(nuevoEstado)mostrarNavbar();
 else SmilersScroll.pedir();
 }
@@ -453,6 +453,12 @@ if(fondoDos[0]){
 fondoDos[0].smilersRiel={
 destino:function(){return viva?puntoDeEscena(.99):null;},
 desde:function(){return viva?puntoDeEscena(.78):null;}
+};
+}
+var envoltorio=escena.parentNode&&escena.parentNode.closest?escena.parentNode.closest('[data-pantalla]'):null;
+if(envoltorio){
+envoltorio.smilersRiel={
+destino:function(){return viva?puntoDeEscena(0):null;}
 };
 }
 revisarModo();
@@ -1846,7 +1852,6 @@ return null;
 }
 esfera.irA(tActual);
 fijarDisco();
-if(window.SmilersVideo)window.SmilersVideo.preparar();
 return esfera;
 }
 function fijarDisco(){
@@ -2103,6 +2108,7 @@ fs:0,
 iv_load_policy:3
 };
 var MARGEN=0.45;
+var ESPERA=9000;
 var conSonido=false;
 var apiPedida=false;
 var enEspera=[];
@@ -2124,13 +2130,17 @@ guion.src=API;
 guion.async=true;
 document.head.appendChild(guion);
 }
-function preparar(){conApi(function(){});}
 function pintarBoton(caja){
 var boton=caja&&caja.querySelector('[data-video-son]');
 if(!boton)return;
 boton.classList.toggle('esta-callado',!conSonido);
 boton.setAttribute('aria-pressed',conSonido?'true':'false');
 boton.setAttribute('aria-label',conSonido?'Quitar el sonido':'Activar el sonido');
+}
+function ponerEstado(caja,estado){
+caja.classList.toggle('video-parado',estado==='parado');
+caja.classList.toggle('video-pidiendo',estado==='pidiendo');
+caja.classList.toggle('video-listo',estado==='listo');
 }
 function taparUnMomento(caja,cuanto){
 caja.classList.add('saltando');
@@ -2144,6 +2154,7 @@ if(caja.__vigia)return;
 caja.__vigia=setInterval(function(){
 var r=caja.__reproductor;
 if(!r||!r.getDuration)return;
+if(caja.__pausa||!caja.__video)return;
 var estado=r.getPlayerState?r.getPlayerState():-1;
 var reloj=r.getCurrentTime?r.getCurrentTime():0;
 if(estado===1&&Math.abs(reloj -(caja.__reloj||0))< 0.01){
@@ -2153,53 +2164,34 @@ caja.__quieto=0;
 }
 caja.__reloj=reloj;
 var rodando=estado===1&&caja.__quieto < 3;
-if(caja.__pausa){
-caja.classList.remove('video-listo');
-caja.classList.add('video-parado');
+if(!rodando){
+ponerEstado(caja,'pidiendo');
+if(Date.now()-(caja.__pedido||0)> ESPERA){
+caja.__pausa=true;
+ponerEstado(caja,'parado');
 return;
 }
-caja.classList.toggle('video-listo',!!(rodando&&caja.__video));
-caja.classList.toggle('video-parado',!!(caja.__video&&!rodando));
-if(rodando&&reloj > 0.25&&caja.classList.contains('saltando')){
+if(estado !==3&&estado !==-1&&(caja.__ruegos||0)< 3){
+caja.__ruegos=(caja.__ruegos||0)+ 1;
+r.playVideo();
+}
+return;
+}
+caja.__pedido=Date.now();
+caja.__rodo=true;
+caja.__ruegos=0;
+ponerEstado(caja,'listo');
+if(reloj > 0.25&&caja.classList.contains('saltando')){
 clearTimeout(caja.__volver);
 caja.classList.remove('saltando');
 }
-if(!caja.__video)return;
-if(!rodando&&(caja.__ruegos||0)< 3){
-caja.__ruegos=(caja.__ruegos||0)+ 1;
-taparUnMomento(caja,900);
-r.playVideo();
-return;
-}
-if(rodando)caja.__ruegos=0;
 var largo=r.getDuration();
-if(!(largo > 0)||r.getCurrentTime()< largo - MARGEN)return;
+if(!(largo > 0)||reloj < largo - MARGEN)return;
 taparUnMomento(caja);
 r.seekTo(0,true);
 },180);
 }
-function montar(caja,id,quien){
-if(!caja||!id)return;
-if(caja.__video===id)return;
-caja.__video=id;
-caja.__ruegos=0;
-caja.__quieto=0;
-caja.__pausa=false;
-caja.classList.add('tiene-video');
-pintarBoton(caja);
-var r=caja.__reproductor;
-if(r&&r.loadVideoById){
-if(caja.__cargado !==id){
-caja.__cargado=id;
-taparUnMomento(caja,2000);
-r.loadVideoById(id);
-}else if(r.getPlayerState&&r.getPlayerState()!==1){
-taparUnMomento(caja,1400);
-r.playVideo();
-}
-if(conSonido)r.unMute();else r.mute();
-return;
-}
+function crear(caja){
 if(caja.__creando)return;
 caja.__creando=true;
 var semilla=document.createElement('div');
@@ -2209,9 +2201,10 @@ var suyos={};
 for(var clave in PARAMETROS){
 if(Object.prototype.hasOwnProperty.call(PARAMETROS,clave))suyos[clave]=PARAMETROS[clave];
 }
+var id=caja.__video;
 caja.__reproductor=new window.YT.Player(semilla,{
 host:SERVIDOR,
-videoId:caja.__video||id,
+videoId:id,
 playerVars:suyos,
 events:{
 onReady:function(ev){
@@ -2222,8 +2215,15 @@ marco.setAttribute('title','Testimonio en video');
 marco.setAttribute('tabindex','-1');
 }
 if(conSonido)ev.target.unMute();else ev.target.mute();
-caja.__cargado=caja.__video||id;
-if(caja.__video)ev.target.playVideo();else ev.target.pauseVideo();
+caja.__cargado=id;
+if(caja.__pausa||!caja.__video){
+ev.target.pauseVideo();
+}else if(caja.__video !==id){
+caja.__cargado=caja.__video;
+ev.target.loadVideoById(caja.__video);
+}else{
+ev.target.playVideo();
+}
 vigilar(caja);
 },
 onStateChange:function(ev){
@@ -2234,43 +2234,72 @@ if(ev.data===0){ev.target.seekTo(0,true);ev.target.playVideo();}
 if(cajas.indexOf(caja)< 0)cajas.push(caja);
 });
 }
+function montar(caja,id){
+if(!caja||!id)return;
+if(caja.__video===id)return;
+caja.__video=id;
+caja.__pausa=true;
+caja.classList.add('tiene-video');
+caja.classList.remove('saltando');
+clearTimeout(caja.__volver);
+ponerEstado(caja,'parado');
+pintarBoton(caja);
+}
 function apagar(caja){
 if(!caja||!caja.__video)return false;
 caja.__video=null;
-caja.__pausa=false;
-caja.classList.remove('tiene-video','video-listo','saltando','video-parado');
+caja.__pausa=true;
+caja.classList.remove('tiene-video','video-listo','video-pidiendo','saltando','video-parado');
 clearTimeout(caja.__volver);
 var r=caja.__reproductor;
-if(r&&r.mute){try{r.mute();}catch(e){}}
+if(r&&r.pauseVideo){try{r.pauseVideo();}catch(e){}}
 return true;
 }
-function parar(caja){
-if(!caja)return;
-apagar(caja);
-var r=caja.__reproductor;
-if(r&&r.pauseVideo){try{r.pauseVideo();}catch(e){}}
-}
+function parar(caja){apagar(caja);}
 function poner(caja,foto){
 var img=caja&&caja.querySelector('[data-video-poster]');
 if(img&&foto&&img.getAttribute('src')!==foto)img.setAttribute('src',foto);
 }
+function plazo(caja){
+clearTimeout(caja.__plazo);
+caja.__plazo=setTimeout(function(){
+if(caja.__pausa||!caja.__video||caja.__rodo)return;
+caja.__pausa=true;
+ponerEstado(caja,'parado');
+var r=caja.__reproductor;
+if(r&&r.pauseVideo){try{r.pauseVideo();}catch(e){}}
+},ESPERA);
+}
 function alternar(caja){
-var r=caja&&caja.__reproductor;
-if(!r||!r.playVideo)return;
+if(!caja||!caja.__video)return;
 if(caja.__pausa){
 caja.__pausa=false;
 caja.__ruegos=0;
 caja.__quieto=0;
-taparUnMomento(caja,900);
+caja.__pedido=Date.now();
+caja.__rodo=false;
+ponerEstado(caja,'pidiendo');
+plazo(caja);
+var r=caja.__reproductor;
+if(!r){crear(caja);return;}
+if(!r.playVideo)return;
 try{if(conSonido)r.unMute();else r.mute();}catch(e){}
+if(caja.__cargado !==caja.__video){
+caja.__cargado=caja.__video;
+taparUnMomento(caja,2000);
+r.loadVideoById(caja.__video);
+}else{
+taparUnMomento(caja,900);
 r.playVideo();
+}
 return;
 }
 caja.__pausa=true;
 clearTimeout(caja.__volver);
-caja.classList.add('saltando','video-parado');
-caja.classList.remove('video-listo');
-try{r.pauseVideo();}catch(e){}
+caja.classList.add('saltando');
+ponerEstado(caja,'parado');
+var rep=caja.__reproductor;
+if(rep&&rep.pauseVideo){try{rep.pauseVideo();}catch(e){}}
 }
 document.addEventListener('click',function(evento){
 var destino=evento.target;
@@ -2297,7 +2326,6 @@ pintarBoton(cajas[i]);
 pintarBoton(boton.parentNode);
 });
 return{
-preparar:preparar,
 montar:montar,
 apagar:apagar,
 parar:parar,
@@ -2325,7 +2353,9 @@ return typeof valor==='number'&&isFinite(valor)?valor:null;
 function destinoDe(seccion,barra){
 var suyo=propio(seccion,'destino');
 if(suyo !==null)return Math.max(0,Math.round(suyo));
-return Math.max(0,Math.round(seccion.getBoundingClientRect().top + window.scrollY - barra));
+var arriba=seccion.getBoundingClientRect().top + window.scrollY;
+if(Math.abs(seccion.offsetHeight - SmilersScroll.alto())< 2)return Math.max(0,Math.round(arriba));
+return Math.max(0,Math.round(arriba - barra));
 }
 var nav=document.createElement('nav');
 nav.className='ns-riel-nav ns-riel-nav--oculto';

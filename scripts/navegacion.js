@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const nuevoEstado = forzarCerrado ? false : !abierto;
     menu.classList.toggle('menu-abierto', nuevoEstado);
     botonMenu.setAttribute('aria-expanded', String(nuevoEstado));
-    document.body.style.overflow = nuevoEstado ? 'hidden' : '';
+    // La pagina se para en el documento y no en body: ver el 02.
+    document.documentElement.classList.toggle('menu-desplegado', nuevoEstado);
     if (nuevoEstado) mostrarNavbar();
     else SmilersScroll.pedir();
   }

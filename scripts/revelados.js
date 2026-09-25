@@ -296,6 +296,17 @@ document.addEventListener('DOMContentLoaded', function () {
         desde: function () { return viva ? puntoDeEscena(.78) : null; }
       };
     }
+    /* Y el de «Nosotros», la seccion que envuelve la escena: su primera
+       pantalla se ve entera con la escena recien clavada, al principio del
+       recorrido y con el telon todavia sin moverse (empieza en .05). Con el
+       arranque debajo de la barra, como las demas, la escena aun no se
+       habia clavado y le faltaba el trozo de abajo. */
+    var envoltorio = escena.parentNode && escena.parentNode.closest ? escena.parentNode.closest('[data-pantalla]') : null;
+    if (envoltorio) {
+      envoltorio.smilersRiel = {
+        destino: function () { return viva ? puntoDeEscena(0) : null; }
+      };
+    }
 
     revisarModo();
 

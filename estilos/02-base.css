@@ -25,6 +25,26 @@ html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; }
 
 html.smilers-deslizando { scroll-behavior: auto; }
 
+/* Con el menu o el visor abiertos la pagina no se mueve por detras, y se para
+   el documento y solo el. Con `overflow: hidden` en `body`, body pasaba a ser
+   un contenedor de scroll quieto, y lo clavado (`position: sticky`) y lo
+   atado al scroll (`view()`) dejaban de contar con la ventana: las escenas
+   clavadas de la portada y de Nosotros se descolgaban a su sitio en el
+   documento, y detras del menu se veia otra cosa (gris, o negro); en
+   Especialidades saltaban las derivas de los collages. Parando `html`, la
+   ventana sigue siendo la que se desplaza, donde estaba, y lo de detras se
+   queda exactamente como estaba.
+
+   El hueco de la barra de scroll se queda reservado (`scrollbar-gutter`), asi
+   que nada salta de lado al quitarse la barra; y se pinta del oscuro del
+   velo, que en ese hueco se ve el fondo del documento. */
+html.menu-desplegado,
+html.visor-abierto {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+  background-color: #080706;
+}
+
 body {
   font-family: var(--fuente-cuerpo);
   color: var(--texto);

@@ -11,13 +11,18 @@
      documento. Con `data-pantalla-menor` el punto va mas pequeno: son las
      diez especialidades de Tratamientos, que cuelgan de «Especialidades».
 
-     A donde lleva cada punto: al arranque de su seccion, justo debajo de la
-     barra. Salvo que la seccion viva dentro de una escena clavada —ahi el
-     arranque no es donde se ve—; entonces el guion de esa escena le cuelga
+     A donde lleva cada punto: a donde su seccion se ve entera. Por lo
+     general es su arranque justo debajo de la barra. Una seccion de una
+     pantalla justa (100lvh, como las especialidades de la portada) ya
+     cuenta con la barra encima —su rotulo empieza por debajo de ella—, y
+     ahi el punto la deja con el techo arriba del todo: debajo de la barra
+     le faltaba el ultimo trozo, justo donde van el nombre y la descripcion
+     del panel abierto. Y si la seccion vive dentro de una escena clavada
+     —ahi el arranque no es donde se ve—, el guion de esa escena le cuelga
      `smilersRiel = { destino, desde }` al elemento: `destino()` es el pixel
      al que hay que ir y `desde()` a partir de donde cuenta como la que se
      esta viendo. Si devuelven otra cosa que un numero (la escena apagada,
-     sin animaciones), vale el arranque.
+     sin animaciones), vale lo de antes.
 
      El riel no se ve hasta que se llega a la primera parada: en la portada
      la primera es Nosotros, y el hero va sin riel.
@@ -51,7 +56,9 @@
   function destinoDe(seccion, barra) {
     var suyo = propio(seccion, 'destino');
     if (suyo !== null) return Math.max(0, Math.round(suyo));
-    return Math.max(0, Math.round(seccion.getBoundingClientRect().top + window.scrollY - barra));
+    var arriba = seccion.getBoundingClientRect().top + window.scrollY;
+    if (Math.abs(seccion.offsetHeight - SmilersScroll.alto()) < 2) return Math.max(0, Math.round(arriba));
+    return Math.max(0, Math.round(arriba - barra));
   }
 
   var nav = document.createElement('nav');

@@ -37,9 +37,8 @@
 }
 .visor[hidden] { display: none; }
 
-/* Con el visor abierto la pagina no se mueve por detras. */
-html.visor-abierto,
-html.visor-abierto body { overflow: hidden; }
+/* Con el visor abierto la pagina no se mueve por detras: lo para el 02
+   (`html.visor-abierto`), el documento y no `body`. */
 
 /* La barra se queda aunque estuviera escondida, que cerca del pie se
    esconde (navegacion.js). */
