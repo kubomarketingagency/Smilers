@@ -1494,7 +1494,8 @@
 .pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
 
 /* ---------------------------------------------------------------------------
-   El umbral: la palabra de la seccion sola sobre negro, dos segundos.
+   El umbral: la palabra de la seccion sobre negro, cruzada por franjas de
+   oro, y el negro que se abre en lamas hacia la derecha.
 
    Lo llevan las cuatro paginas interiores —Nosotros, Tratamientos, Galeria y
    FAQ—, cada una con su palabra. La portada no: alli ese trabajo ya lo hace
@@ -1518,13 +1519,75 @@
   align-content: center;
   justify-items: center;
   gap: clamp(.9rem, 2vw, 1.5rem);
-  background: #050505;
-  /* El reloj del umbral, y esta es la cuenta entera: la palabra entra en
-     .8s, el filo la alcanza en .9s, y a 1s empieza a irse con .6s de
-     desvanecido. Total 1,6s desde que se pincha hasta que la pagina esta
-     entera. Antes eran 2,85s —2s parado mas .85s de salida— y en la segunda
-     visita eso ya no es una entrada, es una espera. */
-  animation: ns-umbral-sale .6s cubic-bezier(.65, 0, .25, 1) 1s both;
+  overflow: hidden;
+  /* El reloj del umbral, y esta es la cuenta entera:
+       0 a 1,3s   seis franjas de oro cruzan la pantalla de izquierda a
+                  derecha, escalonadas, y la ancha es la que trae la palabra:
+                  la palabra sale a su paso (.36s) y el filo detras (.5s).
+       .96s       la palabra y el filo se van hacia la derecha, en .3s.
+       1 a 1,9s   el negro, que son cinco lamas, se desliza hacia la derecha
+                  de arriba abajo, cada lama con su canto de oro; la pagina
+                  se descubre en escalera, y la primera lama ya ha dejado ver
+                  la barra y el titular cuando la ultima arranca.
+     Antes eran 1,6s de palabra y desvanecido (y antes de eso 2,85s, que en
+     la segunda visita ya no es una entrada, es una espera): la pagina
+     empieza a verse al mismo segundo que entonces, y lo que se ha anadido
+     es lo que dura la salida. Todo es `transform` y `opacity` de piezas con
+     capa propia, asi que el compositor lo mueve aunque la pagina siga
+     cargando por debajo. */
+  animation: ns-umbral-fin 0s linear 1.9s both;
+}
+@keyframes ns-umbral-fin { to { visibility: hidden; } }
+
+/* El negro son las lamas (su forma, en el 02, que las comparte con el video
+   de la portada). Aqui salen solas, por reloj. */
+.ns-umbral > .lamas-oro > i {
+  animation: lama-sale .68s cubic-bezier(.77, 0, .18, 1) calc(1s + var(--n) * .055s) both;
+}
+.ns-umbral > .lamas-oro > i::before {
+  animation: lama-canto .68s linear calc(1s + var(--n) * .055s) both;
+}
+
+/* Las franjas: seis bandas de oro inclinadas que cruzan de canto a canto,
+   de distinto grueso y distinta luz —cuatro hilos, una media y la ancha,
+   que es la que lleva el brillo del degradado de marca—, cada una con su
+   espera y su velocidad, para que pasen como un solo gesto y no en fila.
+   Van por delante del negro y por detras de la palabra: cuando la ancha
+   pasa por el centro, el oro de la palabra se enciende sobre el suyo. La
+   inclinacion va hacia delante, como lo que corre. Salen y acaban fuera de
+   la pantalla: 22vh de margen cubren lo que la inclinacion saca por arriba
+   y por abajo (12% de sobra a cada lado, por 0,25 de pendiente). */
+.ns-umbral__franjas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ns-umbral__franjas > i {
+  position: absolute;
+  top: -12%;
+  bottom: -12%;
+  left: 0;
+  width: var(--ancho, 2px);
+  background: var(--oro-marca-degradado);
+  opacity: var(--luz, 1);
+  transform: translate3d(calc(-100% - 22vh), 0, 0) skewX(-14deg);
+  animation: franja-cruza var(--dura, .95s) cubic-bezier(.55, 0, .25, 1) var(--espera, 0s) both;
+}
+.ns-umbral__franjas > i:nth-child(1) { --ancho: 1px;  --luz: .9;  --espera: 0s;   --dura: 1s; }
+.ns-umbral__franjas > i:nth-child(2) { --ancho: clamp(9px, 1.1vw, 16px); --luz: .85; --espera: .05s; --dura: .92s; }
+.ns-umbral__franjas > i:nth-child(3) { --ancho: 2px;  --luz: .55; --espera: .1s;  --dura: 1.04s; }
+.ns-umbral__franjas > i:nth-child(4) {
+  --ancho: clamp(34px, 4.4vw, 68px);
+  --luz: 1;
+  --espera: .14s;
+  --dura: .9s;
+  box-shadow: 0 0 42px rgba(212, 175, 55, .38);
+}
+.ns-umbral__franjas > i:nth-child(5) { --ancho: 3px;  --luz: .75; --espera: .22s; --dura: .96s; }
+.ns-umbral__franjas > i:nth-child(6) { --ancho: 1px;  --luz: .5;  --espera: .28s; --dura: 1s; }
+@keyframes franja-cruza {
+  from { transform: translate3d(calc(-100% - 22vh), 0, 0) skewX(-14deg); }
+  to   { transform: translate3d(calc(100vw + 22vh), 0, 0) skewX(-14deg); }
 }
 /* El fondo va negro y nada mas. Llevaba un halo de oro encima —un radial al
    12% saliendo del centro— y sobre negro puro eso no se lee como luz, se lee
@@ -1553,7 +1616,14 @@
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ns-umbral-entra .8s cubic-bezier(.16, 1, .3, 1) both;
+  position: relative;
+  z-index: 2;
+  /* Ya no entra abriendo el interletrado: eso es maquetar la palabra en
+     cada fotograma, justo mientras la pagina se esta cargando debajo, y ahi
+     el hilo principal no da abasto. Llega deslizandose desde la izquierda,
+     con las franjas, y se va hacia la derecha, con las lamas. */
+  animation: ns-umbral-entra .8s cubic-bezier(.16, 1, .3, 1) .36s both,
+             ns-umbral-va .3s cubic-bezier(.5, 0, .75, 0) .96s forwards;
 }
 /* Dos palabras largas piden un cuerpo menor que una sola: a 8,5vw
    «FRECUENTES» sola ya medía casi el ancho de la ventana, y con el
@@ -1573,26 +1643,25 @@
   font-size: clamp(1.4rem, 6.6vw, 4.8rem);
 }
 .ns-umbral__filo {
+  position: relative;
+  z-index: 2;
   width: clamp(110px, 20vw, 260px);
   height: 1px;
   background: var(--oro-marca-degradado);
-  animation: ns-umbral-filo .78s cubic-bezier(.16, 1, .3, 1) .12s both;
+  transform-origin: left center;
+  animation: ns-umbral-filo .7s cubic-bezier(.65, 0, .35, 1) .5s both,
+             ns-umbral-va .3s cubic-bezier(.5, 0, .75, 0) .96s forwards;
 }
 @keyframes ns-umbral-entra {
-  from { opacity: 0; transform: translateY(15px); letter-spacing: .38em; }
-  to   { opacity: 1; transform: none;             letter-spacing: .14em; }
+  from { opacity: 0; transform: translate3d(-4vw, 0, 0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes ns-umbral-filo {
   from { opacity: 0; transform: scaleX(0); }
   to   { opacity: 1; transform: scaleX(1); }
 }
-/* El fotograma del 99% esta para que `visibility` cambie al final y no a
-   medio camino: interpolada a secas, salta en el 50% y el umbral se cortaria
-   en seco por la mitad del desvanecido. */
-@keyframes ns-umbral-sale {
-  from { opacity: 1; }
-  99%  { opacity: 0; visibility: visible; }
-  to   { opacity: 0; visibility: hidden; }
+@keyframes ns-umbral-va {
+  to { opacity: 0; transform: translate3d(5vw, 0, 0); }
 }
 html.sin-umbral .ns-umbral { display: none; }
 

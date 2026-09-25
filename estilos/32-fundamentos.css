@@ -61,10 +61,12 @@
   .ns-cine--viva .ns-fund--viva .ns-valor__icono {
     animation: fund-sube .9s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .35s) backwards;
   }
-  .ns-cine--viva .ns-fund--viva .ns-valor__nombre::after {
-    transform-origin: left center;
-    animation: fund-filo .9s cubic-bezier(.65, 0, .25, 1) calc(var(--espera, 0s) + .6s) backwards;
-  }
+  /* La raya de debajo del nombre de cada valor ya no se dibuja: cuelga del
+     nombre, que va en oro recortado contra el texto (`background-clip:
+     text`, del 22), y ahi dentro nada puede tener capa propia. Su `scaleX`
+     repintaba el nombre en cada fotograma de la entrada, los cuatro a la
+     vez. Esta quieta desde el principio, y lo que entra es el filo de la
+     tarjeta. */
 }
 
 @keyframes fund-filo {

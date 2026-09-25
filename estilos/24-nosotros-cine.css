@@ -719,22 +719,24 @@ main:has(.ns-cine--viva) { background: #050505; }
 @property --c-dos { syntax: '<number>'; inherits: false; initial-value: 0; }
 @property --c-ev-uno { syntax: '*'; inherits: false; }
 @property --c-ev-dos { syntax: '*'; inherits: false; }
-@property --f-der { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --f-corre { syntax: '<length-percentage>'; inherits: false; initial-value: -100%; }
+@property --e-x { syntax: '<length>'; inherits: false; initial-value: 0px; }
 @property --f-op { syntax: '<number>'; inherits: false; initial-value: 0; }
-@property --f-desenfoque { syntax: '<length>'; inherits: false; initial-value: 12px; }
+@property --f-filtro { syntax: '*'; inherits: false; }
 @property --f-ent { syntax: '<number>'; inherits: false; initial-value: 1; }
-@property --i-sube { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --i-corre { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
 @property --i-op { syntax: '<number>'; inherits: false; initial-value: 0; }
-@property --i-desenfoque { syntax: '<length>'; inherits: false; initial-value: 10px; }
+@property --i-filtro { syntax: '*'; inherits: false; }
 @property --i-y { syntax: '<length>'; inherits: false; initial-value: 42px; }
 
-/* 590vh y no 660: los 70 que faltan salian todos del final. Entre que el
-   texto de infraestructura acababa de entrar y que las hojas empezaban a
-   cerrarse habia mas de tres cuartos de pantalla de scroll en el que no se
-   movia nada, y el pin no suelta hasta el ultimo pixel de la escena. Lo que
-   se ha recortado es ese hueco muerto: los tramos de antes conservan la
-   distancia de scroll que tenian, solo cambia la fraccion que les toca. */
-.ns-cine--viva { height: 590vh; }
+/* 548vh. Eran 660 y bajo a 590 quitando el hueco muerto del final (tres
+   cuartos de pantalla entre el texto de infraestructura y el cierre de las
+   hojas, y el pin no suelta hasta el ultimo pixel). Los 42 de ahora salen
+   del paso de Fundamentos al Equipo, que se hacia largo: la pausa con
+   Fundamentos entero baja de 73 a 50vh y el telon que se retira, de 69 a
+   50. Los demas tramos conservan la distancia de scroll que tenian; solo
+   cambia la fraccion que les toca. */
+.ns-cine--viva { height: 548vh; }
 .ns-cine--viva .ns-cine__pin {
   position: sticky;
   top: 0;
@@ -768,34 +770,60 @@ main:has(.ns-cine--viva) { background: #050505; }
   z-index: 1;
   opacity: var(--c-dos, 0);
   pointer-events: var(--c-ev-dos, none);
+  /* Mientras Fundamentos se retira, el equipo llega desde un poco mas alla
+     (ver abajo). */
+  transform: translate3d(var(--e-x), 0, 0);
+  will-change: transform;
 }
 
+/* Los dos paneles —Fundamentos, que entra por la izquierda y se retira por
+   donde vino, e Infraestructura, que sube desde abajo— se deslizan enteros,
+   con lo que llevan dentro, y el filo de oro va en su canto.
+
+   Eran cortinas: la capa se quedaba quieta y lo que se movia era su
+   `clip-path`. Cambiar el recorte en cada fotograma obliga a repintar la
+   capa entera y a volver a rasterizarla, y en el paso de Fundamentos al
+   Equipo eran 256 repintados en 142 fotogramas, con la piedra, las seis
+   tarjetas y sus sombras. Tampoco sirve deslizar la capa y devolver su
+   contenido en sentido contrario para que parezca quieto: el recorte se
+   mueve respecto de lo de dentro, y el navegador lo vuelve a pintar entero
+   cada pocos pixeles (312 teselas rasterizadas en el mismo tramo, y
+   fotogramas perdidos en el telefono). Deslizando el panel entero nada
+   cambia dentro de el: el compositor mueve una capa ya pintada. Los valores
+   van en pixeles y los escribe el JS, que sabe cuanto mide la capa. */
 .ns-cine--viva .ns-capa--fundamentos {
   z-index: 3;
-  clip-path: inset(0 var(--f-der, 100%) 0 0);
+  transform: translate3d(var(--f-corre), 0, 0);
+  will-change: transform;
 }
 .ns-cine--viva .ns-capa--infra {
   z-index: 4;
-  clip-path: inset(var(--i-sube, 100%) 0 0 0);
+  transform: translate3d(0, var(--i-corre), 0);
+  will-change: transform;
 }
 
 /* El desplazamiento de entrada iba en `vw` y crecia sin tope: a 1440 son 58px
    y a 2560 pasan de 100, y con ellos la columna de la derecha se salia por el
    canto mientras el panel entraba. El JS escribe ahora solo el factor de 1 a
-   0 y la distancia la pone aqui, acotada. */
+   0 y la distancia la pone aqui, acotada.
+
+   El desenfoque lo escribe entero el JS (`--f-filtro`), y en cuanto el texto
+   ha entrado lo deja en `none`: un `blur(0px)` sigue siendo un filtro, y la
+   capa se seguia componiendo aparte en cada fotograma mientras se leia. */
 .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura {
   opacity: var(--f-op, 0);
-  filter: blur(var(--f-desenfoque, 12px));
+  filter: var(--f-filtro, blur(12px));
   transform: translate3d(calc(var(--f-ent, 1) * min(4vw, 56px)), 0, 0);
 }
 .ns-cine--viva .ns-capa--infra > .ns-envoltura {
   opacity: var(--i-op, 0);
-  filter: blur(var(--i-desenfoque, 10px));
+  filter: var(--i-filtro, blur(10px));
   transform: translate3d(0, var(--i-y, 42px), 0);
 }
 
-/* Los filos que viajan con el canto van fuera de la capa que se recorta: si
-   se metieran dentro se los comeria su propio `clip-path`. */
+/* Los filos que viajan con el canto van fuera de las capas: dentro se los
+   comeria su propio recorte. Tambien van por `transform`; con `left` y `top`
+   eran una maquetacion y un repintado por fotograma. */
 .ns-filo { display: none; }
 .ns-cine--viva .ns-filo {
   display: block;
@@ -807,18 +835,22 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine--viva .ns-filo--vertical {
   top: 0;
   bottom: 0;
-  left: var(--f-filo, 0%);
+  left: 0;
   width: 2px;
   margin-left: -1px;
+  transform: translate3d(var(--f-filo, 0px), 0, 0);
   opacity: var(--f-filo-op, 0);
+  will-change: transform;
 }
 .ns-cine--viva .ns-filo--horizontal {
   left: 0;
   right: 0;
-  top: var(--i-filo, 100%);
+  top: 0;
   height: 2px;
   margin-top: -1px;
+  transform: translate3d(0, var(--i-filo, 100vh), 0);
   opacity: var(--i-filo-op, 0);
+  will-change: transform;
 }
 
 /* Dentro del pin no hay revelado por scroll: las capas que esperan a su turno
@@ -1056,7 +1088,9 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura,
   .ns-cine--viva .ns-capa--infra > .ns-envoltura { filter: none; }
 
-  .ns-cine--viva { height: 520vh; }
+  /* La misma proporcion que en escritorio: 520 hasta que se acorto el paso
+     de Fundamentos al Equipo. */
+  .ns-cine--viva { height: 484vh; }
   .ns-cine--viva .ns-cine__pin { height: 100lvh; }
 
   /* El cierre, clavado tambien aqui y a pantalla entera. Estuvo en flujo

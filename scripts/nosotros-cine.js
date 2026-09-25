@@ -211,6 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function pieza(bloque, selector) { return bloque ? bloque.querySelector(selector) : null; }
     var capaFund = pieza(escena, '.ns-capa--fundamentos');
     var capaInfra = pieza(escena, '.ns-capa--infra');
+    var envFund = pieza(capaFund, ':scope > .ns-envoltura');
+    var envInfra = pieza(capaInfra, ':scope > .ns-envoltura');
     /* Fundamentos enciende su entrada (32-fundamentos.css) en cuanto su texto
        empieza a aparecer, y la apaga cuando ya no se ve, para que vuelva a
        entrar la proxima vez. */
@@ -220,16 +222,19 @@ document.addEventListener('DOMContentLoaded', function () {
       '--c-ev-uno': pieza(escena, '.ns-capa--historia'),
       '--c-dos': pieza(escena, '.ns-capa--elenco'),
       '--c-ev-dos': pieza(escena, '.ns-capa--elenco'),
-      '--f-der': capaFund,
-      '--f-op': pieza(capaFund, ':scope > .ns-envoltura'),
-      '--f-desenfoque': pieza(capaFund, ':scope > .ns-envoltura'),
-      '--f-ent': pieza(capaFund, ':scope > .ns-envoltura'),
+      /* Los paneles se deslizan enteros (ver el 24), y el equipo llega desde
+         un poco mas alla mientras Fundamentos se retira. */
+      '--f-corre': capaFund,
+      '--e-x': pieza(escena, '.ns-capa--elenco'),
+      '--f-op': envFund,
+      '--f-filtro': envFund,
+      '--f-ent': envFund,
       '--f-filo': pieza(escena, '.ns-filo--vertical'),
       '--f-filo-op': pieza(escena, '.ns-filo--vertical'),
-      '--i-sube': capaInfra,
-      '--i-op': pieza(capaInfra, ':scope > .ns-envoltura'),
-      '--i-desenfoque': pieza(capaInfra, ':scope > .ns-envoltura'),
-      '--i-y': pieza(capaInfra, ':scope > .ns-envoltura'),
+      '--i-corre': capaInfra,
+      '--i-op': envInfra,
+      '--i-filtro': envInfra,
+      '--i-y': envInfra,
       '--i-filo': pieza(escena, '.ns-filo--horizontal'),
       '--i-filo-op': pieza(escena, '.ns-filo--horizontal'),
       '--h-abre': pieza(escena, '.ns-hojas'),
@@ -261,9 +266,14 @@ document.addEventListener('DOMContentLoaded', function () {
          alcanza. */
       '--k-firma': pieza(carta, '.cb-rub')
     };
+    function cadaDestino(destino, fn) {
+      if (!destino) return;
+      if (Array.isArray(destino)) destino.forEach(function (d) { if (d) fn(d); });
+      else fn(destino);
+    }
     function borrar(destinos) {
       Object.keys(destinos).forEach(function (nombre) {
-        if (destinos[nombre]) destinos[nombre].style.removeProperty(nombre);
+        cadaDestino(destinos[nombre], function (d) { d.style.removeProperty(nombre); });
       });
     }
 
@@ -370,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function ponCine(nombre, valor) {
       if (escritoCine[nombre] === valor) return;
       escritoCine[nombre] = valor;
-      if (DESTINOS_CINE[nombre]) DESTINOS_CINE[nombre].style.setProperty(nombre, valor);
+      cadaDestino(DESTINOS_CINE[nombre], function (d) { d.style.setProperty(nombre, valor); });
     }
     function ponCierre(nombre, valor) {
       if (escritoCierre[nombre] === valor) return;
@@ -390,6 +400,23 @@ document.addEventListener('DOMContentLoaded', function () {
       return Math.min(1, Math.max(0, -caja.top / recorrido));
     }
 
+    /* Lo que miden las dos capas con cortina, que es lo que tienen que
+       recorrer. Se mide una vez y otra cada vez que cambia la ventana: con
+       `offsetWidth` y `offsetHeight`, que no cuentan el `transform`, asi que
+       da igual por donde vaya la cortina al medir. */
+    var anchoFund = 0;
+    var altoInfra = 0;
+
+    /* Y lo que se corren va a pixel entero de la pantalla. Una capa propia
+       que se para a medio pixel —523,4px— no se puede mover sin mas: el
+       navegador le pasa ese medio pixel a lo que pinta dentro, y la vuelve
+       a pintar entera cada vez que cambia. En una pantalla a escala 1 eso
+       era repintar Fundamentos en uno de cada seis fotogramas del telon. */
+    function px(v) {
+      var escala = window.devicePixelRatio || 1;
+      return (Math.round(v * escala) / escala) + 'px';
+    }
+
     var pCine = 0;
     var pCierre = 0;
     var pCarta = 0;
@@ -402,6 +429,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function leer(ctx) {
       if (viva) {
+        if (!anchoFund && capaFund) anchoFund = capaFund.offsetWidth;
+        if (!altoInfra && capaInfra) altoInfra = capaInfra.offsetHeight;
         pCine = progresoDe(escena, ctx);
         if (carta && cartaViva) {
           pCarta = progresoDe(carta, ctx);
@@ -425,32 +454,39 @@ document.addEventListener('DOMContentLoaded', function () {
       if (viva && pCine !== ultimoCine) {
         ultimoCine = pCine;
 
-        /* Las fracciones estan reescaladas a los 590vh de la escena: hasta
-           que entra el texto de infraestructura cada tramo mide lo mismo en
-           pixeles que media antes. Lo unico que cambia de verdad es el final,
-           que ahora arranca en cuanto se acaba de leer el panel en vez de
-           hacer esperar tres cuartos de pantalla. */
-        var entra  = suave(tramo(pCine, .07, .21));
-        var texto  =       tramo(pCine, .22, .30);
-        var sale   = suave(tramo(pCine, .45, .59));
-        var sube   = suave(tramo(pCine, .74, .86));
-        var textoI =       tramo(pCine, .78, .89);
+        /* Las fracciones estan reescaladas a los 548vh de la escena (484 en
+           el telefono), y cada tramo mide en pixeles lo que media antes salvo
+           el paso de Fundamentos al Equipo, que se hacia largo: la pausa con
+           Fundamentos entero (de .328 a .44) baja de 73 a 50vh y el telon
+           que se retira (.44 a .551), de 69 a 50. De Fundamentos leido al
+           Equipo entero hay una pantalla de scroll; antes, una y media. */
+        var entra  = suave(tramo(pCine, .0766, .2297));
+        var texto  =       tramo(pCine, .2406, .3281);
+        var sale   = suave(tramo(pCine, .4397, .5513));
+        var sube   = suave(tramo(pCine, .7154, .8467));
+        var textoI =       tramo(pCine, .7592, .8795);
         /* El telon se cierra en el ultimo 8% del recorrido, y en el 6%
            cuando no hay apertura despues: sin un tramo de apertura al que
            dar entrada, alargar el cierre es solo alargar el negro. Tiene que
            acabar de cerrarse en el 1 justo: ahi es donde el cierre se clava
            encima con sus hojas tambien cerradas. */
-        var cierra = suave(tramo(pCine, cierreVivo ? .92 : .94, 1));
+        var cierra = suave(tramo(pCine, cierreVivo ? .9123 : .9342, 1));
 
-        /* Un solo canto para las dos mitades del telon de fundamentos: entra
+        /* Un solo canto para las dos mitades del panel de fundamentos: entra
            de izquierda a derecha y se retira por donde vino, asi que mientras
-           sale manda `sale` y antes manda `entra`. No se solapan. */
+           sale manda `sale` y antes manda `entra`. No se solapan. `der` es
+           lo que le falta por entrar, y en pixeles es lo que el panel se
+           corre a la izquierda. El equipo, debajo, llega desde un 12% mas a
+           la derecha: es lo que hace que se lea como una pagina que pasa y
+           no como una tapa que se quita. */
         var der = sale > 0 ? sale : (1 - entra);
-        ponCine('--f-der', (der * 100).toFixed(2) + '%');
+        var corre = der * anchoFund;
+        ponCine('--f-corre', px(-corre));
+        ponCine('--e-x', px((1 - sale) * .12 * anchoFund));
         ponCine('--f-op', texto.toFixed(3));
-        ponCine('--f-desenfoque', ((1 - texto) * 12).toFixed(1) + 'px');
+        ponCine('--f-filtro', texto >= 1 ? 'none' : 'blur(' + ((1 - texto) * 12).toFixed(1) + 'px)');
         ponCine('--f-ent', (1 - texto).toFixed(3));
-        ponCine('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
+        ponCine('--f-filo', px(anchoFund - corre));
         ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 
         /* Fundamentos: su entrada se enciende con el primer asomo del texto,
@@ -463,35 +499,36 @@ document.addEventListener('DOMContentLoaded', function () {
           capaFund.classList.toggle('ns-fund--viva', fundViva);
         }
 
-        ponCine('--i-sube', ((1 - sube) * 100).toFixed(2) + '%');
+        var baja = (1 - sube) * altoInfra;
+        ponCine('--i-corre', px(baja));
         ponCine('--i-op', textoI.toFixed(3));
-        ponCine('--i-desenfoque', ((1 - textoI) * 10).toFixed(1) + 'px');
-        ponCine('--i-y', ((1 - textoI) * 42).toFixed(1) + 'px');
-        ponCine('--i-filo', ((1 - sube) * 100).toFixed(2) + '%');
+        ponCine('--i-filtro', textoI >= 1 ? 'none' : 'blur(' + ((1 - textoI) * 10).toFixed(1) + 'px)');
+        ponCine('--i-y', px((1 - textoI) * 42));
+        ponCine('--i-filo', px(baja));
         ponCine('--i-filo-op', sube > 0 && sube < 1 ? '1' : '0');
 
         ponCine('--h-abre', (1 - cierra).toFixed(3));
         ponCine('--h-filo', cierra > 0 && cierra < 1 ? '1' : '0');
 
         /* El cambiazo de fondo cae con el telon tapando la pantalla entera:
-           acaba de taparla en .21 y no empieza a retirarse hasta .45. */
-        var segundo = pCine >= .33 ? 1 : 0;
+           acaba de taparla en .23 y no empieza a retirarse hasta .44. */
+        var segundo = pCine >= .3609 ? 1 : 0;
         ponCine('--c-uno', String(1 - segundo));
         ponCine('--c-dos', String(segundo));
         ponCine('--c-ev-uno', segundo ? 'none' : 'auto');
         ponCine('--c-ev-dos', segundo ? 'auto' : 'none');
 
         if (elenco) {
-          if (pCine > .31 && pCine < .78) elenco.despertar(pCine < .50);
+          if (pCine > .339 && pCine < .7592) elenco.despertar(pCine < .48);
           else elenco.dormir();
         }
 
         /* Una cinta cada vez, y solo mientras su capa se ve. La del hero se
-           para en cuanto el telon de fundamentos la tapa del todo (.21), y la
+           para en cuanto el telon de fundamentos la tapa del todo (.23), y la
            de infraestructura no arranca hasta que su capa empieza a subir
-           (.74). Entre las dos hay medio recorrido en el que no corre
+           (.715). Entre las dos hay medio recorrido en el que no corre
            ninguna. */
-        cintas(pCine < .22 ? 'historia' : (pCine > .73 ? 'infra' : 'ninguna'));
+        cintas(pCine < .2406 ? 'historia' : (pCine > .7045 ? 'infra' : 'ninguna'));
       }
 
       if (viva && cartaViva && cartaClavada !== cartaClavadaPintada) {
@@ -585,6 +622,8 @@ document.addEventListener('DOMContentLoaded', function () {
       escritoCine = {};
       escritoCierre = {};
       escritoCarta = {};
+      anchoFund = 0;
+      altoInfra = 0;
     });
 
     /* -------------------------------------------------------------------
@@ -598,18 +637,18 @@ document.addEventListener('DOMContentLoaded', function () {
        arranque de cada entrada —fundamentos en .27, con el texto todavia
        desenfocado, e infraestructura en .86, a media subida— y el circulo
        llevaba a una capa a oscuras o a medio llegar. Los tramos son los de
-       `escribir()`: fundamentos esta entera de .30 a .45, el elenco de .59
-       a .74 y la infraestructura de .89 hasta que empieza a cerrarse el
-       telon, en .92.
+       `escribir()`: fundamentos esta entera de .328 a .44, el elenco de .551
+       a .715 y la infraestructura de .88 hasta que empieza a cerrarse el
+       telon, en .912.
 
        `desde` es a partir de donde cuenta como la capa que se esta viendo,
        para encender su circulo: cuando ya ha tapado a la anterior, no cuando
        se deja la pantalla en ella. */
     var paradas = [
       { id: 'historia',        nombre: 'Historia',        bloque: escena, p: 0,    desde: 0 },
-      { id: 'fundamentos',     nombre: 'Fundamentos',     bloque: escena, p: .37,  desde: .21 },
-      { id: 'equipo',          nombre: 'Equipo',          bloque: escena, p: .66,  desde: .52 },
-      { id: 'infraestructura', nombre: 'Infraestructura', bloque: escena, p: .905, desde: .80 },
+      { id: 'fundamentos',     nombre: 'Fundamentos',     bloque: escena, p: .384, desde: .2297 },
+      { id: 'equipo',          nombre: 'Equipo',          bloque: escena, p: .633, desde: .52 },
+      { id: 'infraestructura', nombre: 'Infraestructura', bloque: escena, p: .896, desde: .781 },
       { id: 'bienvenida',      nombre: 'Carta de bienvenida', bloque: carta, p: .86, desde: .12 },
       { id: 'cifras',          nombre: 'En cifras',       bloque: cierre, p: .55,  desde: .15 }
     ].filter(function (parada) {

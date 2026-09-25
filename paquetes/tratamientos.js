@@ -1350,7 +1350,7 @@ return;
 }
 var cortina=document.querySelector('.ns-umbral');
 var conCortina=cortina&&!raiz.classList.contains('sin-umbral')&&!quietud.matches;
-setTimeout(una,conCortina?1800:400);
+setTimeout(una,conCortina?2100:400);
 }
 Array.prototype.forEach.call(botonesPreferencias,function(boton){
 boton.hidden=false;

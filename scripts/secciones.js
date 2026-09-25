@@ -212,22 +212,36 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    /* La cinta se arma cuando la banda queda a tres pantallas, no al abrir la
-       pagina: son dos docenas de fotos al final del todo, y armarlas al
-       principio obligaba a leer el ancho de la ventana antes de que la pagina
-       estuviera maquetada. A tres pantallas sus fotos (diferidas) empiezan a
-       bajar a la vez que lo hacian antes. */
+    /* La cinta no se arma al abrir la pagina: son dos docenas de columnas y
+       armarlas al principio obligaba a leer el ancho de la ventana antes de
+       que la pagina estuviera maquetada. Se arma en el primer rato libre
+       despues de la carga, o antes si la banda llega a tres pantallas.
+
+       Se armaba solo a tres pantallas, y en Nosotros eso caia en pleno paso
+       de Fundamentos al Equipo: 22 columnas y 66 fotos entrando en el
+       documento en mitad del telon. En un rato libre no se nota. Las fotos
+       son diferidas (`loading="lazy"`), asi que armar antes no baja ninguna
+       antes de tiempo. */
     if ('IntersectionObserver' in window) {
       cinta.style.animationPlayState = 'paused';
       var caja = cinta.parentNode || cinta;
       var armada = false;
-      var vigia = new IntersectionObserver(function (entradas) {
-        if (armada || !entradas[entradas.length - 1].isIntersecting) return;
+      var armarUnaVez = function () {
+        if (armada) return;
         armada = true;
         vigia.disconnect();
         armar();
+      };
+      var vigia = new IntersectionObserver(function (entradas) {
+        if (entradas[entradas.length - 1].isIntersecting) armarUnaVez();
       }, { rootMargin: '300% 0px' });
       vigia.observe(caja);
+      var enReposo = function () {
+        if (window.requestIdleCallback) window.requestIdleCallback(armarUnaVez, { timeout: 3000 });
+        else setTimeout(armarUnaVez, 1200);
+      };
+      if (document.readyState === 'complete') enReposo();
+      else window.addEventListener('load', enReposo, { once: true });
       new IntersectionObserver(function (entradas) {
         entradas.forEach(function (entrada) {
           cinta.style.animationPlayState = entrada.isIntersecting ? 'running' : 'paused';

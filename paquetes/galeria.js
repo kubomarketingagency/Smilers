@@ -837,13 +837,22 @@ if('IntersectionObserver' in window){
 cinta.style.animationPlayState='paused';
 var caja=cinta.parentNode||cinta;
 var armada=false;
-var vigia=new IntersectionObserver(function(entradas){
-if(armada||!entradas[entradas.length - 1].isIntersecting)return;
+var armarUnaVez=function(){
+if(armada)return;
 armada=true;
 vigia.disconnect();
 armar();
+};
+var vigia=new IntersectionObserver(function(entradas){
+if(entradas[entradas.length - 1].isIntersecting)armarUnaVez();
 },{rootMargin:'300% 0px'});
 vigia.observe(caja);
+var enReposo=function(){
+if(window.requestIdleCallback)window.requestIdleCallback(armarUnaVez,{timeout:3000});
+else setTimeout(armarUnaVez,1200);
+};
+if(document.readyState==='complete')enReposo();
+else window.addEventListener('load',enReposo,{once:true});
 new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
 cinta.style.animationPlayState=entrada.isIntersecting?'running':'paused';
@@ -1314,7 +1323,7 @@ return;
 }
 var cortina=document.querySelector('.ns-umbral');
 var conCortina=cortina&&!raiz.classList.contains('sin-umbral')&&!quietud.matches;
-setTimeout(una,conCortina?1800:400);
+setTimeout(una,conCortina?2100:400);
 }
 Array.prototype.forEach.call(botonesPreferencias,function(boton){
 boton.hidden=false;

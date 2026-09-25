@@ -82,11 +82,79 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: #000;
   overflow: hidden;
   display: grid;
   place-items: center;
-  transition: opacity .6s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Las lamas: el negro de las dos bienvenidas del sitio —el video de la
+   portada y el umbral de las interiores (15-lienzo-claro.css)— son cinco
+   franjas horizontales que se van deslizando hacia la derecha, de arriba
+   abajo, cada una con un canto de oro que brilla mientras corre. Asi la
+   pagina se descubre en escalera y el oro barre la pantalla de izquierda a
+   derecha, que es el sentido en que se lee. Cada lama es una capa propia y
+   solo se mueve con `transform`. Solapan 2px entre ellas: con la pantalla
+   partida en quintos alguna cae a medio pixel y, al moverlas, asomaba una
+   raya de pagina entre dos. Salen hasta 40px mas alla del canto derecho,
+   que es lo que mide el brillo de su filo. */
+.lamas-oro {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.lamas-oro > i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: calc(var(--n) * 20% - 1px);
+  height: calc(20% + 2px);
+  background: #050505;
+}
+.lamas-oro > i:nth-child(1) { --n: 0; }
+.lamas-oro > i:nth-child(2) { --n: 1; }
+.lamas-oro > i:nth-child(3) { --n: 2; }
+.lamas-oro > i:nth-child(4) { --n: 3; }
+.lamas-oro > i:nth-child(5) { --n: 4; }
+.lamas-oro > i::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #B08D22 0%, #F7E7A6 45%, #D4AF37 75%, #E6C95F 100%);
+  box-shadow: 0 0 22px 2px rgba(212, 175, 55, .42);
+  opacity: 0;
+}
+@keyframes lama-sale {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(100% + 40px), 0, 0); }
+}
+@keyframes lama-canto {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* En la portada las lamas salen cuando el video acaba (hero.js pone
+   `oculto`): el video se apaga en .3s y a la vez el negro se abre. Aqui
+   llevan capa propia desde el principio, porque su animacion no empieza con
+   la pagina sino al acabar el video, y promoverlas en ese momento costaba
+   rasterizar cinco franjas de pantalla en el primer fotograma de la salida.
+   En el umbral no hace falta: la animacion esta puesta desde el principio y
+   ya les da capa, y al irse el umbral se quedan en el documento, donde un
+   `will-change` las mantendria en memoria. */
+.splash-inicio .lamas-oro > i { will-change: transform; }
+.splash-inicio > video,
+.splash-inicio > img {
+  position: relative;
+  z-index: 1;
+}
+.splash-inicio.oculto .lamas-oro > i {
+  animation: lama-sale .68s cubic-bezier(.77, 0, .18, 1) calc(.12s + var(--n) * .055s) both;
+}
+.splash-inicio.oculto .lamas-oro > i::before {
+  animation: lama-canto .68s linear calc(.12s + var(--n) * .055s) both;
 }
 
 /* El video ocupa desde el principio la caja que tendria con sus datos
@@ -107,7 +175,6 @@ body::before {
   max-height: 58vh;
   object-fit: contain;
   object-position: center;
-  transition: transform .6s cubic-bezier(.4, 0, .2, 1), filter .6s ease, opacity .6s ease;
 }
 @media (max-width: 767.98px) {
   .splash-inicio video,
@@ -119,15 +186,12 @@ body::before {
   }
 }
 
-.splash-inicio.oculto {
-  opacity: 0;
-  pointer-events: none;
-}
+.splash-inicio.oculto { pointer-events: none; }
 .splash-inicio.oculto video,
 .splash-inicio.oculto img {
-  transform: scale(1.05);
-  filter: blur(5px);
-  opacity: .35;
+  transform: scale(1.04);
+  opacity: 0;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .3s ease;
 }
 html.sin-splash .splash-inicio { display: none; }
 @media (prefers-reduced-motion: reduce) {

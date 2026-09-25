@@ -313,7 +313,7 @@
   }
 
   /* Espera a que la bienvenida se haya ido. En la portada es el video; en
-     las demas, la cortina de entrada, que dura 1,6s clavados (15-lienzo-
+     las demas, la cortina de entrada, que dura 1,9s clavados (15-lienzo-
      claro.css) y no sale si se llega con ancla o con menos movimiento. */
   function trasLaBienvenida(fn) {
     var hecho = false;
@@ -332,7 +332,7 @@
     }
     var cortina = document.querySelector('.ns-umbral');
     var conCortina = cortina && !raiz.classList.contains('sin-umbral') && !quietud.matches;
-    setTimeout(una, conCortina ? 1800 : 400);
+    setTimeout(una, conCortina ? 2100 : 400);
   }
 
   /* ---- Adelante ------------------------------------------------------------ */

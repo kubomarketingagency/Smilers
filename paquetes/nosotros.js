@@ -529,13 +529,22 @@ if('IntersectionObserver' in window){
 cinta.style.animationPlayState='paused';
 var caja=cinta.parentNode||cinta;
 var armada=false;
-var vigia=new IntersectionObserver(function(entradas){
-if(armada||!entradas[entradas.length - 1].isIntersecting)return;
+var armarUnaVez=function(){
+if(armada)return;
 armada=true;
 vigia.disconnect();
 armar();
+};
+var vigia=new IntersectionObserver(function(entradas){
+if(entradas[entradas.length - 1].isIntersecting)armarUnaVez();
 },{rootMargin:'300% 0px'});
 vigia.observe(caja);
+var enReposo=function(){
+if(window.requestIdleCallback)window.requestIdleCallback(armarUnaVez,{timeout:3000});
+else setTimeout(armarUnaVez,1200);
+};
+if(document.readyState==='complete')enReposo();
+else window.addEventListener('load',enReposo,{once:true});
 new IntersectionObserver(function(entradas){
 entradas.forEach(function(entrada){
 cinta.style.animationPlayState=entrada.isIntersecting?'running':'paused';
@@ -849,22 +858,25 @@ else cintaInfra.dormir();
 function pieza(bloque,selector){return bloque?bloque.querySelector(selector):null;}
 var capaFund=pieza(escena,'.ns-capa--fundamentos');
 var capaInfra=pieza(escena,'.ns-capa--infra');
+var envFund=pieza(capaFund,':scope > .ns-envoltura');
+var envInfra=pieza(capaInfra,':scope > .ns-envoltura');
 var fundPintada=false;
 var DESTINOS_CINE={
 '--c-uno':pieza(escena,'.ns-capa--historia'),
 '--c-ev-uno':pieza(escena,'.ns-capa--historia'),
 '--c-dos':pieza(escena,'.ns-capa--elenco'),
 '--c-ev-dos':pieza(escena,'.ns-capa--elenco'),
-'--f-der':capaFund,
-'--f-op':pieza(capaFund,':scope > .ns-envoltura'),
-'--f-desenfoque':pieza(capaFund,':scope > .ns-envoltura'),
-'--f-ent':pieza(capaFund,':scope > .ns-envoltura'),
+'--f-corre':capaFund,
+'--e-x':pieza(escena,'.ns-capa--elenco'),
+'--f-op':envFund,
+'--f-filtro':envFund,
+'--f-ent':envFund,
 '--f-filo':pieza(escena,'.ns-filo--vertical'),
 '--f-filo-op':pieza(escena,'.ns-filo--vertical'),
-'--i-sube':capaInfra,
-'--i-op':pieza(capaInfra,':scope > .ns-envoltura'),
-'--i-desenfoque':pieza(capaInfra,':scope > .ns-envoltura'),
-'--i-y':pieza(capaInfra,':scope > .ns-envoltura'),
+'--i-corre':capaInfra,
+'--i-op':envInfra,
+'--i-filtro':envInfra,
+'--i-y':envInfra,
 '--i-filo':pieza(escena,'.ns-filo--horizontal'),
 '--i-filo-op':pieza(escena,'.ns-filo--horizontal'),
 '--h-abre':pieza(escena,'.ns-hojas'),
@@ -884,9 +896,14 @@ var DESTINOS_CARTA={
 '--k-filo':pieza(carta,'.cb-tinta'),
 '--k-firma':pieza(carta,'.cb-rub')
 };
+function cadaDestino(destino,fn){
+if(!destino)return;
+if(Array.isArray(destino))destino.forEach(function(d){if(d)fn(d);});
+else fn(destino);
+}
 function borrar(destinos){
 Object.keys(destinos).forEach(function(nombre){
-if(destinos[nombre])destinos[nombre].style.removeProperty(nombre);
+cadaDestino(destinos[nombre],function(d){d.style.removeProperty(nombre);});
 });
 }
 var viva=false;
@@ -952,7 +969,7 @@ var escritoCarta={};
 function ponCine(nombre,valor){
 if(escritoCine[nombre]===valor)return;
 escritoCine[nombre]=valor;
-if(DESTINOS_CINE[nombre])DESTINOS_CINE[nombre].style.setProperty(nombre,valor);
+cadaDestino(DESTINOS_CINE[nombre],function(d){d.style.setProperty(nombre,valor);});
 }
 function ponCierre(nombre,valor){
 if(escritoCierre[nombre]===valor)return;
@@ -970,6 +987,12 @@ var recorrido=caja.height - ctx.alto;
 if(recorrido <=0)return 0;
 return Math.min(1,Math.max(0,-caja.top / recorrido));
 }
+var anchoFund=0;
+var altoInfra=0;
+function px(v){
+var escala=window.devicePixelRatio||1;
+return(Math.round(v*escala)/ escala)+ 'px';
+}
 var pCine=0;
 var pCierre=0;
 var pCarta=0;
@@ -981,6 +1004,8 @@ var rielMejor=0;
 var rielPintado=-1;
 function leer(ctx){
 if(viva){
+if(!anchoFund&&capaFund)anchoFund=capaFund.offsetWidth;
+if(!altoInfra&&capaInfra)altoInfra=capaInfra.offsetHeight;
 pCine=progresoDe(escena,ctx);
 if(carta&&cartaViva){
 pCarta=progresoDe(carta,ctx);
@@ -998,42 +1023,45 @@ rielMejor=paradaEnCurso(ctx);
 function escribir(){
 if(viva&&pCine !==ultimoCine){
 ultimoCine=pCine;
-var entra=suave(tramo(pCine,.07,.21));
-var texto=tramo(pCine,.22,.30);
-var sale=suave(tramo(pCine,.45,.59));
-var sube=suave(tramo(pCine,.74,.86));
-var textoI=tramo(pCine,.78,.89);
-var cierra=suave(tramo(pCine,cierreVivo?.92:.94,1));
+var entra=suave(tramo(pCine,.0766,.2297));
+var texto=tramo(pCine,.2406,.3281);
+var sale=suave(tramo(pCine,.4397,.5513));
+var sube=suave(tramo(pCine,.7154,.8467));
+var textoI=tramo(pCine,.7592,.8795);
+var cierra=suave(tramo(pCine,cierreVivo?.9123:.9342,1));
 var der=sale > 0?sale:(1 - entra);
-ponCine('--f-der',(der*100).toFixed(2)+ '%');
+var corre=der*anchoFund;
+ponCine('--f-corre',px(-corre));
+ponCine('--e-x',px((1 - sale)*.12*anchoFund));
 ponCine('--f-op',texto.toFixed(3));
-ponCine('--f-desenfoque',((1 - texto)*12).toFixed(1)+ 'px');
+ponCine('--f-filtro',texto >=1?'none':'blur(' +((1 - texto)*12).toFixed(1)+ 'px)');
 ponCine('--f-ent',(1 - texto).toFixed(3));
-ponCine('--f-filo',((1 - der)*100).toFixed(2)+ '%');
+ponCine('--f-filo',px(anchoFund - corre));
 ponCine('--f-filo-op',der > 0&&der < 1?'1':'0');
 var fundViva=texto > 0&&sale < 1;
 if(capaFund&&fundViva !==fundPintada){
 fundPintada=fundViva;
 capaFund.classList.toggle('ns-fund--viva',fundViva);
 }
-ponCine('--i-sube',((1 - sube)*100).toFixed(2)+ '%');
+var baja=(1 - sube)*altoInfra;
+ponCine('--i-corre',px(baja));
 ponCine('--i-op',textoI.toFixed(3));
-ponCine('--i-desenfoque',((1 - textoI)*10).toFixed(1)+ 'px');
-ponCine('--i-y',((1 - textoI)*42).toFixed(1)+ 'px');
-ponCine('--i-filo',((1 - sube)*100).toFixed(2)+ '%');
+ponCine('--i-filtro',textoI >=1?'none':'blur(' +((1 - textoI)*10).toFixed(1)+ 'px)');
+ponCine('--i-y',px((1 - textoI)*42));
+ponCine('--i-filo',px(baja));
 ponCine('--i-filo-op',sube > 0&&sube < 1?'1':'0');
 ponCine('--h-abre',(1 - cierra).toFixed(3));
 ponCine('--h-filo',cierra > 0&&cierra < 1?'1':'0');
-var segundo=pCine >=.33?1:0;
+var segundo=pCine >=.3609?1:0;
 ponCine('--c-uno',String(1 - segundo));
 ponCine('--c-dos',String(segundo));
 ponCine('--c-ev-uno',segundo?'none':'auto');
 ponCine('--c-ev-dos',segundo?'auto':'none');
 if(elenco){
-if(pCine > .31&&pCine < .78)elenco.despertar(pCine < .50);
+if(pCine > .339&&pCine < .7592)elenco.despertar(pCine < .48);
 else elenco.dormir();
 }
-cintas(pCine < .22?'historia':(pCine > .73?'infra':'ninguna'));
+cintas(pCine < .2406?'historia':(pCine > .7045?'infra':'ninguna'));
 }
 if(viva&&cartaViva&&cartaClavada !==cartaClavadaPintada){
 cartaClavadaPintada=cartaClavada;
@@ -1096,12 +1124,14 @@ ultimoCarta=-1;
 escritoCine={};
 escritoCierre={};
 escritoCarta={};
+anchoFund=0;
+altoInfra=0;
 });
 var paradas=[
 {id:'historia',nombre:'Historia',bloque:escena,p:0,desde:0},
-{id:'fundamentos',nombre:'Fundamentos',bloque:escena,p:.37,desde:.21},
-{id:'equipo',nombre:'Equipo',bloque:escena,p:.66,desde:.52},
-{id:'infraestructura',nombre:'Infraestructura',bloque:escena,p:.905,desde:.80},
+{id:'fundamentos',nombre:'Fundamentos',bloque:escena,p:.384,desde:.2297},
+{id:'equipo',nombre:'Equipo',bloque:escena,p:.633,desde:.52},
+{id:'infraestructura',nombre:'Infraestructura',bloque:escena,p:.896,desde:.781},
 {id:'bienvenida',nombre:'Carta de bienvenida',bloque:carta,p:.86,desde:.12},
 {id:'cifras',nombre:'En cifras',bloque:cierre,p:.55,desde:.15}
 ].filter(function(parada){
@@ -1403,7 +1433,7 @@ return;
 }
 var cortina=document.querySelector('.ns-umbral');
 var conCortina=cortina&&!raiz.classList.contains('sin-umbral')&&!quietud.matches;
-setTimeout(una,conCortina?1800:400);
+setTimeout(una,conCortina?2100:400);
 }
 Array.prototype.forEach.call(botonesPreferencias,function(boton){
 boton.hidden=false;
