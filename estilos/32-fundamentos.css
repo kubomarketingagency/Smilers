@@ -13,7 +13,10 @@
        pone nosotros-cine.js cuando el texto aun es transparente, asi que nada
        desaparece de golpe), el filo de oro de arriba de cada tarjeta se
        dibuja de izquierda a derecha, una detras de otra, y el icono sube a su
-       sitio. Solo `transform` y `opacity`, de piezas pequenas.
+       sitio. Solo `transform` y `opacity`, de piezas pequenas. Rellenan solo
+       hacia atras (`backwards`): acaban en lo que ya pone la hoja, asi que al
+       terminar la animacion se suelta y el navegador deja de tener una capa
+       aparte para cada icono y cada raya (eran 28).
 
    Sin escena o sin animaciones, todo queda a la vista y quieto.
    =========================================================================== */
@@ -52,15 +55,15 @@
   .ns-cine--viva .ns-fund--viva .ns-mvo__ficha::before,
   .ns-cine--viva .ns-fund--viva .ns-valor::before {
     transform-origin: left center;
-    animation: fund-filo 1.1s cubic-bezier(.65, 0, .25, 1) calc(var(--espera, 0s) + .2s) both;
+    animation: fund-filo 1.1s cubic-bezier(.65, 0, .25, 1) calc(var(--espera, 0s) + .2s) backwards;
   }
   .ns-cine--viva .ns-fund--viva .ns-mvo__icono,
   .ns-cine--viva .ns-fund--viva .ns-valor__icono {
-    animation: fund-sube .9s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .35s) both;
+    animation: fund-sube .9s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .35s) backwards;
   }
   .ns-cine--viva .ns-fund--viva .ns-valor__nombre::after {
     transform-origin: left center;
-    animation: fund-filo .9s cubic-bezier(.65, 0, .25, 1) calc(var(--espera, 0s) + .6s) both;
+    animation: fund-filo .9s cubic-bezier(.65, 0, .25, 1) calc(var(--espera, 0s) + .6s) backwards;
   }
 }
 

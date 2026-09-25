@@ -11,9 +11,10 @@
      velo oscuro que deja ver la pagina detras. La descubre como entran las
      fotos del collage: una cortina de oro la tapa y se retira hacia el otro
      lado, la foto se asienta desde un poco mas cerca y el filo de oro se
-     dibuja alrededor, con el marco desplazado detras. Debajo, su leyenda;
-     arriba, en su franja, la cuenta (la foto, una pista de oro que se llena
-     y el total) y la X, justo debajo del menu.
+     dibuja alrededor, con el marco desplazado detras. Todo va pegado a la
+     foto: encima, la cuenta en el centro (la foto, una pista que se llena y
+     el total) y la X en la esquina de arriba a la derecha; a los lados, las
+     flechas; debajo, la leyenda.
 
      Se pasa de foto con las flechas, con el teclado o deslizando el dedo, y
      cada cambio vuelve a pasar la cortina: la foto nueva se pide antes, se
@@ -47,7 +48,7 @@
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /* La cuenta se arma una vez y despues solo cambian sus cifras: asi la
-     pista de oro se llena con transicion de una foto a la siguiente. */
+     pista se llena con transicion de una foto a la siguiente. */
   function trozo(clase, texto) {
     var el = document.createElement('span');
     el.className = clase;
@@ -272,12 +273,11 @@
   botonAnt.addEventListener('click', function () { pintar(indice - 1); });
   botonSig.addEventListener('click', function () { pintar(indice + 1); });
 
-  /* Fuera de la foto se cierra: el clic que cae en el velo, en la barra o
-     en el aire de alrededor, no en la foto ni en la leyenda. */
+  /* Fuera de la foto se cierra: el clic que cae en el velo o en el aire de
+     alrededor, no en la foto, en la cuenta ni en la leyenda. */
   visor.addEventListener('click', function (ev) {
     var t = ev.target;
-    if (t === visor || t.hasAttribute('data-visor-fondo')
-        || t.classList.contains('visor__escena') || t.classList.contains('visor__barra')) {
+    if (t === visor || t.hasAttribute('data-visor-fondo') || t.classList.contains('visor__escena')) {
       cerrar();
     }
   });

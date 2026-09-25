@@ -32,8 +32,14 @@
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
   var cabe = window.matchMedia('(min-width: 768px) and (min-height: 520px)');
 
+  /* El alto de la barra se lee una vez y se guarda: el riel lo usa en cada
+     fotograma del scroll y no cambia hasta que cambia la ventana. */
+  var barraGuardada = 0;
   function alturaBarra() {
-    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--alto-navbar')) || 62;
+    if (!barraGuardada) {
+      barraGuardada = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--alto-navbar')) || 62;
+    }
+    return barraGuardada;
   }
 
   function propio(seccion, que) {
@@ -111,12 +117,12 @@
     });
   }
 
-  SmilersScroll.registrar(leer, escribir, function () { pintado = -2; });
+  SmilersScroll.registrar(leer, escribir, function () { pintado = -2; barraGuardada = 0; });
   SmilersScroll.pedir();
 
   /* Al pasar de telefono a tableta (girarla) el riel aparece sin que haya
      habido scroll: se pide un fotograma para pintarlo ya en su sitio. */
-  var alCambiar = function () { pintado = -2; SmilersScroll.pedir(); };
+  var alCambiar = function () { pintado = -2; barraGuardada = 0; SmilersScroll.pedir(); };
   if (cabe.addEventListener) cabe.addEventListener('change', alCambiar);
   else if (cabe.addListener) cabe.addListener(alCambiar);
   window.addEventListener('load', alCambiar);

@@ -216,3 +216,10 @@
   }
 
 .marco-esquina.turquesa { border-color: var(--turquesa); }
+
+/* reposo.js: el elemento de una animacion infinita que ahora esta fuera de
+   la pantalla. Se para ella y lo que cuelga de sus ::before y ::after; al
+   volver a acercarse se quita el atributo y sigue donde iba. */
+[data-reposo],
+[data-reposo]::before,
+[data-reposo]::after { animation-play-state: paused !important; }

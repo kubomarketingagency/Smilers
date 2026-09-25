@@ -7,16 +7,17 @@
    Se abre POR DEBAJO de la barra de navegacion, que sigue a la vista: el
    guion mide su alto y lo deja en `--visor-arriba` (pulsarla cierra el
    visor). Detras, un velo oscuro que no llega a tapar: la pagina se sigue
-   viendo, como tras un cristal polarizado. Arriba, una franja con la cuenta
-   a la izquierda y la X a la derecha, en la misma caja que la barra, de
-   modo que la X cae justo debajo del menu.
+   viendo, como tras un cristal polarizado.
 
    La foto entra como las del collage: una cortina de oro la tapa y se
    retira hacia el otro lado, la foto se asienta desde un poco mas cerca y
-   alrededor se dibuja su filo de oro, con el marco desplazado detras. Las
-   flechas son solo sus trazos, pegadas a los lados de la foto (encima de
-   ella en el telefono, que ahi la foto ocupa todo el ancho). Debajo, la
-   leyenda en la letra de los titulares.
+   alrededor se dibuja su filo de oro, con el marco desplazado detras. Todo
+   lo demas va pegado a la foto, dentro de su marco: encima, la cuenta en el
+   centro y la X en la esquina de arriba a la derecha; a los lados, las
+   flechas, que son solo sus trazos (encima de la foto en el telefono, que
+   ahi ocupa todo el ancho); debajo, la leyenda en la letra de los
+   titulares. La cuenta y la leyenda van en blanco y plata; el oro queda
+   para la X, las flechas, la cortina y los filos.
 
    Nada de circulos: ni en la X, ni en las flechas, ni en el puntero. Todo
    lo que se mueve es `transform` y `opacity`, salvo el dibujo de los filos
@@ -58,52 +59,49 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 }
 .visor--abierto .visor__velo { opacity: 1; }
 
-/* --- La franja de arriba: la cuenta y la X -------------------------------
-   Lleva ademas la clase `container`, la misma caja que la barra. */
-.visor__barra {
-  position: relative;
-  z-index: 3;
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-height: 60px;
-  padding-top: 4px;
-  padding-bottom: 0;
-  opacity: 0;
-  transform: translateY(-8px);
-  transition: opacity .4s ease .08s, transform .55s cubic-bezier(.22, 1, .36, 1) .08s;
-}
-.visor--abierto .visor__barra { opacity: 1; transform: none; }
+/* --- Encima de la foto: la cuenta y la X --------------------------------
+   Las dos en la misma fila, a 36px del canto de arriba de la foto: por
+   encima del marco desplazado de detras, que asoma 18px como mucho. El aire
+   de arriba de la escena les guarda el sitio. */
 
-/* La cuenta: la foto en la que se esta, una pista de oro que se llena
-   segun se avanza, y cuantas son. */
+/* La cuenta, en el centro: la foto en la que se esta, una pista de plata
+   que se llena segun se avanza, y cuantas son. */
 .visor__cuenta {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 14px);
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: .9rem;
+  height: 44px;
   margin: 0;
+  translate: -50% 0;
+  white-space: nowrap;
   font-family: var(--fuente-menu);
   font-size: .78rem;
   letter-spacing: .2em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  opacity: 0;
+  transition: opacity .45s ease .35s;
 }
+.visor--abierto .visor__cuenta { opacity: 1; }
 .visor__cuenta[hidden] { display: none; }
-.visor__actual { color: #F7F1E1; font-weight: 600; }
-.visor__total { color: var(--oro-marca); }
+.visor__actual { color: #FFFFFF; font-weight: 600; }
+.visor__total { color: #C9C9C9; }
 .visor__pista {
   position: relative;
   width: clamp(56px, 7vw, 96px);
   height: 1px;
   overflow: hidden;
-  background: rgba(255, 255, 255, .22);
+  background: rgba(255, 255, 255, .2);
 }
 .visor__pista::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--oro-marca-degradado);
+  background: var(--gradiente-plata);
   transform-origin: left center;
   transform: scaleX(var(--avance, 0));
   transition: transform .6s cubic-bezier(.22, 1, .36, 1);
@@ -117,20 +115,26 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   white-space: nowrap;
 }
 
-/* La X: solo sus dos trazos, en oro, del tamano de las rayas del menu. */
+/* La X: solo sus dos trazos, en oro, en la esquina de arriba a la derecha
+   de la foto; el trazo acaba donde acaba la foto. */
 .visor__cerrar {
+  position: absolute;
+  right: -11px;
+  bottom: calc(100% + 14px);
+  z-index: 4;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  margin-left: auto;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   background: none;
   color: var(--oro-marca);
   cursor: pointer;
-  transition: color .3s ease, transform .5s cubic-bezier(.22, 1, .36, 1);
+  opacity: 0;
+  transition: opacity .45s ease .35s, color .3s ease, transform .5s cubic-bezier(.22, 1, .36, 1);
 }
+.visor--abierto .visor__cerrar { opacity: 1; }
 .visor__cerrar svg,
 .visor__flecha svg {
   fill: none;
@@ -138,7 +142,7 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.visor__cerrar svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.visor__cerrar svg { width: 22px; height: 22px; stroke-width: 1.5; }
 .visor__cerrar:hover,
 .visor__cerrar:focus-visible { color: #F7E7A6; transform: rotate(90deg); }
 .visor__cerrar:focus-visible,
@@ -156,8 +160,8 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 2.6vh, 26px);
-  /* A los lados, el sitio de las flechas. */
-  padding: clamp(6px, 1.4vh, 16px) clamp(64px, 8vw, 128px) max(clamp(18px, 3.2vh, 36px), env(safe-area-inset-bottom));
+  /* Arriba, el sitio de la cuenta y la X; a los lados, el de las flechas. */
+  padding: 62px clamp(64px, 8vw, 128px) max(clamp(18px, 3.2vh, 36px), env(safe-area-inset-bottom));
 }
 
 .visor__marco {
@@ -186,9 +190,9 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   width: auto;
   height: auto;
   max-width: 100%;
-  /* La barra de la pagina, la franja (60), la leyenda con su raya (unas
-     dos lineas) y los aires. */
-  max-height: calc(100svh - var(--visor-arriba, 0px) - 60px - 8.5rem);
+  /* La barra de la pagina, la fila de la cuenta (62), la leyenda con su
+     raya (unas dos lineas) y los aires. */
+  max-height: calc(100svh - var(--visor-arriba, 0px) - 62px - 8.5rem);
   object-fit: contain;
 }
 .visor--oculta .visor__foto { opacity: 0; }
@@ -286,7 +290,7 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   line-height: 1.5;
   letter-spacing: .01em;
-  color: rgba(255, 255, 255, .94);
+  color: #F2F2F2;
   text-shadow: 0 1px 12px rgba(0, 0, 0, .6);
   opacity: 0;
   transform: translateY(10px);
@@ -298,7 +302,7 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   width: 44px;
   height: 1px;
   margin: 0 auto .75rem;
-  background: var(--oro-marca-degradado);
+  background: var(--gradiente-plata);
 }
 .visor__leyenda:empty { visibility: hidden; }
 .visor--abierto .visor__leyenda { opacity: 1; transform: none; }
@@ -341,9 +345,8 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 /* En el telefono la foto ocupa todo el ancho: las flechas pasan encima de
    ella, en sus cantos, con una sombra que las separa de la foto. */
 @media (max-width: 767.98px) {
-  .visor__barra { min-height: 52px; }
   .visor__escena { padding-inline: 16px; }
-  .visor__foto { max-height: calc(100svh - var(--visor-arriba, 0px) - 52px - 9.5rem); }
+  .visor__foto { max-height: calc(100svh - var(--visor-arriba, 0px) - 62px - 9rem); }
   .visor__flecha {
     width: 40px;
     height: 64px;
@@ -358,7 +361,8 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .visor__velo,
-  .visor__barra,
+  .visor__cuenta,
+  .visor__cerrar,
   .visor__marco,
   .visor__marco::before,
   .visor__marco::after,

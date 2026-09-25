@@ -311,6 +311,52 @@
     return b;
   }
 
+  /* LAS FOTOS DEL ATLAS. Se piden como archivo y se descodifican con
+     `createImageBitmap(blob)`, que lo hace en otro hilo. Con una `Image` y
+     `createImageBitmap(img)` Chrome las descodificaba en el hilo principal,
+     dentro del `onload`: 30-50ms por foto con la CPU de un telefono medio,
+     cuatro o cinco tirones seguidos justo al llegar a los testimonios.
+
+     Se piden una vez: el aviso de la seccion (a dos pantallas y media) las
+     adelanta, y el atlas recoge las mismas promesas. Cada una se entrega una
+     sola vez, que el atlas cierra el bitmap al pintarlo; si hiciera falta
+     otra (el atlas rehecho), se vuelve a pedir y sale de la cache HTTP.
+     Donde algo falla se cae a la `Image` de siempre. */
+  var fotosPedidas = {};
+
+  function cargarComoImagen(fuente) {
+    return new Promise(function (resolver) {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function () { resolver(img); };
+      img.onerror = function () { resolver(null); };
+      img.src = fuente;
+    });
+  }
+
+  function cargarFoto(fuente) {
+    if (!window.fetch || !window.createImageBitmap) return cargarComoImagen(fuente);
+    return fetch(fuente).then(function (respuesta) {
+      if (!respuesta.ok) throw new Error(String(respuesta.status));
+      return respuesta.blob();
+    }).then(function (archivo) {
+      return createImageBitmap(archivo);
+    }).catch(function () {
+      return cargarComoImagen(fuente);
+    });
+  }
+
+  function adelantarFoto(fuente) {
+    if (fuente && !fotosPedidas[fuente]) fotosPedidas[fuente] = cargarFoto(fuente);
+  }
+
+  function tomarFoto(fuente) {
+    if (!fuente) return Promise.resolve(null);
+    var pedida = fotosPedidas[fuente] || cargarFoto(fuente);
+    delete fotosPedidas[fuente];
+    return pedida;
+  }
+
   function crearTextura(gl) {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -639,24 +685,11 @@ void main() {
       lienzo2d.height = self.tamAtlas * CELDA;
       var ctx = lienzo2d.getContext('2d');
 
+      /* Como ImageBitmap ya descodificado (ver `tomarFoto`): drawImage no
+         la descodifica ahi mismo, en medio del scroll. Se pinta en el atlas
+         exactamente igual que antes. */
       Promise.all(self.items.map(function (item) {
-        return new Promise(function (resolver) {
-          var img = new Image();
-          img.crossOrigin = 'anonymous';
-          /* Como ImageBitmap: se descodifica fuera del hilo principal y se
-             queda descodificada, asi que drawImage ya no la descodifica ahi
-             mismo, en medio del scroll (eran tirones de 120-140ms en un
-             telefono). Se pinta en el atlas exactamente igual que antes. */
-          img.onload = function () {
-            if (window.createImageBitmap) {
-              createImageBitmap(img).then(resolver, function () { resolver(img); });
-            } else {
-              resolver(img);
-            }
-          };
-          img.onerror = function () { resolver(null); };
-          img.src = item[claveFuente];
-        });
+        return tomarFoto(item[claveFuente]);
       })).then(function (imagenes) {
         imagenes.forEach(function (img, i) {
           if (!img) return;
@@ -1273,21 +1306,16 @@ void main() {
          fotograma entero en un telefono, y con la pagina quieta no se pierde
          ninguno. Si se llega sin parar, la crea el observador de abajo al
          entrar, como antes. */
+      /* Adelanta la foto de cada testimonio, la misma que pinta el atlas.
+         Pedia `antes` y `despues`, dos campos que dejaron de existir cuando
+         el atlas paso a una sola foto: salian dieciseis peticiones a
+         `/undefined` que daban 404, y las fotos de verdad no se adelantaban. */
       var pendiente = false;
-      var adelantadas = [];
       var vigia = new IntersectionObserver(function (entradas) {
         if (!entradas[entradas.length - 1].isIntersecting) return;
         vigia.disconnect();
         pendiente = true;
-        items.forEach(function (item) {
-          [item.antes, item.despues].forEach(function (src) {
-            var img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = img.onerror = function () { adelantadas.splice(adelantadas.indexOf(img), 1); };
-            adelantadas.push(img);
-            img.src = src;
-          });
-        });
+        items.forEach(function (item) { adelantarFoto(item.foto); });
       }, { rootMargin: '250% 0px' });
       vigia.observe(seccion);
       if (window.SmilersScroll && window.SmilersScroll.alDetenerse) {
