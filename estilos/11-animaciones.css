@@ -130,8 +130,13 @@
   .hero-contenido { padding: 120px 0 90px; }
   .seccion { padding: 72px 0; }
   .footer-bottom { justify-content: center; text-align: center; padding-right: 0; padding-bottom: 138px; }
-    .wsp-flotante { width: 52px; height: 52px; font-size: 1.25rem; }
-  .btn-subir { right: 30px; bottom: 89px; }
+  /* WhatsApp, un punto mas grande que antes en el telefono (52px): es el
+     boton que llama. Ocupa 80px del canto derecho y el de subir, encima,
+     acaba a 134 del suelo, que es lo que dejan libre la escena de la
+     portada (el zocalo de 140, en el 07) y el Equipo de Nosotros (81px a la
+     derecha, en el 24). Los centros de los dos siguen en la misma vertical. */
+  .wsp-flotante { right: 22px; bottom: 22px; width: 58px; height: 58px; font-size: 1.42rem; }
+  .btn-subir { right: 30px; bottom: 92px; }
 }
 
 .seccion-decorada { position: relative; overflow: hidden; isolation: isolate; }

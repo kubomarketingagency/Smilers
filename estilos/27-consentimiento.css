@@ -9,8 +9,8 @@
    despues y declara las mismas con `#cc-main` a secas.
 
    Aceptar y rechazar pesan lo mismo a proposito (`equalWeightButtons` en el
-   guion, y en el aviso dos botones de texto gemelos): rechazar tiene que
-   costar lo mismo que aceptar.
+   guion, y en el aviso y en el panel dos botones gemelos): rechazar tiene
+   que costar lo mismo que aceptar.
    --------------------------------------------------------------------------- */
 :root #cc-main {
   --cc-font-family: var(--fuente-cuerpo);
@@ -78,8 +78,9 @@
    Dentro, dos parrafos que lo cuentan todo y un solo interruptor: el de la
    publicidad, que es lo unico que se elige (consentimiento-aviso.js). Los
    detalles van en PLATA —la asa de arriba, los hilos, la X, el nombre de
-   quien pone las cookies, el interruptor apagado y «Guardar»— y el oro se
-   queda para lo que responde: el interruptor encendido, aceptar y rechazar.
+   quien pone las cookies, el interruptor apagado y el boton de guardar— y
+   el oro se queda para lo que responde: el interruptor encendido, aceptar y
+   rechazar. Los tres botones son los del aviso (mas abajo).
 
    Mientras esta abierto la pagina no se mueve (02-base.css, igual que con el
    menu) y la barra no recoge toques: se ve, pero no se usa por debajo del
@@ -282,28 +283,28 @@ html.show--preferences .navbar-principal { pointer-events: none; }
 }
 :root #cc-main .section__toggle:focus-visible ~ .toggle__icon { outline: 1px solid #E6C95F; outline-offset: 3px; }
 
-/* El pie: las tres respuestas en una fila, a la derecha. Aceptar y rechazar
-   en oro y gemelas; guardar —que es confirmar el interruptor— en plata. */
+/* El pie: las tres respuestas en una fila y del mismo ancho. Aceptar y
+   rechazar en oro y gemelas; guardar —que es confirmar el interruptor— en
+   plata. El primer grupo lleva dos botones y el segundo uno, asi que el
+   primero ocupa el doble: los tres salen iguales. */
 :root #cc-main .pm__footer {
   flex-direction: row !important;
-  justify-content: flex-end !important;
+  justify-content: stretch !important;
   align-items: center !important;
-  gap: 1.5rem;
-  padding: .25rem 1.3rem .45rem !important;
-  padding-bottom: max(.45rem, env(safe-area-inset-bottom)) !important;
+  gap: .55rem;
+  padding: .7rem 1.3rem .8rem !important;
+  padding-bottom: max(.8rem, env(safe-area-inset-bottom)) !important;
   border-top: 0;
 }
 :root #cc-main .pm__btn-group {
   display: flex !important;
   flex-direction: row !important;
-  gap: 1.5rem;
+  flex: 1 1 0;
+  gap: .55rem;
 }
+:root #cc-main .pm__btn-group:first-child { flex-grow: 2; }
 :root #cc-main .pm__btn + .pm__btn,
 :root #cc-main .pm__btn-group + .pm__btn-group { margin: 0 !important; }
-:root #cc-main .pm__btn[data-role="save"] { color: #C9CBCE; }
-:root #cc-main .pm__btn[data-role="save"]::after { background: linear-gradient(90deg, #8C8C8C, #F2F2F2, #C0C0C0); }
-:root #cc-main .pm__btn[data-role="save"]:hover,
-:root #cc-main .pm__btn[data-role="save"]:focus-visible { color: #FFFFFF; }
 
 /* En una pantalla baja (un SE con sus barras) media pantalla no da para los
    dos parrafos y la fila del interruptor, que quedaba debajo del pie: ahi
@@ -344,10 +345,11 @@ html.show--preferences .navbar-principal { pointer-events: none; }
    texto entero de la clinica con «Elegir cuales» y la politica
    (consentimiento-aviso.js).
 
-   Aceptar y rechazar son dos botones de texto GEMELOS —versales de oro
-   espaciadas, la letra de los botones del sitio, con su raya debajo—: pesan
-   lo mismo porque son lo mismo, y rechazar no cuesta mas que aceptar. Cada
-   uno recoge 42px de alto de dedo aunque la letra mida 11.
+   Aceptar y rechazar son dos botones GEMELOS (mas abajo): pesan lo mismo
+   porque son lo mismo, y rechazar no cuesta mas que aceptar.
+
+   La tarjeta va con las esquinas redondas, como la hoja del panel: son la
+   misma familia, y una sale de la otra.
 
    La libreria deshace el estilo de todo lo que hay dentro del aviso
    (`all: unset` a cada `span`, `div` y `p`) y en el telefono lo recoloca con
@@ -365,22 +367,24 @@ html.show--preferences .navbar-principal { pointer-events: none; }
   overflow-y: auto;
   overscroll-behavior: contain;
   border: 1px solid rgba(212, 175, 55, .2);
-  border-radius: 2px;
+  border-radius: 16px;
   background: #0B0A08;
   box-shadow: 0 18px 48px rgba(0, 0, 0, .5);
 }
-/* El filo de arriba: el degradado de marca, un pixel. Es todo el oro de la
-   tarjeta aparte de sus dos respuestas. */
+/* El filo de arriba: un pixel de oro que se apaga hacia los lados, como el
+   de plata de la hoja. Es todo el oro de la tarjeta aparte de sus dos
+   respuestas. */
 :root #cc-main .cm::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 8%;
+  right: 8%;
   z-index: 1;
   display: block;
   height: 1px;
-  background: var(--oro-marca-degradado);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0), #E6C95F 30%,
+              #F7E7A6 50%, #E6C95F 70%, rgba(212, 175, 55, 0));
   pointer-events: none;
 }
 :root #cc-main .cm__texts { padding: 1.15rem 1.3rem 0; }
@@ -495,74 +499,84 @@ html.show--preferences .navbar-principal { pointer-events: none; }
 :root #cc-main .cm-enlace:hover,
 :root #cc-main .cm-enlace:focus-visible { color: #F7E7A6; }
 
-/* Las dos respuestas, a la derecha, en una fila. */
+/* Las dos respuestas, en una fila y del mismo ancho. */
 :root #cc-main .cm__btns {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-  padding: 0 1.3rem .5rem;
+  justify-content: stretch;
+  padding: .75rem 1.3rem 1rem;
   border-top: 0;
 }
 :root #cc-main .cm__btn-group {
   display: flex;
-  gap: 1.7rem;
+  flex: 1 1 auto;
+  gap: .55rem;
 }
+/* LOS BOTONES, los del aviso y los del panel. Una pildora con un filo de oro
+   de un pixel y un velo de oro al 7% por dentro, y la letra de los botones
+   del sitio: versales de Bodoni espaciadas, en oro. Al tocarla se llena del
+   degradado de marca y la letra pasa a onix, como el boton del sitio al
+   pasar por encima. Todos del mismo ancho (`flex: 1`), y aceptar y rechazar
+   iguales en todo. Iban como texto suelto con una raya debajo, y no se
+   leian como algo que se pulsa. El `padding-left` de mas es el aire que el
+   interletrado deja detras de la ultima letra: sin el, la palabra quedaba
+   corrida a la izquierda de su pildora. */
 :root #cc-main .cm__btn,
 :root #cc-main .pm__btn {
   position: relative;
   display: inline-flex;
+  flex: 1 1 0;
   align-items: center;
   justify-content: center;
   min-width: 0;
   min-height: 42px;
   margin: 0;
-  padding: 0 .1rem;
-  border: 0;
-  border-radius: 0;
-  background: none;
+  padding: 0 .6rem 0 calc(.6rem + .2em);
+  border: 1px solid rgba(212, 175, 55, .62);
+  border-radius: 999px;
+  background: rgba(212, 175, 55, .07);
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: .68rem;
-  letter-spacing: .24em;
+  font-size: .64rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: #E6C95F;
-  transition: color .25s ease;
+  transition: background .3s ease, border-color .3s ease, color .3s ease,
+              transform .15s ease;
 }
-/* La raya: un pixel del degradado de oro debajo de la palabra, a media luz,
-   que se enciende entera al pasar. `right: .24em` le quita el aire que el
-   interletrado deja detras de la ultima letra, que si no la raya quedaba
-   corrida a la derecha de la palabra. */
 :root #cc-main .cm__btn::after,
-:root #cc-main .pm__btn::after {
-  content: "";
-  position: absolute;
-  left: .1rem;
-  right: calc(.1rem + .24em);
-  bottom: 10px;
-  display: block;
-  height: 1px;
-  background: var(--oro-marca-degradado);
-  opacity: .5;
-  transform-origin: left center;
-  transition: opacity .25s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
-}
+:root #cc-main .pm__btn::after,
+:root #cc-main .pm__btn::before { content: none; display: none; }
 :root #cc-main .cm__btn:hover,
 :root #cc-main .cm__btn:focus-visible,
 :root #cc-main .pm__btn:hover,
-:root #cc-main .pm__btn:focus-visible { background: none; border: 0; color: #F7E7A6; }
-:root #cc-main .cm__btn:hover::after,
-:root #cc-main .cm__btn:focus-visible::after,
-:root #cc-main .pm__btn:hover::after,
-:root #cc-main .pm__btn:focus-visible::after { opacity: 1; }
-:root #cc-main .cm__btn:active::after,
-:root #cc-main .pm__btn:active::after { transform: scaleX(.6); }
+:root #cc-main .pm__btn:focus-visible {
+  border-color: transparent;
+  background: var(--oro-marca-degradado);
+  color: #0A0806;
+}
+:root #cc-main .cm__btn:active,
+:root #cc-main .pm__btn:active { transform: scale(.97); }
+/* Guardar, en plata: es confirmar lo del interruptor, no contestar. */
+:root #cc-main .pm__btn[data-role="save"] {
+  border-color: rgba(214, 214, 214, .5);
+  background: rgba(214, 214, 214, .06);
+  color: #DCDEE1;
+}
+:root #cc-main .pm__btn[data-role="save"]:hover,
+:root #cc-main .pm__btn[data-role="save"]:focus-visible {
+  border-color: transparent;
+  background: var(--gradiente-plata);
+  color: #0A0806;
+}
 
 @media (prefers-reduced-motion: reduce) {
   :root #cc-main .cm-detalle,
   :root #cc-main .cm-detalle__dentro,
   :root #cc-main .cm-mas__flecha,
-  :root #cc-main .cm__btn::after,
-  :root #cc-main .pm__btn::after { transition: none; }
+  :root #cc-main .cm__btn,
+  :root #cc-main .pm__btn { transition: none; }
 }
 
 /* En el telefono, la tarjeta a lo ancho con 12px de aire a cada lado y por
@@ -581,8 +595,8 @@ html.show--preferences .navbar-principal { pointer-events: none; }
   :root #cc-main .cm__desc { padding-left: 0 !important; padding-right: 0 !important; font-size: .84rem; }
   :root #cc-main .cm__btns {
     flex-direction: row !important;
-    justify-content: flex-end !important;
-    padding: 0 1.15rem .4rem !important;
+    justify-content: stretch !important;
+    padding: .7rem 1.15rem .95rem !important;
     border-top: 0 !important;
   }
   :root #cc-main .cm__btn-group { flex-direction: row !important; }
@@ -702,10 +716,13 @@ html.show--preferences .navbar-principal { pointer-events: none; }
 .btn-cookies:active { transform: translateY(0) scale(.94); }
 
 /* Sin raton no hay «al pasar por encima»: el boton se queda redondo y la
-   palabra solo la ve quien llega con el teclado o con un lector de pantalla. */
+   palabra solo la ve quien llega con el teclado o con un lector de pantalla.
+   Mide 50px (eran 44, y en el telefono se quedaba chico al lado del de
+   WhatsApp) y su centro va a la misma altura que el de WhatsApp: 26 del
+   suelo mas la mitad de 50 son los 51 de la otra esquina. */
 @media (hover: none) {
-  .btn-cookies { left: 20px; bottom: 20px; width: 44px; height: 44px; }
-  .btn-cookies .icono { width: 42px; height: 21px; }
+  .btn-cookies { left: 20px; bottom: 26px; width: 50px; height: 50px; }
+  .btn-cookies .icono { width: 48px; height: 24px; }
   .btn-cookies:hover .btn-cookies__etq { max-width: 0; padding-right: 0; opacity: 0; }
 }
 

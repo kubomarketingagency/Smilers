@@ -467,11 +467,11 @@ main:has(.ns-cine--viva) { background: #050505; }
        tapaban el final de cada linea del parrafo.
 
        Y abajo, el del boton de las cookies, que vive en la esquina de abajo a
-       la izquierda: 44px a 20 del suelo. Se tapaba los puntos del carrusel y
+       la izquierda: 50px a 26 del suelo. Se tapaba los puntos del carrusel y
        rozaba la ultima linea. El texto sube lo justo para pasar por encima
-       (64px y un respiro), y para que quepa con la letra algo mas grande la
+       (76px y un respiro), y para que quepa con la letra algo mas grande la
        foto cede un poco de alto: 2,6 a 1 en vez de 3 a 1. */
-    padding: .7rem calc(81px + .7rem) calc(64px + .45rem) clamp(1.1rem, 5vw, 2rem);
+    padding: .7rem calc(81px + .7rem) calc(76px + .45rem) clamp(1.1rem, 5vw, 2rem);
   }
   .ns-cine--viva .ns-elenco__lado .ns-titulo,
   .ns-cine--viva .ns-elenco .ns-ficha__cabeza,
