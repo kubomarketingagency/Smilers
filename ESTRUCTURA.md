@@ -713,9 +713,10 @@ Los diez especialistas en la clínica (`rehabilitacion-estetica`,
 `endodoncia`, … los del elenco de Nosotros, 1122×1402) y los cuatro retratos
 de estudio sobre mármol de la fila de la portada (`portada-1…4`, 440×647).
 
-**Todos están también en la Galería, en «Equipo»**, antes de las escenas del
-equipo trabajando: primero los cuatro de estudio, en el orden de la foto de
-grupo de la portada, y después los diez en el orden de Nosotros.
+**Todos están también en la Galería, y son todo «Equipo»**: primero los cuatro
+de estudio, en el orden de la foto de grupo de la portada, y después los diez
+en el orden de Nosotros. Las escenas del equipo trabajando van en
+«Especialidades» (ver «La Galería», más abajo).
 
 | Archivo | Qué es |
 |---|---|
@@ -755,6 +756,46 @@ Las fotos de la clínica de verdad —fachada, recepción, sala de espera, consu
 El fotograma de cada uno vive en `imagenes/testimonios/` y se guarda aquí **y no se pide a YouTube**, que así la tarjeta de la esfera no depende de su dominio. Cada uno (540×960) sale del fotograma que YouTube guarda del propio vídeo (`oardefault`, el vertical; los originales, en `imagenes/originales/`), recortado al centro en 9:16 porque las celdas del atlas son cuadradas y las tarjetas verticales. **Ya son ocho vídeos distintos y ocho fotogramas distintos** —uno por persona—; para cambiar cualquiera basta con su identificador de YouTube en `data-video` y su fotograma en `data-foto`, en `index.html`. Tres de los `oardefault` solo existen a 479×848 y se suben a 540: la celda del atlas recorta el ancho partido por 1,4, así que lo que se ve del fotograma es menos de lo que mide. **El rótulo de cada uno dice lo que se sabe y nada más**: el nombre que da el título del vídeo y «Paciente de Smilers», salvo Anaela Guerrero (Reina de Pichincha) e Ivis Flies (La Grupa) —a una persona de verdad no se le atribuye un tratamiento que nadie ha dicho—. **Y la cita de cada uno es suya**: una frase sacada de lo que dice en su propio vídeo, sin comillas en el HTML, que las pone el diseño (el `::before/::after` de la tarjeta y la comilla suelta del panel de la escena).
 
 Se quedaron fuera `image6`, que lleva la marca de agua «Dola AI» y el texto del vidrio inventado —es la recepción regenerada por una IA, y ya está la de verdad—, `IMG_2852`, casi idéntica a `IMG_2850` y a `IMG_2851`, y la copia repetida de `4998A91C…`. Los originales, tal cual llegaron, están en `imagenes/originales/`, que no se sube ni se publica (`.gitignore` y `.vercelignore`): de ahí salen los recortes si hay que rehacerlos.
+
+---
+
+## La Galería — `galeria.html` e `imagenes/galeria/`
+
+**Una foto por cosa, y la mejor de cada una.** La rejilla lleva 44 fotos en
+cuatro filtros:
+
+| Filtro | Fotos | Qué entra |
+|---|---|---|
+| Instalaciones | 6 | Fachada, recepción, el jardín vertical, la sala de espera, el sillón y los consultorios. |
+| Equipo | 14 | Solo retratos: los cuatro de estudio y los diez especialistas. |
+| Especialidades (`tratamientos`) | 6 | El equipo trabajando: el ortodoncista ante sus radiografías, el diseño de sonrisa, la radiografía panorámica, la de implantes, la cefalometría y la cirugía. |
+| Sonrisas | 18 | Pacientes en la recepción. |
+
+Se quitaron de la rejilla, por repetidas, siete que decían lo mismo que otra:
+`lamparas-grande` y `lobby` (la recepción desde el mismo sitio que
+`recepcion-grande`), `sala-espera-2` (el mismo rincón que `sala-espera`),
+`consultorio-grande` y `revision-grande` (el mismo pasillo que
+`consultorios-grande`), `consulta-pantalla` (la misma escena que la
+cefalometría, a 731×375) y `radiografia-conductos` (el mismo especialista
+ante la misma pantalla que la de implantes). **Los archivos siguen**: casi
+todos los usan otras páginas.
+
+**Sonrisas**: `paciente-01…18`, sacadas de la tanda que mandó la clínica
+el 24 de septiembre de 2026, que sustituye a las 24 de antes. Cada foto
+llegó dos o tres veces —pasada una vez por el compresor (`…_11zon`), dos
+(`…_11zon_11zon`, con peor calidad) o reenviada por WhatsApp—, y de cada una
+se usó la de una sola pasada, o el original de 3024×4032 cuando lo había. Y
+una sola foto por persona: se quedaron fuera la pareja sin la tercera
+persona (`IMG_0015`, la misma que `IMG_0014`), la reina con acompañante
+(`IMG_0017`, ya está sola en `IMG_0018`) y las dos de WhatsApp de los dos
+señores (6.31.07, la misma toma que `IMG_3321`, y 6.30.54, los mismos en el
+consultorio). Los originales, tal cual llegaron, están en
+`imagenes/originales/galeria/`, que no se sube.
+
+| Archivo | Qué es |
+|---|---|
+| `paciente-NN.webp` | Lo que abre el visor: 1440px de lado largo (sin agrandar las que llegaron menores), WebP al 72. De 111 a 378 KB: el jardín vertical es todo hoja y no se comprime más sin que se note. |
+| `paciente-NN-cuadro.webp` | La miniatura de la rejilla: un cuadrado de 520px cortado a la altura de la persona (al 42% de la foto, o más abajo cuando está baja), con un desenfoque de 0,4px que en la celda no se ve y le quita un 15% de peso; de 33 a 67 KB. Con ella el `object-position` de `.galeria-item--paciente` (el 08) ya no mueve nada. |
 
 ---
 
