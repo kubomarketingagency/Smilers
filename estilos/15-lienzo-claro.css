@@ -1494,8 +1494,8 @@
 .pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
 
 /* ---------------------------------------------------------------------------
-   El umbral: la palabra de la seccion sobre negro, cruzada por franjas de
-   oro, y el negro que se abre en lamas hacia la derecha.
+   El umbral: la palabra de la seccion en plata sobre negro, cruzada por
+   franjas de oro, y el negro que se abre en lamas hacia la derecha.
 
    Lo llevan las cuatro paginas interiores —Nosotros, Tratamientos, Galeria y
    FAQ—, cada una con su palabra. La portada no: alli ese trabajo ya lo hace
@@ -1524,18 +1524,19 @@
        0 a 1,3s   seis franjas de oro cruzan la pantalla de izquierda a
                   derecha, escalonadas, y la ancha es la que trae la palabra:
                   la palabra sale a su paso (.36s) y el filo detras (.5s).
-       .96s       la palabra y el filo se van hacia la derecha, en .3s.
-       1 a 1,9s   el negro, que son cinco lamas, se desliza hacia la derecha
+       1,02s      un brillo pasa por la plata de la palabra, de izquierda a
+                  derecha, en .8s: ya sin franjas, sobre negro limpio.
+       1,85s      la palabra y el filo se van hacia la derecha, en .34s.
+       1,9 a 2,8s el negro, que son cinco lamas, se desliza hacia la derecha
                   de arriba abajo, cada lama con su canto de oro; la pagina
                   se descubre en escalera, y la primera lama ya ha dejado ver
                   la barra y el titular cuando la ultima arranca.
-     Antes eran 1,6s de palabra y desvanecido (y antes de eso 2,85s, que en
-     la segunda visita ya no es una entrada, es una espera): la pagina
-     empieza a verse al mismo segundo que entonces, y lo que se ha anadido
-     es lo que dura la salida. Todo es `transform` y `opacity` de piezas con
-     capa propia, asi que el compositor lo mueve aunque la pagina siga
-     cargando por debajo. */
-  animation: ns-umbral-fin 0s linear 1.9s both;
+     La palabra se queda puesta un segundo y cuarto largo. Se iba a los .96s,
+     y con lo que tarda en entrar eso era medio segundo de palabra quieta: la
+     clinica, en su telefono, no llegaba a leer a que seccion entraba. Todo
+     es `transform` y `opacity` de piezas con capa propia, asi que el
+     compositor lo mueve aunque la pagina siga cargando por debajo. */
+  animation: ns-umbral-fin 0s linear 2.8s both;
 }
 @keyframes ns-umbral-fin { to { visibility: hidden; } }
 
@@ -1562,7 +1563,10 @@
   width: 100%;
   top: calc(var(--n) * 20% - 1px);
   height: calc(20% + 2px);
-  background: #050505;
+  /* Negro puro, y no #050505: el brillo de la palabra va en `overlay`, que
+     deja el negro puro como esta pero a un negro con algo de luz lo aclara,
+     y cruzaba la pantalla como una mancha gris. */
+  background: #000;
 }
 .lamas-oro > i:nth-child(1) { --n: 0; }
 .lamas-oro > i:nth-child(2) { --n: 1; }
@@ -1590,10 +1594,10 @@
   100% { opacity: 1; }
 }
 .ns-umbral > .lamas-oro > i {
-  animation: lama-sale .68s cubic-bezier(.77, 0, .18, 1) calc(1s + var(--n) * .055s) both;
+  animation: lama-sale .68s cubic-bezier(.77, 0, .18, 1) calc(1.9s + var(--n) * .055s) both;
 }
 .ns-umbral > .lamas-oro > i::before {
-  animation: lama-canto .68s linear calc(1s + var(--n) * .055s) both;
+  animation: lama-canto .68s linear calc(1.9s + var(--n) * .055s) both;
 }
 
 /* Las franjas: seis bandas de oro inclinadas que cruzan de canto a canto,
@@ -1639,13 +1643,21 @@
 }
 /* El fondo va negro y nada mas. Llevaba un halo de oro encima —un radial al
    12% saliendo del centro— y sobre negro puro eso no se lee como luz, se lee
-   como una mancha: la palabra ya es de oro, y el oro sobre oro deslavado le
-   quita el filo en vez de darselo. El unico oro de la bienvenida es la
-   palabra y su rayita. */
+   como una mancha.
+
+   La palabra va en PLATA, y en negrita (700). Iba en oro, fina, y con las
+   franjas y los cantos de las lamas tambien en oro era oro sobre oro: la
+   palabra, que es lo unico que hay que leer, se perdia entre lo que la
+   adorna. En plata se separa de las franjas en vez de fundirse con ellas.
+   El degradado es de metal cepillado —bandas claras y oscuras alternas, en
+   diagonal como las franjas— y no el de plata de las cabeceras del pie, que
+   en una palabra de este tamano se ve como un gris liso con un lado claro.
+   Los tonos medios van algo bajos a proposito: son los que el brillo lleva a
+   blanco, y con una plata ya casi blanca el brillo pasaba sin verse. */
 .ns-umbral__palabra {
   margin: 0;
   font-family: var(--fuente-titulo);
-  font-weight: 400;
+  font-weight: 700;
   max-width: min(92vw, 20ch);
   padding-inline: clamp(1rem, 4vw, 2.5rem);
   font-size: clamp(2.1rem, 8.5vw, 6.4rem);
@@ -1659,8 +1671,10 @@
      llenar la primera hasta el borde. */
   text-align: center;
   text-wrap: balance;
-  color: var(--oro-marca);
-  background-image: var(--oro-marca-degradado);
+  color: #D8DADD;
+  background-image: linear-gradient(100deg,
+                    #8E9195 0%, #E8E9EB 22%, #A9ACB0 44%,
+                    #F4F5F6 60%, #979A9E 80%, #D7D9DC 100%);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1671,7 +1685,7 @@
      el hilo principal no da abasto. Llega deslizandose desde la izquierda,
      con las franjas, y se va hacia la derecha, con las lamas. */
   animation: ns-umbral-entra .8s cubic-bezier(.16, 1, .3, 1) .36s both,
-             ns-umbral-va .3s cubic-bezier(.5, 0, .75, 0) .96s forwards;
+             ns-umbral-va .34s cubic-bezier(.5, 0, .75, 0) 1.85s forwards;
 }
 /* Dos palabras largas piden un cuerpo menor que una sola: a 8,5vw
    «FRECUENTES» sola ya medía casi el ancho de la ventana, y con el
@@ -1690,15 +1704,44 @@
   padding-inline: 0;
   font-size: clamp(1.4rem, 6.6vw, 4.8rem);
 }
+/* El filo, en plata con la palabra: se apaga hacia las puntas. */
 .ns-umbral__filo {
   position: relative;
   z-index: 2;
   width: clamp(110px, 20vw, 260px);
   height: 1px;
-  background: var(--oro-marca-degradado);
+  background: linear-gradient(90deg, rgba(200, 203, 207, 0) 0%, #E9EAEC 22%,
+              #FFFFFF 50%, #E9EAEC 78%, rgba(200, 203, 207, 0) 100%);
   transform-origin: left center;
   animation: ns-umbral-filo .7s cubic-bezier(.65, 0, .35, 1) .5s both,
-             ns-umbral-va .3s cubic-bezier(.5, 0, .75, 0) .96s forwards;
+             ns-umbral-va .34s cubic-bezier(.5, 0, .75, 0) 1.85s forwards;
+}
+/* El brillo de la plata: una banda de luz inclinada, como las franjas, que
+   cruza la pantalla una vez con la palabra ya quieta. Va en `overlay`, y
+   con eso solo se ve donde hay metal: sobre el negro de las lamas el
+   `overlay` deja el negro como estaba (lo multiplica), y sobre la plata la
+   lleva a blanco. Asi no hace falta recortarla a la forma de las letras,
+   que es lo que obligaria a repintar la palabra en cada fotograma: la banda
+   solo se mueve con `transform`. Va por encima de todo lo del umbral (el
+   `z-index` 3), y el umbral, que es un contexto de apilamiento, no deja que
+   la mezcla llegue a la pagina de debajo. */
+.ns-umbral::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: -12%;
+  bottom: -12%;
+  left: 0;
+  width: clamp(130px, 30vw, 380px);
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, .9) 45%, #FFFFFF 50%,
+              rgba(255, 255, 255, .9) 55%, rgba(255, 255, 255, 0) 100%);
+  mix-blend-mode: overlay;
+  transform: translate3d(calc(-100% - 22vh), 0, 0) skewX(-14deg);
+  /* A velocidad pareja: con una curva de entrada y salida iba despacio por
+     los cantos, donde no hay nada, y cruzaba la palabra en un suspiro. */
+  animation: franja-cruza .8s linear 1.02s both;
 }
 @keyframes ns-umbral-entra {
   from { opacity: 0; transform: translate3d(-4vw, 0, 0); }

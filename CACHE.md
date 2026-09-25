@@ -43,14 +43,14 @@ Lo importante es la doble garantía:
   el navegador reutiliza lo que ya tiene, sin pedir nada.
 
 El sello cubre `href`, `src`, `srcset`, `imagesrcset`, `data-fotos`,
-`data-antes`, `data-despues`, los `data-src-*` del vídeo del splash y los `data-anim-*` de su imagen animada, **y las
+`data-antes`, `data-despues`, los `data-src-*` del vídeo del splash, los `data-anim-*` de su imagen animada, el `data-video` de cada testimonio **y las
 `url()` de las hojas de estilo** (las tipografías, por ejemplo), que ahora
 pasan por la construcción. Es decir: guiones, imágenes, vídeo y tipografías.
 
 ### 2. Las cabeceras — `vercel.json`
 
 ```
-/paquetes, /terceros, /fuentes, /imagenes, /video-hero
+/paquetes, /terceros, /fuentes, /imagenes, /video-hero, /video-testimonios
     → public, max-age=31536000, immutable      (un año, sin revalidar)
 
 todo lo demás (los HTML)
@@ -72,7 +72,7 @@ genera la construcción.
 ## Qué tienes que hacer al publicar
 
 Una sola cosa, siempre, antes de commitear cualquier cambio en `estilos/`,
-`scripts/`, `imagenes/`, `fuentes/`, `video-hero/` o en el HTML:
+`scripts/`, `imagenes/`, `fuentes/`, `video-hero/`, `video-testimonios/` o en el HTML:
 
 ```bash
 node herramientas/construir.js

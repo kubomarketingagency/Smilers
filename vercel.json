@@ -9,13 +9,13 @@
   ],
   "headers": [
     {
-      "source": "/(paquetes|terceros|fuentes|imagenes|video-hero)/(.*)",
+      "source": "/(paquetes|terceros|fuentes|imagenes|video-hero|video-testimonios)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/((?!paquetes/|terceros/|fuentes/|imagenes/|video-hero/).*)",
+      "source": "/((?!paquetes/|terceros/|fuentes/|imagenes/|video-hero/|video-testimonios/).*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]

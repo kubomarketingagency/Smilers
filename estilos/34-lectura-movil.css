@@ -1,0 +1,119 @@
+/* ===========================================================================
+   34 · LA LETRA DEL TELEFONO
+
+   Va la ultima y la cargan las seis paginas. Solo toca el telefono (hasta
+   767px de ancho) y solo el texto de leer: parrafos, listas y respuestas.
+
+   El cuerpo del sitio iba en Lato fina, la 300, y en escritorio se lee bien:
+   a 17px, en una pantalla grande y con el cursor al lado. En un telefono no.
+   A 14 o 15px, sobre el marmol claro o sobre la madera oscura, los trazos de
+   la fina son tan delgados que el fondo se come la mitad del color, y un
+   texto casi negro se lee gris, y uno blanco al 76% se lee ceniza. Asi que
+   aqui va a la 400 —la misma Lato, que el sitio ya descarga para el pie y las
+   especialidades de la portada, asi que no pesa nada— y la tinta un punto
+   mas honda: el negro mas negro sobre claro, y el blanco del 76% al 90%
+   sobre oscuro.
+
+   El cuerpo de letra sube un punto solo donde el texto corre libre por la
+   pagina: Especialidades, las preguntas y el pie. Donde el texto vive dentro
+   de una escena clavada —la portada, casi todo Nosotros— cada pantalla va
+   medida al pixel y un renglon de mas se sale por abajo; alli cambian el
+   peso y la tinta y nada mas. Lo de la escena de la portada, que si crece
+   porque se midio tramo a tramo, esta al final del 07.
+   =========================================================================== */
+
+@media (max-width: 767.98px) {
+
+  /* --- Portada ---------------------------------------------------------- */
+
+  /* El cierre de la portada, sobre la foto oscurecida. */
+  .banda-cta p,
+  .cierre-cine .banda-cta p {
+    font-weight: 400;
+    color: rgba(250, 248, 244, .92);
+  }
+  /* El tratamiento de cada testimonio, debajo del nombre: iba en el gris de
+     `--texto-suave`, que sobre la madera oscura casi no se distingue. */
+  .tst-firma__tratamiento { color: #CFCBC4; }
+
+  /* --- El pie, en todas ---------------------------------------------------- */
+
+  .footer-texto { color: rgba(255, 255, 255, .82); }
+
+  /* --- Las cabeceras de las interiores --------------------------------------- */
+
+  .pagina-clara .banner-subtitulo,
+  .pagina-clara .banner-pagina--hero .banner-subtitulo {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .92);
+  }
+
+  /* --- Nosotros: todo va dentro de escenas clavadas, solo peso y tinta ------- */
+
+  .pagina-nosotros .ns-parrafo { font-weight: 400; }
+  .pagina-nosotros .ns-parrafo--claro { color: rgba(255, 255, 255, .92); }
+  .pagina-nosotros .ns-mvo__texto {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .9);
+  }
+  .pagina-nosotros .ns-ficha__texto {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .92);
+  }
+  .pagina-nosotros .ns-ficha__puntos li {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .88);
+  }
+  /* Los rotulos de las cifras (los de la cabecera de la historia y los del
+     cierre): letra de 9px en mayusculas espaciadas, blanco al 60%. No crecen
+     —van cuatro o seis en fila—, pero se leen. */
+  .pagina-nosotros .ns-cine__datos span,
+  .pagina-nosotros .ns-cifra__etq {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .8);
+  }
+
+  /* --- Especialidades: el texto corre libre, asi que tambien crece -------- */
+
+  /* La entradilla, sobre la placa clara. */
+  .pagina-tratamientos .pz-intro .nos-parrafo,
+  .nos-parrafo {
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #141414;
+  }
+  /* Las tres tarjetas de piedra, los paneles de cada especialidad y lo que
+     incluye cada una, sobre negro. */
+  .pagina-tratamientos .pz-tarjeta .pz-tarjeta__texto,
+  .pagina-tratamientos .pz-panel .parrafo {
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, .9);
+  }
+  .pagina-tratamientos .pz-panel .lista-incluye li {
+    font-weight: 400;
+    font-size: .97rem;
+    color: rgba(255, 255, 255, .9);
+  }
+  .pagina-tratamientos .proceso .pz-medallon__texto,
+  .pz-medallon__texto {
+    font-weight: 400;
+    font-size: .94rem;
+    color: rgba(255, 255, 255, .88);
+  }
+  .pz-seccion--cita .pz-cita__nota {
+    font-weight: 400;
+    font-size: .97rem;
+    color: rgba(244, 241, 234, .9);
+  }
+  .pz-cita__firma { font-weight: 400; }
+
+  /* --- Preguntas frecuentes ----------------------------------------------- */
+
+  .pagina-clara .acordeon-faq .accordion-body {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .9);
+  }
+}

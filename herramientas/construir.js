@@ -94,8 +94,10 @@ function sellarUrl(url, quien) {
 
 /* `data-perezoso-*` son los archivos que una pagina pide tarde, desde un
    guion (el aviso de cookies: terceros/cookieconsent/). Van en una <meta>
-   para que el sello les llegue igual que a un `src`. */
-const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css)="([^"]*)"/g;
+   para que el sello les llegue igual que a un `src`. Y `data-video` es el
+   video de cada testimonio (video-testimonios/), que lo pone el guion en su
+   <video> cuando la esfera se para en el. */
+const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css|data-video)="([^"]*)"/g;
 const ATRIBUTO_LISTA = /\b(srcset|imagesrcset|data-fotos)="([^"]*)"/g;
 
 function sellarHtml(html, pagina) {

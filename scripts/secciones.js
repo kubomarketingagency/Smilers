@@ -67,6 +67,32 @@ document.addEventListener('DOMContentLoaded', function () {
       pintarFicha(panel);
     }
 
+    /* La X del panel abierto, solo apilado (en el telefono). Abierto, un
+       panel mide lo que su foto, hasta el 86% de la pantalla, y para ver las
+       demas especialidades habia que pasar por encima de ella entera o abrir
+       otra. Con la X se pliega y la lista vuelve a ser una lista de nombres;
+       tocar el panel abierto sigue llevando a su especialidad.
+
+       La X no es un boton: el panel es un enlace, y un boton dentro de un
+       enlace es un mando dentro de otro, que el lector de pantalla no sabe
+       como anunciar. Es un dibujo (`aria-hidden`) y quien la atiende es el
+       propio panel, mirando donde cayo el toque. Al lector no le hace falta:
+       para el cada panel ya es un enlace suelto, abierto o no. La pone el
+       guion y no el HTML porque sin guion no hay acordeon que plegar. */
+    function cerrar() {
+      paneles.forEach(function (p) {
+        p.classList.remove('ag-panel--activo');
+        p.removeAttribute('aria-current');
+      });
+    }
+
+    paneles.forEach(function (panel) {
+      var x = document.createElement('span');
+      x.className = 'ag-panel__cerrar';
+      x.setAttribute('aria-hidden', 'true');
+      panel.appendChild(x);
+    });
+
     /* Apilado -en el telefono- abrir un panel es cerrar el que estaba
        abierto, y desde que el abierto mide lo que su foto eso son hasta 470px
        que desaparecen. Si el que se cierra queda por encima, todo lo de debajo
@@ -128,6 +154,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       panel.addEventListener('click', function (evento) {
+
+        if (evento.target.closest && evento.target.closest('.ag-panel__cerrar') &&
+            panel.classList.contains('ag-panel--activo') && apilado()) {
+          evento.preventDefault();
+          cerrar();
+          return;
+        }
 
         if (!tieneHoverFino && !panel.classList.contains('ag-panel--activo')) {
           evento.preventDefault();

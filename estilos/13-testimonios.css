@@ -456,9 +456,10 @@
 /* ===========================================================================
    Los testimonios en video.
 
-   Los ocho son videos verticales de YouTube. Un iframe no se puede pintar
-   dentro de WebGL, asi que el reproductor va por fuera del lienzo, en un
-   circulo puesto justo encima del disco que esta de frente. Su tamano no
+   Los ocho son videos verticales, servidos desde el propio sitio
+   (`video-testimonios/`, ver video-testimonio.js). El video va por fuera
+   del lienzo de WebGL, en un circulo puesto justo encima del disco que esta
+   de frente. Su tamano no
    esta escrito aqui: lo mide la propia esfera y lo deja en `--tst-lado`,
    para que no haya dos cifras que mantener el dia que cambie el encuadre.
 
@@ -469,14 +470,10 @@
    queda centrada, de la cabeza a las rodillas. Recorta por arriba y por
    abajo, que es justo lo que sobra.
 
-   Y de paso resuelve lo otro: lo que YouTube dibuja arriba y abajo de sus
-   videos —el titulo, el canal, la marca— se queda fuera del recorte, que el
-   circulo solo coge la franja de en medio. Estuvo acercado a 1,5 tambien
-   para esconder los botones de Shorts del canto derecho, y asi solo cabia
-   la persona de la cabeza al pecho; desde que el reproductor es uno solo,
-   YouTube ya no sirve esa interfaz (ver video-testimonio.js) y el circulo
-   se pudo abrir hasta casi el ancho del video. Comprobado en la escena, en
-   los ocho: a 1,04 no asoma nada por los cantos.
+   Cuando los videos eran de YouTube estuvo acercado a 1,5, para esconder
+   los botones de Shorts del canto derecho, y asi solo cabia la persona de
+   la cabeza al pecho. Hoy el circulo se abre hasta casi el ancho del video:
+   a 1,04 no asoma nada por los cantos.
 
    Hubo en medio una version con tarjetas de 9:16 en vez de discos, que era lo
    que pedia un video vertical entero. El circulo es lo que quiso la clinica y
@@ -503,10 +500,9 @@
      un circulo flotando por delante —eso es lo que se veia feo—, y cuando la
      esfera se para hay tiempo de sobra para que entre con calma.
 
-     Se esconde con la opacidad y no con `visibility`: un iframe escondido de
-     verdad el navegador lo da por parado y le para el video, y al volver
-     YouTube se queda con su glifo de pausa puesto en medio de la cara. A
-     opacidad cero sigue rodando, callado, que es como tiene que estar. */
+     Se esconde con la opacidad y no con `visibility`, que es lo que deja
+     que la vuelta tambien sea una transicion. Escondido no suena: la esfera
+     lo pausa al ponerse a girar (video-testimonio.js, `apagar`). */
   transition: opacity .16s ease;
 }
 .tst-con-video .tst-video {
@@ -610,43 +606,34 @@
   width: calc(var(--tst-lado) * var(--tst-zoom));
   aspect-ratio: 9 / 16;
 }
-/* El fotograma, mientras el reproductor se monta: sin el ahi hay medio
-   segundo de agujero negro. Se va cuando el video ya esta dando. */
+/* El fotograma, por encima del video hasta que rueda: antes del primer
+   fotograma un <video> es un recuadro negro. Se va en cuanto el video da
+   (`video-listo`) y vuelve de golpe al pausar, que es el mismo fotograma que
+   pinta el disco de la esfera. */
 .tst-video__poster {
   position: absolute;
   inset: 0;
-  /* Por encima del reproductor y no por debajo: mientras YouTube arranca
-     ensena su titulo y su canal, y el fotograma es justo lo que hay que ver
-     en ese medio segundo. */
   z-index: 2;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity .3s ease .25s;
+  transition: opacity .25s ease;
 }
 .video-listo .tst-video__poster { opacity: 0; }
-/* Se va despacio y vuelve de golpe. El fotograma esta delante siempre que el
-   video no rueda —y no rueda entre que se pide y arranca, ni mientras esta
-   parado—, que es cuando YouTube ensena su titulo y su canal. Si volviera con
-   transicion, ese medio segundo se veria. */
 .tst-video__medio:not(.video-listo) .tst-video__poster { transition: none; }
-/* Y vuelve de golpe cuando el guion rebobina: ahi son seis decimas y una
-   transicion se comeria la mitad. */
-.saltando .tst-video__poster { opacity: 1; transition: none; }
-.tst-video__iframe {
+/* El video de la casa (video-testimonio.js), del tamano de la caja y
+   recortado igual que el fotograma, para que el relevo no se note. */
+.tst-video__clip {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  border: 0;
+  object-fit: cover;
   display: block;
+  background: #000;
 }
-/* El escudo: una capa transparente por delante del reproductor. Es lo que
-   impide que YouTube vea el raton y vuelva a sacar su titulo al pasar por
-   encima, o que pause al hacer clic —y pausado se le ve la interfaz entera—. */
-/* Y es ademas donde se pausa: el clic se queda aqui y lo recoge
-   video-testimonio.js, en vez de llegar a YouTube, que pausaria por su cuenta
-   y sacaria su interfaz entera. */
+/* El escudo: una capa transparente por delante del video, que es donde se
+   toca. El toque lo recoge video-testimonio.js y pausa o suelta el video. */
 .tst-video__escudo {
   position: absolute;
   inset: 0;
@@ -657,17 +644,13 @@
 
 /* El boton de play, en oro y en el centro del circulo.
 
-   Esta ahi porque hay telefonos donde el video no arranca solo por mucho que
-   se le pida: iOS con el ahorro de energia puesto no deja que arranque ningun
-   video sin que lo pidan con el dedo, y entonces YouTube se queda con SU
-   glifo de pausa puesto en medio de la cara. El fotograma tapa el glifo y
-   encima va este boton, que es el mismo gesto pero de la casa.
+   Ningun video arranca solo: el testimonio se ve cuando alguien lo pide, y
+   el toque es tambien lo que deja que suene.
 
    Sale mientras el video esta en pausa, que es como empieza cada uno
    (`video-parado`, que pone video-testimonio.js), y se queda mientras se
-   pide (`video-pidiendo`), con un filo de oro dandole la vuelta: la primera
-   vez hay que traer el reproductor de YouTube entero, y eso es un segundo o
-   dos con el fotograma quieto. */
+   pide (`video-pidiendo`), con un filo de oro dandole la vuelta hasta que
+   llega el primer fotograma. */
 .tst-video__play {
   position: absolute;
   left: 50%;
@@ -727,8 +710,9 @@
 
 /* El boton del sonido, colgando por debajo del circulo. Dentro se lo comeria
    el recorte: un circulo no tiene esquinas donde meter un boton sin que pise
-   la cara. Empieza callado porque ningun navegador deja que un video arranque
-   solo con sonido; en cuanto se pulsa una vez, los demas ya salen sonando. */
+   la cara. Empieza CON sonido: el video arranca dentro del toque del play, y
+   ahi todos los navegadores lo dejan sonar. El boton es para quien lo quiera
+   callado, y la eleccion vale para los demas testimonios. */
 .tst-video__son {
   position: absolute;
   left: 50%;
@@ -774,9 +758,9 @@
 .tst-cita { font-style: italic; }
 
 /* ---- La misma pieza en la tarjeta de la lista ----
-   Aqui no se reproduce nada solo. Es un enlace con el fotograma detras: sin
-   JS lleva al video en YouTube, y con JS video-testimonio.js no toca esta
-   parte, asi que lleva al video igual. */
+   Aqui no se reproduce nada solo. Es un enlace con el fotograma detras que
+   lleva al video en el canal de YouTube de la clinica: esta version es la
+   de sin WebGL o con menos movimiento, y video-testimonio.js no la toca. */
 .tst-tarjeta__fotos {
   position: relative;
   display: flex;

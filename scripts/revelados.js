@@ -52,8 +52,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const unaVez = modoRevelar === 'una-vez';
   const soloAbajo = modoRevelar === 'al-bajar';
 
+  /* Lo que vive dentro de una escena clavada se mira contra la pantalla
+     entera, sin el 8% de abajo. Ese margen esta para que un bloque entre un
+     poco despues de asomar, subiendo ya por la pantalla; pero dentro de un
+     pin nada sube: lo que queda en la franja de abajo se queda ahi. En un
+     iPhone SE el boton de «Ver la galeria», al pie de la pantalla de las
+     sedes de la portada, asomaba 2px por encima de esa raya, no llegaba
+     nunca al 15% y se quedaba invisible, con su sitio vacio. */
+  const EN_PIN = '.pn-pin, .hero-cine-pin, .cierre-cine-pin, .testimonios-pin, ' +
+                 '.ns-cine__pin, .ns-cierre__pin, .ns-carta__pin';
+
   if ('IntersectionObserver' in window) {
-    const observador = new IntersectionObserver(function (entradas) {
+    const alCruzar = function (entradas) {
       entradas.forEach(function (entrada) {
 
         const razon = entrada.intersectionRatio;
@@ -82,9 +92,13 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       });
-    }, { threshold: [0, 0.15], rootMargin: '0px 0px -8% 0px' });
+    };
+    const observador = new IntersectionObserver(alCruzar, { threshold: [0, 0.15], rootMargin: '0px 0px -8% 0px' });
+    const observadorClavado = new IntersectionObserver(alCruzar, { threshold: [0, 0.15] });
 
-    elementosRevelar.forEach(function (el) { observador.observe(el); });
+    elementosRevelar.forEach(function (el) {
+      (el.closest(EN_PIN) ? observadorClavado : observador).observe(el);
+    });
   } else {
 
     elementosRevelar.forEach(function (el) { el.classList.add('visible'); });

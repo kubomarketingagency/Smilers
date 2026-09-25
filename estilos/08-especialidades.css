@@ -185,6 +185,11 @@
   height: .85em;
   transition: transform .3s ease;
 }
+
+/* La X que pliega el panel abierto (la pone secciones.js). Solo existe en
+   el telefono: en escritorio los paneles se abren al pasar el raton y se
+   cierran al irse, y no hay nada que plegar a mano. */
+.ag-panel__cerrar { display: none; }
 .ag-panel:hover .ag-panel__ir .icono,
 .ag-panel:focus-visible .ag-panel__ir .icono {
   transform: translateX(4px);
@@ -253,6 +258,58 @@
     opacity: 0;
     transform: translateY(-50%) rotate(225deg);
   }
+
+  /* La X del abierto: un circulo de onix con filo de oro en la esquina de
+     arriba, lejos del nombre y del «Ir», que van al pie. La flecha de los
+     cerrados se apaga girando al abrir, y la X entra girando en el mismo
+     sitio: es la misma pieza que cambia de oficio, de «abre» a «pliega».
+     Mide 44px, que es lo que pide un dedo; lo que se ve son 38 y el resto
+     es aire que tambien recoge el toque. Solo se mueve con `transform` y
+     `opacity`. */
+  .ag-panel__cerrar {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    top: 6px;
+    right: 6px;
+    width: 44px;
+    height: 44px;
+    opacity: 0;
+    transform: rotate(-90deg) scale(.6);
+    pointer-events: none;
+    transition: opacity .25s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+  }
+  .ag-panel__cerrar::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, .7);
+    background: rgba(8, 7, 6, .66);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+  }
+  /* El aspa, dos trazos de oro de 16px cruzados en el centro. Van en la
+     misma capa como dos fondos: una sola pieza que girar. */
+  .ag-panel__cerrar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    background:
+      linear-gradient(45deg, transparent calc(50% - .8px), var(--oro-marca, #D4AF37) calc(50% - .8px),
+                      var(--oro-marca, #D4AF37) calc(50% + .8px), transparent calc(50% + .8px)),
+      linear-gradient(-45deg, transparent calc(50% - .8px), var(--oro-marca, #D4AF37) calc(50% - .8px),
+                      var(--oro-marca, #D4AF37) calc(50% + .8px), transparent calc(50% + .8px));
+  }
+  .ag-panel.ag-panel--activo .ag-panel__cerrar {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: .12s;
+  }
   .ag-panel__texto { opacity: 1; transform: none; isolation: isolate; }
   .ag-panel__texto::before {
     content: '';
@@ -288,7 +345,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ag-panel, .ag-panel__media img, .ag-panel__texto { transition: none; }
+  .ag-panel, .ag-panel__media img, .ag-panel__texto, .ag-panel__cerrar { transition: none; }
 }
 
 .galeria-item {

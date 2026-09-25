@@ -214,8 +214,7 @@
      Hubo en medio una version con tarjetas verticales de 9:16, que era lo que
      pedia un video vertical entero. Pero un video no tiene por que entrar
      entero: dentro del circulo cabe mas ancho de lo que el circulo mide, y
-     entonces lo que se ve es la cara —y lo que YouTube dibuja en los cantos
-     se queda fuera—. Ver `.tst-video__medio` en el 13. */
+     entonces lo que se ve es la cara. Ver `.tst-video__medio` en el 13. */
   function geometriaDisco(pasos, radio) {
     var vertices = [0, 0, 0];
     var uvs = [0.5, 0.5];
@@ -751,8 +750,8 @@ void main() {
   };
 
 /* El disco de delante, medido en pixeles de pantalla. Lo pide la escena
-   para poner el video justo encima, que un iframe no se puede pintar dentro
-   de WebGL y tiene que ir por fuera, del tamano exacto.
+   para poner el video justo encima: va por fuera del lienzo, como un
+   elemento de la pagina, y tiene que ser del tamano exacto del disco.
 
    Se calcula y no se mide a ojo, que asi no hay dos cifras que mantener: si
    manana cambia la escala, el encuadre o el radio del disco, el video cambia
@@ -1146,7 +1145,7 @@ void main() {
 
       /* El video solo se monta con la esfera quieta en su testimonio:
          mientras gira, lo que hay ahi es el disco dando la vuelta, y un
-         iframe encima no gira con el. Al salir se desmonta, que si no
+         video encima no gira con el. Al salir se desmonta, que si no
          seguiria sonando detras de otro.
 
          Los dos topes no son el mismo: aparece con la esfera ya parada (0,82)

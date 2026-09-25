@@ -265,8 +265,10 @@ el.addEventListener('transitionend',soltarCapa);
 const modoRevelar=document.body.dataset.revelar;
 const unaVez=modoRevelar==='una-vez';
 const soloAbajo=modoRevelar==='al-bajar';
+const EN_PIN='.pn-pin, .hero-cine-pin, .cierre-cine-pin, .testimonios-pin, ' +
+'.ns-cine__pin, .ns-cierre__pin, .ns-carta__pin';
 if('IntersectionObserver' in window){
-const observador=new IntersectionObserver(function(entradas){
+const alCruzar=function(entradas){
 entradas.forEach(function(entrada){
 const razon=entrada.intersectionRatio;
 if(razon >=0.15){
@@ -291,8 +293,12 @@ temporizadoresOcultarRevelar.set(entrada.target,idOcultar);
 }
 }
 });
-},{threshold:[0,0.15],rootMargin:'0px 0px -8% 0px'});
-elementosRevelar.forEach(function(el){observador.observe(el);});
+};
+const observador=new IntersectionObserver(alCruzar,{threshold:[0,0.15],rootMargin:'0px 0px -8% 0px'});
+const observadorClavado=new IntersectionObserver(alCruzar,{threshold:[0,0.15]});
+elementosRevelar.forEach(function(el){
+(el.closest(EN_PIN)?observadorClavado:observador).observe(el);
+});
 }else{
 elementosRevelar.forEach(function(el){el.classList.add('visible');});
 }
@@ -1349,7 +1355,7 @@ return;
 }
 var cortina=document.querySelector('.ns-umbral');
 var conCortina=cortina&&!raiz.classList.contains('sin-umbral')&&!quietud.matches;
-setTimeout(una,conCortina?2100:400);
+setTimeout(una,conCortina?3000:400);
 }
 Array.prototype.forEach.call(botonesPreferencias,function(boton){
 boton.hidden=false;

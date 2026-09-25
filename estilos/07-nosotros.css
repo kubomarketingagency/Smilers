@@ -1269,9 +1269,11 @@
 /* En un telefono alto sobra sitio: entre los cuatro pilares y la placa de las
    cifras quedaba un palmo de negro vacio, y la letra estaba puesta para el
    telefono corto, que es donde no cabe. Aqui sube un punto, que es lo que hace
-   falta para leerla de un vistazo. El tope de 780 de alto es el de un telefono
-   normal de hoy; por debajo se queda como estaba. */
-@media (max-width: 575.98px) and (min-height: 780px) {
+   falta para leerla de un vistazo. Va desde 840 de alto, y no desde 780 como
+   iba: a 412x780 —un Android corriente con su barra— los pilares a este
+   cuerpo empujaban la placa de las cifras 59px dentro del zocalo, y la
+   segunda fila de cifras quedaba debajo del marmol. */
+@media (max-width: 575.98px) and (min-height: 840px) {
   .pn-telon .pilar { padding: .7rem .55rem .6rem; }
   .pn-telon .pilar__num { font-size: 1.55rem; }
   .pn-telon .pilar__icono { margin: .34rem 0 .3rem; font-size: 1rem; }
@@ -1384,4 +1386,75 @@
     padding: .66rem .8rem;
     font-size: .58rem;
   }
+}
+
+/* ===========================================================================
+   LA LETRA DE LA ESCENA, EN EL TELEFONO
+
+   La columna de texto de las dos pantallas claras (la entradilla, la lista
+   de tres y las sedes) iba en Lato fina, la 300, y la de los pilares tambien.
+   Sobre el marmol, en un iPhone, la fina a 14px se lee gris aunque la tinta
+   sea casi negra: los trazos son tan delgados que el fondo se come la mitad
+   del color. Va a la 400 en todos los altos y con la tinta un punto mas
+   honda. Ojo, que la 400 de Lato es algo mas ancha que la 300 y parte algun
+   renglon mas: por eso el collage baja un poco en cada tramo, para que el
+   texto tenga donde crecer. El collage es lo que adorna; lo que hay que leer
+   es la columna.
+
+   Y el cuerpo sube donde cabe, que es casi siempre. El tramo que pone la
+   letra pequena (hasta 700 de alto, mas abajo) se penso para un telefono de
+   588, pero en el que cae de verdad es en cualquier iPhone de 6,1 pulgadas:
+   Safari, con sus barras, le deja 664 de alto. Ahi debajo de los botones
+   sobraban 105px, y en cuanto se baja y las barras se recogen, 190. Asi que
+   ese tramo se parte en dos: de 620 a 700 la letra sube, y solo por debajo
+   de 620 —el SE, los telefonos pequenos— se queda como estaba.
+
+   Las cuentas, medidas en cada tramo con lo que sobra por debajo del ultimo
+   boton de cada pantalla, van en cada bloque.
+   =========================================================================== */
+@media (max-width: 767.98px) {
+  .pn-escena--viva .nosotros-cuerpo .parrafo-lead {
+    font-weight: 400;
+    color: #0A0A0A;
+  }
+  .pn-escena--viva .nosotros-checks li,
+  .pn-escena--viva .nosotros-sedes .ns-valor {
+    font-weight: 400;
+    color: #111111;
+  }
+  /* Los pilares, sobre negro: blanco al 90 en vez de al 74. */
+  .pn-telon .pilar p {
+    font-weight: 400;
+    color: rgba(255, 255, 255, .9);
+  }
+}
+
+/* De 701 de alto en adelante (el tramo de los telefonos grandes). */
+@media (max-width: 767.98px) and (min-height: 700.02px) {
+  .pn-escena--viva .pn-fondo .nosotros-media { height: 31vh; height: 31svh; }
+  .pn-escena--viva .nosotros-cuerpo .parrafo-lead { font-size: .98rem; line-height: 1.55; }
+  .pn-escena--viva .nosotros-checks li { font-size: .92rem; line-height: 1.46; }
+  .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .88rem; line-height: 1.44; }
+}
+
+/* De 620 a 700: el iPhone de 6,1 pulgadas con las barras puestas. */
+@media (max-width: 767.98px) and (min-height: 620px) and (max-height: 700px) {
+  .pn-escena--viva .pn-fondo .nosotros-media { height: 28vh; height: 28svh; }
+  .pn-escena--viva .nosotros-cuerpo .parrafo-lead { font-size: .95rem; line-height: 1.5; }
+  .pn-escena--viva .nosotros-checks li { font-size: .88rem; line-height: 1.42; }
+  .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .86rem; line-height: 1.4; }
+}
+
+/* Por debajo de 620 la letra se queda en su cuerpo, y aun asi la pantalla de
+   las sedes y la negra de los pilares no cabian —ya antes de este cambio—:
+   en un SE (375x548) el boton de «Ver la galeria» quedaba 59px por debajo
+   del filo y la placa de las cifras 64px dentro del zocalo, con la mitad
+   tapada por el marmol. El collage baja a algo mas de un quinto, y los
+   pilares se quedan con su numero, su icono y su nombre: la explicacion de
+   cada uno es lo que sobra cuando lo que hay que elegir es entre eso o que
+   las cifras se vean. */
+@media (max-width: 767.98px) and (max-height: 619.98px) {
+  .pn-escena--viva .pn-fondo .nosotros-media { height: 22vh; height: 22svh; }
+  .pn-escena--viva .nosotros-sedes li { padding: .24rem 0; }
+  .pn-escena--viva .pn-telon .pilar > p { display: none; }
 }
