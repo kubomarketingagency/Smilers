@@ -770,6 +770,7 @@ if(mando)window.SmilersCarruseles.push(mando);
 var visor=document.getElementById('visorFotos');
 if(!visor)return;
 var PIEZAS='.tz-mosaico__pieza, .galeria-item-lb';
+var navbar=document.getElementById('navbarPrincipal');
 var marco=visor.querySelector('.visor__marco');
 var foto=visor.querySelector('.visor__foto');
 var leyenda=visor.querySelector('.visor__leyenda');
@@ -778,6 +779,22 @@ var botonCerrar=visor.querySelector('[data-visor-cerrar]');
 var botonAnt=visor.querySelector('[data-visor-ant]');
 var botonSig=visor.querySelector('[data-visor-sig]');
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
+function trozo(clase,texto){
+var el=document.createElement('span');
+el.className=clase;
+if(texto)el.textContent=texto;
+return el;
+}
+var cuentaActual=trozo('visor__actual');
+var cuentaPista=trozo('visor__pista');
+var cuentaTotal=trozo('visor__total');
+cuentaPista.setAttribute('aria-hidden','true');
+cuenta.textContent='';
+cuenta.hidden=true;
+cuenta.appendChild(cuentaActual);
+cuenta.appendChild(cuentaPista);
+cuenta.appendChild(trozo('visor__oculto',' de '));
+cuenta.appendChild(cuentaTotal);
 var grupo=[];
 var indice=0;
 var abierto=false;
@@ -823,7 +840,10 @@ var texto=textoDe(pieza);
 foto.src=fuenteDe(pieza);
 foto.alt=texto;
 leyenda.textContent=texto;
-cuenta.textContent=grupo.length > 1?dos(indice + 1)+ ' / ' + dos(grupo.length):'';
+cuenta.hidden=grupo.length < 2;
+cuentaActual.textContent=dos(indice + 1);
+cuentaTotal.textContent=dos(grupo.length);
+cuenta.style.setProperty('--avance',((indice + 1)/ grupo.length).toFixed(4));
 }
 function reiniciar(el,clase){
 el.classList.remove(clase);
@@ -865,6 +885,9 @@ new Image().src=fuenteDe(grupo[(i + n)%n]);
 });
 }
 }
+function medirArriba(){
+visor.style.setProperty('--visor-arriba',(navbar?navbar.offsetHeight:0)+ 'px');
+}
 function abrir(piezas,desde){
 clearTimeout(relojCierre);
 grupo=piezas;
@@ -874,30 +897,37 @@ if(!abierto){
 abierto=true;
 var barra=window.innerWidth - document.documentElement.clientWidth;
 document.documentElement.classList.add('visor-abierto');
-if(barra > 0)document.body.style.paddingRight=barra + 'px';
+if(barra > 0){
+document.body.style.paddingRight=barra + 'px';
+if(navbar)navbar.style.paddingRight=barra + 'px';
+}
+medirArriba();
 visor.hidden=false;
 void visor.offsetWidth;
 visor.classList.add('visor--abierto');
 document.addEventListener('keydown',teclado);
+window.addEventListener('resize',medirArriba);
 }
 pintar(desde,true);
 botonCerrar.focus({preventScroll:true});
 }
-function cerrar(){
+function cerrar(sinFoco){
 if(!abierto)return;
 abierto=false;
 turno++;
 visor.classList.remove('visor--abierto');
 document.removeEventListener('keydown',teclado);
+window.removeEventListener('resize',medirArriba);
 relojCierre=setTimeout(function(){
 visor.hidden=true;
 marco.classList.remove('visor--tapa','visor--destapa','visor--oculta');
 foto.removeAttribute('src');
 leyenda.textContent='';
-cuenta.textContent='';
+cuenta.hidden=true;
 document.documentElement.classList.remove('visor-abierto');
 document.body.style.paddingRight='';
-if(foco&&foco.focus)foco.focus({preventScroll:true});
+if(navbar)navbar.style.paddingRight='';
+if(!sinFoco&&foco&&foco.focus)foco.focus({preventScroll:true});
 },SALIDA);
 }
 function teclado(ev){
@@ -920,7 +950,10 @@ ev.preventDefault();
 var piezas=grupoDe(pieza);
 abrir(piezas,Math.max(0,piezas.indexOf(pieza)));
 });
-botonCerrar.addEventListener('click',cerrar);
+botonCerrar.addEventListener('click',function(){cerrar();});
+if(navbar){
+navbar.addEventListener('click',function(){if(abierto)cerrar(true);},true);
+}
 botonAnt.addEventListener('click',function(){pintar(indice - 1);});
 botonSig.addEventListener('click',function(){pintar(indice + 1);});
 visor.addEventListener('click',function(ev){
@@ -979,10 +1012,9 @@ if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
 puntero=document.createElement('span');
 puntero.className='tz-puntero';
 puntero.setAttribute('aria-hidden','true');
-var palabra=document.createElement('span');
-palabra.className='tz-puntero__txt';
-palabra.textContent='Ver';
-puntero.appendChild(palabra);
+var caja=trozo('tz-puntero__caja');
+caja.appendChild(trozo('tz-puntero__txt','Ver'));
+puntero.appendChild(caja);
 document.body.appendChild(puntero);
 document.documentElement.classList.add('con-puntero');
 document.addEventListener('pointermove',function(ev){

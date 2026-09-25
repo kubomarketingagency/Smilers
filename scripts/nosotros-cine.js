@@ -211,8 +211,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function pieza(bloque, selector) { return bloque ? bloque.querySelector(selector) : null; }
     var capaFund = pieza(escena, '.ns-capa--fundamentos');
     var capaInfra = pieza(escena, '.ns-capa--infra');
-    /* Si Fundamentos esta a la vista y se deja leer: enciende su entrada
-       (32-fundamentos.css), y se apaga al irse para que vuelva a entrar. */
+    /* Fundamentos enciende su entrada (32-fundamentos.css) en cuanto su texto
+       empieza a aparecer, y la apaga cuando ya no se ve, para que vuelva a
+       entrar la proxima vez. */
     var fundPintada = false;
     var DESTINOS_CINE = {
       '--c-uno': pieza(escena, '.ns-capa--historia'),
@@ -225,9 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
       '--f-ent': pieza(capaFund, ':scope > .ns-envoltura'),
       '--f-filo': pieza(escena, '.ns-filo--vertical'),
       '--f-filo-op': pieza(escena, '.ns-filo--vertical'),
-      /* La deriva de las tarjetas de Fundamentos: en la reja, que es donde
-         cuelgan las seis y nada mas (el 32 la registra con herencia). */
-      '--f-deriva': pieza(capaFund, '.ns-doble__reja'),
       '--i-sube': capaInfra,
       '--i-op': pieza(capaInfra, ':scope > .ns-envoltura'),
       '--i-desenfoque': pieza(capaInfra, ':scope > .ns-envoltura'),
@@ -455,15 +453,15 @@ document.addEventListener('DOMContentLoaded', function () {
         ponCine('--f-filo', ((1 - der) * 100).toFixed(2) + '%');
         ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 
-        /* Fundamentos, mientras se deja leer: su entrada corre cada vez que
-           se llega a ella, y mientras esta quieta sus tarjetas derivan con
-           el scroll (de que el texto ha entrado a que el telon se va). */
-        var fundViva = texto > .55 && sale < .5;
+        /* Fundamentos: su entrada se enciende con el primer asomo del texto,
+           cuando la envoltura aun es transparente —asi lo que la entrada
+           esconde al empezar no desaparece a la vista—, y se apaga cuando el
+           texto se ha ido o el telon la ha tapado entera. */
+        var fundViva = texto > 0 && sale < 1;
         if (capaFund && fundViva !== fundPintada) {
           fundPintada = fundViva;
           capaFund.classList.toggle('ns-fund--viva', fundViva);
         }
-        ponCine('--f-deriva', tramo(pCine, .26, .52).toFixed(3));
 
         ponCine('--i-sube', ((1 - sube) * 100).toFixed(2) + '%');
         ponCine('--i-op', textoI.toFixed(3));

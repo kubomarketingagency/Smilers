@@ -141,9 +141,10 @@
 }
 
 /* Ampliar. Con raton no hace falta nada encima de la foto: al pasar por
-   ella el puntero se vuelve un circulo que dice «Ver» (visor.js). En una
+   ella el puntero se vuelve el visor «Ver» del 33 (visor.js). En una
    pantalla tactil, donde no hay puntero, cada foto lleva en la esquina un
-   aviso callado: cuatro esquinas en blanco, sin oro. */
+   aviso callado: cuatro esquinas en blanco, sin oro, en una placa oscura de
+   cantos apenas redondeados (sin circulo, como el resto del visor). */
 .tz-mosaico__ampliar {
   position: absolute;
   right: 10px;
@@ -153,8 +154,8 @@
   place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  background: rgba(10, 8, 6, .5);
+  border-radius: 3px;
+  background: rgba(10, 8, 6, .55);
   color: #FFFFFF;
   font-size: 15px;
   pointer-events: none;

@@ -6,12 +6,14 @@
      especialidad (Tratamientos). Uno solo para las dos paginas, con su
      marcado (`#visorFotos`) y sus estilos (33-visor.css).
 
-     Abre la foto a pantalla entera sobre un velo casi negro, y la descubre
-     como entran las fotos del collage: una cortina de oro la tapa y se retira
-     hacia el otro lado, la foto se asienta desde un poco mas cerca y el filo
-     de oro se dibuja alrededor, con el marco desplazado detras. Debajo, su
-     leyenda; arriba, la cuenta («02 / 05») y la X, en una barra propia que
-     tapa la de la pagina en vez de montarse encima de ella.
+     Abre la foto en grande por debajo de la barra de navegacion, que sigue a
+     la vista (su alto se mide al abrir y va en `--visor-arriba`), sobre un
+     velo oscuro que deja ver la pagina detras. La descubre como entran las
+     fotos del collage: una cortina de oro la tapa y se retira hacia el otro
+     lado, la foto se asienta desde un poco mas cerca y el filo de oro se
+     dibuja alrededor, con el marco desplazado detras. Debajo, su leyenda;
+     arriba, en su franja, la cuenta (la foto, una pista de oro que se llena
+     y el total) y la X, justo debajo del menu.
 
      Se pasa de foto con las flechas, con el teclado o deslizando el dedo, y
      cada cambio vuelve a pasar la cortina: la foto nueva se pide antes, se
@@ -34,6 +36,7 @@
 
   var PIEZAS = '.tz-mosaico__pieza, .galeria-item-lb';
 
+  var navbar = document.getElementById('navbarPrincipal');
   var marco = visor.querySelector('.visor__marco');
   var foto = visor.querySelector('.visor__foto');
   var leyenda = visor.querySelector('.visor__leyenda');
@@ -42,6 +45,25 @@
   var botonAnt = visor.querySelector('[data-visor-ant]');
   var botonSig = visor.querySelector('[data-visor-sig]');
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* La cuenta se arma una vez y despues solo cambian sus cifras: asi la
+     pista de oro se llena con transicion de una foto a la siguiente. */
+  function trozo(clase, texto) {
+    var el = document.createElement('span');
+    el.className = clase;
+    if (texto) el.textContent = texto;
+    return el;
+  }
+  var cuentaActual = trozo('visor__actual');
+  var cuentaPista = trozo('visor__pista');
+  var cuentaTotal = trozo('visor__total');
+  cuentaPista.setAttribute('aria-hidden', 'true');
+  cuenta.textContent = '';
+  cuenta.hidden = true;
+  cuenta.appendChild(cuentaActual);
+  cuenta.appendChild(cuentaPista);
+  cuenta.appendChild(trozo('visor__oculto', ' de '));
+  cuenta.appendChild(cuentaTotal);
 
   var grupo = [];
   var indice = 0;
@@ -98,7 +120,10 @@
     foto.src = fuenteDe(pieza);
     foto.alt = texto;
     leyenda.textContent = texto;
-    cuenta.textContent = grupo.length > 1 ? dos(indice + 1) + ' / ' + dos(grupo.length) : '';
+    cuenta.hidden = grupo.length < 2;
+    cuentaActual.textContent = dos(indice + 1);
+    cuentaTotal.textContent = dos(grupo.length);
+    cuenta.style.setProperty('--avance', ((indice + 1) / grupo.length).toFixed(4));
   }
 
   function reiniciar(el, clase) {
@@ -152,6 +177,13 @@
     }
   }
 
+  /* El visor empieza donde acaba la barra de navegacion. Se mide su alto y
+     no donde cae: si estaba escondida (cerca del pie), el 33 la hace bajar
+     y todavia viene de camino. */
+  function medirArriba() {
+    visor.style.setProperty('--visor-arriba', (navbar ? navbar.offsetHeight : 0) + 'px');
+  }
+
   function abrir(piezas, desde) {
     clearTimeout(relojCierre);
     grupo = piezas;
@@ -161,34 +193,45 @@
     if (!abierto) {
       abierto = true;
       /* El scroll se bloquea sin que la pagina salte de lado: el ancho de la
-         barra que se quita se devuelve en relleno. */
+         barra de scroll que se quita se devuelve en relleno, a la pagina y a
+         la barra de navegacion, que es fija y se ensancharia. */
       var barra = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.classList.add('visor-abierto');
-      if (barra > 0) document.body.style.paddingRight = barra + 'px';
+      if (barra > 0) {
+        document.body.style.paddingRight = barra + 'px';
+        if (navbar) navbar.style.paddingRight = barra + 'px';
+      }
+      medirArriba();
       visor.hidden = false;
       void visor.offsetWidth;
       visor.classList.add('visor--abierto');
       document.addEventListener('keydown', teclado);
+      window.addEventListener('resize', medirArriba);
     }
     pintar(desde, true);
     botonCerrar.focus({ preventScroll: true });
   }
 
-  function cerrar() {
+  /* `sinFoco`: cuando se cierra porque se pulso la barra de la pagina, el
+     foco se queda donde lo puso esa barra (el menu que se abre, por ejemplo)
+     y no vuelve a la foto. */
+  function cerrar(sinFoco) {
     if (!abierto) return;
     abierto = false;
     turno++;
     visor.classList.remove('visor--abierto');
     document.removeEventListener('keydown', teclado);
+    window.removeEventListener('resize', medirArriba);
     relojCierre = setTimeout(function () {
       visor.hidden = true;
       marco.classList.remove('visor--tapa', 'visor--destapa', 'visor--oculta');
       foto.removeAttribute('src');
       leyenda.textContent = '';
-      cuenta.textContent = '';
+      cuenta.hidden = true;
       document.documentElement.classList.remove('visor-abierto');
       document.body.style.paddingRight = '';
-      if (foco && foco.focus) foco.focus({ preventScroll: true });
+      if (navbar) navbar.style.paddingRight = '';
+      if (!sinFoco && foco && foco.focus) foco.focus({ preventScroll: true });
     }, SALIDA);
   }
 
@@ -219,7 +262,13 @@
     abrir(piezas, Math.max(0, piezas.indexOf(pieza)));
   });
 
-  botonCerrar.addEventListener('click', cerrar);
+  botonCerrar.addEventListener('click', function () { cerrar(); });
+
+  /* La barra de la pagina sigue a la vista y se puede pulsar: el menu se
+     abre por debajo del visor, asi que lo primero es cerrarlo. */
+  if (navbar) {
+    navbar.addEventListener('click', function () { if (abierto) cerrar(true); }, true);
+  }
   botonAnt.addEventListener('click', function () { pintar(indice - 1); });
   botonSig.addEventListener('click', function () { pintar(indice + 1); });
 
@@ -250,9 +299,10 @@
   });
 
   /* EL PUNTERO «VER». Con raton, al pasar por una foto que se abre el
-     puntero se vuelve un circulo negro que se desvanece hacia fuera, con la
-     palabra en oro y un brillo que la recorre, y sigue a la mano con un pelo
-     de retraso. Es lo que sustituye a las lupas que llevaba cada foto: la
+     puntero se vuelve una placa oscura con la palabra en oro y cuatro
+     esquinas de oro que se cierran sobre ella, y sigue a la mano con un pelo
+     de retraso. La pieza de fuera es la que se mueve y la de dentro
+     (`__caja`) la que aparece: ver el 33. Es lo que sustituye a las lupas que llevaba cada foto: la
      foto queda limpia y el aviso aparece solo donde esta la mano. En una
      pantalla tactil no hay puntero que cambiar: en el collage cada foto lleva
      su aviso fijo y en la Galeria las esquinas de oro (el 30 y el 15). Sin
@@ -300,10 +350,9 @@
     puntero = document.createElement('span');
     puntero.className = 'tz-puntero';
     puntero.setAttribute('aria-hidden', 'true');
-    var palabra = document.createElement('span');
-    palabra.className = 'tz-puntero__txt';
-    palabra.textContent = 'Ver';
-    puntero.appendChild(palabra);
+    var caja = trozo('tz-puntero__caja');
+    caja.appendChild(trozo('tz-puntero__txt', 'Ver'));
+    puntero.appendChild(caja);
     document.body.appendChild(puntero);
     document.documentElement.classList.add('con-puntero');
 

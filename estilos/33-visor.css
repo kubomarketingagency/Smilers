@@ -2,26 +2,33 @@
    El visor de fotos y el puntero «Ver» (visor.js).
 
    Lo cargan la Galeria y Tratamientos, que son las dos paginas donde una
-   foto se abre en grande. Es una pieza propia y no el `modal` de Bootstrap:
-   tapa la pagina entera —la barra de navegacion incluida— y trae su barra
-   arriba, con la cuenta a un lado y la X al otro. Antes la X flotaba encima
-   de la foto y le caia justo sobre la barra de la pagina, que seguia
-   viendose detras de un velo a medias.
+   foto se abre en grande. Es una pieza propia y no el `modal` de Bootstrap.
 
-   Al abrirse, el velo se cierra casi a negro, la foto entra como las del
-   collage —una cortina de oro la tapa y se retira hacia el otro lado, y la
-   foto se asienta desde un poco mas cerca— y alrededor se dibuja su filo de
-   oro, con el marco desplazado detras que llevan las fotos del collage y la
-   tarjeta de la cita. Debajo, la leyenda en la letra de los titulares, con
-   su raya de oro. Cada cambio de foto vuelve a pasar la cortina.
+   Se abre POR DEBAJO de la barra de navegacion, que sigue a la vista: el
+   guion mide su alto y lo deja en `--visor-arriba` (pulsarla cierra el
+   visor). Detras, un velo oscuro que no llega a tapar: la pagina se sigue
+   viendo, como tras un cristal polarizado. Arriba, una franja con la cuenta
+   a la izquierda y la X a la derecha, en la misma caja que la barra, de
+   modo que la X cae justo debajo del menu.
 
-   Todo lo que se mueve es `transform` y `opacity`, salvo el dibujo de los
-   filos (`background-size`), que son cuatro rayas de un pixel.
+   La foto entra como las del collage: una cortina de oro la tapa y se
+   retira hacia el otro lado, la foto se asienta desde un poco mas cerca y
+   alrededor se dibuja su filo de oro, con el marco desplazado detras. Las
+   flechas son solo sus trazos, pegadas a los lados de la foto (encima de
+   ella en el telefono, que ahi la foto ocupa todo el ancho). Debajo, la
+   leyenda en la letra de los titulares.
+
+   Nada de circulos: ni en la X, ni en las flechas, ni en el puntero. Todo
+   lo que se mueve es `transform` y `opacity`, salvo el dibujo de los filos
+   (`background-size`), que son rayas de un pixel.
    =========================================================================== */
 
 .visor {
   position: fixed;
-  inset: 0;
+  top: var(--visor-arriba, 0px);
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 2000;
   display: flex;
   flex-direction: column;
@@ -33,90 +40,109 @@
 html.visor-abierto,
 html.visor-abierto body { overflow: hidden; }
 
-/* Opaco del todo: con un velo al 90% la pagina seguia asomando por detras
-   —el logo y el menu de la barra a medio apagar justo debajo de la X—, y eso
-   es lo que se leia como una X montada sobre la barra. En el centro, una luz
-   calida muy baja, que es donde va la foto. */
+/* La barra se queda aunque estuviera escondida, que cerca del pie se
+   esconde (navegacion.js). */
+html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
+
+/* El velo: oscuro, pero la pagina se sigue viendo. Un poco mas claro donde
+   va la foto y mas cerrado hacia los cantos. Mas claro que esto, sobre las
+   paginas de marmol blanco (la Galeria) la leyenda caia encima del texto de
+   la pagina y costaba leerla. */
 .visor__velo {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(110% 80% at 50% 44%, #1C1710 0%, #0A0806 56%, #050403 100%);
+  background: radial-gradient(120% 95% at 50% 45%,
+    rgba(14, 11, 8, .8) 0%, rgba(8, 7, 5, .86) 62%, rgba(5, 4, 3, .9) 100%);
   opacity: 0;
   transition: opacity .42s ease;
 }
 .visor--abierto .visor__velo { opacity: 1; }
 
-/* --- La barra de arriba: la cuenta y la X -------------------------------- */
+/* --- La franja de arriba: la cuenta y la X -------------------------------
+   Lleva ademas la clase `container`, la misma caja que la barra. */
 .visor__barra {
   position: relative;
   z-index: 3;
   flex: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
-  min-height: 76px;
-  padding: max(14px, env(safe-area-inset-top)) clamp(16px, 3vw, 34px) 0;
+  min-height: 60px;
+  padding-top: 4px;
+  padding-bottom: 0;
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   transition: opacity .4s ease .08s, transform .55s cubic-bezier(.22, 1, .36, 1) .08s;
 }
 .visor--abierto .visor__barra { opacity: 1; transform: none; }
 
+/* La cuenta: la foto en la que se esta, una pista de oro que se llena
+   segun se avanza, y cuantas son. */
 .visor__cuenta {
   display: flex;
   align-items: center;
-  gap: .85rem;
+  gap: .9rem;
   margin: 0;
   font-family: var(--fuente-menu);
-  font-size: .8rem;
-  letter-spacing: .3em;
-  color: var(--oro-marca);
+  font-size: .78rem;
+  letter-spacing: .2em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
-.visor__cuenta::before {
-  content: '';
-  width: 34px;
+.visor__cuenta[hidden] { display: none; }
+.visor__actual { color: #F7F1E1; font-weight: 600; }
+.visor__total { color: var(--oro-marca); }
+.visor__pista {
+  position: relative;
+  width: clamp(56px, 7vw, 96px);
   height: 1px;
-  background: var(--oro-marca-degradado);
+  overflow: hidden;
+  background: rgba(255, 255, 255, .22);
 }
-/* Vacia (una foto sola) se queda en su sitio pero sin verse: la X no se
-   mueve de su esquina. */
-.visor__cuenta:empty { visibility: hidden; }
+.visor__pista::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--oro-marca-degradado);
+  transform-origin: left center;
+  transform: scaleX(var(--avance, 0));
+  transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+}
+.visor__oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
+/* La X: solo sus dos trazos, en oro, del tamano de las rayas del menu. */
 .visor__cerrar {
   display: grid;
   place-items: center;
   width: 48px;
   height: 48px;
+  margin-left: auto;
   padding: 0;
-  border: 1px solid rgba(212, 175, 55, .82);
-  border-radius: 50%;
-  background: rgba(12, 10, 8, .6);
+  border: 0;
+  background: none;
   color: var(--oro-marca);
   cursor: pointer;
-  transition: background-color .3s ease, color .3s ease, border-color .3s ease,
-              transform .5s cubic-bezier(.22, 1, .36, 1);
+  transition: color .3s ease, transform .5s cubic-bezier(.22, 1, .36, 1);
 }
 .visor__cerrar svg,
 .visor__flecha svg {
-  width: 20px;
-  height: 20px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.visor__cerrar svg { width: 24px; height: 24px; stroke-width: 1.5; }
 .visor__cerrar:hover,
-.visor__cerrar:focus-visible {
-  border-color: transparent;
-  background: var(--oro-marca-degradado);
-  color: #0E0C0A;
-  transform: rotate(90deg);
-}
+.visor__cerrar:focus-visible { color: #F7E7A6; transform: rotate(90deg); }
 .visor__cerrar:focus-visible,
-.visor__flecha:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+.visor__flecha:focus-visible { outline: 1px solid rgba(247, 231, 166, .9); outline-offset: 2px; }
 
 /* --- La foto ------------------------------------------------------------- */
 .visor__escena {
@@ -130,7 +156,8 @@ html.visor-abierto body { overflow: hidden; }
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 2.6vh, 26px);
-  padding: clamp(10px, 2vh, 22px) clamp(16px, 8vw, 128px) max(clamp(18px, 3.2vh, 36px), env(safe-area-inset-bottom));
+  /* A los lados, el sitio de las flechas. */
+  padding: clamp(6px, 1.4vh, 16px) clamp(64px, 8vw, 128px) max(clamp(18px, 3.2vh, 36px), env(safe-area-inset-bottom));
 }
 
 .visor__marco {
@@ -159,8 +186,9 @@ html.visor-abierto body { overflow: hidden; }
   width: auto;
   height: auto;
   max-width: 100%;
-  /* La barra (76), la leyenda con su raya (unas dos lineas) y los aires. */
-  max-height: calc(100svh - 76px - 9.5rem);
+  /* La barra de la pagina, la franja (60), la leyenda con su raya (unas
+     dos lineas) y los aires. */
+  max-height: calc(100svh - var(--visor-arriba, 0px) - 60px - 8.5rem);
   object-fit: contain;
 }
 .visor--oculta .visor__foto { opacity: 0; }
@@ -258,7 +286,8 @@ html.visor-abierto body { overflow: hidden; }
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   line-height: 1.5;
   letter-spacing: .01em;
-  color: rgba(255, 255, 255, .92);
+  color: rgba(255, 255, 255, .94);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .6);
   opacity: 0;
   transform: translateY(10px);
   transition: opacity .5s ease .5s, transform .7s cubic-bezier(.22, 1, .36, 1) .5s;
@@ -279,50 +308,52 @@ html.visor-abierto body { overflow: hidden; }
   to   { opacity: 1; transform: none; }
 }
 
-/* --- Las flechas --------------------------------------------------------- */
+/* --- Las flechas: solo el trazo, a un palmo de la foto -------------------
+   Van dentro del marco, asi que se centran en la foto y la siguen a
+   cualquier tamano. La de la izquierda deja sitio al marco desplazado. */
 .visor__flecha {
   position: absolute;
   top: 50%;
-  z-index: 3;
+  z-index: 4;
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  margin-top: -27px;
+  width: 44px;
+  height: 72px;
+  margin-top: -36px;
   padding: 0;
-  border: 1px solid rgba(212, 175, 55, .82);
-  border-radius: 50%;
-  background: rgba(12, 10, 8, .55);
+  border: 0;
+  background: none;
   color: var(--oro-marca);
   cursor: pointer;
   opacity: 0;
-  transition: opacity .4s ease .3s, background-color .3s ease, color .3s ease,
-              border-color .3s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
+  transition: opacity .4s ease .3s, color .3s ease, translate .35s cubic-bezier(.22, 1, .36, 1);
 }
+.visor__flecha svg { width: 32px; height: 32px; stroke-width: 1.2; }
 .visor--abierto .visor__flecha { opacity: 1; }
 .visor__flecha[hidden] { display: none; }
-.visor__flecha--ant { left: clamp(10px, 2.4vw, 36px); }
-.visor__flecha--sig { right: clamp(10px, 2.4vw, 36px); }
+.visor__flecha--ant { right: calc(100% + clamp(12px, 1.8vw, 26px)); }
+.visor__flecha--sig { left: calc(100% + clamp(12px, 1.8vw, 26px)); }
 .visor__flecha:hover,
-.visor__flecha:focus-visible {
-  border-color: transparent;
-  background: var(--oro-marca-degradado);
-  color: #0E0C0A;
-}
-.visor__flecha--ant:hover { transform: translateX(-3px); }
-.visor__flecha--sig:hover { transform: translateX(3px); }
+.visor__flecha:focus-visible { color: #F7E7A6; }
+.visor__flecha--ant:hover { translate: -4px 0; }
+.visor__flecha--sig:hover { translate: 4px 0; }
 
+/* En el telefono la foto ocupa todo el ancho: las flechas pasan encima de
+   ella, en sus cantos, con una sombra que las separa de la foto. */
 @media (max-width: 767.98px) {
-  .visor__barra { min-height: 64px; }
-  .visor__cerrar { width: 44px; height: 44px; }
-  .visor__foto { max-height: calc(100svh - 64px - 10rem); }
+  .visor__barra { min-height: 52px; }
+  .visor__escena { padding-inline: 16px; }
+  .visor__foto { max-height: calc(100svh - var(--visor-arriba, 0px) - 52px - 9.5rem); }
   .visor__flecha {
     width: 40px;
-    height: 40px;
-    margin-top: -20px;
-    background: rgba(12, 10, 8, .72);
+    height: 64px;
+    margin-top: -32px;
+    color: #F3DC8A;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, .9)) drop-shadow(0 1px 6px rgba(0, 0, 0, .75));
   }
-  .visor__flecha svg { width: 17px; height: 17px; }
+  .visor__flecha svg { width: 26px; height: 26px; stroke-width: 2; }
+  .visor__flecha--ant { right: auto; left: 0; }
+  .visor__flecha--sig { left: auto; right: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -332,7 +363,8 @@ html.visor-abierto body { overflow: hidden; }
   .visor__marco::before,
   .visor__marco::after,
   .visor__leyenda,
-  .visor__flecha { transition-duration: .01s; transition-delay: 0s; }
+  .visor__flecha,
+  .visor__pista::after { transition-duration: .01s; transition-delay: 0s; }
   .visor--destapa .visor__foto,
   .visor--destapa ~ .visor__leyenda,
   .visor--cargando .visor__escena::after { animation: none; }
@@ -340,61 +372,73 @@ html.visor-abierto body { overflow: hidden; }
 
 /* ===========================================================================
    El puntero «Ver», que pone visor.js al pasar con raton por una foto que
-   se abre: un circulo negro que se desvanece hacia fuera —sin canto, como
-   una sombra— con un aro fino de oro y la palabra en oro, recorrida por un
-   brillo. Sustituye a las lupas.
+   se abre: una placa oscura con la palabra en oro y cuatro esquinas de oro
+   alrededor, las mismas que enmarcan las fotos de la Galeria. Al aparecer,
+   las esquinas se cierran sobre la placa, como un visor que enfoca.
+
+   El guion mueve la pieza de fuera (`transform`) y la de dentro es la que
+   crece y se apaga: si las dos cosas fueran en la misma, el `scale` de la
+   entrada encogeria tambien el desplazamiento, y la placa llegaria volando
+   desde la esquina de la pantalla.
    =========================================================================== */
 .tz-puntero {
   position: fixed;
   left: 0;
   top: 0;
   z-index: 1025;
-  display: grid;
-  place-items: center;
-  width: 108px;
-  height: 108px;
-  margin: -54px 0 0 -54px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side,
-    rgba(8, 7, 5, .95) 0%, rgba(8, 7, 5, .9) 58%, rgba(8, 7, 5, .5) 78%, rgba(8, 7, 5, 0) 100%);
+  width: 0;
+  height: 0;
   pointer-events: none;
-  opacity: 0;
-  scale: .35;
-  transition: opacity .3s ease, scale .45s cubic-bezier(.34, 1.56, .64, 1);
   will-change: transform;
 }
-.tz-puntero::before {
+.tz-puntero__caja {
+  position: absolute;
+  left: -42px;
+  top: -20px;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 40px;
+  background: rgba(10, 9, 7, .76);
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .5);
+  opacity: 0;
+  transform: scale(.8);
+  transition: opacity .25s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+.tz-puntero__caja::before {
   content: '';
   position: absolute;
-  inset: 23px;
-  border: 1px solid rgba(212, 175, 55, .6);
-  border-radius: 50%;
+  inset: -5px;
+  --oro: linear-gradient(var(--oro-marca), var(--oro-marca));
+  background:
+    var(--oro) left top / 10px 1.5px, var(--oro) left top / 1.5px 10px,
+    var(--oro) right top / 10px 1.5px, var(--oro) right top / 1.5px 10px,
+    var(--oro) left bottom / 10px 1.5px, var(--oro) left bottom / 1.5px 10px,
+    var(--oro) right bottom / 10px 1.5px, var(--oro) right bottom / 1.5px 10px;
+  background-repeat: no-repeat;
+  transform: scale(1.3, 1.6);
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1) .05s;
 }
 .tz-puntero__txt {
   position: relative;
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: .8rem;
-  letter-spacing: .32em;
-  text-indent: .32em;
+  font-size: .72rem;
+  line-height: 1;
+  letter-spacing: .34em;
+  text-indent: .34em;
   text-transform: uppercase;
-  background-image: linear-gradient(100deg,
-    #B08D22 0%, #D4AF37 30%, #FFF4C8 50%, #D4AF37 70%, #B08D22 100%);
-  background-size: 240% 100%;
-  background-position: 120% 0;
+  background-image: linear-gradient(100deg, #D4AF37 0%, #F7E7A6 50%, #D4AF37 100%);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--oro-marca);
 }
-.tz-puntero--visible { opacity: 1; scale: 1; }
-.tz-puntero--visible .tz-puntero__txt { animation: puntero-brillo 2.2s linear infinite; }
-.tz-puntero--pulsa { scale: .86; transition-duration: .12s; }
+.tz-puntero--visible .tz-puntero__caja { opacity: 1; transform: none; }
+.tz-puntero--visible .tz-puntero__caja::before { transform: none; }
+.tz-puntero--pulsa .tz-puntero__caja { transform: scale(.9); transition-duration: .12s; }
 .con-puntero :is(.tz-mosaico__pieza, .galeria-item-lb) { cursor: none; }
-@keyframes puntero-brillo {
-  from { background-position: 120% 0; }
-  to   { background-position: -120% 0; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .tz-puntero--visible .tz-puntero__txt { animation: none; background-position: 50% 0; }
+  .tz-puntero__caja,
+  .tz-puntero__caja::before { transition-duration: .01s; transition-delay: 0s; }
 }
