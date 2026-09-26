@@ -96,8 +96,10 @@ function sellarUrl(url, quien) {
    guion (el aviso de cookies: terceros/cookieconsent/). Van en una <meta>
    para que el sello les llegue igual que a un `src`. Y `data-video` es el
    video de cada testimonio (video-testimonios/), que lo pone el guion en su
-   <video> cuando la esfera se para en el. */
-const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css|data-video)="([^"]*)"/g;
+   <video> cuando la esfera se para en el, y `data-foto` su fotograma, que
+   pinta la esfera y se ve hasta que el video rueda: sin sello, al cambiar
+   un fotograma quien ya habia entrado seguia viendo el viejo un ano. */
+const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css|data-video|data-foto)="([^"]*)"/g;
 const ATRIBUTO_LISTA = /\b(srcset|imagesrcset|data-fotos)="([^"]*)"/g;
 
 function sellarHtml(html, pagina) {
