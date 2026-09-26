@@ -1316,17 +1316,24 @@
 }
 
 /* La misma piedra que los filtros de la Galeria, pero esto no es una tira de
-   navegacion: es el indice de la seccion. Diez casillas, y en cada una su
-   numero —el mismo 01..10 que preside su bloque mas abajo— grande y
-   encendido, con el nombre debajo. Asi la franja dice de una lo que es: aqui
-   van diez, esta es la tercera, y tocandola se llega a ella.
+   navegacion: es el indice de la seccion. Diez casillas, y en cada una el
+   nombre de la especialidad, grande y en el centro, con su numero —el mismo
+   01..10 que preside su bloque mas abajo— pequeno en la esquina. Asi la
+   franja dice de una lo que es: aqui van diez, esta es la tercera, y
+   tocandola se llega a ella.
 
-   Fue una tabla de lineas con el numero pequeno delante del nombre, y al
-   pasar por encima la casilla se llenaba de un velo de oro. En el telefono
-   ese velo se quedaba puesto en la que se habia tocado —en una pantalla
-   tactil el `:hover` dura hasta el siguiente toque—, y al volver al indice
-   se veia una mancha parda. La clinica lo quiso fuera (25-9-2026): numeros
-   mas grandes, retroiluminados, y el marco de oro.
+   Manda el nombre, que es lo que se busca. Va en la Bodoni de los titulares
+   y como se escribe, no en versales: en versales espaciadas y a .68rem
+   «Odontopediatria» apenas cabia en media pantalla, y asi se lee de lejos.
+   El numero es un sello en la esquina, en el oro de marca, a media luz.
+
+   Fue una tabla de lineas con el numero delante del nombre, y al pasar por
+   encima la casilla se llenaba de un velo de oro. En el telefono ese velo se
+   quedaba puesto en la que se habia tocado —en una pantalla tactil el
+   `:hover` dura hasta el siguiente toque— y al volver al indice se veia una
+   mancha parda. Despues llevo el numero grande y con un halo detras, y
+   tampoco: la clinica lo quiere asi (25-9-2026), el numero delicado y en la
+   esquina, que al pasar por encima solo se encienda por dentro.
 
    El numero sale de un contador de CSS y no del HTML: la numeracion de los
    bloques ya la lleva el documento, y duplicarla a mano seria pedir que las
@@ -1334,13 +1341,9 @@
 
    Columnas fijas que dividen a diez —cinco de dos, y dos filas de cinco en
    pantalla ancha— y por eso se sabe cual abre fila, que es lo unico que
-   hace falta para que ninguna juntura quede colgando. Con el nombre debajo
-   del numero cada nombre tiene la casilla entera a lo ancho, y las cinco
-   columnas entran ya desde 992 (con el numero delante no entraban hasta
-   1200: «Odontopediatria» es una sola palabra). */
+   hace falta para que ninguna juntura quede colgando. */
 .pagina-clara .franja-nav {
   --marco-aire: clamp(.35rem, .8vw, .55rem);
-  --casilla-arriba: clamp(.95rem, 1.8vw, 1.35rem);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
@@ -1366,93 +1369,66 @@
    cero en reposo. Al pasar por encima, o al tocarla, crecen hasta cerrarse:
    el de arriba desde la izquierda, el de abajo desde la derecha, los lados
    en sentido contrario, como un trazo que da la vuelta. Van de fondo y no en
-   pseudo porque los dos pseudos ya son del numero, y desde el borde de la
-   caja (`border-box`) para que caigan encima de las junturas y no al lado. */
+   pseudo porque el `::before` es el numero, y desde el borde de la caja
+   (`border-box`) para que caigan encima de las junturas y no al lado.
+
+   El relleno de arriba es mas alto que el de abajo: arriba vive el numero,
+   y el nombre se centra en lo que queda. */
 .pagina-clara .franja-nav a {
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: .5rem;
-  padding: var(--casilla-arriba) .55rem clamp(1rem, 1.9vw, 1.4rem);
+  justify-content: center;
+  min-height: clamp(4.6rem, 7vw, 5.6rem);
+  padding: clamp(1.45rem, 2.2vw, 1.75rem) .7rem clamp(.95rem, 1.6vw, 1.2rem);
   background:
     var(--oro-marca-degradado) left top / 0 1px no-repeat,
     var(--oro-marca-degradado) right bottom / 0 1px no-repeat,
     var(--oro-marca-degradado) left bottom / 1px 0 no-repeat,
     var(--oro-marca-degradado) right top / 1px 0 no-repeat;
   background-origin: border-box;
-  font-family: var(--fuente-menu);
-  font-weight: 600;
-  font-size: .68rem;
-  letter-spacing: .15em;
-  line-height: 1.35;
-  text-transform: uppercase;
+  font-family: var(--fuente-titulo);
+  font-weight: 500;
+  font-size: clamp(1rem, .85rem + .4vw, 1.2rem);
+  letter-spacing: .02em;
+  line-height: 1.22;
   text-align: center;
   text-decoration: none;
-  color: rgba(255, 255, 255, .86);
+  color: #F4F1EA;
   -webkit-tap-highlight-color: transparent;
   transition: color .35s ease, background-size .5s cubic-bezier(.22, 1, .36, 1);
 }
-/* El numero, en la letra de los titulares y en el oro de marca recortado
-   contra la cifra, como el resto de la tipografia dorada del sitio. */
+/* El numero, en la esquina de arriba a la izquierda: pequeno, en la letra de
+   los titulares y en el oro de marca recortado contra la cifra, a media luz.
+   Al pasar por encima se enciende, y solo por dentro: sube a entero y sin
+   sombra ni halo alrededor. */
 .pagina-clara .franja-nav a::before {
   counter-increment: esp;
   content: counter(esp, decimal-leading-zero);
+  position: absolute;
+  top: clamp(.5rem, .9vw, .7rem);
+  left: clamp(.6rem, 1vw, .8rem);
   font-family: var(--fuente-titulo);
   font-weight: 500;
-  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem);
+  font-size: clamp(.74rem, .7rem + .2vw, .86rem);
   line-height: 1;
-  letter-spacing: .02em;
+  letter-spacing: .08em;
   background-image: var(--oro-marca-degradado);
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--oro-marca);
-}
-/* Y la luz de detras. Es la misma cifra otra vez, transparente, clavada
-   debajo de la de oro y hecha solo de sombra: lo que asoma alrededor de la
-   cifra es un halo que la sigue trazo a trazo, como las letras de metal con
-   la luz detras, y no un foco redondo sobre la piedra —un difuminado de oro
-   de fondo es justo lo que se quito—.
-
-   No es `filter: drop-shadow()` sobre la propia cifra, que en Chrome queda
-   igual: Safari pinta mal esa sombra y parpadea al desplazar. Ni
-   `text-shadow` en la cifra de oro: con el texto recortado la sombra se pinta
-   ENCIMA del degradado y la cifra sale plana, de un amarillo parejo.
-
-   Encaja sola: arriba a la misma altura que el relleno de la casilla y
-   centrada de canto a canto, igual que la de oro. Tres sombras: un filo
-   caliente pegado al trazo, el halo, y un resto que se abre poco mas de
-   media cifra. En reposo, al 80%; al pasar por encima o al tocar, entera. */
-.pagina-clara .franja-nav a::after {
-  content: counter(esp, decimal-leading-zero);
-  position: absolute;
-  top: var(--casilla-arriba);
-  left: 0;
-  right: 0;
-  z-index: -1;
-  font-family: var(--fuente-titulo);
-  font-weight: 500;
-  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem);
-  line-height: 1;
-  letter-spacing: .02em;
-  color: transparent;
-  text-shadow:
-    0 0 .08em rgba(255, 232, 160, .95),
-    0 0 .28em rgba(236, 196, 88, .62),
-    0 0 .7em rgba(212, 175, 55, .3);
-  opacity: .8;
-  pointer-events: none;
-  transition: opacity .45s ease;
+  opacity: .7;
+  transition: opacity .35s ease;
 }
 .pagina-clara .franja-nav a:hover,
 .pagina-clara .franja-nav a:focus-visible {
   color: #FFFFFF;
   background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
 }
-.pagina-clara .franja-nav a:hover::after,
-.pagina-clara .franja-nav a:focus-visible::after { opacity: 1; }
+.pagina-clara .franja-nav a:hover::before,
+.pagina-clara .franja-nav a:focus-visible::before { opacity: 1; }
 /* Sin movimiento, el marco aparece entero en vez de dibujarse. */
 @media (prefers-reduced-motion: reduce) {
   .pagina-clara .franja-nav a { transition: color .35s ease; }
@@ -1470,28 +1446,14 @@
   .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .34); }
   .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .3); }
 }
-@media (min-width: 576px) {
-  .pagina-clara .franja-nav a {
-    gap: .6rem;
-    font-size: .72rem;
-    letter-spacing: .16em;
-  }
-}
-/* Por debajo de 390 «Odontopediatria», que es una sola palabra, pide mas
-   ancho del que queda: se abre menos la letra y se estrecha el relleno. */
-@media (max-width: 389.98px) {
-  .pagina-clara .franja-nav a {
-    padding-inline: .4rem;
-    letter-spacing: .09em;
-  }
-}
-/* Y por debajo de 360, un punto menos de letra: a 320 las dos columnas dejan
-   menos de 120px por casilla. */
+/* Por debajo de 360 a las dos columnas les quedan menos de 120px por casilla,
+   y «Odontopediatria», que es una sola palabra, no entraba: un punto menos
+   de letra y menos relleno. */
 @media (max-width: 359.98px) {
   .pagina-clara .franja-nav a {
-    padding-inline: .3rem;
-    font-size: .6rem;
-    letter-spacing: .06em;
+    padding-inline: .4rem;
+    font-size: .9rem;
+    letter-spacing: 0;
   }
 }
 .pagina-clara .filtro-btn {
