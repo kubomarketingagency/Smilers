@@ -121,15 +121,19 @@
 
   /* Diez enlaces que se encienden de uno en uno, en el orden en que estan
      numerados. La mascara aqui abre de izquierda a derecha y no de arriba
-     abajo: son lineas de una sola altura, y sobre una linea el barrido
-     vertical no se ve. */
+     abajo: son casillas bajas, y sobre algo bajo el barrido vertical no se
+     ve.
+
+     El escalon va solo en la entrada. Con un `transition-delay` para todo,
+     el marco que se dibuja al pasar por encima (en el 15) esperaba tambien
+     su turno, y en la decima tardaba medio segundo en empezar. */
   .franja-nav.revelar a {
     opacity: 0;
     clip-path: inset(0 102% 0 -50%);
-    transition: opacity .5s cubic-bezier(.16, 1, .3, 1),
-                clip-path .66s cubic-bezier(.16, 1, .3, 1),
-                color .35s ease, background .35s ease;
-    transition-delay: var(--paso, 0s);
+    transition: opacity .5s cubic-bezier(.16, 1, .3, 1) var(--paso, 0s),
+                clip-path .66s cubic-bezier(.16, 1, .3, 1) var(--paso, 0s),
+                color .35s ease,
+                background-size .5s cubic-bezier(.22, 1, .36, 1);
   }
   .franja-nav.revelar.visible a { opacity: 1; clip-path: inset(-50%); }
   .franja-nav a:nth-of-type(1) { --paso: .02s; }

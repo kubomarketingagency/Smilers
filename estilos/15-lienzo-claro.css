@@ -1315,147 +1315,184 @@
   border: 0;
 }
 
-/* La misma piedra que los filtros de la Galeria, pero esto ya no es una tira
-   de navegacion: es el indice de la seccion.
+/* La misma piedra que los filtros de la Galeria, pero esto no es una tira de
+   navegacion: es el indice de la seccion. Diez casillas, y en cada una su
+   numero —el mismo 01..10 que preside su bloque mas abajo— grande y
+   encendido, con el nombre debajo. Asi la franja dice de una lo que es: aqui
+   van diez, esta es la tercera, y tocandola se llega a ella.
 
-   Ese es el cambio. Antes eran nombres sueltos repartidos en un cuadro,
-   centrados en su celda, y no se entendia que eran: ni una lista, ni una
-   tabla, ni un menu. Ahora cada uno lleva delante su numero —el mismo 01..10
-   que preside su bloque mas abajo— y el nombre arranca pegado a la
-   izquierda, que es como se lee un indice. Con eso la franja dice de una lo
-   que es: aqui van diez, esta es la tercera, y pinchandola se llega a ella.
+   Fue una tabla de lineas con el numero pequeno delante del nombre, y al
+   pasar por encima la casilla se llenaba de un velo de oro. En el telefono
+   ese velo se quedaba puesto en la que se habia tocado —en una pantalla
+   tactil el `:hover` dura hasta el siguiente toque—, y al volver al indice
+   se veia una mancha parda. La clinica lo quiso fuera (25-9-2026): numeros
+   mas grandes, retroiluminados, y el marco de oro.
 
    El numero sale de un contador de CSS y no del HTML: la numeracion de los
    bloques ya la lleva el documento, y duplicarla a mano seria pedir que las
-   dos listas no se despeguen nunca.
+   dos listas se despeguen.
 
-   Las junturas van en borde y no en pseudo, que es lo que deja el `::after`
-   libre para la flecha. En una tira centrada un borde de canto a canto la
-   habria convertido en una tabla; en un indice es justo lo que se quiere.
-
-   Columnas fijas que dividen a diez —dos filas de cinco en pantalla ancha,
-   cinco de dos por debajo— y por eso se sabe cual abre fila, que es lo unico
-   que hace falta para que ninguna linea quede colgando. Eran tres columnas
-   cuando habia nueve; con la decima, la ultima fila se quedaba con un solo
-   nombre y dos huecos. Las junturas van en cada tramo por separado, sin
-   pisarse. */
+   Columnas fijas que dividen a diez —cinco de dos, y dos filas de cinco en
+   pantalla ancha— y por eso se sabe cual abre fila, que es lo unico que
+   hace falta para que ninguna juntura quede colgando. Con el nombre debajo
+   del numero cada nombre tiene la casilla entera a lo ancho, y las cinco
+   columnas entran ya desde 992 (con el numero delante no entraban hasta
+   1200: «Odontopediatria» es una sola palabra). */
 .pagina-clara .franja-nav {
+  --marco-aire: clamp(.35rem, .8vw, .55rem);
+  --casilla-arriba: clamp(.95rem, 1.8vw, 1.35rem);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
-  padding: clamp(.3rem, .8vw, .6rem);
+  padding: var(--marco-aire);
   counter-reset: esp;
   margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
   margin-bottom: clamp(.5rem, 1vw, .9rem);
 }
+/* El marco es de dos filos, como los de cuadro: el de fuera es el del
+   degradado (el `::after` de arriba, con los filtros y las preguntas) y este
+   de dentro, mas tenue, corre justo por donde acaban las casillas, asi que
+   las junturas mueren en el en vez de quedarse cortas. */
+.pagina-clara .franja-nav::before {
+  content: '';
+  position: absolute;
+  inset: var(--marco-aire);
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid rgba(212, 175, 55, .42);
+}
+/* Cada casilla lleva dibujado su propio marco, recogido: cuatro filos de un
+   pixel pintados como fondo —el degradado de marca en cada uno— que miden
+   cero en reposo. Al pasar por encima, o al tocarla, crecen hasta cerrarse:
+   el de arriba desde la izquierda, el de abajo desde la derecha, los lados
+   en sentido contrario, como un trazo que da la vuelta. Van de fondo y no en
+   pseudo porque los dos pseudos ya son del numero, y desde el borde de la
+   caja (`border-box`) para que caigan encima de las junturas y no al lado. */
 .pagina-clara .franja-nav a {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(.55rem, 1.2vw, .95rem);
-  padding: clamp(.9rem, 1.9vw, 1.35rem) clamp(.9rem, 1.9vw, 1.5rem);
+  gap: .5rem;
+  padding: var(--casilla-arriba) .55rem clamp(1rem, 1.9vw, 1.4rem);
+  background:
+    var(--oro-marca-degradado) left top / 0 1px no-repeat,
+    var(--oro-marca-degradado) right bottom / 0 1px no-repeat,
+    var(--oro-marca-degradado) left bottom / 1px 0 no-repeat,
+    var(--oro-marca-degradado) right top / 1px 0 no-repeat;
+  background-origin: border-box;
   font-family: var(--fuente-menu);
   font-weight: 600;
-  font-size: .76rem;
-  letter-spacing: .19em;
+  font-size: .68rem;
+  letter-spacing: .15em;
   line-height: 1.35;
   text-transform: uppercase;
-  text-align: left;
+  text-align: center;
   text-decoration: none;
-  color: rgba(255, 255, 255, .68);
-  transition: color .35s ease, background .35s ease;
+  color: rgba(255, 255, 255, .86);
+  -webkit-tap-highlight-color: transparent;
+  transition: color .35s ease, background-size .5s cubic-bezier(.22, 1, .36, 1);
 }
-/* El numero, en la letra de los titulares y no en la del menu: es una cifra
-   de indice, no una etiqueta. Va en oro y por debajo del blanco del nombre,
-   que es quien manda en la linea. */
+/* El numero, en la letra de los titulares y en el oro de marca recortado
+   contra la cifra, como el resto de la tipografia dorada del sitio. */
 .pagina-clara .franja-nav a::before {
   counter-increment: esp;
   content: counter(esp, decimal-leading-zero);
   font-family: var(--fuente-titulo);
-  font-weight: 400;
-  font-size: .95rem;
-  letter-spacing: .04em;
+  font-weight: 500;
+  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem);
   line-height: 1;
+  letter-spacing: .02em;
+  background-image: var(--oro-marca-degradado);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: var(--oro-marca);
-  opacity: .6;
-  transition: opacity .35s ease;
 }
-/* La flecha va siempre puesta, tenue, y se enciende al pasar por encima. Que
-   este siempre es lo que hace que la celda no parezca medio vacia: el nombre
-   ocupa un tercio del hueco y sin nada al otro lado la fila se quedaba
-   colgando en el aire. Con la flecha al canto hay principio —el numero— y
-   final, que es como se lee una linea de indice. */
+/* Y la luz de detras. Es la misma cifra otra vez, transparente, clavada
+   debajo de la de oro y hecha solo de sombra: lo que asoma alrededor de la
+   cifra es un halo que la sigue trazo a trazo, como las letras de metal con
+   la luz detras, y no un foco redondo sobre la piedra —un difuminado de oro
+   de fondo es justo lo que se quito—.
+
+   No es `filter: drop-shadow()` sobre la propia cifra, que en Chrome queda
+   igual: Safari pinta mal esa sombra y parpadea al desplazar. Ni
+   `text-shadow` en la cifra de oro: con el texto recortado la sombra se pinta
+   ENCIMA del degradado y la cifra sale plana, de un amarillo parejo.
+
+   Encaja sola: arriba a la misma altura que el relleno de la casilla y
+   centrada de canto a canto, igual que la de oro. Tres sombras: un filo
+   caliente pegado al trazo, el halo, y un resto que se abre poco mas de
+   media cifra. En reposo, al 80%; al pasar por encima o al tocar, entera. */
 .pagina-clara .franja-nav a::after {
-  content: '\203A';
-  font-family: var(--fuente-menu);
-  font-size: 1rem;
+  content: counter(esp, decimal-leading-zero);
+  position: absolute;
+  top: var(--casilla-arriba);
+  left: 0;
+  right: 0;
+  z-index: -1;
+  font-family: var(--fuente-titulo);
+  font-weight: 500;
+  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem);
   line-height: 1;
-  color: var(--oro-marca);
-  opacity: .3;
-  transform: translateX(-4px);
-  transition: opacity .35s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
-}
-/* De dos en dos: la vertical en los pares, la horizontal de la segunda fila
-   para abajo. */
-@media (max-width: 1199.98px) {
-  .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 1px solid rgba(212, 175, 55, .3); }
-  .pagina-clara .franja-nav a:nth-of-type(n + 3) { border-top: 1px solid rgba(212, 175, 55, .22); }
-}
-/* De cinco en cinco. La celda se estrecha a una quinta parte, asi que la
-   letra baja un punto y se abre menos, y la flecha se cae: con la celda
-   estrecha el nombre ya la llena, que es para lo que estaba la flecha, y el
-   ancho le hace falta a «Odontopediatría», que es una sola palabra. */
-@media (min-width: 1200px) {
-  .pagina-clara .franja-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .pagina-clara .franja-nav a {
-    grid-template-columns: auto minmax(0, 1fr);
-    font-size: .72rem;
-    letter-spacing: .15em;
-  }
-  .pagina-clara .franja-nav a::after { display: none; }
-  .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .3); }
-  .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .22); }
+  letter-spacing: .02em;
+  color: transparent;
+  text-shadow:
+    0 0 .08em rgba(255, 232, 160, .95),
+    0 0 .28em rgba(236, 196, 88, .62),
+    0 0 .7em rgba(212, 175, 55, .3);
+  opacity: .8;
+  pointer-events: none;
+  transition: opacity .45s ease;
 }
 .pagina-clara .franja-nav a:hover,
 .pagina-clara .franja-nav a:focus-visible {
   color: #FFFFFF;
-  background: linear-gradient(90deg, rgba(212, 175, 55, .13), rgba(212, 175, 55, .02));
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
 }
-.pagina-clara .franja-nav a:hover::before,
-.pagina-clara .franja-nav a:focus-visible::before { opacity: 1; }
 .pagina-clara .franja-nav a:hover::after,
-.pagina-clara .franja-nav a:focus-visible::after { opacity: .9; transform: none; }
-
-@media (max-width: 575.98px) {
-  .pagina-clara .franja-nav a {
-    gap: .5rem;
-    padding: .8rem .6rem;
-    font-size: .63rem;
-    letter-spacing: .12em;
-  }
-  .pagina-clara .franja-nav a::before { font-size: .78rem; }
-  /* La flecha se cae: sin raton no se enciende nunca y solo estaria
-     robandole ancho al nombre, que aqui va justo. */
-  .pagina-clara .franja-nav a { grid-template-columns: auto minmax(0, 1fr); }
-  .pagina-clara .franja-nav a::after { display: none; }
+.pagina-clara .franja-nav a:focus-visible::after { opacity: 1; }
+/* Sin movimiento, el marco aparece entero en vez de dibujarse. */
+@media (prefers-reduced-motion: reduce) {
+  .pagina-clara .franja-nav a { transition: color .35s ease; }
 }
-/* Por debajo de 390 «Odontopediatria», que es una sola palabra, se salia de
-   su celda por 8px: se abre menos la letra y se estrecha el relleno. */
+
+/* Las junturas: de dos en dos, la vertical en los pares y la horizontal de
+   la segunda fila para abajo; de cinco en cinco, la vertical en todas menos
+   la que abre fila y la horizontal en la segunda. */
+@media (max-width: 991.98px) {
+  .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 1px solid rgba(212, 175, 55, .34); }
+  .pagina-clara .franja-nav a:nth-of-type(n + 3) { border-top: 1px solid rgba(212, 175, 55, .3); }
+}
+@media (min-width: 992px) {
+  .pagina-clara .franja-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .34); }
+  .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .3); }
+}
+@media (min-width: 576px) {
+  .pagina-clara .franja-nav a {
+    gap: .6rem;
+    font-size: .72rem;
+    letter-spacing: .16em;
+  }
+}
+/* Por debajo de 390 «Odontopediatria», que es una sola palabra, pide mas
+   ancho del que queda: se abre menos la letra y se estrecha el relleno. */
 @media (max-width: 389.98px) {
   .pagina-clara .franja-nav a {
-    padding-inline: .45rem;
-    letter-spacing: .07em;
+    padding-inline: .4rem;
+    letter-spacing: .09em;
   }
 }
-/* Y por debajo de 360 ni asi: a 320 las dos columnas dejan menos ancho del
-   que piden «Rehabilitacion» y «Odontopediatria». Ahi el indice va en una
-   sola columna. */
+/* Y por debajo de 360, un punto menos de letra: a 320 las dos columnas dejan
+   menos de 120px por casilla. */
 @media (max-width: 359.98px) {
-  .pagina-clara .franja-nav { grid-template-columns: minmax(0, 1fr); }
-  .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 0; }
-  .pagina-clara .franja-nav a:nth-of-type(n + 2) { border-top: 1px solid rgba(212, 175, 55, .22); }
+  .pagina-clara .franja-nav a {
+    padding-inline: .3rem;
+    font-size: .6rem;
+    letter-spacing: .06em;
+  }
 }
 .pagina-clara .filtro-btn {
   position: relative;
