@@ -277,7 +277,21 @@
     gap: clamp(1.8rem, 3.4vw, 3.4rem);
     align-items: start;
   }
+  /* La celda de la vitrina, en cambio, llega hasta abajo: es el recorrido
+     de su sticky. Con align-items: start medía lo mismo que las fotos, y
+     una pieza pegajosa que llena su caja no tiene por donde moverse, asi
+     que nunca se quedaba quieta: bajaba con la pagina y, desde el cartel
+     de los pagos diferidos, dejaba 578px de marmol vacio a la derecha al
+     final (a 1440px). Ahora se detiene bajo la barra mientras las
+     preguntas siguen, y las dos columnas acaban a la par. */
+  .faq-reja__vitrina { align-self: stretch; }
 }
+/* Y la seccion recorta con clip, no con hidden: el overflow: hidden de
+   .seccion-decorada (en el 11) la vuelve contenedor de scroll, y dentro de
+   una caja que no se desplaza el sticky no tiene contra que pegarse. Es el
+   mismo arreglo que el del pin de Nosotros en la portada (07). Las dos
+   clases juntas pesan mas que la del 11. */
+.pagina-faq .seccion-decorada { overflow: clip; }
 /* En el telefono las preguntas ya ocupan el ancho entero: la vitrina solo
    alargaria la pagina. */
 @media (max-width: 767.98px) {
@@ -313,6 +327,26 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .faq-vitrina__foto img { transition: none; }
+}
+
+/* El cartel de los pagos diferidos, al pie de «Citas y pagos»: suelto y a
+   la vista, no dentro de la respuesta de los metodos de pago, que esta
+   cerrada. Con el filo de oro y la sombra de las fotos de la vitrina, que
+   es la otra imagen de la pagina. Es alto (2:3), y a lo ancho de la
+   columna de preguntas pasaba de una pantalla de escritorio: va a 420px
+   de ancho como mucho, centrado. En el telefono ocupa la columna. El texto
+   del cartel va entero en el alt: es lo que dice la imagen. */
+.faq-promo {
+  max-width: 420px;
+  margin: clamp(1.8rem, 3.4vw, 2.6rem) auto 0;
+  border: 1px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  box-shadow: 0 22px 54px rgba(6, 6, 6, .18);
+}
+.faq-promo img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 @media (max-width: 767.98px) {

@@ -303,6 +303,18 @@
                  tz-deriva linear both;
       animation-timeline: auto, view();
     }
+
+    /* Hasta 991px las dos columnas se apilan, y el collage de Odontologia
+       General queda al pie del panel de su especialidad, que recorta lo que
+       sobresale (overflow: hidden, para poder abrirse y cerrarse). La foto
+       de abajo acaba en el filo de la caja, y con la deriva baja hasta 34px
+       mas: el panel se la comia por el pie, justo por la cara de la nina.
+       Se le deja ese sitio debajo, mas el paspartu, y la foto sigue donde
+       estaba. En escritorio el collage va al lado del texto y le sobra
+       sitio. */
+    @media (max-width: 991.98px) {
+      .tz-mosaico--escalera { margin-bottom: calc(34px + var(--aro)); }
+    }
   }
 }
 @keyframes tz-deriva {
