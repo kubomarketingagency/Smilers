@@ -775,7 +775,7 @@ Se quedaron fuera `image6`, que lleva la marca de agua «Dola AI» y el texto de
 
 ## La Galería — `galeria.html` e `imagenes/galeria/`
 
-**Una foto por cosa, y la mejor de cada una.** La rejilla lleva 44 fotos en
+**Una foto por cosa, y la mejor de cada una.** La rejilla lleva 60 fotos en
 cuatro filtros:
 
 | Filtro | Fotos | Qué entra |
@@ -783,7 +783,7 @@ cuatro filtros:
 | Instalaciones | 6 | Fachada, recepción, el jardín vertical, la sala de espera, el sillón y los consultorios. |
 | Equipo | 14 | Solo retratos: los cuatro de estudio y los diez especialistas. |
 | Especialidades (`tratamientos`) | 6 | El equipo trabajando: el ortodoncista ante sus radiografías, el diseño de sonrisa, la radiografía panorámica, la de implantes, la cefalometría y la cirugía. |
-| Sonrisas | 18 | Pacientes en la recepción. |
+| Sonrisas | 34 | Pacientes en la recepción (y una pareja en un consultorio). |
 
 Se quitaron de la rejilla, por repetidas, siete que decían lo mismo que otra:
 `lamparas-grande` y `lobby` (la recepción desde el mismo sitio que
@@ -806,9 +806,23 @@ señores (6.31.07, la misma toma que `IMG_3321`, y 6.30.54, los mismos en el
 consultorio). Los originales, tal cual llegaron, están en
 `imagenes/originales/galeria/`, que no se sube.
 
+`paciente-19…34` son la tanda que la clínica dejó en `imagenes/agregar/` el
+27 de septiembre de 2026 —16 fotos de WhatsApp del 24 y el 25, de 960 a 1600px
+de alto—, **todas**, por orden de hora. Aquí la regla de una por persona no se
+aplicó, porque las eligió la clínica: la 19 es la 6.30.54 que se había dejado
+fuera (los señores de la 01, en el consultorio), la 31 es la reina de la 02
+con el doctor, y la 23 y la 24, y la 28 y la 29, son la misma paciente en dos
+tomas. **Ninguna pasa de 300 KB**, que es lo que pidió la clínica: cada grande
+va con la calidad más alta que quepa (de 86 para abajo) y sin bajar de 72;
+las dos que a 72 no cabían se achicaron un poco antes que perder calidad
+(la 25 a 1360 de alto y la 33, la de más hoja, a 1280). Las miniaturas, igual
+que las de antes; la de la 22 va cortada desde arriba, que al 42% le cortaba
+la gorra al doctor. Los originales se guardaron con los demás, en
+`imagenes/originales/galeria/`.
+
 | Archivo | Qué es |
 |---|---|
-| `paciente-NN.webp` | Lo que abre el visor: 1440px de lado largo (sin agrandar las que llegaron menores), WebP al 72. De 111 a 378 KB: el jardín vertical es todo hoja y no se comprime más sin que se note. |
+| `paciente-NN.webp` | Lo que abre el visor: 1440px de lado largo (sin agrandar las que llegaron menores). Las 18 primeras, WebP al 72, de 111 a 378 KB: el jardín vertical es todo hoja y no se comprime más sin que se note; de la 19 en adelante, la calidad más alta que quepa en 300 KB (ver arriba), de 158 a 297 KB. |
 | `paciente-NN-cuadro.webp` | La miniatura de la rejilla: un cuadrado de 520px cortado a la altura de la persona (al 42% de la foto, o más abajo cuando está baja), con un desenfoque de 0,4px que en la celda no se ve y le quita un 15% de peso; de 33 a 67 KB. Con ella el `object-position` de `.galeria-item--paciente` (el 08) ya no mueve nada. |
 
 ---
