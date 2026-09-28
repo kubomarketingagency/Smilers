@@ -1037,128 +1037,223 @@
   text-transform: uppercase;
 }
 
-/* Cada pregunta, en su recuadro. Iban sueltas sobre el marmol blanco,
-   separadas por una raya de oro hondo, y sobre una piedra con vetas grises el
-   texto negro de la pregunta y el gris de la respuesta se leian a trozos.
-   Despues fueron tarjetas negras macizas, y pesaban: la pagina entera se
-   volvia una pila de losas. Ahora es negro con opacidad —el recuadro
-   oscurecido de las cifras de Nosotros y de la pregunta de la portada—, que
-   deja pasar la veta del marmol, con el filo entero en el oro de la marca.
+/* Las preguntas van sueltas sobre el marmol, y la abierta en su tarjeta
+   blanca.
 
-   El negro va al 66%: con eso el punto mas claro del marmol (245) queda en
-   91 de gris debajo de la letra, y la pregunta da 6,1:1 y la respuesta, en
-   blanco al 80%, 5:1. Al 62% la respuesta bajaba de 4,5:1 justo donde el
-   marmol es mas blanco. Sin `backdrop-filter`: el marmol va fijo detras de la
-   pagina, y un desenfoque sobre un fondo fijo se recalcula en cada
-   fotograma de scroll, por cada pregunta que haya en pantalla.
+   Fueron tarjetas negras, una por pregunta, debajo de las franjas de piedra
+   negra de cada apartado: doce recuadros oscuros seguidos, y la franja, que
+   es la que dice donde empieza un apartado, se confundia con lo que
+   encabeza. Ahora lo oscuro es solo la franja.
 
-   La pregunta va en blanco y la respuesta en blanco al 80%: son texto de
-   leer, y el texto de leer no va en oro. Lo que dice que una esta abierta es
-   la raya de 2px arriba —la de la pieza que sostiene lo que se esta
-   leyendo—, un negro un punto mas cerrado y la flecha, que da la vuelta. */
-/* Cantos vivos, como toda pieza del sitio: el 12 le pone a la tarjeta el
-   radio de `--radio-sm` con `!important`, y la unica forma de ganarle sin
-   otro `!important` es dejar esa variable a cero aqui. Y sin su `overflow`,
-   que se comia la raya de arriba, que va sobre el filo. */
+   Cerrada, la pregunta va sobre el marmol, en tinta y no en oro, que es
+   texto de leer, y la separa de la siguiente una raya fina de oro hondo
+   metida al margen del texto. Abierta, la pregunta y su respuesta se
+   vuelven una tarjeta blanca que flota: blanco entero, filo de oro y una
+   sombra larga y blanda, calida y no gris, que es la que la despega del
+   marmol sin pesar. La respuesta se lee siempre sobre blanco: sobre la veta
+   gris del marmol se leia a trozos, que es por lo que en su dia las
+   preguntas se metieron en recuadro.
+
+   El texto no se mueve de lado al abrirse: el margen de dentro (--faq-x) es
+   el mismo cerrada y abierta, y es la tarjeta la que aparece alrededor. Lo
+   que crece es el aire de arriba y de abajo, y el margen de fuera, para que
+   la tarjeta no toque las preguntas de al lado. La raya de encima de la
+   abierta, la de la pregunta de antes, se apaga con ella: quedaba suelta a
+   un dedo del filo de oro.
+
+   Cantos vivos, como toda pieza del sitio: el 12 le pone a la tarjeta el
+   radio de --radio-sm con !important, y la unica forma de ganarle sin otro
+   !important es dejar esa variable a cero aqui. */
+.pagina-clara .acordeon-faq {
+  --faq-x: clamp(1.15rem, 2.6vw, 2.2rem);
+  --faq-aro: 2.1rem;
+  --faq-curva: cubic-bezier(.22, 1, .36, 1);
+  --faq-tiempo: .5s;
+}
 .pagina-clara .acordeon-faq .accordion-item {
   --radio-sm: 0px;
   position: relative;
   overflow: visible;
-  margin: 0 0 clamp(.55rem, 1vw, .8rem);
-  /* El negro sube de .66 a .84, y de .74 a .9 la abierta. A .66 sobre el
-     marmol la tarjeta salia en un gris medio: la pregunta en blanco daba
-     5,45:1 —medidos en la captura, no en el papel—, que pasa la norma por
-     poco y en una pantalla de portatil a plena luz, que es donde se leen
-     estas, se perdia igual. A .84 daba 9,97:1, y en el .9 de ahora la
-     tarjeta es ya negra del todo, que es lo que es en el resto del sitio.
-     La veta del marmol sigue asomando; lo que se fue es el lavado. */
-  background: rgba(12, 11, 9, .94);
-  border: 1px solid transparent;
-  border-image: var(--oro-marca-degradado) 1;
+  margin: 0;
+  background: rgba(255, 255, 255, 0);
+  border: 0;
   border-radius: 0;
-  box-shadow: 0 12px 30px rgba(6, 6, 6, .1);
-  transition: background-color .35s ease, box-shadow .35s ease;
+  box-shadow: 0 0 0 0 rgba(58, 42, 12, 0), 0 0 0 0 rgba(58, 42, 12, 0);
+  transition:
+    margin var(--faq-tiempo) var(--faq-curva),
+    background-color var(--faq-tiempo) var(--faq-curva),
+    box-shadow var(--faq-tiempo) var(--faq-curva);
 }
+/* La raya entre una pregunta y la siguiente. */
+.pagina-clara .acordeon-faq .accordion-item::after {
+  content: '';
+  position: absolute;
+  left: var(--faq-x);
+  right: var(--faq-x);
+  bottom: 0;
+  height: 1px;
+  background: rgba(168, 128, 30, .38);
+  transition: opacity .3s ease;
+  pointer-events: none;
+}
+/* El filo de oro de la tarjeta. Va en pseudo y no en el borde de la pieza
+   porque un border-image no se funde, aparece de golpe; asi entra a la vez
+   que el blanco y la sombra. */
 .pagina-clara .acordeon-faq .accordion-item::before {
   content: '';
   position: absolute;
-  top: -1px; left: -1px; right: -1px;
+  inset: 0;
   z-index: 1;
-  height: 2px;
-  background: var(--oro-marca-degradado);
+  border: 1px solid transparent;
+  border-image: var(--gradiente-oro-hondo) 1;
   opacity: 0;
-  transition: opacity .35s ease;
+  transition: opacity var(--faq-tiempo) var(--faq-curva);
   pointer-events: none;
 }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) {
-  background: rgba(12, 11, 9, .97);
-  box-shadow: 0 22px 54px rgba(6, 6, 6, .2);
+  z-index: 1;
+  margin: clamp(.7rem, 1.3vw, 1rem) 0;
+  background: #FFFFFF;
+  box-shadow:
+    0 34px 70px -30px rgba(58, 42, 12, .34),
+    0 12px 28px -16px rgba(58, 42, 12, .18);
 }
+/* La primera ya tiene encima el aire de la franja. */
+.pagina-clara .acordeon-faq .accordion-item:first-child:has(.accordion-button:not(.collapsed)) { margin-top: 0; }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::before { opacity: 1; }
+.pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::after,
+.pagina-clara .acordeon-faq .accordion-item:has(+ .accordion-item .accordion-button:not(.collapsed))::after { opacity: 0; }
+
+/* Pregunta y respuesta van de un punto largo por encima del rem: eran las
+   dos unicas piezas de texto de leer del sitio que bajaban de el (.95), y en
+   una pagina que es solo texto eso se nota. */
 .pagina-clara .acordeon-faq .accordion-button,
 .pagina-clara .acordeon-faq .accordion-button:not(.collapsed) {
-  padding: clamp(1rem, 1.6vw, 1.35rem) 3.2rem clamp(1rem, 1.6vw, 1.35rem) clamp(1.1rem, 2vw, 1.6rem);
-  column-gap: 1.1rem;
+  --faq-y: clamp(1.1rem, 1.8vw, 1.45rem);
+  padding: var(--faq-y) var(--faq-x);
+  column-gap: 1rem;
   background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   font-family: var(--fuente-menu);
   font-weight: 500;
-  /* Pregunta y respuesta suben un punto largo: .95 -> 1.08 y .95 -> 1.04.
-     Eran las dos unicas piezas de texto de leer del sitio que bajaban de un
-     rem, y en una pagina que es solo texto eso se nota. La interlinea de la
-     respuesta baja de 1.95 a 1.82 para que el bloque no crezca de mas: con
-     el cuerpo mayor, ese aire ya no hace falta. */
   font-size: clamp(1.08rem, 1.3vw, 1.22rem);
-  line-height: 1.5;
-  letter-spacing: .02em;
-  color: #F5F2EC;
+  line-height: 1.45;
+  letter-spacing: .01em;
+  color: #2E2E2E;
+  transition: padding var(--faq-tiempo) var(--faq-curva), color .3s ease;
 }
-.pagina-clara .acordeon-faq .accordion-button:not(.collapsed) { color: #FFFFFF; }
+.pagina-clara .acordeon-faq .accordion-button:not(.collapsed) {
+  padding-top: clamp(1.45rem, 2.5vw, 2rem);
+  padding-bottom: clamp(1.05rem, 1.7vw, 1.35rem);
+  color: #111111;
+}
 .pagina-clara .acordeon-faq .accordion-button:focus-visible {
-  outline: 1px solid var(--oro-marca);
+  outline: 1px solid var(--oro-hondo);
   outline-offset: -4px;
 }
-.pagina-clara .acordeon-faq .accordion-button::before { display: none; }
 
-/* La flecha, en el oro vivo: el hondo es el de la piedra clara y sobre negro
-   se apaga. Va un poco mas adentro, que la tarjeta ya no llega al canto. */
+/* La flecha, en su aro, los dos en el oro hondo de la piedra clara. Son una
+   sola pieza, el aro con la flecha pintada dentro, y va en la fila y no
+   suelta: asi queda a la altura del centro del texto aunque la abierta
+   lleve mas aire arriba que abajo, y en el telefono, con la pregunta en dos
+   renglones, entre los dos. Al abrir, el aro se cierra en oro y la pieza
+   entera da media vuelta. El 12 pone en el ::before un punto en la abierta:
+   aqui no va. */
+.pagina-clara .acordeon-faq .accordion-button::before { display: none; }
 .pagina-clara .acordeon-faq .accordion-button::after {
   content: '';
-  width: 9px;
-  height: 9px;
-  margin-right: -1.6rem;
-  background-image: none;
-  border-right: 1px solid var(--oro-marca);
-  border-bottom: 1px solid var(--oro-marca);
-  transform: rotate(45deg) translate(-2px, -2px);
-  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+  flex: 0 0 auto;
+  width: var(--faq-aro);
+  height: var(--faq-aro);
+  margin: 0 0 0 auto;
+  border: 1px solid rgba(168, 128, 30, .42);
+  border-radius: 50%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23A8801E' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 6.25 8 9.75l3.5-3.5'/%3E%3C/svg%3E") center / 50% no-repeat;
+  transform: rotate(0deg);
+  transition:
+    transform var(--faq-tiempo) var(--faq-curva),
+    border-color .35s ease,
+    background-color .35s ease;
 }
 .pagina-clara .acordeon-faq .accordion-button:not(.collapsed)::after {
-  transform: rotate(225deg) translate(-2px, -2px);
+  border-color: var(--oro-hondo);
+  background-color: rgba(212, 175, 55, .1);
+  transform: rotate(-180deg);
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .pagina-clara .acordeon-faq .accordion-item:hover { background: rgba(255, 255, 255, .42); }
+  .pagina-clara .acordeon-faq .accordion-button.collapsed:hover { color: #0A0A0A; }
+  .pagina-clara .acordeon-faq .accordion-button.collapsed:hover::after { border-color: var(--oro-hondo); }
+}
+
 /* La respuesta empieza bajo una raya fina, la que separa lo que se pregunta
-   de lo que se contesta, metida al mismo margen que el texto. */
+   de lo que se contesta, metida al mismo margen que el texto. Entra
+   bajando un poco y encendiendose mientras la tarjeta se despliega, y al
+   cerrar se apaga antes de que la tarjeta se recoja.
+
+   Las dos son animaciones y no transiciones a proposito: la respuesta
+   cerrada esta en display: none, y un elemento que sale de ahi no tiene
+   estado de antes, asi que la transicion no corre y aparecia de golpe. Y
+   la de salida tampoco corria, al quitarle a la vez la animacion de
+   entrada: se apagaba en seco con la tarjeta todavia abierta. */
 .pagina-clara .acordeon-faq .accordion-body {
-  margin: 0 clamp(1.1rem, 2vw, 1.6rem);
-  padding: clamp(.9rem, 1.5vw, 1.2rem) 1.6rem clamp(1.2rem, 2vw, 1.6rem) 0;
-  border-top: 1px solid rgba(212, 175, 55, .22);
+  margin: 0 var(--faq-x);
+  padding: clamp(1rem, 1.7vw, 1.35rem) 0 clamp(1.6rem, 2.8vw, 2.3rem);
+  border-top: 1px solid rgba(168, 128, 30, .26);
   background: none;
   font-family: var(--fuente-cuerpo);
   font-weight: 300;
   font-size: 1.04rem;
-  line-height: 1.82;
-  color: rgba(255, 255, 255, .8);
+  line-height: 1.85;
+  color: #2E2E2E;
+  opacity: 0;
+  animation: faq-respuesta-sale .22s ease both;
+}
+.pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) .accordion-body {
+  opacity: 1;
+  animation: faq-respuesta var(--faq-tiempo) var(--faq-curva) .06s both;
+}
+@keyframes faq-respuesta {
+  from { opacity: 0; transform: translateY(-.6rem); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes faq-respuesta-sale {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(-.35rem); }
 }
 /* El telefono de la respuesta de citas es un enlace: con los detectores de
-   Safari apagados, sin el no se podria tocar para llamar. En blanco con el
+   Safari apagados, sin el no se podria tocar para llamar. En tinta con el
    subrayado en oro, que es un enlace y no texto de leer. */
 .pagina-clara .acordeon-faq .accordion-body a {
-  color: #FFFFFF;
+  color: #111111;
+  font-weight: 400;
   text-decoration: underline;
-  text-decoration-color: rgba(212, 175, 55, .8);
+  text-decoration-color: var(--oro-hondo);
   text-underline-offset: .22em;
+}
+/* El despliegue es el de Bootstrap, con la curva y el tiempo de la tarjeta:
+   su guion lee la duracion de aqui para saber cuando ha terminado. */
+.pagina-clara .acordeon-faq .collapsing {
+  transition: height var(--faq-tiempo) var(--faq-curva);
+}
+
+@media (max-width: 767.98px) {
+  .pagina-clara .acordeon-faq { --faq-aro: 1.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagina-clara .acordeon-faq .accordion-item,
+  .pagina-clara .acordeon-faq .accordion-item::before,
+  .pagina-clara .acordeon-faq .accordion-item::after,
+  .pagina-clara .acordeon-faq .accordion-button,
+  .pagina-clara .acordeon-faq .accordion-button:not(.collapsed),
+  .pagina-clara .acordeon-faq .accordion-button::after,
+  .pagina-clara .acordeon-faq .collapsing { transition: none; }
+  .pagina-clara .acordeon-faq .accordion-body,
+  .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) .accordion-body { animation: none; }
 }
 
 .pagina-galeria .seccion > .container { max-width: 1480px; }

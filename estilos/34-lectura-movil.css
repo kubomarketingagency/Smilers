@@ -112,8 +112,9 @@
 
   /* --- Preguntas frecuentes ----------------------------------------------- */
 
+  /* La respuesta, en su tarjeta blanca. */
   .pagina-clara .acordeon-faq .accordion-body {
     font-weight: 400;
-    color: rgba(255, 255, 255, .9);
+    color: #141414;
   }
 }
