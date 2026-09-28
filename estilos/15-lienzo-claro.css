@@ -1211,9 +1211,59 @@
   transform: rotate(180deg);
 }
 
+/* Al pasar por una pregunta cerrada, se encuadra en oro. Son las dos
+   escuadras del marco de los heros de Galeria y FAQ (el .bp-marco, mas
+   arriba en esta hoja): arriba a la izquierda y abajo a la derecha, cada
+   una con su tramo tendido y su tramo de pie, y dos lados abiertos. Se
+   dibujan desde su esquina con la curva en ese de aquel marco, que se lee
+   como un trazo, y al salir se recogen hacia ella. Van en el degradado de
+   oro de la piedra clara (--oro-vivo-degradado, que en una pagina clara es
+   el hondo), y cada tramo es una capa de fondo con el degradado, como
+   alli: un borde solo admite color plano.
+
+   A la vez, el mas da un cuarto de vuelta (al abrir sigue girando hasta
+   quedarse en menos), y las dos rayas que tocan la pregunta, la suya y la
+   de la de encima, se apagan: con ellas el encuadre quedaba cruzado por un
+   hilo.
+
+   Lo mismo con el teclado, al llegar a la pregunta con el tabulador. */
+.pagina-clara .acordeon-faq .accordion-header { position: relative; }
+.pagina-clara .acordeon-faq .accordion-header::before,
+.pagina-clara .acordeon-faq .accordion-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: background-size .7s cubic-bezier(.5, 0, .3, 1);
+}
+.pagina-clara .acordeon-faq .accordion-header::before {
+  background:
+    var(--oro-vivo-degradado, var(--gradiente-oro-hondo)) left top / 0 1px no-repeat,
+    var(--oro-vivo-degradado, var(--gradiente-oro-hondo)) left top / 1px 0 no-repeat;
+}
+.pagina-clara .acordeon-faq .accordion-header::after {
+  background:
+    var(--oro-vivo-degradado, var(--gradiente-oro-hondo)) right bottom / 0 1px no-repeat,
+    var(--oro-vivo-degradado, var(--gradiente-oro-hondo)) right bottom / 1px 0 no-repeat;
+}
+.pagina-clara .acordeon-faq .accordion-header:has(> .accordion-button.collapsed:focus-visible)::before,
+.pagina-clara .acordeon-faq .accordion-header:has(> .accordion-button.collapsed:focus-visible)::after {
+  background-size: 34% 1px, 1px 100%;
+}
+.pagina-clara .acordeon-faq .accordion-item:has(> .accordion-header .accordion-button.collapsed:focus-visible)::after,
+.pagina-clara .acordeon-faq .accordion-item:has(+ .accordion-item > .accordion-header .accordion-button.collapsed:focus-visible)::after { opacity: 0; }
+
 @media (hover: hover) and (pointer: fine) {
   .pagina-clara .acordeon-faq .accordion-item:hover { background: rgba(255, 255, 255, .42); }
   .pagina-clara .acordeon-faq .accordion-button.collapsed:hover { color: #0A0A0A; }
+  .pagina-clara .acordeon-faq .accordion-header:has(> .accordion-button.collapsed:hover)::before,
+  .pagina-clara .acordeon-faq .accordion-header:has(> .accordion-button.collapsed:hover)::after {
+    background-size: 34% 1px, 1px 100%;
+  }
+  .pagina-clara .acordeon-faq .accordion-button.collapsed:hover::after { transform: rotate(90deg); }
+  .pagina-clara .acordeon-faq .accordion-item:has(> .accordion-header .accordion-button.collapsed:hover)::after,
+  .pagina-clara .acordeon-faq .accordion-item:has(+ .accordion-item > .accordion-header .accordion-button.collapsed:hover)::after { opacity: 0; }
 }
 
 /* El cajon de la respuesta. */
@@ -1333,6 +1383,8 @@
   .pagina-clara .acordeon-faq .accordion-button,
   .pagina-clara .acordeon-faq .accordion-button:not(.collapsed),
   .pagina-clara .acordeon-faq .accordion-button::after,
+  .pagina-clara .acordeon-faq .accordion-header::before,
+  .pagina-clara .acordeon-faq .accordion-header::after,
   .pagina-clara .acordeon-faq .collapsing { transition: none; }
 }
 
