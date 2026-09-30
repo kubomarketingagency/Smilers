@@ -129,6 +129,82 @@
   .hero-titulo { --hl-logo: 84vw; --hl-aire-x: 4vw; --hl-aire-y: 5vw; }
 }
 
+/* EL MARCO DE ORO de la portada: las dos escuadras de los heros de Galeria y
+   FAQ (el .bp-marco del 15), aqui a pantalla entera. Arriba a la izquierda
+   y abajo a la derecha, cada una con su tramo tendido y su tramo de pie, y
+   dos lados abiertos; cada tramo es una capa de fondo con el degradado de
+   la marca, y la sombra es para que el pixel de oro no se pierda en lo
+   claro de las fotos.
+
+   Va casi al canto de la pantalla (--hm-aire) para que la esquina de abajo
+   abrace el boton de WhatsApp en vez de cruzarlo: la raya de abajo pasa
+   11px por debajo del boton, que esta a 25px del suelo (22 en el telefono),
+   y la de la derecha por su costado. Arriba empieza donde acaba la barra,
+   y es la barra de arriba del todo (--alto-navbar-arriba, 75px): con la
+   encogida (62) el tramo de arriba se montaba en su filo de oro.
+
+   En el telefono el recuadro del logo ocupa casi el ancho (4vw a cada lado)
+   y los tramos de pie, a media pantalla, corrian a 4px de sus cantos, como
+   una raya doble. Alli miden el 22% del alto: acaban antes del recuadro
+   hasta en una pantalla de 548 de alto (un iPhone SE con la barra).
+
+   Se dibuja como aquel: cada escuadra desde su esquina, primero el tramo
+   tendido y luego el de pie. Espera a que se vaya el video de bienvenida
+   (hero.js pone .splash-fuera en el html); si ya se vio, arranca solo. Sin
+   animaciones, esta puesto desde el principio. */
+.hero-marco {
+  --hm-aire: 14px;
+  position: absolute;
+  top: calc(var(--alto-navbar-arriba) + var(--hm-aire));
+  right: var(--hm-aire);
+  bottom: var(--hm-aire);
+  left: var(--hm-aire);
+  z-index: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 5px rgba(4, 3, 2, .6));
+}
+.hero-marco::before,
+.hero-marco::after {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 50%;
+}
+.hero-marco::before {
+  top: 0;
+  left: 0;
+  background:
+    var(--oro-marca-degradado) left top / 100% 1px no-repeat,
+    var(--oro-marca-degradado) left top / 1px 100% no-repeat;
+}
+.hero-marco::after {
+  right: 0;
+  bottom: 0;
+  background:
+    var(--oro-marca-degradado) right bottom / 100% 1px no-repeat,
+    var(--oro-marca-degradado) right bottom / 1px 100% no-repeat;
+}
+@media (max-width: 767.98px) {
+  .hero-marco { --hm-aire: 11px; }
+  .hero-marco::before,
+  .hero-marco::after { height: 22%; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-marco::before,
+  .hero-marco::after {
+    animation: hero-marco-abre 1.6s cubic-bezier(.5, 0, .3, 1) .6s both paused;
+  }
+  html.sin-splash .hero-marco::before,
+  html.sin-splash .hero-marco::after,
+  html.splash-fuera .hero-marco::before,
+  html.splash-fuera .hero-marco::after { animation-play-state: running; }
+}
+@keyframes hero-marco-abre {
+  0%   { background-size: 0 1px,    1px 0; }
+  50%  { background-size: 100% 1px, 1px 0; }
+  100% { background-size: 100% 1px, 1px 100%; }
+}
+
 .hero-cine {
   position: relative;
   height: 460vh;

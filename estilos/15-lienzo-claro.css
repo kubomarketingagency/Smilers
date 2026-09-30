@@ -1296,6 +1296,9 @@
   text-decoration-color: var(--oro-hondo);
   text-underline-offset: .22em;
 }
+/* Los numeros, enteros: con guiones el navegador los partia por ellos al
+   final del renglon (099-811- / 3383). */
+.pagina-clara .acordeon-faq .accordion-body a[href^="tel:"] { white-space: nowrap; }
 
 /* ---------------------------------------------------------------------------
    LA RESPUESTA ENTRA DETRAS DE UNA CORTINA DE ORO, la misma de las fotos

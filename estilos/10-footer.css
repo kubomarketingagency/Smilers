@@ -119,6 +119,68 @@
   background: var(--gradiente-oro);
 }
 
+/* El QR de WhatsApp Business, al lado de la cabecera de «Escribenos» y de su
+   frase. Ahi y no debajo del formulario: las tres columnas del pie miden
+   casi lo mismo (a 1440, 474, 474 y 468), la del formulario es la mas alta,
+   y debajo de ella el pie crecia 110px; la ficha se quedaba corta y el mapa,
+   que tiene techo para no ponerse de pie, tambien. Al lado de la cabecera
+   ocupa el alto que ya ocupaban ella y su frase.
+
+   El codigo va en blanco, que es como lo leen las camaras, con el filo y la
+   sombra de las fotos, y lleva debajo su rotulo en oro. En el telefono no
+   hay nada que escanear, pero es un enlace: tocandolo se abre el chat. */
+.pie-escribenos {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.pie-escribenos__texto { min-width: 0; }
+.pie-qr {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  width: 96px;
+  text-decoration: none;
+}
+.pie-qr img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid transparent;
+  border-image: var(--gradiente-oro) 1;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .5);
+  transition: transform .5s var(--gm-curva, cubic-bezier(.22, 1, .36, 1));
+}
+.pie-qr__rotulo {
+  font-family: var(--fuente-menu);
+  font-weight: 600;
+  font-size: .6rem;
+  /* Con 1 la tilde de la E mayuscula quedaba por encima de la caja, y el oro,
+     que va recortado contra la letra, solo se pinta dentro: salia ESCANEALO. */
+  line-height: 1.7;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  background: var(--gradiente-oro);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-500);
+}
+.pie-qr:focus-visible {
+  outline: 1px solid var(--gold-500);
+  outline-offset: 4px;
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pie-qr:hover img { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pie-qr img { transition: none; }
+}
+
 /* ---------------------------------------------------------------------------
    La ficha de la casa: la primera columna, dentro de un recuadro de oro.
 

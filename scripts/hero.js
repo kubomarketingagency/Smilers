@@ -275,6 +275,8 @@ document.addEventListener('DOMContentLoaded', function () {
       retirado = true;
       temporizadores.forEach(clearTimeout);
       splash.classList.add('oculto');
+      // El marco de oro del hero espera a esto para dibujarse (05-hero.css).
+      document.documentElement.classList.add('splash-fuera');
       setTimeout(function () {
         splash.remove();
         window.SmilersSplashTerminado = true;

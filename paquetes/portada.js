@@ -1013,6 +1013,7 @@ if(retirado)return;
 retirado=true;
 temporizadores.forEach(clearTimeout);
 splash.classList.add('oculto');
+document.documentElement.classList.add('splash-fuera');
 setTimeout(function(){
 splash.remove();
 window.SmilersSplashTerminado=true;
