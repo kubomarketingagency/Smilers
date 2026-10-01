@@ -133,8 +133,15 @@
    FAQ (el .bp-marco del 15), aqui a pantalla entera. Arriba a la izquierda
    y abajo a la derecha, cada una con su tramo tendido y su tramo de pie, y
    dos lados abiertos; cada tramo es una capa de fondo con el degradado de
-   la marca, y la sombra es para que el pixel de oro no se pierda en lo
-   claro de las fotos.
+   la marca.
+
+   Los tramos miden 2px (--hm-grosor), y 3px desde 1600 de ancho. Con uno el
+   marco se perdia en la foto: el tramo claro del degradado desaparecia
+   sobre el techo blanco, y en una pantalla grande las tiras de luz del techo
+   pesaban mas que el. Lo despegan de la foto dos sombras: un filo oscuro de
+   1px pegado al oro, que es lo que lo dibuja sobre lo claro (techo, lamparas,
+   el suelo de la recepcion), y la sombra suave de siempre, que lo asienta
+   sobre lo oscuro.
 
    Va casi al canto de la pantalla (--hm-aire) para que la esquina de abajo
    abrace el boton de WhatsApp en vez de cruzarlo: la raya de abajo pasa
@@ -151,9 +158,12 @@
    Se dibuja como aquel: cada escuadra desde su esquina, primero el tramo
    tendido y luego el de pie. Espera a que se vaya el video de bienvenida
    (hero.js pone .splash-fuera en el html); si ya se vio, arranca solo. Sin
-   animaciones, esta puesto desde el principio. */
+   animaciones esta puesto desde el principio, pero eso solo pasa si la
+   construccion vuelve a respetar el "reducir movimiento" del sistema (ver
+   RESPETAR_MENOS_MOVIMIENTO en herramientas/construir.js). */
 .hero-marco {
   --hm-aire: 14px;
+  --hm-grosor: 2px;
   position: absolute;
   top: calc(var(--alto-navbar-arriba) + var(--hm-aire));
   right: var(--hm-aire);
@@ -161,7 +171,10 @@
   left: var(--hm-aire);
   z-index: 0;
   pointer-events: none;
-  filter: drop-shadow(0 1px 5px rgba(4, 3, 2, .6));
+  filter: drop-shadow(0 0 1px rgba(4, 3, 2, .75)) drop-shadow(0 1px 5px rgba(4, 3, 2, .55));
+}
+@media (min-width: 1600px) {
+  .hero-marco { --hm-grosor: 3px; }
 }
 .hero-marco::before,
 .hero-marco::after {
@@ -174,15 +187,15 @@
   top: 0;
   left: 0;
   background:
-    var(--oro-marca-degradado) left top / 100% 1px no-repeat,
-    var(--oro-marca-degradado) left top / 1px 100% no-repeat;
+    var(--oro-marca-degradado) left top / 100% var(--hm-grosor) no-repeat,
+    var(--oro-marca-degradado) left top / var(--hm-grosor) 100% no-repeat;
 }
 .hero-marco::after {
   right: 0;
   bottom: 0;
   background:
-    var(--oro-marca-degradado) right bottom / 100% 1px no-repeat,
-    var(--oro-marca-degradado) right bottom / 1px 100% no-repeat;
+    var(--oro-marca-degradado) right bottom / 100% var(--hm-grosor) no-repeat,
+    var(--oro-marca-degradado) right bottom / var(--hm-grosor) 100% no-repeat;
 }
 @media (max-width: 767.98px) {
   .hero-marco { --hm-aire: 11px; }
@@ -200,9 +213,9 @@
   html.splash-fuera .hero-marco::after { animation-play-state: running; }
 }
 @keyframes hero-marco-abre {
-  0%   { background-size: 0 1px,    1px 0; }
-  50%  { background-size: 100% 1px, 1px 0; }
-  100% { background-size: 100% 1px, 1px 100%; }
+  0%   { background-size: 0 var(--hm-grosor),    var(--hm-grosor) 0; }
+  50%  { background-size: 100% var(--hm-grosor), var(--hm-grosor) 0; }
+  100% { background-size: 100% var(--hm-grosor), var(--hm-grosor) 100%; }
 }
 
 .hero-cine {

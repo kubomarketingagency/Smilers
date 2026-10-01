@@ -24,6 +24,10 @@
  *  4. Sello. Pone `?v=<hash del contenido>` a cada recurso local que pide la
  *     pagina: `href`, `src`, `srcset`, `data-*` y las `url()` de los estilos.
  *     Es lo que permite cachear todo un ano sin congelar nada (ver CACHE.md).
+ *  5. Movimiento. Quita de los estilos lo que se apaga con el ajuste de
+ *     "reducir movimiento" del sistema y rellena `<script data-movimiento>`
+ *     para que los guiones hagan lo mismo: la pagina se mueve igual en todos
+ *     los dispositivos. Ver RESPETAR_MENOS_MOVIMIENTO.
  *
  * La minificacion es a proposito conservadora: quita comentarios y espacios
  * que no significan nada y no toca un solo nombre, numero ni color. En los
@@ -42,6 +46,45 @@ const SOLO_VERIFICAR = process.argv.includes('--verificar');
 
 const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html', 'privacidad.html'];
 const PAQUETES = 'paquetes';
+
+/* EL MOVIMIENTO, EN TODOS LOS DISPOSITIVOS (desde el 2026-10-01).
+
+   Las hojas y los guiones preguntan por `prefers-reduced-motion`, que es el
+   ajuste de "reducir movimiento" del sistema, y con el puesto la pagina se
+   quedaba quieta entera: sin el video de bienvenida, sin las escenas
+   clavadas, sin las entradas de las secciones, con el carrusel parado y el
+   marco de oro puesto de golpe. Plana.
+
+   Ese ajuste no lo pone solo quien lo necesita. Windows lo da por puesto en
+   cuanto estan apagados los "efectos de animacion", que es lo normal en los
+   ordenadores de una universidad o de una oficina, en una sesion de
+   Escritorio remoto o con "Ajustar para obtener el mejor rendimiento"; en el
+   iPhone es "Reducir movimiento" y en Android "Quitar animaciones", que mucha
+   gente enciende para ahorrar bateria. En esos equipos la web salia plana
+   desde la primera visita, y parecia un fallo de los dispositivos nuevos.
+
+   El cliente quiere la pagina igual en todos. Con esto en false, la
+   construccion quita de las hojas los bloques `@media
+   (prefers-reduced-motion: reduce)` y deja los de `no-preference` en
+   `@media all`, y rellena el `<script data-movimiento>` de cada pagina, el
+   primero del <head>, para que a los guiones `matchMedia` les conteste lo
+   mismo: sin preferencia. Las dos cosas van juntas y no se pueden separar:
+   una escena clavada por las hojas pero sin el guion que la mueve se queda
+   a medias.
+
+   Lo escrito para menos movimiento sigue en las hojas y en los guiones tal
+   cual. Poner esto en true y construir lo devuelve todo como estaba. */
+const RESPETAR_MENOS_MOVIMIENTO = false;
+
+/* El guion que va en `<script data-movimiento>`. Solo cambia las preguntas
+   por `prefers-reduced-motion` a solas, que son las que hace el sitio; las
+   demas consultas pasan tal cual. `all` y `not all` son las consultas que
+   siempre y nunca se cumplen. */
+const GUION_MOVIMIENTO =
+  '(function(){var m=window.matchMedia;if(!m)return;window.matchMedia=function(q){' +
+  'var c=String(q).replace(/\\s+/g,"").toLowerCase();' +
+  'return m.call(window,c==="(prefers-reduced-motion:no-preference)"?"all":' +
+  'c==="(prefers-reduced-motion:reduce)"||c==="(prefers-reduced-motion)"?"not all":q)}})();';
 
 const SELLABLES = /\.(css|js|mjs|webp|avif|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i;
 const TEXTO = /\.(css|js|mjs|svg)$/i;
@@ -455,6 +498,60 @@ function conRespaldoVh(css) {
     });
 }
 
+/* Donde se cierra el bloque cuya llave abre en `abre`, en una hoja ya
+   minificada. Cuenta llaves saltandose las cadenas, los comentarios que
+   sobreviven (los `/*!`) y las url() sin comillas, que pueden llevar
+   cualquier cosa dentro. */
+function finDeBloque(css, abre) {
+  let profundidad = 0;
+  for (let k = abre; k < css.length; k++) {
+    const c = css[k];
+    if (c === '\\') { k++; continue; }
+    if (c === '"' || c === "'") {
+      k++;
+      while (k < css.length && css[k] !== c) {
+        if (css[k] === '\\') k++;
+        k++;
+      }
+      continue;
+    }
+    if (c === '/' && css[k + 1] === '*') {
+      const fin = css.indexOf('*/', k + 2);
+      if (fin < 0) break;
+      k = fin + 1;
+      continue;
+    }
+    if ((c === 'u' || c === 'U') && /^url\([^'"]/i.test(css.substr(k, 5))) {
+      const fin = css.indexOf(')', k);
+      if (fin < 0) break;
+      k = fin;
+      continue;
+    }
+    if (c === '{') profundidad++;
+    else if (c === '}' && --profundidad === 0) return k;
+  }
+  throw new Error('llave sin cerrar');
+}
+
+/* Ver RESPETAR_MENOS_MOVIMIENTO. Los bloques de `reduce` se van enteros, con
+   todo lo de dentro, y los de `no-preference` se quedan en `@media all`, que
+   no les cambia el sitio en la cascada. Solo conoce esas dos formas a solas,
+   que son las que hay; si una hoja trae otra (con `and`, con `not`, la corta
+   sin valor), para la construccion en vez de dejarla a medias. Va despues de
+   minificar: cada bloque llega escrito siempre igual. */
+function conMovimiento(css, hoja) {
+  if (RESPETAR_MENOS_MOVIMIENTO) return css;
+  const REDUCIR = '@media (prefers-reduced-motion:reduce){';
+  let salida = css.split('@media (prefers-reduced-motion:no-preference){').join('@media all{');
+  for (let i = salida.indexOf(REDUCIR); i !== -1; i = salida.indexOf(REDUCIR, i)) {
+    salida = salida.slice(0, i) + salida.slice(finDeBloque(salida, i + REDUCIR.length - 1) + 1);
+  }
+  if (/prefers-reduced-motion/i.test(salida)) {
+    throw new Error(hoja + ': pregunta por prefers-reduced-motion de una forma que conMovimiento() no sabe tratar');
+  }
+  return salida;
+}
+
 function construirEstilos(hojas, pagina) {
   let fuente = 0;
   const css = hojas.map(function (rel) {
@@ -464,7 +561,7 @@ function construirEstilos(hojas, pagina) {
     }
     const texto = leerTexto(rel).replace(/@charset\s+"[^"]*";/gi, '');
     fuente += Buffer.byteLength(texto);
-    return reescribirUrls(conRespaldoVh(minificarCSS(texto)), rel, pagina);
+    return reescribirUrls(conRespaldoVh(conMovimiento(minificarCSS(texto), rel)), rel, pagina);
   }).join('');
   return { css: css, fuente: fuente };
 }
@@ -536,6 +633,17 @@ function procesarPagina(pagina) {
   html = html.replace(/(<script\b[^>]*\bdata-fuentes\b[^>]*>)[\s\S]*?(<\/script>)/, function (_t, apertura, cierre) {
     const lista = apertura.match(/\bdata-precargar="([^"]*)"/);
     return apertura + guionFuentes(hojas, pagina, lista ? listaDe(lista[1]) : []) + cierre;
+  });
+
+  /* El guion del movimiento tiene que correr antes que cualquier otro que
+     pregunte por el: va el primero de la pagina. Ver RESPETAR_MENOS_MOVIMIENTO. */
+  const reMovimiento = /(<script\b[^>]*\bdata-movimiento\b[^>]*>)[\s\S]*?(<\/script>)/g;
+  const movimientos = html.match(reMovimiento) || [];
+  if (movimientos.length !== 1 || html.indexOf('<script') !== html.indexOf(movimientos[0])) {
+    throw new Error(pagina + ': tiene que haber un <script data-movimiento>, y tiene que ser el primer <script> de la pagina');
+  }
+  html = html.replace(reMovimiento, function (_t, apertura, cierre) {
+    return apertura + (RESPETAR_MENOS_MOVIMIENTO ? '' : GUION_MOVIMIENTO) + cierre;
   });
 
   const reGuiones = /<script\b[^>]*\bdata-guiones="([^"]*)"[^>]*>/g;
