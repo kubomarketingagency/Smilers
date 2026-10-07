@@ -163,27 +163,37 @@ window.addEventListener(tipo,una,{once:true,passive:true});
 });
 var splash=document.getElementById('splashInicio');
 var video=document.getElementById('splashVideo');
-if(splash&&video&&!document.documentElement.classList.contains('sin-splash')){
+var conSplash=!!(splash&&video&&!document.documentElement.classList.contains('sin-splash'));
 var tipos=window.PerformanceObserver&&PerformanceObserver.supportedEntryTypes;
-if(tipos&&tipos.indexOf('largest-contentful-paint')>=0){
+var conLcp=!!(tipos&&tipos.indexOf('largest-contentful-paint')>=0);
+var pintado=!conLcp;
+var cargado=conSplash;
+function quizas(){
+if(pintado&&cargado)requestAnimationFrame(function(){requestAnimationFrame(una);});
+}
+if(conLcp){
 var obs=new PerformanceObserver(function(lista){
-var pintado=lista.getEntries().some(function(e){return e.element&&splash.contains(e.element);});
-if(pintado){obs.disconnect();setTimeout(una,0);}
+var vale=lista.getEntries().some(function(e){return !conSplash||(e.element&&splash.contains(e.element));});
+if(!vale)return;
+obs.disconnect();
+pintado=true;
+quizas();
 });
 obs.observe({type:'largest-contentful-paint',buffered:true});
-}else{
-video.addEventListener('playing',function(){setTimeout(una,600);},{once:true});
 }
+if(conSplash){
+if(!conLcp)video.addEventListener('playing',function(){setTimeout(una,600);},{once:true});
 document.addEventListener('smilers:splash-fin',una,{once:true});
 setTimeout(una,2500);
 return;
 }
-var tras=function(){
-requestAnimationFrame(function(){requestAnimationFrame(una);});
-setTimeout(una,1500);
+var alCargar=function(){
+cargado=true;
+quizas();
+setTimeout(una,2500);
 };
-if(document.readyState==='complete')tras();
-else window.addEventListener('load',tras,{once:true});
+if(document.readyState==='complete')alCargar();
+else window.addEventListener('load',alCargar,{once:true});
 }
 trasLoCritico(function(){
 var diferidas=document.querySelectorAll('[data-diferida]');
