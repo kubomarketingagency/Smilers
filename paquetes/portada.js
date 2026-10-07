@@ -178,8 +178,12 @@ document.addEventListener('smilers:splash-fin',una,{once:true});
 setTimeout(una,2500);
 return;
 }
-if(document.readyState==='complete')setTimeout(una,0);
-else window.addEventListener('load',una,{once:true});
+var tras=function(){
+requestAnimationFrame(function(){requestAnimationFrame(una);});
+setTimeout(una,1500);
+};
+if(document.readyState==='complete')tras();
+else window.addEventListener('load',tras,{once:true});
 }
 trasLoCritico(function(){
 var diferidas=document.querySelectorAll('[data-diferida]');
