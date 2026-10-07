@@ -104,8 +104,6 @@
     },
     copiar: function (o, a) { o.set(a); return o; },
 
-    /* Las mismas matrices que desdeTraslacion y desdeEscala, escritas sobre
-       una que ya existe: el bucle de cada fotograma no crea ninguna. */
     identidad: function (o) {
       o.fill(0);
       o[0] = 1; o[5] = 1; o[10] = 1; o[15] = 1;
@@ -206,15 +204,6 @@
     }
   };
 
-  /* La cara de cada testimonio: un disco en el plano XY, centrado en el
-     origen, armado como un abanico desde el centro. Las uv mapean el
-     cuadrado que lo envuelve a 0..1, asi que la celda del atlas es cuadrada
-     y el disco ensena su circulo inscrito.
-
-     Hubo en medio una version con tarjetas verticales de 9:16, que era lo que
-     pedia un video vertical entero. Pero un video no tiene por que entrar
-     entero: dentro del circulo cabe mas ancho de lo que el circulo mide, y
-     entonces lo que se ve es la cara. Ver `.tst-video__medio` en el 13. */
   function geometriaDisco(pasos, radio) {
     var vertices = [0, 0, 0];
     var uvs = [0.5, 0.5];
@@ -310,17 +299,6 @@
     return b;
   }
 
-  /* LAS FOTOS DEL ATLAS. Se piden como archivo y se descodifican con
-     `createImageBitmap(blob)`, que lo hace en otro hilo. Con una `Image` y
-     `createImageBitmap(img)` Chrome las descodificaba en el hilo principal,
-     dentro del `onload`: 30-50ms por foto con la CPU de un telefono medio,
-     cuatro o cinco tirones seguidos justo al llegar a los testimonios.
-
-     Se piden una vez: el aviso de la seccion (a dos pantallas y media) las
-     adelanta, y el atlas recoge las mismas promesas. Cada una se entrega una
-     sola vez, que el atlas cierra el bitmap al pintarlo; si hiciera falta
-     otra (el atlas rehecho), se vuelve a pedir y sale de la cache HTTP.
-     Donde algo falla se cae a la `Image` de siempre. */
   var fotosPedidas = {};
 
   function cargarComoImagen(fuente) {
@@ -460,38 +438,8 @@ void main() {
 `;
 
   var RADIO_ESFERA = 2;
-  /* Lo que mide un disco frente al radio de la esfera. Lo usan el bucle que
-     coloca las instancias y medidaDisco(), que tiene que dar la misma medida
-     que se ve. */
   var ESC_DISCO = 0.25;
-  /* El radio del disco en unidades de geometria. Por ESC_DISCO son 0,325 de
-     radio en el mundo, y eso es cuatro quintos del alto del lienzo. Fue 1
-     —dos tercios— y luego 1,2, y ha ido subiendo a peticion de la clinica;
-     mas arriba empieza a pisar el rotulo de la seccion, que cuelga siempre a
-     la misma altura y en una pantalla baja es lo primero que se toca. */
   var DISCO_RADIO = 1.3;
-  /* Cuanto mas ancho que el circulo va el video dentro, y a que altura del
-     fotograma cae la cara de quien habla. Son las mismas dos cifras que el
-     CSS (`--tst-zoom` y `--tst-foco` en el 13): con ellas recorta el atlas la
-     foto del disco, de modo que el disco y el video que se pone encima
-     ensenan lo mismo y el relevo entre uno y otro no se nota. Si se cambia
-     una hay que cambiarla en los dos sitios. */
-  /* El encuadre de un testimonio: cuanto se acerca el circulo (`zoom`) y en
-     que punto del fotograma se centra (`foco` a lo alto, `eje` a lo ancho,
-     los dos en tanto por uno). Son los valores por defecto; cada testimonio
-     trae los suyos en el HTML (`data-zoom`, `data-foco`, `data-eje`), porque
-     cada uno se grabo a su manera —uno esta de pie en el centro, otro
-     sentado, otro se acerca a la camara—. La regla con la que se sacan esta
-     alli: la persona de la cabeza a las rodillas, centrada.
-
-     Los de reserva son los de un video de cuerpo entero con la cabeza a un
-     tercio del fotograma, que es como estan grabados casi todos. Iban en
-     1,5 y 0,375, un encuadre de la cabeza al pecho, y el resto del circulo
-     era pared.
-
-     Lo que el zoom deja ver es `1/zoom` del ancho del fotograma, asi que el
-     eje no puede salirse de [1/(2z), 1 - 1/(2z)]: mas alla, el video no
-     llegaria a cubrir el circulo. Se recorta aqui y tambien en el CSS. */
   var ZOOM_VIDEO = 1.1;
   var FOCO_VIDEO = 0.55;
   var EJE_VIDEO = 0.5;
@@ -537,9 +485,6 @@ void main() {
       lejos: 40
     };
 
-    /* Piezas de trabajo que el bucle reutiliza en cada fotograma. Antes cada
-       fotograma creaba unas trescientas matrices y vectores nuevos, y en un
-       telefono el recolector de basura se notaba como tirones. */
     this._dormida = false;
     this._q1 = Q.crear();
     this._q2 = Q.crear();
@@ -666,10 +611,6 @@ void main() {
     Q.copiar(this._orientacionPrevia, this.orientaciones[0]);
   };
 
-  /* Un solo atlas y con las celdas cuadradas, que es lo que envuelve al
-     disco. Eran dos -el antes y el despues- y con eso se bajaba cada foto dos
-     veces; ahora hay una sola imagen por testimonio, que es el fotograma de
-     su video. */
   EsferaTestimonios.prototype._cargarAtlas = function () {
     var gl = this.gl;
     var self = this;
@@ -684,9 +625,6 @@ void main() {
       lienzo2d.height = self.tamAtlas * CELDA;
       var ctx = lienzo2d.getContext('2d');
 
-      /* Como ImageBitmap ya descodificado (ver `tomarFoto`): drawImage no
-         la descodifica ahi mismo, en medio del scroll. Se pinta en el atlas
-         exactamente igual que antes. */
       Promise.all(self.items.map(function (item) {
         return tomarFoto(item[claveFuente]);
       })).then(function (imagenes) {
@@ -695,11 +633,6 @@ void main() {
           var x = (i % self.tamAtlas) * CELDA;
           var y = Math.floor(i / self.tamAtlas) * CELDA;
 
-          /* El mismo recorte que hace el circulo sobre el video: un cuadrado
-             de lo ancho que tiene la foto partido por el zoom, puesto a la
-             altura de la cara (`foco`) y en su vertical (`eje`). Asi el disco
-             de la esfera y el video que se pone encima ensenan el mismo trozo
-             del fotograma, y el relevo entre ellos no se ve. */
           var ficha = self.items[i] || {};
           var zoom = ficha.zoom || ZOOM_VIDEO;
           var foco = ficha.foco || FOCO_VIDEO;
@@ -749,35 +682,13 @@ void main() {
     this._dormida = false;
   };
 
-/* El disco de delante, medido en pixeles de pantalla. Lo pide la escena
-   para poner el video justo encima: va por fuera del lienzo, como un
-   elemento de la pagina, y tiene que ser del tamano exacto del disco.
-
-   Se calcula y no se mide a ojo, que asi no hay dos cifras que mantener: si
-   manana cambia la escala, el encuadre o el radio del disco, el video cambia
-   con ellos.
-
-   La cuenta sigue lo que hace el shader. El disco se coloca con su centro a
-   (1 - ESC_DISCO) * RADIO_ESFERA del origen, pero el vertice pasa despues por
-   radius * normalize(...): deja de ser plano y se convierte en un casquete de
-   esa misma esfera. El borde queda a un angulo atan(medida / centro) del eje,
-   y de ahi salen el desvio lateral y la profundidad reales, que son los que
-   hay que proyectar.
-
-   Se escala con `clientHeight` y no con el ancho: en la perspectiva el ancho
-   ya viene dividido por el aspecto, y al multiplicar por el ancho del lienzo
-   el aspecto se cancela. */
   EsferaTestimonios.prototype.medidaDisco = function () {
     var centro = (1 - ESC_DISCO) * RADIO_ESFERA;
-    /* La camara en reposo, no la de ahora: cuando la esfera gira se echa
-       hacia atras, y el video solo se ve con la esfera parada. */
     var angulo = Math.atan((ESC_DISCO * DISCO_RADIO) / centro);
     var lateral = centro * Math.sin(angulo);
     var hondo = centro * Math.cos(angulo);
     var mitad = (3 * this.escala - hondo) * Math.tan(this.camara.fov / 2);
     if (!(mitad > 0)) return 0;
-    /* `lateral / mitad` es el radio en fracciones de media pantalla, asi que
-       multiplicado por el alto entero sale el diametro. */
     return (lateral / mitad) * this.lienzo.clientHeight;
   };
 
@@ -920,9 +831,6 @@ void main() {
           self._pintar();
           self._yaPinto = true;
         } else {
-          /* Quieta y ya pintada: la imagen no va a cambiar hasta que algo la
-             mueva (irA, redimensionar o el atlas cuando llega), y cada
-             uno de esos la despierta. Mientras, no se calcula nada. */
           self._dormida = true;
         }
       }
@@ -977,18 +885,10 @@ void main() {
       return window.innerWidth < 992 ? 2.2 : 3.2;
     }
 
-    /* El encuadre es la altura de escena que cabe en la camara: cuanto mas
-       alta, mas campo y mas pequena sale la tarjeta. */
     function encuadreSegunPantalla() {
       return window.innerWidth < 992 ? 0.232 : 0.235;
     }
 
-    /* La esfera —WebGL y su atlas de fotogramas— no se crea al abrir la
-       pagina sino cuando la seccion queda a dos pantallas y media. Era lo
-       mas caro de la portada: tres tareas largas y las fotos compitiendo
-       con la de arriba, para algo que esta al final del recorrido. La
-       seccion, en cambio, se monta desde el principio (su clase y su alto),
-       que de eso depende donde cae todo lo que va detras. */
     var esfera = null;
     var fallida = false;
     var tActual = 0;
@@ -1010,9 +910,6 @@ void main() {
       return esfera;
     }
 
-    /* El video se monta encima del disco de delante, asi que tiene que medir
-       lo mismo que el. La esfera lo calcula (medidaDisco) y aqui se escribe
-       en la variable que lee el CSS. */
     function fijarDisco() {
       if (!esfera || !cajaEsfera) return;
       var lado = esfera.medidaDisco();
@@ -1020,8 +917,6 @@ void main() {
       cajaEsfera.style.setProperty('--tst-lado', Math.round(lado) + 'px');
     }
 
-    /* El encuadre del testimonio que toca, escrito donde lo lee el CSS. Son
-       las mismas tres cifras con las que el atlas recorto su disco. */
     function encuadrar(item) {
       if (!huecoVideo || !item) return;
       huecoVideo.style.setProperty('--tst-zoom', String(item.zoom));
@@ -1031,11 +926,6 @@ void main() {
 
     var videoPuesto = false;
     var videoMontado = -1;
-    /* El video no arranca hasta que la seccion esta en pantalla. Sin esto
-       arrancaba al abrir la pagina: la escena empieza en el primer testimonio
-       y la esfera esta quieta en el desde el minuto cero, aunque falten ocho
-       pantallas para llegar. Sin planificador no hay quien avise, asi que ahi
-       se da por bueno. */
     var enJuego = !window.SmilersScroll;
     var ultimoIndice = -1;
     var ultimoCierre = null;
@@ -1044,10 +934,6 @@ void main() {
     var ultimaOpacidadVelo = -1;
     var ultimaOpacidadPanel = -1;
 
-    /* Una unidad es casi 1vh de scroll (ver `vhPorUnidad`). El cierre
-       (`obturador`) mide lo mismo que el telon de Nosotros antes de las
-       cifras: el 8% de aquella escena, unos 39vh en escritorio y 34vh en el
-       telefono. Era de 68 y pedia casi el doble de scroll para lo mismo. */
     var UNIDADES = {
       apertura:  24,
       meseta:    58,
@@ -1111,8 +997,6 @@ void main() {
       }
 
       if (hojas.length === 2) {
-        /* Como las hojas de Nosotros: la misma curva y el filo solo
-           mientras se mueven. */
         var c = acotar((progreso - CIERRE_DESDE) / (CIERRE_HASTA - CIERRE_DESDE));
         var suave = c * c * (3 - 2 * c);
         var fuera = ((1 - suave) * 101).toFixed(2);
@@ -1143,25 +1027,8 @@ void main() {
         });
       }
 
-      /* El video solo se monta con la esfera quieta en su testimonio:
-         mientras gira, lo que hay ahi es el disco dando la vuelta, y un
-         video encima no gira con el. Al salir se desmonta, que si no
-         seguiria sonando detras de otro.
-
-         Los dos topes no son el mismo: aparece con la esfera ya parada (0,82)
-         y se va en cuanto empieza a moverse de verdad (0,50). Con un solo
-         tope a media altura el circulo salia con la esfera todavia girando y
-         se le veia flotar por delante, que es lo que se veia feo.
-
-         La meseta de cada testimonio es ancha —58 unidades, que es casi media
-         pantalla de scroll— y dentro de ella la esfera esta clavada, asi que
-         mover un poco la rueda mientras se ve un video no lo apaga. */
       if (marcoVideo && window.SmilersVideo) {
         var quien = items[indice] && items[indice].video ? indice : -1;
-        /* Dos umbrales y no uno: el testimonio SE MONTA antes de que SE VEA
-           —su fotograma y su play, en pausa: ningun video arranca solo—, con
-           la esfera todavia llegando y el circulo apagado, asi que cuando
-           aparece ya esta en su sitio y no cambia de foto delante de nadie. */
         var pide = quien >= 0 && quietud > 0.3 && enJuego;
         var toca = quien >= 0 && quietud > (videoPuesto ? 0.5 : 0.82) && enJuego;
         if (pide && quien !== videoMontado) {
@@ -1198,9 +1065,6 @@ void main() {
       return Math.round(tope + progreso * recorrido);
     }
 
-    /* El punto de Testimonios del riel lateral (riel.js) lleva al primero
-       en reposo, como el primer paso: el arranque de la seccion es la
-       apertura, todavia a oscuras. */
     seccion.smilersRiel = { destino: function () { return yDeTestimonio(0); } };
 
     pasos.forEach(function (paso, indice) {
@@ -1235,13 +1099,6 @@ void main() {
       });
     });
 
-    /* Sin iman: cada testimonio tiene su meseta (`UNIDADES.meseta`), el
-       tramo en que la esfera se queda quieta en el mientras se sigue
-       bajando, y eso es la pausa. Hubo un guion que, un cuarto de segundo
-       despues de pararse la pagina, la arrastraba hasta el testimonio mas
-       cercano: se notaba como un scroll pausado que luego arrancaba solo.
-       Ver 02-base.css. */
-
     if (window.SmilersScroll) {
       window.SmilersScroll.registrar(leerSeccion, actualizar, function () {
 
@@ -1258,8 +1115,6 @@ void main() {
 
           seccion.classList.toggle('tst-en-juego', dentro);
           enJuego = dentro;
-          /* Al salir de pantalla el video se para (si alguien lo habia
-             puesto) y se desmonta. */
           if (!dentro && window.SmilersVideo) window.SmilersVideo.parar(huecoVideo);
 
           var valor = dentro ? 'transform' : '';
@@ -1292,16 +1147,6 @@ void main() {
     }
 
     if ('IntersectionObserver' in window) {
-      /* Con la seccion a dos pantallas y media: las fotos del atlas empiezan
-         a bajar ya (solo red, nada de trabajo en el hilo principal) y la
-         esfera se crea en cuanto el scroll se detiene. Crearla cuesta un
-         fotograma entero en un telefono, y con la pagina quieta no se pierde
-         ninguno. Si se llega sin parar, la crea el observador de abajo al
-         entrar, como antes. */
-      /* Adelanta la foto de cada testimonio, la misma que pinta el atlas.
-         Pedia `antes` y `despues`, dos campos que dejaron de existir cuando
-         el atlas paso a una sola foto: salian dieciseis peticiones a
-         `/undefined` que daban 404, y las fotos de verdad no se adelantaban. */
       var pendiente = false;
       var vigia = new IntersectionObserver(function (entradas) {
         if (!entradas[entradas.length - 1].isIntersecting) return;

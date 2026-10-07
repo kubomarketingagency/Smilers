@@ -2,9 +2,6 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
 }
 
-/* El boton del pie es el mismo que el resto: filo de oro y relleno de oro
-   al pasar por encima. Todo eso lo pone el 16; aqui solo se ajusta el filo
-   interior, que en el pie va un pelo mas adentro. */
 .footer .btn::before { inset: 4px; border-radius: 0; }
 
 .footer {
@@ -13,10 +10,6 @@
   color: rgba(250, 248, 244, .78);
   padding: 60px 0 0;
 }
-/* Arriba lleva poco aire, y en el telefono menos: el fundido de encima
-   (`::after`, mas abajo) ya pone un palmo de negro antes de la juntura, y lo
-   que se sumaba por dentro —100px, 60 en el telefono— eran dos franjas de
-   nada seguidas antes de la primera linea. */
 @media (max-width: 767.98px) {
   .footer { padding-top: 40px; }
 }
@@ -29,22 +22,6 @@
   background: linear-gradient(90deg, transparent, rgba(192, 192, 192, .5) 20%, var(--gold-500) 50%, rgba(192, 192, 192, .5) 80%, transparent);
 }
 
-/* EL PIE NO EMPIEZA CON UN CORTE.
-
-   Encima del pie hay siempre el mismo collage de fotos a plena luz —la banda
-   de la llamada, que en la portada ademas llega clavada a pantalla entera—, y
-   entre sus fotos y el onix del pie se veia un canto duro, y debajo de el un
-   recuadro de negro muerto antes de que empezara nada. Bajando en el telefono
-   parecian tres cosas seguidas: fotos, un rectangulo negro y una franja de
-   oro.
-
-   Esta capa es el onix del pie subiendo por encima de lo que haya delante:
-   las fotos se apagan dentro de el y el filo de oro queda al final del
-   apagado, haciendo de juntura en vez de parecer una franja suelta.
-
-   Va por fuera de la caja (`top` negativo) y no tapa nada del pie. Y se
-   dibuja por encima del collage sin disputarle capas a nadie: el pie va
-   detras en el documento, asi que pinta despues. */
 .footer {
   --pie-fundido: clamp(96px, 9vw, 130px);
 }
@@ -61,15 +38,6 @@
     var(--onix) 100%);
 }
 
-/* La marca del pie son dos logos, no uno: el de la casa y el aval de OAD,
-   separados por el mismo filo de oro que los separa en la barra (ver el 04,
-   que es donde vive `.marca-oad` entero; aqui solo cambian las medidas).
-
-   El alto va en una sola variable porque lo comparten los dos logos y el filo
-   que los separa —que mide dos pixeles mas, para asomar por arriba y por
-   abajo—. Y baja de los 72px que tenia el de la casa cuando iba solo: los dos
-   juntos piden casi 330px de ancho y la columna del pie es un tercio de la
-   pagina, que en 1200 son 332. Medido a 992, 1200 y 1400. */
 .marca-pie {
   display: flex;
   align-items: center;
@@ -77,18 +45,10 @@
 }
 .marca-footer { display: inline-flex; }
 .marca-footer .marca-logo { height: var(--alto-marca-pie, 72px); }
-/* En la barra el aval se lleva todo el hueco sobrante a su derecha, para
-   quedarse pegado a la marca; aqui no hay nada detras de el. */
 .marca-oad--pie { margin-right: 0; }
 .marca-oad--pie img { height: var(--alto-marca-pie); }
 .marca-oad--pie::before { height: calc(var(--alto-marca-pie) + 2px); }
 
-/* Las cabeceras del pie, sueltas y en plata: el mismo degradado recortado
-   contra la letra que lleva la cinta de Especialidades, que es la otra pieza
-   de plata del sitio. Llevaron una temporada la caja de oro de las cabeceras
-   de seccion, y en el pie, que es todo negro, el recuadro pesaba mas que lo
-   que encabezaba. Los valores van escritos y no con `--silver-*`: las paginas
-   claras redefinen esa escala a grises de texto. */
 .footer-titulo {
   display: block;
   width: fit-content;
@@ -106,11 +66,6 @@
   color: #C0C0C0;
 }
 
-/* Y debajo de cada cabecera, su franja de oro. La cabecera en plata se
-   quedaba flotando sobre el negro y lo que encabeza —un mapa y un
-   formulario— empieza medio palmo mas abajo; la franja la ata a lo suyo. Mide
-   lo que mide la cabecera, que para eso va en `fit-content`, y el oro es el
-   vivo, que aqui el fondo es onix. */
 .footer-titulo::after {
   content: '';
   display: block;
@@ -119,16 +74,6 @@
   background: var(--gradiente-oro);
 }
 
-/* El QR de WhatsApp Business, al lado de la cabecera de «Escribenos» y de su
-   frase. Ahi y no debajo del formulario: las tres columnas del pie miden
-   casi lo mismo (a 1440, 474, 474 y 468), la del formulario es la mas alta,
-   y debajo de ella el pie crecia 110px; la ficha se quedaba corta y el mapa,
-   que tiene techo para no ponerse de pie, tambien. Al lado de la cabecera
-   ocupa el alto que ya ocupaban ella y su frase.
-
-   El codigo va en blanco, que es como lo leen las camaras, con el filo y la
-   sombra de las fotos, y lleva debajo su rotulo en oro. En el telefono no
-   hay nada que escanear, pero es un enlace: tocandolo se abre el chat. */
 .pie-escribenos {
   display: flex;
   align-items: flex-start;
@@ -158,8 +103,6 @@
   font-family: var(--fuente-menu);
   font-weight: 600;
   font-size: .6rem;
-  /* Con 1 la tilde de la E mayuscula quedaba por encima de la caja, y el oro,
-     que va recortado contra la letra, solo se pinta dentro: salia ESCANEALO. */
   line-height: 1.7;
   letter-spacing: .24em;
   text-transform: uppercase;
@@ -181,28 +124,6 @@
   .pie-qr img { transition: none; }
 }
 
-/* ---------------------------------------------------------------------------
-   La ficha de la casa: la primera columna, dentro de un recuadro de oro.
-
-   Encierra lo que es la ficha de la clinica —los dos logos, la linea de
-   presentacion, las direcciones, los telefonos, el correo, el horario y los
-   botones de redes— y la separa de las otras dos columnas, que no son datos
-   sino dos herramientas: el mapa y el formulario.
-
-   El filo va en cuatro capas de fondo y no en un `border` porque el oro del
-   sitio es un degradado y un borde solo admite color plano; es la misma
-   manera que el marco de los heros de madera (15-lienzo-claro.css). Y va en
-   un `::before` con `inset: 0` para que no cuente en la caja: asi el relleno
-   es el aire que se ve y no hay que descontarle dos pixeles.
-
-   El recuadro se queda en la caja de la columna, sin salirse a la canal: ahi
-   su filo izquierdo cae justo en el canto del `container`, en la misma
-   vertical que el texto del final del pie. El relleno es el que puede ser sin
-   estrechar la direccion de la matriz, que es la linea mas larga del sitio.
-
-   Y por dentro no lleva nada: el oro es el filo y solo el filo. Llevo un
-   rescoldo de oro muy bajo desde la esquina de arriba, y sobre el onix del
-   pie ensuciaba el negro sin aportar nada. */
 .pie-ficha {
   position: relative;
   padding: clamp(1.15rem, 1.9vw, 1.7rem);
@@ -219,37 +140,11 @@
     var(--gradiente-oro) left top / 1px 100% no-repeat,
     var(--gradiente-oro) right top / 1px 100% no-repeat;
 }
-/* Dentro de la ficha el texto no necesita tanto aire por abajo: el recuadro
-   ya lo cierra. */
 .pie-ficha .footer-contacto { margin-bottom: 1.2rem; }
 
-/* Y los seis botones de redes encogen un punto, porque el relleno del
-   recuadro se come lo que les sobraba: seis circulos de 42 con su aire piden
-   300px seguidos. Un boton menos de ancho y una hilera en vez de dos. */
 .pie-ficha .redes-sociales { gap: .5rem; }
 .pie-ficha .redes-sociales a { width: 40px; height: 40px; }
 
-/* Las tres columnas del pie no van a tercios.
-
-   La de la ficha lleva dentro las dos direcciones enteras, con su calle, su
-   numero, su edificio y su ciudad; a un tercio de pagina cada una caia en
-   tres renglones y el recuadro salia estrecho y larguisimo, y con el estiraba
-   el pie entero.
-
-   El sitio se lo paga el formulario, que es la que menos necesita: dos campos
-   y un boton se leen mejor cortos que largos. Asi el mapa gana casi cien
-   pixeles —que es una vista de barrio y no de manzana— sin que la ficha
-   vuelva a estrecharse.
-
-   Solo de 992 para arriba, que es donde hay tres columnas; por debajo van
-   una debajo de otra y la ficha se lleva el ancho entero.
-
-   Y la canal entre columnas es la mitad de la que traia Bootstrap: `gx-4`
-   en vez de `g-5`, o sea 24px de aire entre una y otra en vez de 48. Eran
-   dos dedos de negro entre tres bloques que ya estan separados por lo que
-   son —un recuadro de oro, un mapa con marco y un formulario—, y esos 48
-   pixeles salian del ancho de las tres. Lo vertical se queda en 48 (`gy-5`),
-   que es lo que hace falta cuando se apilan en el telefono. */
 @media (min-width: 992px) {
   .pie-rejilla > :nth-child(1) { width: 37%; }
   .pie-rejilla > :nth-child(2) { width: 36%; }
@@ -264,27 +159,12 @@
   margin-bottom: .9rem;
   display: flex;
   gap: .8rem;
-  /* Por la linea base, que es lo que pone al icono en el renglon de su texto.
-     Estaba en `flex-start` con 5px de margen arriba en el icono para
-     compensar a ojo, y a ojo se quedaba corto: medido, el icono caia entre
-     3 y 4,4px por debajo de su primera linea. La linea base lo resuelve sola
-     y sigue valiendo si cambia el cuerpo de letra o el interlineado; y en la
-     direccion, que ocupa dos lineas, se apoya en la primera, que es la que
-     le toca. */
   align-items: baseline;
 }
 .footer-contacto i { color: var(--gold-500); flex: 0 0 auto; }
-/* Cada linea son dos piezas y solo dos: el icono y un `<span>` con todo el
-   texto. Con el texto suelto dentro del `li` flexible, cada trozo era una
-   columna aparte: en el iPhone Safari mete la direccion que detecta en un
-   enlace suyo, y «Matriz:» quedaba a un lado y la direccion al otro, con un
-   hueco en medio; y los tres telefonos salian separados por el `gap` en vez
-   de por un espacio. La deteccion ademas se apaga en el `<head>`. */
 .footer-contacto li > span { min-width: 0; overflow-wrap: anywhere; }
 .footer-contacto a { color: rgba(255, 255, 255, .78); }
 .footer-contacto a:hover { color: var(--gold-200); }
-/* Por si algun navegador sigue detectando: lo que convierta en enlace se
-   queda con la letra de la linea. */
 .footer a[x-apple-data-detectors] {
   color: inherit !important;
   font: inherit !important;
@@ -335,9 +215,6 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
   line-height: 0;
 }
-/* El alto de partida, que es el que vale con el mapa a pagina completa: de
-   992 para abajo, cuando las tres columnas se apilan. Arriba de ahi el mapa
-   se estira hasta el suelo de su fila (ver mas abajo). */
 .mapa-iframe {
   display: none;
   width: 100%;
@@ -346,17 +223,6 @@
   filter: grayscale(.3) contrast(1.05);
 }
 
-/* Y CON TRES COLUMNAS EL MAPA LLEGA ABAJO.
-
-   Con 260px fijos su columna acababa cien pixeles antes que las otras dos
-   —el alto de la fila lo manda la ficha, que es la mas larga— y debajo del
-   marco quedaba un palmo de negro muerto. Estirandolo, el mapa acaba justo
-   donde acaba la ficha, midan lo que midan las direcciones ese dia: a 1440
-   son 354 y a 1280, donde la direccion se parte en tres renglones y la ficha
-   crece, 397. Ninguna cuenta en `vw` daba las dos.
-
-   El techo de 430 es para que no se vuelva un mapa de pie en una pantalla
-   estrecha, donde la columna es angosta y la ficha muy alta. */
 @media (min-width: 992px) {
   .pie-rejilla > :nth-child(2) { display: flex; flex-direction: column; }
   .pie-rejilla > :nth-child(2) .mapa-contenedor {
@@ -410,8 +276,6 @@
 .form-aviso.exito { color: var(--turquesa-claro); }
 .form-aviso.error { color: var(--naranja); }
 
-/* Y abajo, lo mismo: entre las columnas y la raya del final iban 70px, y
-   la raya ya separa sola. */
 .footer-bottom {
   margin-top: 40px;
   padding: 18px 0 22px;
@@ -427,21 +291,9 @@
 }
 .footer-bottom a { color: rgba(255, 255, 255, .55); }
 .footer-bottom a:hover { color: var(--gold-200); }
-/* A la izquierda le pasa lo mismo que a la derecha con WhatsApp, pero con el
-   boton de las cookies, que va fijo en la esquina de abajo: con la pagina
-   bajada del todo tapaba el «© 2026» y el enlace de privacidad en cuanto el
-   contenedor se acercaba al canto, de 768 a unos 1060 de ancho. El texto se
-   aparta lo justo: lo que le falte al margen de la pagina —que es
-   `(100vw - 100%) / 2`— para llegar a 80px, donde acaba el boton con su
-   aire. En una pantalla ancha no le falta nada, y en el telefono el texto va
-   centrado y por encima de los botones. */
 @media (min-width: 768px) {
   .footer-bottom { padding-left: max(0px, 80px - (100vw - 100%) / 2); }
 }
-/* Por debajo de 992 las columnas se apilan y la ultima es el formulario, que
-   acaba en su aviso: un renglon vacio que se guarda para el mensaje de
-   enviado y que ya pone 33px de aire. Sumados a los 40 de arriba, el hueco
-   hasta la raya era casi el doble que en el ordenador. */
 @media (max-width: 991.98px) {
   .footer-bottom { margin-top: 8px; }
 }
@@ -524,9 +376,4 @@
   transform: translateY(0) scale(.94);
 }
 
-/* Detras del onix, sin fundido. El fundido es para el collage de fotos que
-   hay encima del pie en la portada y en Nosotros; en las paginas que acaban
-   en la banda de onix (Tratamientos, Galeria, FAQ y privacidad) apagaba de
-   negro la mitad de abajo de la piedra, justo donde va la frase de debajo de
-   la pregunta. Ahi la juntura es solo el filo de oro. */
 main:has(> .banda-cta--onyx:last-child) + .footer::after { content: none; }

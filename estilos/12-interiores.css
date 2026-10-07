@@ -9,16 +9,6 @@
 }
 .banner-pagina .forma-durazno { opacity: .14; }
 
-/* El rastro se alinea por la LINEA BASE y no por el centro de cada caja.
-   Centrando cajas, cualquier pieza que mida distinto sale a otra altura, y
-   aqui ninguna medía lo mismo: el enlace lleva 2px de relleno y 1 de filo
-   debajo -el sitio del subrayado que aparece al pasar por encima-, asi que
-   su caja era 3px mas alta que la del ultimo tramo y su texto salia 1px mas
-   arriba; y los iconos, que son cuadrados de una em, caian 1,75px por debajo
-   de la versal. Por la linea base los cuatro se apoyan en el mismo renglon,
-   que es lo que hace el ojo al leerlo, y el relleno del enlace deja de
-   contar. Medido sobre captura a cuatro aumentos: de 1,75px de desvio a medio
-   pixel, que es el suelo del redondeo a pixel de pantalla. */
 .breadcrumb-personalizado {
   display: flex;
   align-items: baseline;
@@ -58,7 +48,6 @@
   font-weight: 300;
   font-size: 1.05rem;
 }
-
 
 .bloque-tratamiento {
   padding: 90px 0;
@@ -146,9 +135,7 @@
 }
 .lista-incluye i { color: var(--turquesa); margin-top: 4px; }
 
-
 .proceso { position: relative; }
-
 
 .filtros-galeria {
   display: flex;
@@ -187,8 +174,6 @@
 .galeria-item-lb {
   cursor: zoom-in;
 }
-
-/* El visor en que se abren las fotos de la Galeria vive en el 33. */
 
 .faq-categoria-titulo {
   display: flex;
@@ -254,22 +239,6 @@
   font-size: .95rem;
 }
 
-/* ---------------------------------------------------------------------------
-   La vitrina de la FAQ: el hueco que dejaban las preguntas, ocupado.
-
-   Las preguntas viven en siete doceavos a la izquierda y aqui va la clinica
-   por dentro: tres fotos cuadradas con filo de oro, pegadas mientras se lee.
-   Se queda quieta a la altura de la barra y termina antes del pie.
-
-   Solo en escritorio: en el telefono las preguntas ya ocupan el ancho entero
-   y la columna la esconde el propio HTML, con las clases de Bootstrap
-   d-none d-lg-block.
-   --------------------------------------------------------------------------- */
-/* La reja de la pagina: las preguntas a la izquierda y la vitrina a la
-   derecha. Va aqui y no en clases de la rejilla de Bootstrap porque el
-   constructor incrusta de esa rejilla un conjunto fijo de clases, y las de
-   siete y cinco doceavos no estan: con ellas las dos columnas salian una
-   debajo de otra y la vitrina escondida. */
 .faq-reja { display: grid; }
 @media (min-width: 768px) {
   .faq-reja {
@@ -277,23 +246,9 @@
     gap: clamp(1.8rem, 3.4vw, 3.4rem);
     align-items: start;
   }
-  /* La celda de la vitrina, en cambio, llega hasta abajo: es el recorrido
-     de su sticky. Con align-items: start medía lo mismo que las fotos, y
-     una pieza pegajosa que llena su caja no tiene por donde moverse, asi
-     que nunca se quedaba quieta: bajaba con la pagina y, desde el cartel
-     de los pagos diferidos, dejaba 578px de marmol vacio a la derecha al
-     final (a 1440px). Ahora se detiene bajo la barra mientras las
-     preguntas siguen, y las dos columnas acaban a la par. */
   .faq-reja__vitrina { align-self: stretch; }
 }
-/* Y la seccion recorta con clip, no con hidden: el overflow: hidden de
-   .seccion-decorada (en el 11) la vuelve contenedor de scroll, y dentro de
-   una caja que no se desplaza el sticky no tiene contra que pegarse. Es el
-   mismo arreglo que el del pin de Nosotros en la portada (07). Las dos
-   clases juntas pesan mas que la del 11. */
 .pagina-faq .seccion-decorada { overflow: clip; }
-/* En el telefono las preguntas ya ocupan el ancho entero: la vitrina solo
-   alargaria la pagina. */
 @media (max-width: 767.98px) {
   .faq-reja__vitrina { display: none; }
 }
@@ -320,7 +275,6 @@
   object-fit: cover;
   transition: transform 1.1s var(--gm-curva, cubic-bezier(.22, 1, .36, 1));
 }
-/* La primera manda: es la que se ve entera junto a las primeras preguntas. */
 .faq-vitrina__foto:first-child img { aspect-ratio: 1; }
 @media (hover: hover) and (pointer: fine) {
   .faq-vitrina__foto:hover img { transform: scale(1.04); }
@@ -329,13 +283,6 @@
   .faq-vitrina__foto img { transition: none; }
 }
 
-/* El cartel de los pagos diferidos, al pie de «Citas y pagos»: suelto y a
-   la vista, no dentro de la respuesta de los metodos de pago, que esta
-   cerrada. Con el filo de oro y la sombra de las fotos de la vitrina, que
-   es la otra imagen de la pagina. Es alto (2:3), y a lo ancho de la
-   columna de preguntas pasaba de una pantalla de escritorio: va a 420px
-   de ancho como mucho, centrado. En el telefono ocupa la columna. El texto
-   del cartel va entero en el alt: es lo que dice la imagen. */
 .faq-promo {
   max-width: 420px;
   margin: clamp(1.8rem, 3.4vw, 2.6rem) auto 0;
@@ -354,8 +301,6 @@
   .bloque-tratamiento { padding: 60px 0; }
   .bloque-tratamiento-numero { font-size: 3.5rem; }
 }
-
-/* La foto de cada especialidad vive ahora en el 30 (el mosaico). */
 
 @media (max-height: 480px) and (orientation: landscape) {
   .hero { min-height: 100vh; }

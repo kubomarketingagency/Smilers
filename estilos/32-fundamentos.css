@@ -1,27 +1,4 @@
-/* ===========================================================================
-   Fundamentos, en limpio (Nosotros).
 
-   La capa de Fundamentos —mision, vision y los cuatro valores— lleva una
-   sola entrada y ningun adorno que se quede moviendose. Hubo una version con
-   luz de oro paseando por el marmol, arcos girando alrededor de los iconos,
-   numeros grandes en hueco y tarjetas que derivaban con el scroll: saturaba,
-   y costaba fotogramas, porque la deriva repintaba seis tarjetas con sombra
-   en cada paso de la rueda y la entrada animaba un `clip-path`. Se quito.
-
-     - LOS ICONOS van sueltos, en oro, sin circulo alrededor.
-     - LA ENTRADA. Cuando la capa empieza a dejarse leer (`ns-fund--viva`, que
-       pone nosotros-cine.js cuando el texto aun es transparente, asi que nada
-       desaparece de golpe), el filo de oro de arriba de cada tarjeta se
-       dibuja de izquierda a derecha, una detras de otra, y el icono sube a su
-       sitio. Solo `transform` y `opacity`, de piezas pequenas. Rellenan solo
-       hacia atras (`backwards`): acaban en lo que ya pone la hoja, asi que al
-       terminar la animacion se suelta y el navegador deja de tener una capa
-       aparte para cada icono y cada raya (eran 28).
-
-   Sin escena o sin animaciones, todo queda a la vista y quieto.
-   =========================================================================== */
-
-/* --- Los iconos, sin circulo --------------------------------------------- */
 .pagina-nosotros .ns-capa--fundamentos .ns-mvo__icono,
 .pagina-nosotros .ns-capa--fundamentos .ns-valor__icono {
   display: block;
@@ -61,12 +38,6 @@
   .ns-cine--viva .ns-fund--viva .ns-valor__icono {
     animation: fund-sube .9s cubic-bezier(.22, 1, .36, 1) calc(var(--espera, 0s) + .35s) backwards;
   }
-  /* La raya de debajo del nombre de cada valor ya no se dibuja: cuelga del
-     nombre, que va en oro recortado contra el texto (`background-clip:
-     text`, del 22), y ahi dentro nada puede tener capa propia. Su `scaleX`
-     repintaba el nombre en cada fotograma de la entrada, los cuatro a la
-     vez. Esta quieta desde el principio, y lo que entra es el filo de la
-     tarjeta. */
 }
 
 @keyframes fund-filo {

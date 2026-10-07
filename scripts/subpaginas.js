@@ -27,16 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    /* Las entradas del menu —Galeria > Instalaciones, Equipo…— no son anclas:
-       no hay ningun elemento con esos identificadores. Son el nombre del
-       filtro, y quien lo aplica es esto.
-
-       Y ademas hay que bajar hasta la reja. Antes la pagina empezaba con una
-       franja de titulo y el filtro caia casi en pantalla; con el hero de
-       madera delante, quien llega desde el menu se queda mirando el hero y no
-       ve que su filtro ya esta puesto. Se baja solo cuando la orden viene de
-       la direccion; pulsando el filtro a mano no se mueve nada, que ahi ya
-       se esta mirando la reja. */
     function filtrarSegunDireccion() {
       const marca = decodeURIComponent(window.location.hash.slice(1));
       if (!marca) return;
@@ -59,10 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('hashchange', filtrarSegunDireccion);
   }
 
-  /* Las fotos de la Galeria (`[data-lightbox-src]`) las abre visor.js, el
-     mismo visor que las de Tratamientos. Aqui vivia un `Modal` de Bootstrap
-     que obligaba a la Galeria a cargar su guion entero. */
-
   var acordeones = {};
   document.querySelectorAll('.acordeon-tratamiento-boton').forEach(function (boton) {
     var panel = document.getElementById(boton.getAttribute('aria-controls'));
@@ -76,35 +62,14 @@ document.addEventListener('DOMContentLoaded', function () {
     acordeones[panel.id.replace(/^panel-/, '')] = poner;
   });
 
-  /* En el telefono cada especialidad es un acordeon cerrado, y quien llega a
-     una desde un enlace —el indice de las diez, el menu, la portada— viene a
-     leerla: se abre sola. Antes solo pasaba al entrar en la pagina con el
-     ancla puesta; pulsando el indice ya dentro, la pagina bajaba hasta la
-     especialidad y la dejaba cerrada, con solo su nombre a la vista.
-
-     No hace falta mover el scroll: el ancla ya baja hasta el techo de la
-     seccion, y el panel se abre por debajo de su boton sin empujarlo. En
-     escritorio la clase no hace nada, que ahi los paneles se ven siempre.
-     El clic se escucha ademas del cambio de ancla porque pulsar la misma que
-     ya esta en la direccion no cambia nada y no avisa. */
   function abrirSegun(ancla) {
     var poner = acordeones[decodeURIComponent((ancla || '').replace(/^#/, ''))];
     if (poner) poner(true);
     return !!poner;
   }
 
-  /* Y al llegar desde otra pagina con el ancla puesta —la portada, el menu—
-     el navegador decide hasta donde bajar antes de que carguen las letras de
-     la pagina, y con ellas lo de arriba encoge 113px: se pasaba de largo y el
-     nombre de la especialidad quedaba debajo de la barra. Cuando la pagina ya
-     esta entera, se vuelve a colocar la seccion justo debajo de ella. */
   if (abrirSegun(window.location.hash)) {
     var pedida = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-    /* Pero solo si sigue ahi. La pagina entera —fotos incluidas— tarda
-       segundos en cargar con una red lenta, y quien en ese rato ya se habia
-       ido a otra especialidad desde el menu o el indice, o habia bajado a
-       mano, se veia devuelto a la primera en cuanto acababa: el menu parecia
-       no llevar a ninguna parte. Cualquier gesto suyo cancela la vuelta. */
     var anclaPedida = window.location.hash;
     var tocada = false;
     ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (tipo) {
@@ -112,11 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     var colocar = function () {
       if (!pedida || tocada || window.location.hash !== anclaPedida) return;
-      /* Ni si la seccion ya esta lejos de donde la dejo el navegador. Lo que
-         se corrige aqui son los 113px de las letras, no una pantalla entera:
-         mas lejos es que alguien la ha movido con algo que no pasa por la
-         rueda, el dedo, el raton ni el teclado —la barra de scroll
-         arrastrada, por ejemplo— y manda el. */
       if (Math.abs(pedida.getBoundingClientRect().top) > window.innerHeight * .75) return;
       var suave = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
       pedida.scrollIntoView({ block: 'start', behavior: suave ? 'smooth' : 'auto' });

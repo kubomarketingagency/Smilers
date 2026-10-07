@@ -1,28 +1,3 @@
-/* ===========================================================================
-   El visor de fotos y el puntero «Ver» (visor.js).
-
-   Lo cargan la Galeria y Tratamientos, que son las dos paginas donde una
-   foto se abre en grande. Es una pieza propia y no el `modal` de Bootstrap.
-
-   Se abre POR DEBAJO de la barra de navegacion, que sigue a la vista: el
-   guion mide su alto y lo deja en `--visor-arriba` (pulsarla cierra el
-   visor). Detras, un velo oscuro que no llega a tapar: la pagina se sigue
-   viendo, como tras un cristal polarizado.
-
-   La foto entra como las del collage: una cortina de oro la tapa y se
-   retira hacia el otro lado, la foto se asienta desde un poco mas cerca y
-   alrededor se dibuja su filo de oro, con el marco desplazado detras. Todo
-   lo demas va pegado a la foto, dentro de su marco: encima, la cuenta en el
-   centro y la X en la esquina de arriba a la derecha; a los lados, las
-   flechas, que son solo sus trazos (encima de la foto en el telefono, que
-   ahi ocupa todo el ancho); debajo, la leyenda en la letra de los
-   titulares. La cuenta y la leyenda van en blanco y plata; el oro queda
-   para la X, las flechas, la cortina y los filos.
-
-   Nada de circulos: ni en la X, ni en las flechas, ni en el puntero. Todo
-   lo que se mueve es `transform` y `opacity`, salvo el dibujo de los filos
-   (`background-size`), que son rayas de un pixel.
-   =========================================================================== */
 
 .visor {
   position: fixed;
@@ -37,17 +12,8 @@
 }
 .visor[hidden] { display: none; }
 
-/* Con el visor abierto la pagina no se mueve por detras: lo para el 02
-   (`html.visor-abierto`), el documento y no `body`. */
-
-/* La barra se queda aunque estuviera escondida, que cerca del pie se
-   esconde (navegacion.js). */
 html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 
-/* El velo: oscuro, pero la pagina se sigue viendo. Un poco mas claro donde
-   va la foto y mas cerrado hacia los cantos. Mas claro que esto, sobre las
-   paginas de marmol blanco (la Galeria) la leyenda caia encima del texto de
-   la pagina y costaba leerla. */
 .visor__velo {
   position: absolute;
   inset: 0;
@@ -58,13 +24,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 }
 .visor--abierto .visor__velo { opacity: 1; }
 
-/* --- Encima de la foto: la cuenta y la X --------------------------------
-   Las dos en la misma fila, a 36px del canto de arriba de la foto: por
-   encima del marco desplazado de detras, que asoma 18px como mucho. El aire
-   de arriba de la escena les guarda el sitio. */
-
-/* La cuenta, en el centro: la foto en la que se esta, una pista de plata
-   que se llena segun se avanza, y cuantas son. */
 .visor__cuenta {
   position: absolute;
   left: 50%;
@@ -114,8 +73,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   white-space: nowrap;
 }
 
-/* La X: solo sus dos trazos, en oro, en la esquina de arriba a la derecha
-   de la foto; el trazo acaba donde acaba la foto. */
 .visor__cerrar {
   position: absolute;
   right: -11px;
@@ -147,7 +104,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 .visor__cerrar:focus-visible,
 .visor__flecha:focus-visible { outline: 1px solid rgba(247, 231, 166, .9); outline-offset: 2px; }
 
-/* --- La foto ------------------------------------------------------------- */
 .visor__escena {
   position: relative;
   z-index: 2;
@@ -159,7 +115,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 2.6vh, 26px);
-  /* Arriba, el sitio de la cuenta y la X; a los lados, el de las flechas. */
   padding: 62px clamp(64px, 8vw, 128px) max(clamp(18px, 3.2vh, 36px), env(safe-area-inset-bottom));
 }
 
@@ -174,9 +129,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 }
 .visor--abierto .visor__marco { opacity: 1; transform: none; }
 
-/* La foto va dentro de su lienzo, que es quien recorta: el zoom de entrada
-   no se sale del marco, y el marco puede dibujar su filo y el marco de
-   detras por fuera. */
 .visor__lienzo {
   position: relative;
   display: block;
@@ -189,14 +141,11 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   width: auto;
   height: auto;
   max-width: 100%;
-  /* La barra de la pagina, la fila de la cuenta (62), la leyenda con su
-     raya (unas dos lineas) y los aires. */
   max-height: calc(100svh - var(--visor-arriba, 0px) - 62px - 8.5rem);
   object-fit: contain;
 }
 .visor--oculta .visor__foto { opacity: 0; }
 
-/* La cortina de oro. */
 .visor__cortina {
   position: absolute;
   inset: 0;
@@ -228,9 +177,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   to   { transform: none; }
 }
 
-/* El filo de oro (`::before`) y el marco desplazado de detras (`::after`),
-   dibujados tramo a tramo al abrir. El de detras va por debajo del lienzo:
-   solo asoma por arriba y por la izquierda. */
 .visor__marco::before,
 .visor__marco::after {
   content: '';
@@ -262,8 +208,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
 }
 
-/* Mientras llega la foto: una raya de oro que late en el centro. Solo si
-   tarda: con el retraso, una foto que ya estaba no la llega a ensenar. */
 .visor--cargando .visor__escena::after {
   content: '';
   position: absolute;
@@ -280,7 +224,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   50%      { opacity: 1; transform: scaleX(1); }
 }
 
-/* --- La leyenda ---------------------------------------------------------- */
 .visor__leyenda {
   max-width: min(62ch, 100%);
   margin: 0;
@@ -311,9 +254,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   to   { opacity: 1; transform: none; }
 }
 
-/* --- Las flechas: solo el trazo, a un palmo de la foto -------------------
-   Van dentro del marco, asi que se centran en la foto y la siguen a
-   cualquier tamano. La de la izquierda deja sitio al marco desplazado. */
 .visor__flecha {
   position: absolute;
   top: 50%;
@@ -341,8 +281,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
 .visor__flecha--ant:hover { translate: -4px 0; }
 .visor__flecha--sig:hover { translate: 4px 0; }
 
-/* En el telefono la foto ocupa todo el ancho: las flechas pasan encima de
-   ella, en sus cantos, con una sombra que las separa de la foto. */
 @media (max-width: 767.98px) {
   .visor__escena { padding-inline: 16px; }
   .visor__foto { max-height: calc(100svh - var(--visor-arriba, 0px) - 62px - 9rem); }
@@ -373,17 +311,6 @@ html.visor-abierto .navbar-principal.navbar-oculta { transform: none; }
   .visor--cargando .visor__escena::after { animation: none; }
 }
 
-/* ===========================================================================
-   El puntero «Ver», que pone visor.js al pasar con raton por una foto que
-   se abre: una placa oscura con la palabra en oro y cuatro esquinas de oro
-   alrededor, las mismas que enmarcan las fotos de la Galeria. Al aparecer,
-   las esquinas se cierran sobre la placa, como un visor que enfoca.
-
-   El guion mueve la pieza de fuera (`transform`) y la de dentro es la que
-   crece y se apaga: si las dos cosas fueran en la misma, el `scale` de la
-   entrada encogeria tambien el desplazamiento, y la placa llegaria volando
-   desde la esquina de la pantalla.
-   =========================================================================== */
 .tz-puntero {
   position: fixed;
   left: 0;

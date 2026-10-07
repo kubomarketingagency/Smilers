@@ -6,10 +6,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
-  /* El pin mide la pantalla grande y no cambia, pero lo que lleva dentro se
-     queda en lo que se ve con la barra del navegador fuera. Ver
-     `--sobra-barra` en el 01. */
+  height: 100lvh;
   padding-bottom: var(--sobra-barra);
   overflow: hidden;
   isolation: isolate;
@@ -18,37 +15,12 @@
   height: 100%;
   min-height: 0;
 }
-/* EL COLLAGE LLEGA AL CANTO DE VERDAD DEL PIN, no al del bloque que lleva
-   dentro. Lo que el pin guarda por abajo es `--sobra-barra`, y esa medida
-   **no es fija en un telefono**: es `100lvh - 100dvh`, o sea lo que ocupa la
-   barra del navegador, que se retira sola al bajar y vuelve al subir. Con el
-   collage atado al canto del bloque, cada vez que la barra se movia el
-   collage cambiaba de alto: sus tres filas de fotos se repartian otro alto,
-   `object-fit` volvia a recortarlas y se veia una sacudida justo al llegar al
-   pie. Estirandolo por debajo, el collage mide siempre lo mismo —la pantalla
-   grande— y lo unico que se reajusta es el texto, que es lo que tiene que
-   quedarse centrado en lo que se ve. */
 .cierre-cine-pin .banda-cta-masonry,
 .cierre-cine-pin .banda-cta-overlay { bottom: calc(var(--sobra-barra) * -1); }
-/* Y la banda NO recorta. Llevaba `overflow: hidden` de serie (lo necesita
-   suelta, para que la cinta del doble de ancho no se salga), y con eso el
-   collage estirado por debajo se cortaba en su canto igualmente: en el
-   telefono, al subir desde el pie, la barra del navegador volvia, la banda
-   encogia y por debajo del collage asomaba una franja negra —el fondo del
-   pin— que ademas cambiaba de alto con el gesto. Aqui quien recorta es el
-   pin, que ya lleva su `overflow: hidden` y mide la pantalla grande. */
 .cierre-cine-pin .banda-cta { overflow: visible; }
-/* Y fuera de juego la cinta suelta su capa. Correr ya no corre —de eso se
-   encarga secciones.js, que le para la animacion en cuanto la banda sale de
-   pantalla— pero `will-change: transform` la mantiene promovida igualmente, y
-   es una tira del doble de ancho que la ventana pegada justo encima del pie.
-   `cc-en-juego` lo pone hero.js. */
 .cierre-cine.cc-montado:not(.cc-en-juego) .banda-cta-masonry__cinta {
   will-change: auto;
 }
-/* Clavada a pantalla entera, las tres fotos de cada columna se reparten el
-   alto en vez de traer el suyo: a 3/4 se quedaban cortas en un telefono y
-   por debajo asomaba una franja negra. */
 .cierre-cine-pin .banda-cta-masonry__col img {
   flex: 1 1 0;
   min-height: 0;
@@ -82,25 +54,10 @@
   .cierre-cine { height: 132vh; }
 }
 
-/* Sin la pantalla de negro despues de los testimonios. Acaban con sus
-   hojas cerradas en onix, y este cierre arranca en onix; entre los dos se
-   recorria una pantalla entera de negro quieto —el pin de los testimonios
-   tenia que terminar de salir antes de que este pudiera clavarse—, y la
-   pregunta tardaba eso en aparecer. Ahora va montado sobre la ultima
-   pantalla de los testimonios, como el cierre de Nosotros sobre su cine (ver
-   24-nosotros-cine.css): su pin se clava en el pixel en que el de los
-   testimonios se suelta. Mientras sube por encima va escondido y sin raton,
-   para no tapar ni robarle el clic al ultimo testimonio, y `hero.js` lo
-   enciende (`cc-clavado`) al clavarse.
-
-   Solo con la esfera en marcha —sin ella los testimonios son tarjetas en
-   flujo y no hay pantalla que montar—, con movimiento —con menos no hay
-   hojas que cierren— y con `hero.js` al mando (`cc-montado`): si el guion
-   no corre, el cierre se queda donde estaba y la pregunta no se esconde. */
 @media (prefers-reduced-motion: no-preference) {
   .testimonios-cine.esfera-activa + .cierre-cine.cc-montado {
     margin-top: -100vh;
-    margin-top: -100lvh; /* lo que mide el pin de los testimonios */
+    margin-top: -100lvh;
     pointer-events: none;
   }
   .testimonios-cine.esfera-activa + .cierre-cine.cc-montado .cierre-cine-pin { visibility: hidden; }
@@ -175,11 +132,6 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  /* Sin apagarlas. Primero fue .62 -el collage era una silueta-, luego .82;
-     ahora ninguna, porque el encargo es que estas fotos se vean con la misma
-     luz que las del hero de la portada, y alli la foto va tal cual y lo unico
-     que la baja es el velo. Lo que el texto necesita se lo da su propia
-     plancha, que pesa solo donde hay letra. */
   filter: saturate(1.06) contrast(1.02);
 }
 @media (min-width: 992px) {
@@ -194,47 +146,20 @@
   .banda-cta-masonry__cinta { animation: none; }
 }
 
-/* La mamposteria no es un fondo liso: pasan por debajo batas blancas y caras
-   a plena luz. La pregunta y el boton van en un recuadro oscurecido, el
-   mismo que sostiene las cifras del cierre de Nosotros —una raya fina arriba
-   y otra abajo, y entre las dos una plancha negra que carga en el centro y se
-   suelta hacia los cantos—, y el velo de la banda es tambien el de alli.
-
-   Una temporada fueron sueltos sobre el collage, con un velo que cargaba la
-   mitad izquierda —donde iba la pregunta— y soltaba la derecha; con eso la
-   pregunta caia sobre batas blancas y el boton sobre retratos. El velo de
-   ahora cierra por el centro, que es donde esta el recuadro, y suelta los
-   cuatro cantos, que es por donde se ve que detras pasan fotos. */
 .banda-cta-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Y acaba en un 14% parejo, como los demas fondos del sitio. El radial que
-     cerraba por el centro se paso al recuadro, que es donde tiene sentido:
-     pesa donde hay letra en vez de sobre el collage entero. */
   background: rgba(6, 6, 6, .14);
 }
-/* Lo que la plancha no alcanza lo pone la letra: la sombra solo pesa donde
-   hay texto. La de la portada, la misma que en Nosotros. */
 .banda-cta h2,
 .banda-cta p { text-shadow: 0 2px 16px rgba(6, 5, 4, .72); }
 .cierre-cine .banda-cta h2,
 .cierre-cine .banda-cta p { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
 
-/* El boton cae sobre retratos a plena luz: el filo y las letras de oro sobre
-   una bata blanca dejan de leerse. Una sombra no vale, porque lo que hay que
-   sostener no es solo la letra sino el filo; lo que vale es devolverle el
-   suelo negro que el resto de la pagina clara ya le da. */
 .banda-cta .btn { --btn-relleno: rgba(8, 6, 4, .88); }
 .banda-cta-contenido { position: relative; z-index: 2; }
 
-/* El recuadro. Arriba se descuenta el hueco de la rejilla de Bootstrap: cada
-   columna lleva ese hueco como margen por encima, tambien la primera, y sin
-   descontarlo salia con 24px mas de aire arriba que abajo.
-
-   La plancha va en `z-index: -1` y la fila no abre contexto de apilado, asi
-   que cae por detras del texto y por delante de la mamposteria: el contexto
-   lo abre `.banda-cta-contenido`. Se pinta una sola vez. */
 .cierre-cine .banda-cta-contenido > .row {
   --caja-aire: clamp(1.5rem, 3vw, 2.4rem);
   position: relative;
@@ -247,10 +172,6 @@
   z-index: -1;
   inset: -.5rem -1rem;
   pointer-events: none;
-  /* Y no se apaga del todo en el borde: ahora que el velo de la banda deja
-     pasar el collage, la bajada -gris fino- cae a ratos sobre una pared
-     verde a plena luz. El .34 del canto es el suelo que la sostiene ahi,
-     y sigue siendo la franja del recuadro, no la pantalla. */
   background: radial-gradient(64% 112% at 50% 50%,
     rgba(4, 4, 4, .94) 0%, rgba(4, 4, 4, .84) 58%, rgba(4, 4, 4, .64) 100%);
 }

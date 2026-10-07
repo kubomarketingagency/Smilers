@@ -1,30 +1,13 @@
 
 
-
 .acordeon-seccion {
   position: relative;
   overflow: hidden;
   isolation: isolate;
   height: 100vh;
-  height: 100lvh; /* una pantalla justa, la grande, como los pines: ver 05-hero.css */
+  height: 100lvh;
 }
 
-/* El rotulo va pegado al techo de la seccion, y el techo de la seccion esta
-   debajo de la barra fija: con 42px la palabra "Especialidades" quedaba
-   partida por la mitad. El aire de arriba se cuenta desde donde acaba la
-   barra, no desde donde empieza la seccion.
-
-   Y va arrimado a la izquierda, no en el centro: en el centro se plantaba
-   sobre lo alto del panel abierto -la cara, la pantalla, las manos- que es lo
-   unico que esa pantalla tiene que ensenar. En el canto cae casi siempre
-   sobre las tiras apagadas de los paneles cerrados. Por lo mismo la fundida
-   de arriba pesa la mitad: estaba ahi para sostener una palabra centrada
-   sobre la foto.
-
-   Y es un rotulo, no un titular: va un punto por debajo del de antes y pegado
-   al canto de la barra. Media clamp(1.3, 2.6vw, 2) y arrancaba 27px por
-   debajo de la barra, y con la caja de oro alrededor eran 58px de cartel -284
-   de ancho- encima de las fotos. */
 .acordeon-etiqueta {
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -102,10 +85,6 @@
   transform: scale(1.04);
 }
 
-/* La fundida del pie. Es la que sostiene el nombre de la especialidad y su
-   resumen, asi que empieza mas arriba y llega mas abajo que antes: el resumen
-   caia sobre el tramo claro de la foto -una bata, una encimera- y se leia a
-   tirones. Arriba no pinta nada: ahi esta la imagen. */
 .ag-panel__overlay {
   position: absolute;
   inset: 0;
@@ -141,9 +120,6 @@
   background: var(--gold-500);
   box-shadow: 0 0 12px rgba(212, 175, 55, .6);
 }
-/* El nombre de cada especialidad va en su caja negra con filo y letra de oro
-   (`.caja-oro`, en el 22). El recorte con puntos suspensivos baja a la letra
-   de dentro: puesto en el titulo, recortaria tambien el filo de la caja. */
 .ag-panel__titulo {
   display: flex;
   min-width: 0;
@@ -186,9 +162,6 @@
   transition: transform .3s ease;
 }
 
-/* La X que pliega el panel abierto (la pone secciones.js). Solo existe en
-   el telefono: en escritorio los paneles se abren al pasar el raton y se
-   cierran al irse, y no hay nada que plegar a mano. */
 .ag-panel__cerrar { display: none; }
 .ag-panel:hover .ag-panel__ir .icono,
 .ag-panel:focus-visible .ag-panel__ir .icono {
@@ -197,10 +170,6 @@
 
 @media (max-width: 767.98px) {
   .acordeon-seccion { height: auto; }
-  /* Apilado el acordeon, el rotulo ya no cae sobre ninguna foto: vuelve al
-     centro, que es donde van los rotulos de seccion del telefono. */
-  /* Arriba, lo justo para no quedar debajo de la barra fija con la seccion en
-     lo alto de la pantalla: con 56px la caja se metia 3px por debajo de ella. */
   .acordeon-etiqueta {
     position: relative;
     top: auto; left: auto; right: auto;
@@ -218,28 +187,12 @@
     height: 76px;
     transition: height .5s cubic-bezier(.16, 1, .3, 1);
   }
-  /* El panel abierto se despliega hasta ensenar la foto entera.
-
-     Media 320px de alto a lo ancho de la pantalla, y las fotos de las
-     especialidades son de pie -entre 0,75 y 0,8-: en un hueco apaisado de
-     412x320, cubrirlo era quedarse con la franja del medio, sin cabezas ni
-     manos. Ahora el panel toma la proporcion de su foto (--alto-foto, alto
-     partido por ancho, que va en cada panel del HTML) y la foto entra entera.
-     El tope es para el telefono tumbado, donde la foto a lo ancho no cabria. */
   .ag-panel.ag-panel--activo {
     height: min(calc(100vw * var(--alto-foto, 1.3333)), 86svh);
     flex-grow: 0;
   }
-  /* Sin el acercamiento del 4% que lleva en escritorio: aqui se comeria justo
-     el canto que se quiere ensenar. */
   .ag-panel.ag-panel--activo .ag-panel__media img { transform: none; }
 
-  /* La flecha de desplegable, la misma de FAQ: un angulo de 9px en oro, a la
-     altura del nombre de cada tira. Apilado, una lista de nombres no dice por
-     si sola que cada uno se abre; la flecha si, y es la que el sitio ya usa
-     para eso. En el panel abierto gira y se apaga: ahi lo que se hace es "Ir",
-     que ya lleva su propia flecha, y una que apuntara arriba prometeria
-     cerrarlo. */
   .ag-panel::after {
     content: '';
     position: absolute;
@@ -259,14 +212,6 @@
     transform: translateY(-50%) rotate(225deg);
   }
 
-  /* La X del abierto: el aspa de oro sola, sin circulo debajo (lo llevo un
-     dia, un circulo de onix con filo de oro, y a la clinica no le gusto),
-     en la esquina de arriba, lejos del nombre y del «Ir», que van al pie. La
-     flecha de los cerrados se apaga girando al abrir, y la X entra girando
-     en el mismo sitio: es la misma pieza que cambia de oficio, de «abre» a
-     «pliega». La caja mide 44px, que es lo que pide un dedo: lo que se ve son
-     los 20 del aspa y el resto es aire que tambien recoge el toque. Solo se
-     mueve con `transform` y `opacity`. */
   .ag-panel__cerrar {
     display: block;
     position: absolute;
@@ -280,10 +225,6 @@
     pointer-events: none;
     transition: opacity .25s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
   }
-  /* El aspa, dos trazos de oro de 20px cruzados en el centro. Van en la
-     misma capa como dos fondos: una sola pieza que girar. Sin circulo que la
-     separe de la foto, la sombra es lo que la deja leer sobre lo claro de
-     una bata o una pared. */
   .ag-panel__cerrar::after {
     content: '';
     position: absolute;
@@ -320,8 +261,6 @@
   .ag-panel__overlay {
     background: linear-gradient(180deg, transparent 18%, rgba(10, 8, 6, .55) 62%, rgba(10, 8, 6, .92) 100%);
   }
-  /* En el abierto, que ahora mide lo que la foto, la fundida baja al tramo del
-     texto: con la de los cerrados -oscura desde el 18%- se apagaba media foto. */
   .ag-panel.ag-panel--activo .ag-panel__overlay {
     background: linear-gradient(180deg, transparent 52%, rgba(10, 8, 6, .5) 76%, rgba(10, 8, 6, .92) 100%);
   }
@@ -369,8 +308,6 @@
   opacity: 0;
   transition: var(--transicion);
 }
-/* Las fotos de pacientes son de cuerpo entero en la recepcion, con techo de
-   sobra: el 12% de las demas dejaba en el cuadrado lampara y cabezas. */
 .galeria-item--paciente img { object-position: center 42%; }
 .galeria-item:hover img { transform: scale(1.16) rotate(1deg); }
 .galeria-item:hover .galeria-overlay { opacity: 1; }

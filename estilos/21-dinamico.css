@@ -24,12 +24,8 @@
   box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .28);
 }
 
-/* Las de valores no llevan piedra: negro con opacidad, para que el jardin
-   de la seccion se siga viendo por debajo de la tarjeta. */
 .pagina-nosotros .ns-valor { background: rgba(8, 8, 8, .88); }
 
-/* La piedra de cada tarjeta va debajo del contenido; por eso todo lo
-   demas que hay dentro sube a z-index 1. */
 .tarjeta-piedra {
   position: absolute;
   inset: 0;
@@ -49,7 +45,6 @@
   content: "";
   position: absolute;
   inset: 0;
-  /* Sin lavado de oro: sobre el marmol negro se veia como una mancha. */
   background: linear-gradient(180deg, rgba(10, 10, 10, .3) 0%, rgba(10, 10, 10, .54) 100%);
   transition: background 1s var(--gm-curva);
 }
@@ -78,8 +73,6 @@
   transition: box-shadow .6s var(--gm-curva), transform .6s var(--gm-curva);
 }
 
-/* Al pasar el raton la tarjeta solo crece un poco y hunde mas la sombra.
-   El oro no entra aqui: vive en los titulos, que ya van dorados. */
 @media (hover: hover) and (pointer: fine) {
   .pagina-nosotros .ns-mvo__ficha:hover {
     box-shadow: 0 32px 70px rgba(6, 6, 6, .44);
@@ -98,8 +91,6 @@
   .tarjeta-piedra img { transition: none; }
 }
 
-/* En movil manda el texto: la tarjeta de informacion sube por delante de
-   la foto, aunque en el HTML vaya despues. */
 @media (max-width: 991.98px) {
   .pagina-tratamientos .bloque-tratamiento .row > [class*="col-"]:has(.pz-panel) {
     order: -1;
@@ -120,17 +111,10 @@
   padding-block: clamp(2rem, 3.2vw, 3.2rem);
   overflow: hidden;
 }
-/* La palabra son mayusculas sin bajos, asi que la tinta cae en la mitad
-   alta de su linea: centrar las cajas la deja pareciendo comida por arriba.
-   El relleno de abajo va mas corto que el de arriba menos la barra, y con eso
-   el bloque baja lo justo para quedar centrado a ojo. */
 .ns-portada.ns-pantalla {
   padding-block: calc(var(--alto-navbar) + clamp(2rem, 3.8vw, 3.6rem)) clamp(1.4rem, 2.4vw, 2.2rem);
 }
 
-/* La portada: el carrusel ocupa el hero entero, de borde a borde, y el hero
-   mide un tercio de la pantalla. La palabra va encima de la foto y la ruta
-   justo debajo. */
 .ns-portada.ns-pantalla {
   min-height: max(460px, calc(var(--alto-navbar) + 50svh));
   justify-content: center;
@@ -153,16 +137,11 @@
 }
 .ns-portada__cinta .crsl__toma { height: 100%; }
 .ns-portada__cinta .crsl__toma::after { content: none; }
-/* La cinta es muy ancha y muy baja: recortada por el centro, cada foto
-   deja fuera lo que importa. Cada toma dice por donde quiere que la corten;
-   los valores salen de mirar las cuatro fotos una por una. */
 .ns-portada__cinta .crsl__toma img { object-position: center 38%; }
 .ns-portada__cinta .crsl__toma[data-encuadre="alto"] img { object-position: center 20%; }
 .ns-portada__cinta .crsl__toma[data-encuadre="medio-bajo"] img { object-position: center 55%; }
 .ns-portada__cinta .crsl__toma[data-encuadre="bajo"] img { object-position: center 70%; }
 
-/* Las tomas no se funden en el sitio: la que entra viene desde la derecha y
-   la que sale se va por la izquierda, asi la fila de fotos se ve recorrer. */
 .ns-portada__cinta .crsl__toma {
   opacity: 0;
   transform: translate3d(4.5%, 0, 0);
@@ -179,7 +158,6 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* El velo deja ver la foto: solo oscurece lo justo bajo la palabra. */
 .ns-portada__cinta::after {
   content: "";
   position: absolute;
@@ -197,9 +175,6 @@
       rgba(8, 8, 8, .58) 100%);
 }
 
-
-/* "TRATAMIENTOS" tiene doce letras y "NOSOTROS" ocho: la escala baja
-   para que la palabra no se salga de la pantalla. */
 .pagina-tratamientos .ns-portada__palabra { --palabra-escala: 6vw; }
 
 @media (max-width: 767.98px) {
@@ -289,11 +264,6 @@
     linear-gradient(180deg, rgba(8, 8, 8, .82) 0%, rgba(8, 8, 8, .66) 44%, rgba(8, 8, 8, .93) 100%);
 }
 
-
-/* En cifras la foto emerge del marmol: arriba no esta —se ve la piedra
-   del lienzo— y va apareciendo hacia abajo. La mascara sobre la imagen es
-   la que la desvanece; el lavado claro de encima solo entra donde la foto
-   ya se ve, para que el texto pueda seguir siendo oscuro. */
 .ns-fondo--degradado img {
   opacity: .92;
   filter: saturate(.7) contrast(.94) brightness(1.05);
@@ -312,8 +282,6 @@
     rgba(250, 248, 245, .56) 100%);
 }
 
-/* La seccion de cifras pasa a fondo claro: la tinta se oscurece y el oro
-   baja al tono hondo, que es el que aguanta sobre piedra clara. */
 .ns-cifras-sec .ns-cifras {
   border-top-color: rgba(43, 35, 20, .16);
   border-bottom-color: rgba(43, 35, 20, .16);
@@ -322,17 +290,11 @@
 .ns-cifras-sec .ns-cifra__num,
 .ns-cifras-sec .ns-cifra__num i { color: var(--gm-oro-hondo); }
 .ns-cifras-sec .ns-cifra__etq { color: var(--gm-texto-2); }
-/* La pregunta y el boton se apoyaban sueltos sobre la foto y se perdian:
-   van dentro de una tarjeta negra con opacidad y filo de oro, la misma que
-   los valores de Fundamentos. La foto se sigue viendo por debajo, y lo de
-   dentro pasa a tinta clara porque ya no se apoya en piedra clara. */
 .ns-cifras-sec .ns-cta {
   margin-top: clamp(1.8rem, 3.2vw, 2.8rem);
   padding: clamp(1.4rem, 2.6vw, 2.2rem) clamp(1.4rem, 2.8vw, 2.4rem);
   border: 1px solid var(--gm-borde-vivo);
   border-radius: var(--gm-radio);
-  /* Un punto mas opaca que las de Fundamentos: aqui debajo hay piedra clara
-     y la foto lavada, y al 72% la tarjeta se leia gris, no negra. */
   background: rgba(8, 8, 8, .92);
   box-shadow: inset 0 1px 0 rgba(212, 175, 55, .16), 0 22px 54px rgba(6, 6, 6, .28);
 }
@@ -340,37 +302,23 @@
   margin-bottom: 0;
   color: #FFFFFF;
 }
-/* Dentro de la tarjeta manda el oro vivo, no el hondo de la piedra clara.
-   Y va el de marca, no `--gradiente-oro`: en una pagina clara esa variable ya
-   viene redefinida al hondo desde el 15, asi que apuntando ahi la tarjeta se
-   quedaba con el mismo oro del que intentaba salir. */
 .pagina-clara .ns-cifras-sec .ns-cta {
   --oro-vivo-degradado: var(--oro-marca-degradado);
   --oro-plano: var(--oro-marca);
 }
 .ns-cifras-sec .ns-boton { color: var(--oro-marca); }
 
-/* Y el hover repetido aqui. La linea de arriba y `.ns-boton:hover` del 20
-   pesan lo mismo (0,2,0) y esta hoja va despues, asi que sin esto las letras
-   se quedaban doradas sobre el relleno dorado: el boton se rellenaba de oro y
-   dejaba de leerse. Mismo `@media` que el 20 para que solo entre donde el
-   relleno aparece de verdad. */
 @media (hover: hover) and (pointer: fine) {
   .ns-cifras-sec .ns-boton:hover,
   .ns-cifras-sec .ns-boton:focus-visible { color: var(--onix); }
 }
 
-/* Este modificador se lo lleva `.ns-fondo` cuando la piedra es el onix de la
-   banda de cierre. El ajuste fino de esa banda esta en el 23, que va
-   despues; aqui solo queda el punto de partida. */
 .ns-fondo--onyx img { opacity: .68; filter: saturate(.82); }
 .ns-fondo--onyx::after {
   background:
     radial-gradient(96% 78% at 50% 0%, rgba(212, 175, 55, .1), transparent 62%),
     linear-gradient(180deg, rgba(8, 8, 8, .42) 0%, rgba(8, 8, 8, .24) 44%, rgba(8, 8, 8, .5) 100%);
 }
-
-/* El riel de puntos lateral se viste en el 31, que tambien lo carga la portada. */
 
 .crsl { position: relative; }
 .crsl__pista {
@@ -397,11 +345,6 @@
   transition: transform 7.5s linear;
 }
 .crsl__toma--activa img { transform: scale(1); }
-/* Las fotos de pantalla completa llevan <picture>: con la pantalla en
-   vertical la foto es otra —un recorte 9:16 de la misma escena— y no la
-   franja del medio de la apaisada, estirada hasta llenar el alto. Son las
-   tomas de los carruseles y el fondo de "El proceso". La envoltura no
-   pinta nada: la foto sigue midiendo lo que mide su caja. */
 .crsl__toma > picture,
 .ns-fondo > picture { display: contents; }
 .crsl__toma::after {
@@ -475,14 +418,10 @@
   .ns-portada__figura .crsl__toma img { aspect-ratio: 16 / 10; }
 }
 
-/* Equipo cabe en una pantalla: el rotulo, la galeria, la ficha y el pie
-   suman menos que el alto util, y por eso el scroll para justo aqui. */
 .ns-equipo.ns-pantalla { padding-block: clamp(1.5rem, 2.4vw, 2.2rem); }
 .ns-seccion.ns-pantalla + .ns-equipo.ns-pantalla { padding-top: clamp(1.5rem, 2.4vw, 2.2rem); }
 .ns-equipo > .ns-envoltura { position: relative; z-index: 1; }
 
-/* Fundamentos y Valores comparten seccion: las dos mitades tienen que
-   caber juntas en una pantalla, asi que aqui todo va mas apretado. */
 .ns-doble.ns-pantalla { padding-block: clamp(1.1rem, 1.7vw, 1.6rem); }
 .ns-doble__reja {
   display: grid;
@@ -523,8 +462,6 @@
 .ns-doble .ns-valor__nombre::after { margin-top: .4rem; }
 .ns-doble .ns-mvo__icono { margin-bottom: clamp(.5rem, .9vw, .8rem); }
 
-/* Cuatro valores en fila piden mas sitio que tres fundamentos, y a estas
-   anchuras el auto-fit los partiria en dos filas. */
 @media (min-width: 992px) {
   .ns-doble .ns-valores { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
@@ -532,25 +469,12 @@
   .ns-doble .ns-valores { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* El sello de marca ocupa el hueco de la derecha en la intro de
-   Tratamientos: el logo de la clinica, suelto sobre el marmol. */
 .pz-intro__reja {
   display: grid;
   gap: clamp(1.4rem, 3vw, 3rem);
   align-items: center;
 }
 .pz-intro__texto > *:last-child { margin-bottom: 0; }
-/* Sin placa: el logo va solo, sobre el mismo marmol de la seccion. Es el
-   archivo de la barra y del pie con una sola diferencia —«Dental Clinique» y
-   la ® en plata oscura en vez de blanco (`logo-smilers-sobre-marmol-*`)—,
-   porque el logo esta hecho para ir sobre negro y en blanco esas dos piezas
-   desaparecian sobre el marmol claro. El oro y el diente de plata son los
-   del archivo. Llevo una temporada una placa de marmol negro con filo de
-   oro, y antes una version repintada a tinta; las dos se fueron.
-
-   Sin la placa el logo pesa menos, asi que crece un poco, y lleva una sombra
-   muy baja para que el diente —que en sus brillos es casi blanco— no se
-   funda con las vetas. */
 .ns-sello {
   position: relative;
   isolation: isolate;
@@ -576,9 +500,6 @@
   .ns-sello__logo { width: min(220px, 58vw); }
 }
 
-/* La cinta de tratamientos: una linea recta de texto en plata sobre negro
-   que recorre la pagina de derecha a izquierda. La lista va dos veces —la
-   segunda oculta al lector de pantalla— para que el bucle no tenga costura. */
 .cinta-trat {
   position: relative;
   z-index: 1;
@@ -617,7 +538,6 @@
   -webkit-text-fill-color: transparent;
   color: var(--silver-500);
 }
-/* El rombo separador no puede heredar el recorte de plata del texto. */
 .cinta-trat__pieza::after {
   content: "";
   width: clamp(3px, .38vw, 4px);
@@ -634,7 +554,6 @@
   .cinta-trat__pista { animation: none; }
 }
 
-/* Los retratos reparten el ancho a partes iguales y el activo no crece. */
 .pagina-nosotros .ns-equipo__galeria .ag-panel,
 .pagina-nosotros .ns-equipo__galeria .ag-panel.ag-panel--activo { flex: 1 1 0%; }
 .pagina-nosotros .ns-equipo__galeria .ag-panel__media img {
@@ -649,7 +568,6 @@
   filter: none;
   transform: scale(1.03);
 }
-/* El filo de oro marca cual esta abierto, sin mover nada de sitio. */
 .pagina-nosotros .ns-equipo__galeria .ag-panel::after {
   content: "";
   position: absolute;
@@ -662,8 +580,6 @@
 .pagina-nosotros .ns-equipo__galeria .ag-panel--activo::after {
   border-color: var(--gm-oro-vivo);
 }
-/* El nombre se lee siempre: son cuatro columnas estrechas, no hay sitio
-   para que aparezca solo al abrir. */
 .pagina-nosotros .ns-equipo__galeria .ag-panel__texto {
   left: .75rem;
   right: .75rem;
@@ -679,7 +595,6 @@
   overflow: visible;
 }
 .pagina-nosotros .ns-equipo__galeria .ag-panel__desc { font-size: .56rem; letter-spacing: .16em; }
-/* Los retratos activos se ven a plena luz: el rotulo se apoya en su sombra. */
 .pagina-nosotros .ns-equipo__galeria .ag-panel__titulo,
 .pagina-nosotros .ns-equipo__galeria .ag-panel__desc { text-shadow: 0 2px 12px rgba(0, 0, 0, .9); }
 .pagina-nosotros .ns-equipo__galeria .ag-panel__barra { width: 22px; height: 2px; }
@@ -687,7 +602,6 @@
   background: linear-gradient(180deg, transparent 34%, rgba(8, 8, 8, .88) 100%);
 }
 
-/* La ficha ocupa la columna de la derecha y va de arriba abajo. */
 .ns-equipo__reparto .ns-ficha {
   margin-top: 0;
   grid-template-columns: minmax(0, 1fr);
@@ -701,8 +615,6 @@
   }
 }
 
-/* En movil no hay derecha a la que desplegar: los retratos se ponen en
-   cuadricula y la ficha cae debajo, pero siguen sin abrirse. */
 @media (max-width: 991.98px) {
   .pagina-nosotros .ns-equipo__galeria {
     display: grid;
@@ -745,7 +657,6 @@
   box-shadow: 0 0 12px rgba(212, 175, 55, .55);
 }
 
-
 .pagina-tratamientos .pz-tarjeta__foto { background: transparent; }
 .pagina-tratamientos .pz-cita { background: rgba(10, 10, 10, .9); }
 
@@ -759,10 +670,6 @@
     .crsl__toma img { transform: none; }
 }
 
-
-/* El cierre de Tratamientos repite la parada de "En cifras": la foto
-   emerge del marmol hacia abajo y el texto se queda oscuro encima. Aqui no
-   hay `.ns-pantalla` que dispare el zoom, asi que la foto entra quieta. */
 .pz-proceso {
   position: relative;
   isolation: isolate;
@@ -771,12 +678,6 @@
 .pz-proceso > .container { position: relative; z-index: 1; }
 .pz-proceso .ns-fondo img { transform: none; }
 
-/* Aqui la foto no acaba en la seccion siguiente: acaba en esta. La mascara
-   de "En cifras" llega al 100% a plena opacidad, y como debajo empieza la
-   banda verde de la pregunta, la foto se cortaba en seco justo en la juntura.
-   Esta entra por arriba, se ve entera en el centro y se apaga antes de tocar
-   la banda, de modo que la seccion termina en la misma piedra en la que
-   empezo. Pesa (0,3,0), asi que le gana a `.ns-fondo--degradado img`. */
 .pz-proceso .ns-fondo--degradado img {
   -webkit-mask-image: linear-gradient(180deg,
     transparent 0%, rgba(0, 0, 0, .18) 11%, rgba(0, 0, 0, .60) 32%,
@@ -786,16 +687,6 @@
     #000 54%, #000 70%, rgba(0, 0, 0, .34) 84%, transparent 95%);
 }
 
-/* La seccion es corta y el texto cae justo sobre la foto, asi que el lavado
-   claro entra antes que en la de cifras. Y se retira con ella: donde ya no
-   hay foto no hay nada que lavar.
-
-   Carga menos que antes, y por una razon concreta: cargaba para sostener el
-   nombre de cada paso —oro pequeno y muy espaciado sobre una consulta con
-   batas blancas, cristal y sombras, que asi no se lee—, y desde que cada
-   nombre va en su caja negra (en el 22) ese oro se sostiene solo. Tapar la
-   foto entera para sostenerlo dejaba una recepcion translucida detras de
-   todo: se veia el velo, no la clinica. */
 .pz-proceso .ns-fondo--degradado::after {
   background: linear-gradient(180deg,
     rgba(250, 248, 245, .26) 0%,
@@ -805,16 +696,6 @@
     transparent 94%);
 }
 
-/* En pantalla ancha la seccion es una sola franja y el texto se le queda en
-   los bordes: el rotulo y el titular arriba, los pasos abajo. Entonces el
-   velo puede quedarse solo arriba —que es donde la tinta oscura del titular
-   cae sobre el techo de la clinica— y soltar el centro entero: los aros y
-   las cajas de los nombres traen su propio fondo y no lo necesitan. Abajo,
-   donde vuelven los parrafos en tinta, quien despeja el sitio ya no es el
-   velo sino la mascara de la foto, que la ha apagado antes de llegar.
-
-   En el telefono no se puede: ahi la seccion mide el doble, los cinco pasos
-   van en dos columnas y el texto la recorre de arriba abajo. */
 @media (min-width: 992px) {
   .pz-proceso .ns-fondo--degradado img {
     -webkit-mask-image: linear-gradient(180deg,
@@ -839,7 +720,6 @@
   }
 }
 
-/* Sobre la piedra el titulo va en oro y el texto de leer en claro. */
 .pagina-nosotros .ns-valor .ns-valor__nombre,
 .pagina-tratamientos .pz-tarjeta .pz-tarjeta__titulo,
 .pagina-tratamientos .pz-panel .titulo-seccion { color: var(--gm-oro-vivo); }
@@ -867,9 +747,6 @@
   border-bottom-color: var(--gm-oro-vivo);
 }
 
-
-/* La ficha del especialista: se rellena al elegir un retrato del acordeon
-   (scripts/secciones.js). El texto de cada uno vive en su data-ficha-*. */
 .ns-ficha {
   position: relative;
   isolation: isolate;
@@ -910,8 +787,6 @@
   text-transform: uppercase;
   color: var(--gm-oro-vivo);
 }
-/* Doble clase a proposito: .pagina-clara h3 pinta los titulos en gris
-   oscuro y aqui el fondo es piedra negra. */
 .ns-ficha .ns-ficha__nombre {
   margin: 0 0 .2rem;
   font-family: var(--fuente-titulo);

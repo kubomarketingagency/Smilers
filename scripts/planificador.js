@@ -6,13 +6,6 @@ var SmilersScroll = (function () {
 
   var ctx = { y: 0, alto: 0, ancho: 0 };
 
-  /* El alto es el de la pantalla grande (con la barra del navegador
-     escondida), el mismo que el `100lvh` de los pines de las escenas. En el
-     telefono la barra aparece y se esconde con el scroll e innerHeight cambia
-     cada vez: medir con el descuadraba las escenas a mitad del gesto. Se
-     mide con una pieza de 100lvh (100vh donde no hay lvh, que ahi ya es la
-     pantalla grande), la primera vez que hace falta y cuando cambia la
-     ventana. */
   var sonda = null;
   var altoGrande = 0;
 
@@ -58,12 +51,6 @@ var SmilersScroll = (function () {
     requestAnimationFrame(correr);
   }
 
-  /* Los deslizamientos: solo los de un clic (el riel de Nosotros y el de las
-     subpaginas, los enlaces del menu, los pasos de los testimonios). Nunca
-     uno que invente la pagina por su cuenta: el scroll es de quien lo mueve.
-     Cualquier gesto —rueda, dedo, tecla, clic— lo corta en el acto. Mientras
-     dura, `smilers-deslizando` apaga el `scroll-behavior: smooth` de la
-     pagina, que animaria cada paso por su cuenta. */
   var deslizamiento = null;
   var inmuneHasta = 0;
 
@@ -74,8 +61,6 @@ var SmilersScroll = (function () {
     deslizamiento = null;
   }
 
-  /* `salida` es la curva que sale rapido y frena al llegar; sin ella sale y
-     llega despacio, como un ancla. */
   function deslizarA(destino, duracion, salida) {
     abortar();
     inmuneHasta = Date.now() + 90;
@@ -105,12 +90,6 @@ var SmilersScroll = (function () {
     requestAnimationFrame(paso);
   }
 
-  /* Lo que espera a que la pagina se quede quieta para hacer trabajo pesado
-     sin quitarle fotogramas al scroll (la esfera de los testimonios se crea
-     ahi). Solo avisa: ninguno mueve la pagina. Hubo imanes que si la movian
-     —al pararse cerca de Especialidades o entre dos testimonios, la pagina
-     arrancaba sola un cuarto de segundo despues— y eran justo la sensacion de
-     scroll pausado. Ver 02-base.css. */
   var quietos = [];
   var idle = null;
 
@@ -128,8 +107,6 @@ var SmilersScroll = (function () {
 
   window.addEventListener('scroll', alScroll, { passive: true });
   window.addEventListener('resize', function () {
-    /* Si solo se ha movido la barra del navegador, la pantalla grande sigue
-       igual y no hay nada que recalcular. */
     var altoAntes = altoGrande, anchoAntes = ctx.ancho;
     medirAlto();
     if (altoGrande === altoAntes && (window.innerWidth || 1) === anchoAntes) { pedir(); return; }
@@ -137,7 +114,6 @@ var SmilersScroll = (function () {
     pedir();
   });
 
-  /* Todos pasivos: la pagina no frena nunca un gesto para mirarlo. */
   ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (evt) {
     window.addEventListener(evt, abortar, { passive: true });
   });

@@ -1,45 +1,5 @@
-/* ===========================================================================
-   Las entradas.
-
-   El sitio ya tenia una: `.revelar` sube el bloque entero cuando entra en
-   pantalla (11-animaciones.css). Lo que no tenia es lo de dentro. Un bloque
-   con rotulo, titular, parrafo y boton llegaba de una pieza, y una pieza que
-   llega de golpe se lee como una diapositiva; lo que la hace cara es que
-   llegue por orden, y que el orden sea el de lectura.
-
-   Asi que aqui hay dos capas y nada mas:
-
-     1. Cada texto se descubre de arriba abajo detras de su propia mascara, y
-        arranca segun lo que ES —primero el rotulo, luego el titular, luego
-        el parrafo, luego la lista o el boton—, no segun donde este. Por eso
-        el retraso se reparte por clase y no por posicion: un bloque con
-        titular y parrafo, y otro con rotulo, titular, parrafo y boton, se
-        leen con el mismo ritmo.
-
-     2. Las fichas de una reja entran una detras de otra, no las tres a la
-        vez.
-
-   El movimiento es solo mascara y opacidad, sin `transform`. Es una decision
-   y no un descuido: media docena de estas piezas ya usan `transform` para su
-   propio hover —las tarjetas crecen un 2,2% al pasar el raton—, y pisarselo
-   desde aqui apagaria el hover para siempre en cuanto la pieza terminara de
-   entrar.
-
-   La mascara se cierra por abajo (`inset(0 -50% 102% -50%)`) y se abre a
-   `inset(-50%)`, negativa por los cuatro costados: si acabara en `inset(0)`
-   se quedaria recortando para siempre lo que sobresale de la caja, que en
-   estas tarjetas es la sombra —54px de difuminado— y en los titulares su
-   filo de oro.
-
-   La hoja entera vive dentro de `prefers-reduced-motion: no-preference`. Sin
-   eso habria que desandarlo todo en un bloque de excepciones, y lo que se
-   quiere es que quien pide menos movimiento no llegue siquiera a tener el
-   estado escondido.
-   =========================================================================== */
 
 @media (prefers-reduced-motion: no-preference) {
-
-  /* --- 1. la secuencia del texto ---------------------------------------- */
 
   .revelar :is(
     .nos-rotulo, .ns-rotulo, .etiqueta-seccion, .pz-tarjeta__sello,
@@ -69,8 +29,6 @@
     clip-path: inset(-50%);
   }
 
-  /* El reparto. Tres escalones de 90ms: menos y no se distingue del golpe,
-     mas y el boton llega cuando ya has terminado de leer. */
   .revelar :is(h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,
                .pz-tarjeta__titulo, .pz-medallon__nombre) { --paso: .09s; }
   .revelar :is(p, .nos-parrafo, .ns-parrafo, .subtitulo-seccion,
@@ -78,12 +36,7 @@
                blockquote) { --paso: .18s; }
   .revelar :is(ul, ol, .btn, .ns-boton) { --paso: .27s; }
 
-  /* Un parrafo dentro de una lista heredaria el escalon de la lista y le
-     sumaria el suyo. Se le vuelve a poner el de la lista, que es donde
-     esta. */
   .revelar :is(ul, ol) :is(p, li) { --paso: .27s; }
-
-  /* --- 2. las fichas de una reja ---------------------------------------- */
 
   .pz-triptico.revelar > .pz-tarjeta,
   .pz-medallones.revelar > .pz-medallon {
@@ -105,10 +58,6 @@
   .pz-medallones > .pz-medallon:nth-child(4) { --paso: .27s; }
   .pz-medallones > .pz-medallon:nth-child(5) { --paso: .36s; }
 
-  /* El texto de dentro de una ficha no puede volver a esperar su turno: la
-     ficha ya llega escalonada, y encadenar los dos retrasos dejaba el ultimo
-     parrafo del triptico entrando medio segundo tarde. Dentro de la ficha
-     todo entra con ella. */
   .pz-triptico > .pz-tarjeta :is(.pz-tarjeta__sello, .pz-tarjeta__titulo,
                                  .pz-tarjeta__texto),
   .pz-medallones > .pz-medallon > * {
@@ -117,16 +66,6 @@
     transition: none;
   }
 
-  /* --- 3. el indice de especialidades ----------------------------------- */
-
-  /* Diez enlaces que se encienden de uno en uno, en el orden en que estan
-     numerados. La mascara aqui abre de izquierda a derecha y no de arriba
-     abajo: son casillas bajas, y sobre algo bajo el barrido vertical no se
-     ve.
-
-     El escalon va solo en la entrada. Con un `transition-delay` para todo,
-     el marco que se dibuja al pasar por encima (en el 15) esperaba tambien
-     su turno, y en la decima tardaba medio segundo en empezar. */
   .franja-nav.revelar a {
     opacity: 0;
     clip-path: inset(0 102% 0 -50%);
@@ -147,19 +86,6 @@
   .franja-nav a:nth-of-type(9) { --paso: .42s; }
   .franja-nav a:nth-of-type(10) { --paso: .47s; }
 
-  /* --- 4. la bienvenida de cada pagina ---------------------------------- */
-
-  /* El hero de las interiores no es un `.revelar` —no entra en pantalla, ya
-     esta— asi que su entrada va en `animation` y arranca con la pagina. La
-     ruta, el titulo y la bajada suben con la misma mascara y el mismo
-     escalon que todo lo demas.
-
-     **Y espera al umbral** (`--tras-umbral`): arrancaba con la pagina y
-     acababa en 1,3s, detras del negro, asi que cuando el umbral se iba ya
-     estaba todo puesto y la entrada no se veia. Ahora arranca en 1,9s,
-     cuando la primera lama empieza a correr (ver el reloj del umbral en el
-     15), y cada renglon sube mientras las lamas lo van descubriendo. Con
-     ancla no hay umbral y vuelve a arrancar con la pagina. */
   .pagina-clara .banner-pagina--hero { --tras-umbral: 1.9s; }
   html.sin-umbral .pagina-clara .banner-pagina--hero { --tras-umbral: 0s; }
   .pagina-clara .banner-pagina--hero .breadcrumb-personalizado { --paso: 0s; }
@@ -176,15 +102,6 @@
     to   { opacity: 1; clip-path: inset(-50%); }
   }
 
-  /* El titular de los tres heros de madera lleva la muela de oro colgada de
-     su ultima palabra (ver el 15), y la muela se sale de la caja del titulo
-     por arriba y por abajo: mide dos veces y media lo que el renglon. El
-     medio por ciento de holgura del recorte esta puesto para que no se coma
-     la sombra de las letras, y a la muela la cortaba por los dos lados.
-     Mismo movimiento y mismo escalon; lo unico que cambia es hasta donde
-     abre la mascara al final, que aqui tiene que dar para la muela entera.
-     Y sigue siendo una mascara: la muela se descubre con el titulo, que es
-     lo que tiene que pasar cuando forman una sola pieza. */
   .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
     animation-name: entrada-velo-muela;
   }
@@ -193,18 +110,6 @@
     to   { opacity: 1; clip-path: inset(-280% -50% -140% -50%); }
   }
 
-  /* --- 5. la placa de la intro de Tratamientos -------------------------- */
-
-  /* El texto de dentro ya entra con la secuencia de arriba —es un `p`, le
-     toca el escalon de .18s—; lo que falta es que la placa se abra debajo de
-     el en vez de estar puesta desde el principio. Abre de izquierda a
-     derecha, en el sentido de la lectura, y arranca un pelo antes que el
-     texto para que la letra caiga sobre suelo ya hecho.
-
-     La mascara acaba en negativo y no en `inset(0)`: la placa saca 44px de
-     sombra fuera de su caja, y un recorte a ras se la comeria para siempre.
-
-     El `.revelar` esta en la reja, no en el parrafo. */
   .pagina-tratamientos .pz-intro .revelar .nos-parrafo::before {
     opacity: 0;
     clip-path: inset(0 100% 0 0);
@@ -216,38 +121,6 @@
     clip-path: inset(-64px);
   }
 
-  /* --- 6. el marco de los heros de Galeria y FAQ ------------------------ */
-
-  /* Cada escuadra se dibuja sola desde su esquina: primero el filo
-     horizontal, de esquina a esquina, y cuando llega, el vertical bajando
-     (o subiendo). Las dos a la vez, una desde arriba a la izquierda y otra
-     desde abajo a la derecha, de modo que el encuadre se cierra por los dos
-     lados al mismo tiempo.
-
-     Lo que se anima es el `background-size` de las dos capas de cada
-     escuadra, no el ancho de la caja: la caja mide ya lo que va a medir y no
-     hay que recalcular nada por fotograma. Los dos tramos van en una sola
-     animacion, con el corte en el 50%, que es lo que los pone en fila; y el
-     `cubic-bezier` de la animacion se aplica entre cada par de fotogramas,
-     asi que cada tramo sale con su propia curva y la esquina no da tiron.
-
-     **La espera es la del umbral, no un numero elegido.** Galeria y FAQ
-     empiezan tapadas de negro —la palabra de la seccion sobre negro, que se
-     abre en lamas hacia la derecha de 1,9 a 2,8s (ver el 15)—, y el marco
-     arrancaba en .5s: el tramo horizontal entero se dibujaba detras del
-     telon y, cuando el telon se iba, ya estaba puesto. Solo se veia bajar el
-     vertical. Ahora arranca en 2,2s, con las primeras lamas ya fuera de la
-     esquina de arriba, y se ve salir de ella; la de abajo, que es la ultima
-     lama, queda al aire a mitad de su tramo horizontal.
-
-     Con ancla no hay umbral (`html.sin-umbral` lo apaga), asi que ahi la
-     espera vuelve a ser corta: esperar 2,2s sobre una pagina que ya esta
-     entera no es una entrada, es un retraso.
-
-     La curva tambien cambio: era `cubic-bezier(.33, 1, .68, 1)`, que gasta
-     media distancia en la primera quinta parte del tiempo y hace que la
-     linea aparezca de golpe y luego se arrastre. Esta es una ese, y se lee
-     como un trazo. */
   .pagina-clara .banner-pagina--hero .bp-marco { --bp-marco-espera: 2.2s; }
   html.sin-umbral .pagina-clara .banner-pagina--hero .bp-marco { --bp-marco-espera: .5s; }
   .pagina-clara .banner-pagina--hero .bp-marco::before,
@@ -260,12 +133,6 @@
     100% { background-size: 100% 1px, 1px 100%; }
   }
 
-  /* --- 7. lo que queda fuera -------------------------------------------- */
-
-  /* Dentro del cine de Nosotros nadie pone nunca `.visible`: las capas viven
-     en un pin, el observador las da por vistas desde el primer fotograma y
-     quien las presenta es el barrido (24-nosotros-cine.css lo explica). Si
-     el texto de ahi dentro esperara a `.visible`, no llegaria nunca. */
   .ns-cine--viva .revelar :is(
     .nos-rotulo, .ns-rotulo, .etiqueta-seccion,
     h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,

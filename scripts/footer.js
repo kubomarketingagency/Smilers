@@ -4,11 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const contadores = document.querySelectorAll('[data-contador]');
   const runIdContador = new WeakMap();
 
-  /* Un solo formateador para todas las cuentas. `toLocaleString('es-MX')`
-     construye uno nuevo en cada llamada, y la cuenta lo llamaba en cada
-     fotograma: en un telefono, el primero costaba cerca de 50ms (cargar los
-     datos del idioma) en mitad del telon. El texto que sale es el mismo. Se
-     crea en un rato libre, despues de la carga. */
   let formato = null;
   function formatear(n) {
     if (!formato && window.Intl && Intl.NumberFormat) formato = new Intl.NumberFormat('es-MX');
@@ -31,10 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function paso(ahora) {
       if (runIdContador.get(elemento) !== idPropio) return;
-      /* Con tope por abajo tambien: el `ahora` que trae el fotograma es el
-         instante en que empezo, y puede ser anterior al `performance.now()`
-         de dos lineas mas arriba. Cuando pasa, el progreso sale negativo y el
-         contador enseña un numero en negativo antes de arrancar. */
       const progreso = Math.min(Math.max((ahora - inicio) / duracion, 0), 1);
       elemento.textContent = formatear(Math.floor(progreso * objetivo));
       if (progreso < 1) requestAnimationFrame(paso);
@@ -57,10 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
     contadores.forEach(function (c) { obsContadores.observe(c); });
   }
 
-  /* La cuenta se puede relanzar desde fuera. La necesita el cierre de
-     Nosotros: alli las cifras viven dentro de un pin, el observador las da por
-     vistas en cuanto la seccion entra en pantalla —con las hojas negras
-     todavia encima— y para cuando se abren la cuenta ya ha terminado. */
   window.SmilersContadores = { animar: animarContador };
 
   const mapaTabs = document.querySelectorAll('.mapa-tab');
@@ -136,19 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* El correo del pie apunta al redactor de Gmail en la web
-     (`mail.google.com/mail/?view=cm`), que en un ordenador abre la ventana con
-     el destinatario, el asunto y el cuerpo ya escritos. En un telefono no: esa
-     direccion la recoge la aplicacion de Gmail —o el Gmail movil, que redirige—
-     y por el camino se pierden los parametros; lo que se abre es una hoja en
-     blanco, que es justo lo que no se queria.
-
-     Lo que si entienden los dos sistemas es `mailto:`: abre el correo que el
-     telefono tenga puesto —Gmail incluido— con el asunto y el cuerpo intactos.
-     Asi que en pantallas tactiles se le cambia el destino al enlace, y solo
-     ahi: en un ordenador `mailto:` depende de que haya un programa de correo
-     configurado, y en muchos no lo hay. El texto del enlace no se toca, que
-     sigue siendo la direccion de la clinica. */
   const tactil = window.matchMedia
     ? matchMedia('(hover: none) and (pointer: coarse)').matches
     : false;
@@ -164,8 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
       if (campos.get('body')) cola.push('body=' + encodeURIComponent(campos.get('body')));
 
       enlace.href = 'mailto:' + para + (cola.length ? '?' + cola.join('&') : '');
-      /* Y deja de abrirse en otra pestana: `mailto:` no abre ninguna pagina, y
-         con `target` el navegador deja una en blanco detras. */
       enlace.removeAttribute('target');
       enlace.removeAttribute('rel');
     });

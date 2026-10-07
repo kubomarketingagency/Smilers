@@ -1,22 +1,3 @@
-/* ===========================================================================
-   Un solo oro en todo el sitio.
-
-   El oro de la marca no es un color plano: es el degradado recortado sobre
-   el texto que lleva "Smilers" en la barra. Esta hoja va la ultima y le pone
-   ese mismo acabado a toda la tipografia dorada, que hasta ahora usaba
-   colores planos sueltos.
-
-   Dos avisos para quien toque esto:
-
-   - `background-clip: text` recorta TODAS las capas de fondo del elemento,
-     el color incluido. Por eso aqui no entra nada que tenga fondo propio:
-     los iconos dentro de su circulo, los sellos, las manijas. Esos se quedan
-     en oro plano, que ademas es lo unico posible: un SVG no se puede
-     recortar con el fondo del texto.
-   - Sobre marmol claro el degradado vivo se pierde (su tramo claro es casi
-     blanco). Ahi entra el mismo efecto con el degradado hondo, que es el
-     que aguanta sobre piedra clara sin dejar de ser oro.
-   =========================================================================== */
 
 .nos-rotulo,
 .ns-rotulo,
@@ -53,9 +34,6 @@
   color: var(--gold-500);
 }
 
-/* Ojo con los hijos: -webkit-text-fill-color se hereda pero el fondo no,
-   asi que un <span> dentro de un texto recortado se queda invisible. A los
-   que los tienen se les pasa el mismo degradado. */
 .cl-num > *,
 .pagina-nosotros .ns-cifras-sec .ns-cifra__num > * {
   background-image: inherit;
@@ -63,9 +41,6 @@
           background-clip: text;
 }
 
-
-/* Los enlaces que solo se ponen dorados al pasar por encima: el oro que
-   aparece es el mismo degradado, no un color plano. */
 .footer-contacto a:hover,
 .footer-bottom a:hover,
 .pagina-clara .breadcrumb-personalizado a:hover,
@@ -77,36 +52,13 @@
   color: var(--gold-500);
 }
 
-/* Sobre piedra clara manda el degradado hondo. */
 .pagina-clara {
   --oro-vivo-degradado: var(--gradiente-oro-hondo);
   --oro-plano: var(--oro-hondo);
 }
 
-/* `--oro-plano` es la hermana de la de arriba para lo que NO se puede
-   recortar contra el texto: un icono dentro de su circulo, un aro, una
-   manija. Esas piezas se quedaban en `#D4AF37` en toda la pagina, y sobre
-   marmol claro ese oro da 2:1 contra el fondo: se veia amarillo palido, no
-   oro. La misma regla que ya seguia el degradado —hondo sobre piedra clara,
-   vivo dentro de las piezas oscuras— ahora la sigue tambien el oro plano, y
-   por eso las dos variables viajan siempre en la misma lista.
-
-   Los dos tonos salen del 01 y no de la guia de marca: esta hoja la cargan
-   las cinco paginas y la guia solo dos, asi que con `--gm-oro-*` la variable
-   se quedaba sin valor en la portada, la Galeria y las Preguntas —y una
-   variable vacia no cae al respaldo, invalida la declaracion entera. */
 :root { --oro-plano: var(--oro-marca); }
 
-/* Salvo dentro de las piezas oscuras que viven en esas paginas claras: la
-   barra, el pie, las tarjetas de piedra y las bandas negras, donde el
-   degradado vivo es el que corresponde.
-
-   Y aqui va `--oro-marca-degradado`, que es el oro de marca clavado en
-   hexadecimal, y no `--gradiente-oro`: en una pagina clara esa variable ya
-   viene redefinida al degradado hondo desde el 15, asi que la escapatoria no
-   escapaba de nada —el oro de dentro de la barra, del pie y de todas las
-   tarjetas negras de las cuatro paginas interiores salia hondo, el de la
-   piedra clara, en vez de vivo. Se midio. */
 .pagina-clara .navbar-principal,
 .pagina-clara .menu-panel,
 .pagina-clara .footer,
@@ -115,41 +67,22 @@
 .pagina-clara .ns-doble,
 .pagina-clara .ns-ficha,
 .pagina-clara .ns-valor,
-/* La columna del elenco vive sobre la madera desde que las dos mitades
-   cambiaron de lado, y la placa del nombre trae su propia piedra negra. */
 .pagina-clara .ns-elenco__lado,
 .pagina-clara .ns-elenco__placa,
 .pagina-clara .pz-tarjeta,
 .pagina-clara .pz-panel,
 .pagina-clara .pz-cita,
 .pagina-clara .ag-panel,
-/* La banda de onix ya no esta en esta lista: desde que va retroiluminada es
-   piedra clara, y el 23 le devuelve el degradado hondo. */
 .pagina-clara .banner-pagina--hero,
 .pagina-clara .filtros-galeria,
 .pagina-clara .franja-nav,
 .pagina-clara .faq-categoria-titulo,
 .pagina-clara .ns-portada,
-/* Las especialidades pares van sobre pizarra: el numero del acordeon, la
-   flecha y las esquinas de la foto caen sobre roca oscura. */
 .pagina-clara .bloque-tratamiento--piedra {
   --oro-vivo-degradado: var(--oro-marca-degradado);
   --oro-plano: var(--oro-marca);
 }
 
-/* ---------------------------------------------------------------------------
-   El relleno del boton, por la misma via.
-
-   Sobre marmol blanco el boton en reposo va relleno de negro: el filo y las
-   letras siguen siendo de oro, y al pasar por encima se invierte —oro de
-   fondo, letras negras—. Sobre piedra oscura no se rellena nada, que ahi el
-   filo ya se ve.
-
-   Se hereda, asi que basta con nombrar la piedra clara una vez y devolver la
-   variable a su sitio dentro de las piezas oscuras que viven en esas mismas
-   paginas. La lista de abajo es casi la de arriba, y lo es a proposito: son
-   las mismas piezas.
-   --------------------------------------------------------------------------- */
 .seccion-piedra,
 .seccion-clara,
 .pagina-clara { --btn-relleno: var(--onix); }
@@ -175,43 +108,6 @@
 .footer,
 .seccion-piedra .pn-telon { --btn-relleno: transparent; }
 
-
-/* ===========================================================================
-   La cabecera de cada seccion, en su caja.
-
-   Recuadro negro, filo de oro y letra de oro, un poco mas grande que la
-   letra. Lo llevan los rotulos que encabezan cada seccion —`.etiqueta-
-   editorial` en la portada, `.ns-rotulo` en Nosotros, `.nos-rotulo` en
-   Especialidades—, las dos palabras grandes de la portada (Especialidades y
-   Testimonios), el nombre de cada una de las diez especialidades y el de
-   cada paso de "El proceso". Las cabeceras del pie la llevaron y ya no: van
-   sueltas y en plata (en el 10).
-
-   Son DOS piezas y no una, y no por gusto. El oro del texto es un fondo
-   recortado contra las letras (`background-clip: text`), y ese recorte se
-   lleva por delante cualquier otro fondo de la misma caja, el negro
-   incluido. Asi que la caja pinta el negro y el filo, y el texto de dentro
-   (`.caja-oro__txt`) pinta el oro. Y como el rotulo de fuera ya viene
-   recortado en oro desde el 16 o desde arriba en esta hoja, la caja tapa ese
-   oro con su negro y el texto de dentro lo vuelve a poner: por eso lleva su
-   propio degradado en vez de heredarlo.
-
-   El oro es el vivo aunque la caja caiga en una pagina clara: dentro de la
-   caja el fondo es negro, y el hondo sobre negro se apaga. Por eso tambien se
-   reescriben aqui las variables de oro para lo que va dentro, como el numero
-   de los rotulos de Nosotros.
-
-   `--tracking` es el espaciado entre letras del rotulo que la contiene. El
-   navegador lo pone tambien detras de la ultima letra, y sin descontarlo la
-   caja sale mas holgada por la derecha que por la izquierda. Se descuenta
-   del relleno de la derecha, no con un margen negativo en el texto: con el
-   margen, el navegador decide donde partir la linea antes de aplicarlo, la
-   ultima palabra nunca cabia y «Como trabajamos» salia en dos lineas.
-
-   `flex-shrink: 0` porque casi todos los rotulos son una fila flexible con
-   la raya de oro detras: sin eso la raya le quitaba ancho a la caja y el
-   rotulo se partia en dos lineas. Solo se parte si no cabe en la fila entera.
-   =========================================================================== */
 .etiqueta-editorial,
 .ns-rotulo,
 .nos-rotulo { --tracking: .28em; }
@@ -238,14 +134,7 @@
   color: var(--oro-marca);
 }
 
-/* Las dos palabras grandes de la portada van en la Bodoni de titular: ahi el
-   mismo aire en `em` saldria el doble de holgado, asi que la caja se aprieta. */
 .acordeon-etiqueta .caja-oro,
 .testimonios-etiqueta .caja-oro { padding: .34em calc(.72em - var(--tracking, 0em)) .3em .72em; }
 
-/* El nombre de cada paso de "El proceso", en Especialidades. Cae sobre la
-   foto de la recepcion y, suelto, era oro pequeno y muy espaciado sobre
-   batas blancas, cristal y sombras: aunque el lavado claro le pusiera piedra
-   debajo, competia con la foto y no se leia. En la caja lleva su propio
-   negro. `--tracking` es el espaciado de la letra del paso (en el 18). */
 .pagina-tratamientos .pz-medallon__nombre { margin-bottom: .6rem; }

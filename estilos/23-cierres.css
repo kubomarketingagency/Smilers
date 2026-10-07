@@ -1,42 +1,15 @@
-/* ===========================================================================
-   El cierre de las paginas interiores: una sola pieza.
 
-   La pregunta final se apoya sobre el onix y se lee dentro de un recuadro
-   negro con filo de oro. Nacio en Tratamientos y ahora es la misma en
-   Galeria, en FAQ y —con su mamposteria en vez de la piedra— en la portada.
-
-   Esta hoja va la ultima y la cargan las cinco paginas: tiene que poder
-   pisar el fondo claro que el 15 le pone a `.banda-cta` en las paginas
-   claras, y por eso no vale ponerla antes.
-   =========================================================================== */
-
-/* Dos clases y no una: el 15 le pone `background: transparent` a
-   `.pagina-galeria .banda-cta` y a `.pagina-tratamientos .banda-cta`, y esos
-   selectores pesan mas que `.banda-cta--onyx` a secas. Con el fondo
-   transparente se veia el marmol blanco del lienzo en vez del onix. */
 .banda-cta.banda-cta--onyx {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   min-height: 0;
   padding: clamp(2rem, 3.6vw, 3.4rem) 0;
-  /* Color de respaldo del onix, no del negro que habia antes: si la piedra
-     tarda en llegar, lo que se ve es una banda de miel, no un agujero. */
   background: #F3E3CB;
-  /* Arriba va la franja de oro (`::before`, mas abajo) y abajo nada: la
-     juntura con el pie ya la hace el filo de oro con que empieza el pie. */
   border-top: 0;
   border-bottom: 0;
 }
 
-/* LA FRANJA DE ORO CON QUE EMPIEZA EL ONIX. La misma idea que el filo con que
-   empieza el pie, pero con mas cuerpo: 3px del degradado de la marca, a todo
-   el ancho, con un halo muy bajo, y un brillo que la recorre despacio. Es la
-   costura entre el marmol blanco de la pagina y la piedra de miel, que
-   apenas se diferencian en luz y sin ella se juntaban sin corte.
-
-   Dos clases: el 15 apaga los `::before` de toda `.banda-cta` de pagina
-   clara, y con una sola esta no salia. */
 .banda-cta.banda-cta--onyx::before {
   content: '';
   display: block;
@@ -72,21 +45,6 @@
   overflow: hidden;
   pointer-events: none;
 }
-/* El onix va retroiluminado, que es como se pone de verdad: una plancha
-   fina con la luz detras. Aqui eso son dos cosas y no una.
-
-   La primera, que la piedra este encendida. Antes llevaba encima un velo
-   negro al 82% para que el texto blanco se leyera, y eso apagaba justo lo
-   que hace bonita a esta piedra: la miel. Fuera el velo.
-
-   La segunda, que se note DE DONDE viene la luz. Una plancha retroiluminada
-   no es un rectangulo de brillo parejo: tiene un foco —aqui a media altura,
-   escorado a la derecha, donde el onix ya tiene su veta clara— y se apaga
-   hacia los bordes. Ese apagado es tierra caliente, no gris: una piedra con
-   luz detras nunca se va al negro por los cantos, se va al ambar.
-
-   Con la piedra encendida el texto blanco deja de servir, claro. Pasa a
-   negro, que es lo mismo que hace el sitio sobre el marmol blanco. */
 .banda-cta--onyx .ns-fondo img {
   width: 100%;
   height: 100%;
@@ -110,8 +68,6 @@
       rgba(84, 48, 10, .3) 100%);
 }
 
-/* En el movil la banda se apila —pregunta arriba, boton abajo— y el foco se
-   centra: ahi el texto cruza todo el ancho. */
 @media (max-width: 991.98px) {
   .banda-cta--onyx .ns-fondo::after {
     background:
@@ -137,20 +93,11 @@
 .banda-cta--onyx p,
 .pagina-clara .banda-cta--onyx p {
   font-family: var(--fuente-cuerpo);
-  /* En negrita y en la tinta del titular: en la 300 y al 82%, sobre las
-     vetas de miel, la frase de debajo de la pregunta no se leia. */
   font-weight: 700;
   line-height: 1.8;
   color: #16110A;
 }
 
-/* El boton de la banda es el de 16-oro.css, sin retoques: alli el oro sale
-   de `--oro-marca`, que no cambia de tono segun la piedra de debajo. */
-
-/* La banda ya no es una pieza oscura: con la piedra encendida se comporta
-   como el marmol blanco, asi que el oro vuelve al degradado hondo —el vivo
-   se pierde sobre claro— y el boton se rellena de negro. Sobre piedra clara
-   el oro no puede ser filo, letra y contraste a la vez. */
 .banda-cta--onyx,
 .pagina-clara .banda-cta--onyx {
   --oro-vivo-degradado: var(--gradiente-oro-hondo);

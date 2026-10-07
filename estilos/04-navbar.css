@@ -23,8 +23,6 @@
   object-fit: cover;
   object-position: center 38%;
 }
-/* La piedra va limpia: sin lavado de oro encima, solo el degradado que la
-   asienta. El filo dorado de la barra vive abajo, en `.navbar-principal::after`. */
 .navbar-marmol::after {
   content: '';
   position: absolute;
@@ -57,22 +55,10 @@
   .navbar-principal { transition: padding .35s ease; }
 }
 
-/* La marca es el logo de la clinica, el archivo tal cual: el diente en plata
-   y «Smilers» en oro sobre transparente, asi que va igual sobre la piedra
-   negra de la barra que sobre la del pie. Se mide por alto y no por ancho,
-   que es lo que la barra tiene contado, y siempre por debajo de los 48px del
-   boton de menu: ese boton es quien decide el alto de la barra, y un logo
-   mas alto la haria crecer y dejaria corto todo lo que se mide desde
-   `--alto-navbar`. Por eso tambien se le quita a la marca el relleno de
-   `.navbar-brand` que pone Bootstrap: 5px arriba y abajo sumados a los 44 del
-   logo pasaban de 48, y la barra crecia 6px. */
 .marca {
   display: flex;
   align-items: center;
   padding-block: 0;
-  /* Bootstrap le da 1rem de margen por la derecha a todo `.navbar-brand`. Con
-     el, el hueco de la izquierda de la raya medía 1rem mas que el de la
-     derecha y la raya salia pegada al aval en vez de en la mitad. */
   margin-right: 0;
   transition: opacity .3s ease, visibility .3s ease;
 }
@@ -84,48 +70,24 @@
 }
 .navbar-principal.con-scroll .marca-logo { height: 40px; }
 
-/* El aval de OAD, al lado de la marca. Va fuera del enlace a la portada
-   porque no es la marca de la clinica y pulsarlo no debe llevar a ningun
-   sitio; lo que los separa es un filo de oro, el mismo de todos los filos.
-
-   Mas bajo que el de Smilers a proposito: es una pieza ancha y baja, y a la
-   misma altura pesaria mas que la marca de la casa. Acompana el encogido de
-   la barra. */
-/* Es un enlace a la portada, como la marca de la casa: un logo puesto en una
-   barra se pulsa, y el que no lleve a ningun sitio se nota. Sin subrayado ni
-   color heredado, que lo que se ve es la imagen. */
 .marca-oad {
   position: relative;
   display: flex;
   align-items: center;
   text-decoration: none;
-  /* El hueco, una sola medida: la raya va en su mitad, asi que los dos
-     lados tienen que medir lo mismo. */
   --hueco-oad: clamp(.85rem, 1.9vw, 1.45rem);
   margin-left: var(--hueco-oad);
   padding-left: var(--hueco-oad);
-  /* Todo el hueco sobrante, a su derecha: la barra reparte el espacio
-     entre sus hijos, y sin esto el aval se quedaba en el centro, suelto
-     entre la marca y el boton del menu en vez de pegado a la marca. */
   margin-right: auto;
 }
 .marca-oad::before {
   content: "";
   position: absolute;
-  /* A caballo de la juntura y no en `left: 0`: ahi los dos pixeles de la raya
-     salian del hueco de la derecha y ese lado quedaba dos pixeles mas corto.
-     Con -1px los dos huecos miden igual. */
   left: -1px;
   top: 50%;
   width: 2px;
-  /* Dos pixeles mas que los logos y no ocho: a 52 la raya se salia por arriba
-     y por abajo de las dos piezas que separa y se leia como un palo suelto. */
   height: 46px;
   transform: translateY(-50%);
-  /* El mismo oro del logo de la casa, muestreado sobre su propio
-     archivo: va del tostado hondo al brillo claro y vuelve. De arriba
-     abajo, porque en una raya de dos pixeles un degradado en diagonal
-     no se ve. */
   background: linear-gradient(180deg,
               #9C7824 0%,
               #C09C3C 18%,
@@ -136,7 +98,6 @@
   transition: height .35s ease;
 }
 .navbar-principal.con-scroll .marca-oad::before { height: 42px; }
-/* Del mismo alto que el logo de la casa, y encoge con el. */
 .marca-oad img {
   display: block;
   width: auto;
@@ -148,9 +109,6 @@
 @media (max-width: 767.98px) {
   .marca-logo { height: 40px; }
   .navbar-principal.con-scroll .marca-logo { height: 36px; }
-  /* En el telefono la barra es el logo, el aval y el boton del menu. El aval
-     mantiene el alto del logo de la casa; lo que se aprieta es el hueco que
-     los separa, para que los tres quepan. */
   .marca-oad { --hueco-oad: .55rem; }
   .marca-oad::before { height: 42px; }
   .navbar-principal.con-scroll .marca-oad::before { height: 38px; }
@@ -192,16 +150,6 @@
 .navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(1) { top: 8px; transform: rotate(45deg); }
 .navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(2) { opacity: 0; }
 .navbar-toggler[aria-expanded="true"] .hamburguesa-icono span:nth-child(3) { top: 8px; transform: rotate(-45deg); }
-
-/* ===========================================================================
-   El menu se despliega: un panel que entra por la derecha sobre un velo
-   desenfocado. En pantallas pequenas lleva las cinco secciones, como antes;
-   en escritorio esas cinco se abren en columnas con todo lo que hay dentro
-   de cada una.
-
-   Es la unica excepcion a la regla de "un solo desenfoque en todo el sitio":
-   el velo va desenfocado a peticion expresa. El panel, no.
-   =========================================================================== */
 
 .navbar-collapse {
   position: fixed;
@@ -316,16 +264,12 @@
   transform: translateX(4px);
 }
 
-/* En pantallas pequenas el panel lleva lo mismo que llevaba antes: las
-   cinco secciones y el boton. Lo de dentro de cada una se queda fuera. */
 @media (max-width: 991.98px) {
   .menu-sub { display: none; }
   .menu-columnas { gap: 1.35rem; }
   .menu-panel { justify-content: center; }
 }
 
-/* En escritorio el panel se abre a lo ancho y reparte las cinco secciones
-   en columnas, cada una con todo su contenido debajo. */
 @media (min-width: 992px) {
   .menu-panel {
     width: min(1180px, 96vw);
@@ -341,12 +285,6 @@
     align-items: flex-start;
     gap: clamp(1.5rem, 3vw, 3.2rem);
   }
-  /* Las cinco a partes iguales, pero ninguna mas estrecha que su palabra mas
-     larga. Con `min-width: 0` la columna podia encoger por debajo de su
-     titulo, y «Especialidades» —una sola palabra, en versales y espaciada—
-     se salia de la suya y pisaba la raya de Galeria: de 6px a 1280 a 41px a
-     992. Con `min-content` esa columna se queda con lo que mide su titulo y
-     las otras cuatro, que van sobradas, ceden lo que falta. */
   .menu-col {
     flex: 1 1 0;
     min-width: min-content;
@@ -362,26 +300,6 @@
   .menu-col__titulo { font-size: 1rem; letter-spacing: .22em; }
 }
 
-/* ===========================================================================
-   Las lineas de oro del menu, sacadas de la pieza grafica de la clinica: dos
-   esquinas con cintas negras cruzadas por hilos de oro en diagonal, y tres
-   hilos rectos que enmarcan el hueco —uno que baja por la derecha y dobla
-   hacia dentro al final, y otro que sube por la izquierda desde el suelo—.
-
-   Van donde el panel tiene sitio y no debajo del texto. En el telefono el
-   panel es una columna con los cinco nombres en el centro: las esquinas van
-   arriba a la izquierda (debajo de la barra, que tapa lo de mas arriba) y
-   abajo a la derecha, y los hilos por los lados. En escritorio el panel se
-   abre a lo ancho con las cinco columnas arriba, asi que las dos esquinas
-   bajan a los dos cantos de abajo, que es donde las columnas cortas dejan
-   hueco, y los hilos rectos se quedan fuera: ahi ya hay filos de oro entre
-   columna y columna.
-
-   La esquina es un solo dibujo (`#deco-esquina`, en el sprite de cada
-   pagina) que se usa dos veces, girado. Los hilos son de `currentColor`, asi
-   que el oro lo pone esta hoja. Al abrir, las esquinas se descubren con un
-   barrido y los hilos se dibujan desde su punta.
-   =========================================================================== */
 .menu-deco {
   position: absolute;
   inset: 0;
@@ -436,14 +354,6 @@
 }
 .menu-abierto .menu-deco__linea { transform: none; }
 
-/* Cerrado, todo vuelve a su sitio de golpe. El menu se esconde al instante
-   —`visibility` no lleva transicion—, asi que la vuelta no se ve; pero con
-   las mismas transiciones que la ida, retrasos incluidos, las piezas seguian
-   recogiendose por detras: el hilo de pie espera 1,05s antes de moverse y
-   el dibujo entero tardaba mas de dos segundos en volver a cero. Quien lo
-   abria otra vez antes se encontraba ese hilo ya tendido y el resto a medio
-   recoger, y el menu aparecia de golpe en vez de dibujarse. Asi cada
-   apertura sale de cero, la primera y todas las demas. */
 .navbar-collapse:not(.menu-abierto) :is(.menu-velo, .menu-panel, .menu-deco__esquina, .menu-deco__linea) {
   transition: none;
 }

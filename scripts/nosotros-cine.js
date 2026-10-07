@@ -2,13 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Enciende las fotos aplazadas de un trozo de pagina. Van con la direccion
-     en `data-src` / `data-srcset` porque `loading="lazy"` no sirve aqui:
-     las tomas de un carrusel estan una encima de otra y las capas de la
-     escena de Nosotros ocupan la pantalla a la vez, asi que el navegador las
-     da todas por visibles y se las bajaba de golpe. El `<source>` va antes
-     que el `<img>` en el documento, que es el orden en que hay que
-     encenderlos para que el navegador elija bien. */
   function encender(nodo) {
     if (!nodo) return;
     var piezas = nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
@@ -19,10 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  /* El resto, cuando el navegador no tenga nada mejor que hacer, y nunca
-     antes de que la pagina acabe de cargar: con una red lenta, adelantar
-     fotos que no se ven le quita ancho de banda a la que si se esta
-     mirando. */
   function enReposo(fn) {
     var luego = function () {
       if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 4000 });
@@ -74,11 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
         lista.appendChild(li);
       });
 
-      /* Quitar y volver a poner la clase reinicia la entrada de la ficha, y
-         para eso hay que obligar al navegador a maquetar en medio. Solo hace
-         falta si la clase ya estaba: si no, ponerla basta para que la entrada
-         arranque. Al abrir la pagina no esta, y esa maquetacion a destiempo
-         costaba 85ms en un telefono. */
       if (ficha.classList.contains('ns-ficha--entra')) {
         ficha.classList.remove('ns-ficha--entra');
         void ficha.offsetWidth;
@@ -111,9 +95,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function arrancar() {
       parar();
       if (dormido || quietud.matches) return;
-      /* Diez retratos y uno a la vista: el siguiente se enciende con tres
-         segundos de margen y el resto en tiempo muerto, y solo desde que la
-         escena despierta al elenco. */
       encender(retratos[(actual + 1) % retratos.length]);
       if (!pedidosTodos) {
         pedidosTodos = true;
@@ -145,9 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return {
       caja: caja,
 
-      /* Dentro del pin la capa del elenco esta siempre en pantalla aunque no
-         se vea —lo que la esconde es la opacidad—, asi que quien decide si el
-         carrusel corre es la escena, no un observador. */
       dormir: function () {
         if (dormido) return;
         dormido = true;
@@ -171,18 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    /* El cine va tambien en el movil, con el mismo barrido. Lo unico que lo
-       apaga es que se haya pedido menos movimiento; entonces las capas se
-       quedan apiladas en flujo normal, en el orden en que se leen. */
     function cabe() {
       return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
     }
 
-    /* Las dos cintas de fotos de la escena. `interiores.js` las monta y las
-       deja en `SmilersCarruseles`; aqui se les dice cuando corren, porque su
-       observador no puede saberlo: dentro del pin las dos estan siempre en
-       pantalla. Va despues en el orden de los guiones, asi que la lista ya
-       existe. */
     function cintaDe(selector) {
       var caja = document.querySelector(selector + ' [data-carrusel]');
       var lista = window.SmilersCarruseles || [];
@@ -205,25 +175,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    /* Cada variable va en la pieza que la usa, no en la escena: el 24 las
-       registra sin herencia, asi que escrita ahi solo toca a esa pieza. En la
-       escena invalidaba el estilo de sus 200 elementos en cada fotograma. */
     function pieza(bloque, selector) { return bloque ? bloque.querySelector(selector) : null; }
     var capaFund = pieza(escena, '.ns-capa--fundamentos');
     var capaInfra = pieza(escena, '.ns-capa--infra');
     var envFund = pieza(capaFund, ':scope > .ns-envoltura');
     var envInfra = pieza(capaInfra, ':scope > .ns-envoltura');
-    /* Fundamentos enciende su entrada (32-fundamentos.css) en cuanto su texto
-       empieza a aparecer, y la apaga al volver por arriba, con el texto otra
-       vez transparente, para que vuelva a entrar la proxima vez. */
     var fundPintada = false;
     var DESTINOS_CINE = {
       '--c-uno': pieza(escena, '.ns-capa--historia'),
       '--c-ev-uno': pieza(escena, '.ns-capa--historia'),
       '--c-dos': pieza(escena, '.ns-capa--elenco'),
       '--c-ev-dos': pieza(escena, '.ns-capa--elenco'),
-      /* Los paneles se deslizan enteros (ver el 24), y el equipo llega desde
-         un poco mas alla mientras Fundamentos se retira. */
       '--f-corre': capaFund,
       '--e-x': pieza(escena, '.ns-capa--elenco'),
       '--f-op': envFund,
@@ -250,20 +212,8 @@ document.addEventListener('DOMContentLoaded', function () {
       '--k-retrato': pieza(carta, '.ns-carta__retrato'),
       '--k-frase': pieza(carta, '.ns-carta__frase'),
       '--k-papel': pieza(carta, '.ns-carta__hoja'),
-      /* Lo impreso se funde sobre la hoja ya puesta, y se funde de una pieza:
-         la variable va en la capa que lo lleva todo y la usa ella sola. */
       '--k-texto': pieza(carta, '.cb-tinta'),
-      /* El filo se escribe en la capa de tinta y lo leen los tres sitios
-         donde hay oro que dibujar: los dos cantos de las franjas y la raya
-         de debajo de la pregunta. Apuntaba a `.ns-carta__escuadras`, que
-         eran las cuatro escuadras de oro del marco; con las franjas
-         llegando a los cantos ya no hay escuadras ni nodo al que apuntar, y
-         la variable se quedaba sin escribir: todo salia dibujado de
-         entrada. */
       '--k-filo': pieza(carta, '.cb-tinta'),
-      /* Y la firma, en la rubrica y no en la imagen: debajo de la firma hay
-         ahora una raya que se dibuja con ella, y desde la imagen no la
-         alcanza. */
       '--k-firma': pieza(carta, '.cb-rub')
     };
     function cadaDestino(destino, fn) {
@@ -277,40 +227,13 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    /* El cierre es una escena clavada en todas las pantallas, tambien en el
-       telefono: las hojas se cierran al final del cine y se abren sobre la
-       pregunta, que ocupa la pantalla entera.
-
-       En el telefono estuvo apagado una temporada por lo que costaba. Dos
-       pines seguidos se cobran, por construccion, el alto entero de una
-       pantalla de scroll entre el uno y el otro —el del cine tiene que
-       terminar de salir antes de que el del cierre pueda clavarse—, y como
-       las hojas estaban cerradas a los dos lados de ese hueco, lo que se
-       recorria ahi era una pantalla de negro quieto. Sin el pin, la banda
-       subia en flujo normal detras del telon, sin cierre ni apertura y sin
-       llenar la pantalla.
-
-       El hueco ya no existe: el 24 monta el cierre sobre la ultima pantalla
-       del cine con un margen negativo del alto del pin, asi que su pin se
-       clava justo en el pixel en el que el del cine deja de estarlo. Mientras
-       sube por encima de esa ultima pantalla va escondido (sin `--clavado`) y
-       el cine se sigue viendo entero; al clavarse aparece con las hojas
-       cerradas, que es exactamente lo que el cine esta ensenando en ese
-       momento, y el relevo no se ve. */
     var viva = false;
     var cierreVivo = false;
     var clavado = false;
     var clavadoPintado = false;
-    /* La carta de bienvenida es la escena de en medio y esta montada igual
-       que el cierre: su pin se clava en el pixel en que el del cine deja de
-       estarlo, y el del cierre en el que ella deja de estarlo. */
     var cartaViva = false;
     var cartaClavada = false;
     var cartaClavadaPintada = false;
-    /* Clavada quiere decir que su techo ya paso por arriba, y eso sigue siendo
-       cierto el resto de la pagina. Para saber si la carta esta ocupando la
-       pantalla AHORA hace falta ademas que su suelo siga por debajo del borde
-       de abajo, que es justo mientras el pin esta pegado. */
     var cartaEnPantalla = false;
     var cartaEnPantallaPintada = false;
 
@@ -358,8 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
         escritoCierre = {};
         escritoCarta = {};
         if (elenco) elenco.despertar(false);
-        /* Sin escena las capas estan apiladas en flujo y cada cinta entra y
-           sale de pantalla de verdad: vuelve a mandar su observador. */
         cintas('todas');
       } else {
         if (elenco) elenco.dormir();
@@ -370,10 +291,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function tramo(v, a, b) { return Math.min(1, Math.max(0, (v - a) / (b - a))); }
     function suave(t) { return t * t * (3 - 2 * t); }
 
-    /* Y solo cuando cambian de valor. La mitad del recorrido no mueve
-       ninguna —mientras se lee el elenco, de .33 a .73, las dieciocho estan en
-       su valor final— y el ultimo cuarto solo mueve seis; guardando lo ultimo
-       escrito, ese tramo cuesta cero. */
     var escritoCine = {};
     var escritoCierre = {};
     var escritoCarta = {};
@@ -400,28 +317,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return Math.min(1, Math.max(0, -caja.top / recorrido));
     }
 
-    /* Lo que tienen que recorrer los dos paneles para quedar fuera.
-
-       Fundamentos sale de lado: lo que mide de ancho, que se mide una vez y
-       otra cada vez que cambia la ventana, con `offsetWidth`, que no cuenta
-       el `transform`.
-
-       Infraestructura sale por abajo, y ahi no vale lo que mide ella: su
-       alto es lo que se ve (`bottom: var(--sobra-barra)`), y en el telefono
-       crece y encoge con la barra del navegador, sin que la ventana avise
-       de ningun cambio (planificador.js no recalcula nada por eso, a
-       proposito). Medida con la barra fuera y corrida esa medida, al
-       esconderse la barra el panel se quedaba corto y asomaba por abajo
-       —90px de la foto de la recepcion debajo de Fundamentos—. Se corre lo
-       que mide el pin, la pantalla grande (`SmilersScroll.alto()`), que es
-       la misma con la barra dentro o fuera: con eso queda fuera siempre. */
     var anchoFund = 0;
 
-    /* Y lo que se corren va a pixel entero de la pantalla. Una capa propia
-       que se para a medio pixel —523,4px— no se puede mover sin mas: el
-       navegador le pasa ese medio pixel a lo que pinta dentro, y la vuelve
-       a pintar entera cada vez que cambia. En una pantalla a escala 1 eso
-       era repintar Fundamentos en uno de cada seis fotogramas del telon. */
     function px(v) {
       var escala = window.devicePixelRatio || 1;
       return (Math.round(v * escala) / escala) + 'px';
@@ -449,10 +346,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (cierre && cierreVivo) {
           pCierre = progresoDe(cierre, ctx);
-          /* Clavado es que el techo del cierre ya llego arriba: a partir de
-             ahi su pin tapa la pantalla y el del cine esta en su ultimo
-             fotograma, con las hojas cerradas. El pixel de holgura es por
-             el redondeo del alto en `dvh`. */
           clavado = cierre.getBoundingClientRect().top <= 1;
         }
       }
@@ -463,59 +356,23 @@ document.addEventListener('DOMContentLoaded', function () {
       if (viva && pCine !== ultimoCine) {
         ultimoCine = pCine;
 
-        /* Las fracciones estan reescaladas a los 548vh de la escena (484 en
-           el telefono), y cada tramo mide en pixeles lo que media antes salvo
-           el paso de Fundamentos al Equipo, que se hacia largo: la pausa con
-           Fundamentos entero (de .328 a .44) baja de 73 a 50vh y el telon
-           que se retira (.44 a .551), de 69 a 50. De Fundamentos leido al
-           Equipo entero hay una pantalla de scroll; antes, una y media. */
         var entra  = suave(tramo(pCine, .0766, .2297));
         var texto  =       tramo(pCine, .2406, .3281);
         var sale   = suave(tramo(pCine, .4397, .5513));
         var sube   = suave(tramo(pCine, .7154, .8467));
         var textoI =       tramo(pCine, .7592, .8795);
-        /* El telon se cierra en el ultimo 8% del recorrido, y en el 6%
-           cuando no hay apertura despues: sin un tramo de apertura al que
-           dar entrada, alargar el cierre es solo alargar el negro. Tiene que
-           acabar de cerrarse en el 1 justo: ahi es donde el cierre se clava
-           encima con sus hojas tambien cerradas. */
         var cierra = suave(tramo(pCine, cierreVivo ? .9123 : .9342, 1));
 
-        /* Un solo canto para las dos mitades del panel de fundamentos: entra
-           de izquierda a derecha y se retira por donde vino, asi que mientras
-           sale manda `sale` y antes manda `entra`. No se solapan. `der` es
-           lo que le falta por entrar, y en pixeles es lo que el panel se
-           corre a la izquierda. El equipo, debajo, llega desde un 12% mas a
-           la derecha: es lo que hace que se lea como una pagina que pasa y
-           no como una tapa que se quita. */
         var der = sale > 0 ? sale : (1 - entra);
         var corre = der * anchoFund;
         ponCine('--f-corre', px(-corre));
         ponCine('--e-x', px((1 - sale) * .12 * anchoFund));
-        /* La envoltura nunca baja de una milesima de opacidad, que no se ve:
-           a opacidad cero el navegador no pinta la capa hasta que hace falta,
-           y entonces pintaba las seis tarjetas con sus sombras de golpe, en
-           el primer fotograma en que el texto empezaba a asomar. Asi las
-           pinta antes, en un rato libre. El desenfoque solo mientras entra:
-           quieta e invisible no tiene que desenfocar nada en cada fotograma. */
         ponCine('--f-op', Math.max(texto, .001).toFixed(3));
         ponCine('--f-filtro', texto <= 0 || texto >= 1 ? 'none' : 'blur(' + ((1 - texto) * 12).toFixed(1) + 'px)');
         ponCine('--f-ent', (1 - texto).toFixed(3));
         ponCine('--f-filo', px(anchoFund - corre));
         ponCine('--f-filo-op', der > 0 && der < 1 ? '1' : '0');
 
-        /* Fundamentos: su entrada se enciende con el primer asomo del texto,
-           cuando la envoltura aun es transparente —asi lo que la entrada
-           esconde al empezar no desaparece a la vista—, y se apaga solo
-           cuando el texto vuelve a serlo, al subir por encima.
-
-           Se apagaba tambien al salir el panel por la izquierda, y eso
-           costaba: quitar la clase obliga a volver a pintar las seis tarjetas
-           con sus sombras, y el panel, aunque ya este fuera, sigue pintado
-           por si vuelve. Era un rasterizado entero de la envoltura justo
-           cuando el Equipo acaba de entrar. Y al volver desde el Equipo el
-           panel entra deslizandose con lo suyo dentro: ahi no pinta nada que
-           las tarjetas vuelvan a nacer. */
         var fundViva = texto > 0;
         if (capaFund && fundViva !== fundPintada) {
           fundPintada = fundViva;
@@ -533,8 +390,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ponCine('--h-abre', (1 - cierra).toFixed(3));
         ponCine('--h-filo', cierra > 0 && cierra < 1 ? '1' : '0');
 
-        /* El cambiazo de fondo cae con el telon tapando la pantalla entera:
-           acaba de taparla en .23 y no empieza a retirarse hasta .44. */
         var segundo = pCine >= .3609 ? 1 : 0;
         ponCine('--c-uno', String(1 - segundo));
         ponCine('--c-dos', String(segundo));
@@ -546,11 +401,6 @@ document.addEventListener('DOMContentLoaded', function () {
           else elenco.dormir();
         }
 
-        /* Una cinta cada vez, y solo mientras su capa se ve. La del hero se
-           para en cuanto el telon de fundamentos la tapa del todo (.23), y la
-           de infraestructura no arranca hasta que su capa empieza a subir
-           (.715). Entre las dos hay medio recorrido en el que no corre
-           ninguna. */
         cintas(pCine < .2406 ? 'historia' : (pCine > .7045 ? 'infra' : 'ninguna'));
       }
 
@@ -559,11 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
         carta.classList.toggle('ns-carta--clavado', cartaClavada);
       }
 
-      /* Y el <html> se entera, que es lo que aparta los botones flotantes
-         mientras la carta ocupa la pantalla: en un telefono el documento va de
-         canto a canto y los tres —cookies, WhatsApp y volver arriba— le caian
-         encima, uno de ellos justo sobre el nombre del director. Vuelven en
-         cuanto el cierre se clava encima. */
       if (viva && cartaViva && cartaEnPantalla !== cartaEnPantallaPintada) {
         cartaEnPantallaPintada = cartaEnPantalla;
         document.documentElement.classList.toggle('con-carta', cartaEnPantalla);
@@ -572,23 +417,13 @@ document.addEventListener('DOMContentLoaded', function () {
       if (viva && cartaViva && carta && pCarta !== ultimoCarta) {
         ultimoCarta = pCarta;
 
-        /* El orden de la escena, que es el de una carta que se recibe: se
-           abre el telon sobre quien la firma, aparece la frase, entra el
-           papel, se lee, se dibujan las escuadras y al final se firma.
-           Cada tramo empieza cuando el anterior lleva recorrido medio
-           camino: nunca hay dos cosas naciendo a la vez ni un hueco muerto. */
         var cRetrato = suave(tramo(pCarta, .05, .26));
         var cFrase   = suave(tramo(pCarta, .18, .34));
         var cPapel   = suave(tramo(pCarta, .40, .62));
         var cTexto   =       tramo(pCarta, .50, .70);
         var cFilo    = suave(tramo(pCarta, .60, .76));
-        /* La firma acaba antes de .86, que es donde el riel deja la pantalla:
-           en la meseta de lectura la carta tiene que estar entera. */
         var cFirma   =       tramo(pCarta, .70, .84);
 
-        /* Las hojas: se abren al clavarse y se vuelven a cerrar al final,
-           que es como el cierre se las espera para clavarse encima. Un solo
-           valor para las dos cosas, porque nunca se solapan. */
         var cAbre  = suave(tramo(pCarta, 0, .14));
         var cCierra = suave(tramo(pCarta, .92, 1));
         var cHojas = cAbre * (1 - cCierra);
@@ -610,8 +445,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (viva && cierreVivo && cierre && pCierre !== ultimoCierre) {
         ultimoCierre = pCierre;
-        /* La apertura arranca casi en cuanto se clava: ya no hay una
-           pantalla de negro por delante que dejar pasar. */
         var abre = suave(tramo(pCierre, .03, .4));
         ponCierre('--h-abre', abre.toFixed(3));
         ponCierre('--h-filo', abre > 0 && abre < 1 ? '1' : '0');
@@ -640,32 +473,12 @@ document.addEventListener('DOMContentLoaded', function () {
       ultimoCine = -1;
       ultimoCierre = -1;
       ultimoCarta = -1;
-      /* Al redimensionar hay que volver a escribirlo todo: el cache guarda
-         cadenas y los porcentajes miden sobre una ventana que ya no es esa. */
       escritoCine = {};
       escritoCierre = {};
       escritoCarta = {};
       anchoFund = 0;
     });
 
-    /* -------------------------------------------------------------------
-       Las paradas: dentro del pin todas las secciones caen en el mismo sitio
-       del documento, asi que un ancla normal las deja a todas en el arranque
-       de la escena. Aqui cada una dice en que punto del recorrido vive, y de
-       ahi salen tanto el riel lateral como los enlaces del menu.
-       ------------------------------------------------------------------- */
-    /* `p` es donde se deja la pantalla: el punto en que esa capa se ve
-       entera y quieta, a medio camino de lo que dura asi. Estaban en el
-       arranque de cada entrada —fundamentos en .27, con el texto todavia
-       desenfocado, e infraestructura en .86, a media subida— y el circulo
-       llevaba a una capa a oscuras o a medio llegar. Los tramos son los de
-       `escribir()`: fundamentos esta entera de .328 a .44, el elenco de .551
-       a .715 y la infraestructura de .88 hasta que empieza a cerrarse el
-       telon, en .912.
-
-       `desde` es a partir de donde cuenta como la capa que se esta viendo,
-       para encender su circulo: cuando ya ha tapado a la anterior, no cuando
-       se deja la pantalla en ella. */
     var paradas = [
       { id: 'historia',        nombre: 'Historia',        bloque: escena, p: 0,    desde: 0 },
       { id: 'fundamentos',     nombre: 'Fundamentos',     bloque: escena, p: .384, desde: .2297 },
@@ -678,9 +491,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return parada.bloque && parada.destinoEl;
     });
 
-    /* Cada parada vive en una de las tres escenas, y cada escena se apaga por
-       su cuenta (sin JS, o con menos movimiento pedido). Apagada, la parada
-       es un ancla normal: el elemento esta donde se lee. */
     function bloqueVivo(parada) {
       if (parada.bloque === escena) return viva;
       if (parada.bloque === carta) return cartaViva;
@@ -750,11 +560,6 @@ document.addEventListener('DOMContentLoaded', function () {
       document.body.appendChild(nav);
     }
 
-    /* Las paradas solo sirven para ir a ellas (el riel, el menu, un enlace
-       con `#`). El scroll entre ellas es el del navegador, sin topes ni
-       imanes: la pausa de cada capa la da la propia escena, que la deja
-       entera y quieta durante un tramo del recorrido. Ver 02-base.css. */
-
     document.addEventListener('click', function (evento) {
       var enlace = evento.target.closest && evento.target.closest('a[href*="#"]');
       if (!enlace) return;
@@ -762,10 +567,6 @@ document.addEventListener('DOMContentLoaded', function () {
       var trozos = enlace.getAttribute('href').split('#');
       if (trozos.length < 2 || !trozos[1]) return;
 
-      /* El enlace puede venir escrito de tres maneras y las tres son esta
-         misma pagina: `#historia`, `nosotros#historia` y
-         `/nosotros#historia`. Y en local la direccion todavia
-         acaba en `.html`. */
       var primero = trozos[0];
       if (primero) {
         var suyo = location.pathname.replace(/\.html$/, '');
@@ -782,35 +583,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    /* Al llegar con `#equipo` o con `#bienvenida` en la direccion, el
-       navegador ya ha saltado al arranque de la escena —que es donde vive el
-       elemento, porque dentro del pin todas las secciones caen en el mismo
-       sitio del documento— antes de que ninguno de estos guiones exista. Se
-       recoloca en el fotograma siguiente, cuando el pin ya mide lo que tiene
-       que medir, y el sitio al que se va es la meseta de esa parada: la carta
-       entera y quieta, no su primer fotograma.
-
-       Y otra vez al acabar de cargar. Por encima de la escena hay fotos que
-       en ese primer fotograma todavia no habian llegado, y basta con que una
-       cambie de alto para que el pixel calculado se quede corto y la carta
-       aparezca a medio montar. Solo se repite si nadie ha tocado el scroll
-       desde entonces: si la persona ya se ha movido, mandar ella. */
-    /* Llegar por una ancla a una escena clavada no es llegar a un elemento:
-       es llegar a un PUNTO del recorrido de esa escena, que es donde el
-       apartado se ve entero. El elemento con ese identificador esta en el
-       sitio donde arranca la escena, asi que el salto normal del navegador
-       deja el apartado sin empezar —o directamente en otro—.
-
-       Y no basta con corregirlo una vez. El navegador vuelve a saltar al
-       fragmento cada vez que el documento cambia de alto mientras no se haya
-       tocado el scroll: entran las fotos, se recolocan las escenas y el salto
-       nativo nos devuelve al elemento, deshaciendo lo que habiamos puesto.
-       Por eso se recoloca en varias pasadas —dos fotogramas, la carga, y un
-       respiro despues— y lo unico que lo detiene es que la persona haya
-       movido la pagina de verdad. Hubo una version que en vez de eso
-       comparaba la posicion actual con la que habia puesto, y como el salto
-       nativo la cambiaba, la comparacion fallaba y se rendia: el ancla caia
-       unas veces bien y otras no, segun lo que tardaran las fotos. */
     if (location.hash.length > 1) {
       var pedido = location.hash.slice(1);
       var suya = null;
@@ -837,7 +609,6 @@ document.addEventListener('DOMContentLoaded', function () {
             requestAnimationFrame(colocar);
           }, { once: true });
         }
-        /* La ultima, cuando ya no queda nada por cargar que mueva el alto. */
         setTimeout(function () {
           colocar();
           window.removeEventListener('wheel', apuntarTocado);
@@ -848,8 +619,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    /* La primera pasada, al final del todo: `leer` y `escribir` se apoyan en
-       las paradas y en los botones del riel, que se arman mas arriba. */
     SmilersScroll.pedir();
   })();
 });

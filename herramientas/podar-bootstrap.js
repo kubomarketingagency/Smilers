@@ -1,22 +1,4 @@
 #!/usr/bin/env node
-/**
- * Recorta Bootstrap a lo que el sitio usa de verdad.
- *
- * Bootstrap trae 2031 clases y las paginas nombran 75. El resto son 190 KB que
- * el navegador descarga, analiza y guarda en memoria en cada visita para no
- * pintar nada. Esto lee `bootstrap.min.css` (que se queda en el repo como
- * fuente, fuera del despliegue) y escribe `bootstrap.recorte.css`, que es el
- * que cargan las paginas.
- *
- * La regla es deliberadamente prudente: se conserva un selector si NO nombra
- * ninguna clase —todo el reboot, que se aplica a etiquetas— o si TODAS las
- * clases que nombra estan en la lista de usadas. Ante la duda, se queda.
- *
- * Correlo despues de tocar el HTML si has anadido alguna clase de Bootstrap:
- *     node herramientas/podar-bootstrap.js
- * y luego `node herramientas/construir.js`, como siempre: el recorte viaja
- * dentro de los estilos de cada pagina.
- */
 const fs = require('fs');
 const path = require('path');
 
@@ -24,9 +6,6 @@ const RAIZ = path.resolve(__dirname, '..');
 const FUENTE = path.join(RAIZ, 'vendor/bootstrap/bootstrap.min.css');
 const DESTINO = path.join(RAIZ, 'vendor/bootstrap/bootstrap.recorte.css');
 
-/* Clases que Bootstrap se pone a si mismo desde su JS y que por eso no
-   aparecen escritas en ningun HTML. Si faltan, el acordeon no se abre, el
-   carrusel no pasa de foto y el modal se queda a medias. */
 const DE_SU_JS = [
   'collapse', 'collapsing', 'collapsed', 'show', 'showing', 'hiding', 'fade',
   'modal', 'modal-open', 'modal-backdrop', 'modal-static', 'modal-dialog',
@@ -58,8 +37,6 @@ function archivos(carpeta, filtro) {
   return salida;
 }
 
-/* ---- 1. que nombra el sitio ------------------------------------------- */
-
 const usadas = new Set(DE_SU_JS);
 
 for (const f of archivos(RAIZ, /\.html$/)) {
@@ -69,22 +46,17 @@ for (const f of archivos(RAIZ, /\.html$/)) {
   }
 }
 
-/* El CSS propio del sitio puede colgarse de una clase de Bootstrap para
-   afinarla (`.navbar .btn`, `.accordion-button::after`...). */
 for (const f of archivos(path.join(RAIZ, 'estilos'), /\.css$/)) {
   const t = fs.readFileSync(f, 'utf8');
   for (const m of t.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) usadas.add(m[1]);
 }
 
-/* Y el JS propio puede anadir o quitar clases por su cuenta. */
 for (const f of archivos(path.join(RAIZ, 'scripts'), /\.js$/)) {
   const t = fs.readFileSync(f, 'utf8');
   for (const m of t.matchAll(/["'`]([^"'`\n]{1,120})["'`]/g)) {
     for (const tok of m[1].split(/[^A-Za-z0-9_-]+/)) if (tok) usadas.add(tok);
   }
 }
-
-/* ---- 2. trocear y podar ------------------------------------------------ */
 
 function bloques(t) {
   const salida = [];
@@ -123,7 +95,7 @@ function partirPorComas(sel) {
 
 function seQueda(sel) {
   const cs = [...sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)].map(function (m) { return m[1]; });
-  if (!cs.length) return true;                    // reboot: va por etiqueta
+  if (!cs.length) return true;
   return cs.every(function (c) { return usadas.has(c); });
 }
 
@@ -149,7 +121,6 @@ function podar(css) {
 const original = fs.readFileSync(FUENTE, 'utf8');
 let salida = podar(original);
 
-/* Los keyframes que ya no invoca nadie se van detras de sus reglas. */
 const invocados = new Set();
 for (const m of salida.matchAll(/animation(?:-name)?\s*:([^;}]*)/g)) {
   for (const tok of m[1].split(/[\s,]+/)) if (tok) invocados.add(tok);

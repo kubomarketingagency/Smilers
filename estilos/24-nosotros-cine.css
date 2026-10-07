@@ -1,47 +1,10 @@
-/* ===========================================================================
-   El cine de Nosotros. Solo lo carga esa pagina y va la ultima de todas.
-
-   Va despues del 23 a proposito: aqui hay que pisar lo que el 15 le hace a
-   `.banda-cta` en las paginas claras (le apaga la mamposteria y le pone fondo
-   blanco) y lo que el 21 le pone de imanes de scroll a `#fundamentos` y a
-   `#equipo`, que dentro de un pin no tienen sentido.
-
-   La pagina entera es una sola escena clavada: un envoltorio muy alto con un
-   `position: sticky` dentro que se queda a pantalla completa, y
-   `nosotros-cine.js` convierte el recorrido en un progreso de 0 a 1 que
-   escribe en variables. Dentro del pin hay cuatro capas —el hero de la
-   historia, el panel de fundamentos, el elenco y el panel de
-   infraestructura— y dos hojas negras que cierran al final. Detras viene la
-   segunda escena, la del cierre, donde esas mismas hojas se abren sobre la
-   pregunta final.
-
-   El orden del HTML es el orden en que se lee, y eso no es casual: sin JS o
-   con `prefers-reduced-motion` la clase `.ns-cine--viva` no se pone, y las
-   capas se quedan apiladas en flujo normal. Lo estatico es el estado de
-   partida; todo lo de la escena va escrito bajo `--viva`.
-   =========================================================================== */
 
 
-/* ---------------------------------------------------------------------------
-   Las capas, en estatico: cuatro bloques uno detras de otro.
-   --------------------------------------------------------------------------- */
 .ns-cine,
 .ns-cine__pin,
 .ns-cierre,
 .ns-cierre__pin { position: relative; }
 
-/* El suelo de la pagina, en negro, mientras hay escena.
-
-   Esto es lo que quitaba la raya blanca del movil. Las dos piezas de la
-   escena son bloques altisimos con un pin de `100lvh` dentro, y el pin no
-   siempre mide un numero redondo de pixeles: con lo que el navegador
-   redondea, por el canto del pin asoma de vez en cuando media linea de lo
-   que hay debajo. Y lo que hay debajo es la pagina, que en Nosotros es crema.
-
-   Con el suelo en negro esa media linea sigue estando —no hay forma de que
-   no este— pero es negra, del mismo color que el telon que la tapa, asi que
-   no se ve. Va en `:has()` para que solo pase con la escena encendida: sin
-   ella la pagina es clara y su fondo tiene que serlo. */
 main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine--viva,
 .ns-cierre--viva { background: #050505; }
@@ -54,13 +17,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   overflow: hidden;
   padding-block: clamp(2.6rem, 5vw, 4.4rem);
 }
-/* El texto se arrima al canto izquierdo, que es donde pesa el velo.
-
-   El `margin-inline: auto` que el 20 le pone a `.ns-envoltura` es lo que lo
-   impedia: la capa es un flex, y ahi un margen automatico no centra una caja
-   estirada —le quita el estirado— y la deja del ancho de su contenido, en
-   medio de la pantalla. Con el titular a 640px eso lo dejaba empezando por
-   el tercio de la pagina en vez de por el borde. */
 .ns-capa > .ns-envoltura {
   position: relative;
   z-index: 2;
@@ -75,14 +31,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-capa--historia,
 .ns-capa--infra { padding-top: calc(var(--alto-navbar) + clamp(1.4rem, 3vw, 3rem)); }
 
-/* Estas dos capas llevan el texto sobre la foto de la clinica, que no es un
-   fondo liso: tiene lamparas encendidas, cristal y vetas claras. El velo de
-   la capa sostiene el titular, pero el parrafo -tinta clara y fina- se perdia
-   en cuanto caia sobre una zona iluminada. Va en su recuadro: marmol negro
-   translucido con un filo de oro muy bajo, del mismo tono que las tarjetas de
-   fundamentos, para que la idea siga siendo la misma pieza de siempre y no un
-   cuadro pegado encima. El recuadro se cine al texto porque la columna ya
-   esta acotada; sobre el, la foto se sigue viendo entera alrededor. */
 .ns-capa--historia .ns-cine__texto,
 .ns-capa--infra .ns-cine__texto {
   position: relative;
@@ -92,7 +40,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   background: linear-gradient(180deg, rgba(8, 7, 6, .95) 0%, rgba(8, 7, 6, .9) 100%);
   box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
 }
-/* El filo de oro de arriba, el mismo que llevan las fichas de fundamentos. */
 .ns-capa--historia .ns-cine__texto::before,
 .ns-capa--infra .ns-cine__texto::before {
   content: "";
@@ -106,23 +53,8 @@ main:has(.ns-cine--viva) { background: #050505; }
 
 .ns-capa--panel { color: #FFFFFF; }
 
-/* Fundamentos va sobre madera, no sobre marmol negro. La razon es de fondo y
-   no de gusto: es la unica pantalla del recorrido que no ensena la clinica
-   —no hay foto que valga para lo que se dice en ella— y la piedra negra la
-   dejaba indistinguible del hueco entre escenas. La madera le pone
-   temperatura y la separa de las otras cuatro sin sacar una foto de la
-   manga. Y es la misma madera de Testimonios en la portada, para que las dos
-   superficies calidas del sitio sean una sola.
-
-   La veta va tenue: detras hay dos columnas de texto largo, y una madera a
-   plena intensidad les come el contraste. */
-/* Marmol blanco, no madera: esta capa es la unica clara del cine. El color
-   de debajo es el de la piedra por si la foto tarda. */
 .ns-capa--fundamentos { background: #EFEBE4; }
 
-/* La veta va entera -el fondo de serie la deja al 26%, que es lo que hace
-   falta cuando debajo hay negro y encima texto claro- y el velo que la cubre
-   es claro, para asentar la tinta oscura del titular sin apagar la piedra. */
 .ns-fondo--marmol img {
   opacity: 1;
   filter: none;
@@ -133,10 +65,6 @@ main:has(.ns-cine--viva) { background: #050505; }
     rgba(250, 248, 245, .34) 0%, rgba(250, 248, 245, .16) 48%, rgba(250, 248, 245, .4) 100%);
 }
 
-/* Sobre piedra clara manda el oro hondo, y el titular vuelve a la tinta. El
-   rotulo no se toca: va dentro de su caja negra y ahi el oro sigue siendo el
-   vivo. Dentro de las tarjetas negras tambien, que su regla del 22 pesa mas
-   que esta. */
 .ns-capa--fundamentos {
   --oro-vivo-degradado: var(--gradiente-oro-hondo);
   --oro-plano: var(--oro-hondo);
@@ -147,15 +75,11 @@ main:has(.ns-cine--viva) { background: #050505; }
   filter: saturate(1.02) brightness(.95);
   transform: none;
 }
-/* Sin halo de oro, igual que la madera de Testimonios: lo unico que va
-   encima de la veta es el negro que le da contraste al texto. */
 .ns-fondo--madera::after {
   background:
     linear-gradient(180deg, rgba(9, 7, 5, .58) 0%, rgba(9, 7, 5, .4) 46%, rgba(9, 7, 5, .74) 100%);
 }
 
-/* Las dos mitades, una al lado de la otra: apiladas no caben en una pantalla
-   y lo que sobraba habia que quitarlo del contenido. */
 @media (min-width: 992px) {
   .ns-capa--fundamentos .ns-doble__reja {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
@@ -165,9 +89,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-capa--fundamentos .ns-mvo,
   .ns-capa--fundamentos .ns-valores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-  /* Con las dos mitades una al lado de la otra sobra sitio, asi que aqui se
-     deshace parte del apretado del 21, que estaba pensado para cuando las
-     dos iban apiladas. */
   .ns-capa--fundamentos .ns-mvo__texto { font-size: .87rem; line-height: 1.62; }
   .ns-capa--fundamentos .ns-valor__texto { font-size: .84rem; line-height: 1.58; }
   .ns-capa--fundamentos .ns-mvo__ficha { padding: clamp(1.1rem, 1.9vw, 1.6rem); }
@@ -175,10 +96,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 .ns-capa--infra { background: #060606; }
 
-
-/* La cinta de fondo: el carrusel a pantalla completa, con el zoom lento de
-   `.crsl__toma img` haciendo de video. Es la misma pieza del 21, solo que
-   aqui ocupa la capa entera y no lleva el degradado de pie de cada toma. */
 .ns-cine__cinta.crsl {
   position: absolute;
   inset: 0;
@@ -199,21 +116,11 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine__cinta .crsl__toma[data-encuadre="medio-bajo"] img { object-position: center 56%; }
 .ns-cine__cinta .crsl__toma[data-encuadre="bajo"] img { object-position: center 70%; }
 
-/* El velo es parejo y vale un 14%: un apoyo, no una tapa. */
 .ns-cine__velo {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  /* El lado izquierdo llego a ir al 95%: negro. Eso tenia sentido cuando el
-     texto caia suelto sobre la foto, pero desde que va en su recuadro -un
-     negro al 84% con filo de oro- el velo de debajo no sostiene nada, solo
-     tapa. Dos capas opacas una encima de otra no se leen mejor que una; lo
-     que se pierde es la foto de alrededor del recuadro, que es lo unico que
-     dice que esto es una clinica y no una pantalla negra.
-
-     Bajo a .62 en el lado del texto, y de ahi a este 14% parejo. El texto no
-     depende de esto: depende del recuadro. La foto aguanta el color. */
   background: rgba(5, 5, 5, .14);
 }
 
@@ -248,37 +155,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   color: rgba(255, 255, 255, .6);
 }
 
-
-/* ---------------------------------------------------------------------------
-   El elenco: un profesional cada vez.
-
-   La pantalla se parte en dos. La mitad del profesional va sobre madera y la
-   mitad de lo que se cuenta de el se queda sobre el marmol del lienzo, con un
-   filo de oro cosiendo la junta. No es solo decoracion: la madera es oscura,
-   asi que la figura recortada tiene contra que recortarse, cosa que sobre
-   marmol blanco no tenia.
-
-   Lo que recorta al profesional es una mascara ovalada sobre su foto: el
-   fondo del retrato se apaga hacia los cantos y lo que queda es la figura.
-   No es un recorte de verdad —eso pediria archivos con transparencia, y las
-   fotos que hay son rectangulos de gente en consulta—; es lo mas cerca que se
-   puede llegar sin ellos, y por eso la mascara aprieta todo lo que aguanta
-   antes de empezar a comerse hombros y pelo.
-   --------------------------------------------------------------------------- */
-/* Las dos mitades, y cual va en cada lado.
-
-   El marmol queda debajo del profesional y la madera debajo de lo que se
-   cuenta de el. No es indiferente cual va donde: lo que recorta a la persona
-   no es un recorte de verdad sino una mascara que apaga su foto hacia los
-   cantos, asi que la figura acaba fundiendose en la superficie que tenga
-   detras. Sobre la veta de la madera esa fundida se nota —la veta cruza por
-   donde deberia estar el hombro—; sobre marmol, que es una superficie de
-   grano fino y tono parejo, no. Y de paso la mitad oscura pasa a ser la del
-   texto, que es donde la ficha ya era negra.
-
-   Las dos van en la capa y no en la rejilla porque tienen que llegar de canto
-   a canto de la ventana: la rejilla vive dentro de `.ns-envoltura`, que esta
-   centrada y con aire a los lados. */
 .ns-fondo--elenco-marmol {
   inset: 0;
   z-index: 0;
@@ -288,9 +164,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   filter: brightness(1.03) saturate(.96);
   transform: none;
 }
-/* Sobre el marmol no hay velo que poner: no hay nada escrito encima. Solo un
-   aclarado por la izquierda, para que el profesional se despegue del fondo, y
-   una sombra de canto por la derecha que cose la piedra con la madera. */
 .ns-fondo--elenco-marmol::after {
   content: '';
   position: absolute;
@@ -309,12 +182,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   filter: saturate(1.06) brightness(.94);
   transform: none;
 }
-/* El velo de la madera y el filo de la junta, en la misma pieza: el filo es
-   el borde izquierdo de este pseudo, que cae justo en la mitad. Va a 3px y no
-   a 2: es la unica costura de la pagina que separa dos piedras a plena luz
-   —marmol claro contra madera oscura— y a 2px se perdia contra el contraste.
-   Los filos finos de esta pagina siguen a 1px; este manda por ser la juntura,
-   no por ser un adorno mas. */
 .ns-fondo--elenco::after {
   content: '';
   position: absolute;
@@ -324,16 +191,11 @@ main:has(.ns-cine--viva) { background: #050505; }
   background:
     linear-gradient(270deg, rgba(9, 7, 5, .3) 0%, rgba(9, 7, 5, .1) 58%, rgba(9, 7, 5, .34) 100%);
 }
-/* Apilado, el marmol es la mitad de arriba, la madera la de abajo, y el filo
-   se tumba en la juntura. */
 @media (max-width: 991.98px) {
   .ns-fondo--elenco {
     left: 0;
     top: 56%;
   }
-  /* Dentro de la escena la juntura cae donde acaba la foto: la foto va a
-     sangre y la rejilla reparte 2,6 a 1 (ver `.ns-elenco__lado` mas abajo),
-     asi que es el 2,6/3,6 de la pantalla. */
   .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2.6 / 3.6); }
   .ns-fondo--elenco::after {
     border-left: 0;
@@ -345,9 +207,6 @@ main:has(.ns-cine--viva) { background: #050505; }
     background: radial-gradient(66% 44% at 50% 26%, rgba(255, 255, 255, .5), transparent 74%);
   }
 }
-/* Media pantalla para el profesional y media para lo que se cuenta de el.
-   El titular ya no va encima de las dos: vive en la columna de la derecha,
-   con la ficha, para que el retrato pueda medir la pantalla de arriba abajo. */
 .ns-elenco {
   display: grid;
   gap: clamp(1.2rem, 3vw, 3.4rem);
@@ -367,38 +226,10 @@ main:has(.ns-cine--viva) { background: #050505; }
   padding: 0;
   list-style: none;
 }
-/* El retrato se lleva la mitad entera, que es la mitad que tiene.
-
-   Media `min(52svh, 384px)`: el alto exacto de la ficha de al lado, para que
-   las dos columnas empezaran y acabaran a la misma altura. Eso valia con la
-   foto recortada y fundida en el marco. Con las fotos de la clinica, que se
-   ven enteras, el alto del marco es tambien el alto de la figura: 384 dejaban
-   una persona de 288px de ancho en una mitad de pantalla de 720, mas pequena
-   que el parrafo que la acompana.
-
-   Manda ahora la pantalla y no la ficha, y la ficha se centra al lado. El
-   tope en px es para las pantallas muy altas, donde 80svh estiraria el
-   retrato hasta despegarlo de todo lo demas. */
 @media (min-width: 992px) {
   .ns-elenco__retratos { height: min(80svh, 820px); }
 }
 
-/* Dentro de la escena la foto va a sangre: en escritorio es la mitad
-   izquierda, de canto a canto y de arriba abajo hasta la juntura de oro; en el
-   telefono, los tres cuartos de arriba de la pantalla, y el cuarto de abajo
-   queda para lo que se cuenta del profesional. Ni en uno ni en otro se ve el
-   marmol: la foto ya trae su consultorio, y el marmol alrededor era un marco
-   que no aportaba nada.
-
-   El aire no desaparece, cambia de sitio: lo pone la parte que lleva texto.
-
-   Arriba la foto se mete bajo la barra fija, y 2px mas de lo que la barra
-   dice medir. --alto-navbar vale 62 pero la barra, con la pagina bajada, mide
-   60,78: con la foto empezando en 62 asomaba una raya de 1,2px de marmol
-   blanco -de 3px mientras entraba cada retrato, que subia 12px- entre la
-   barra y la cara. Por lo mismo el hueco que queda detras es negro y no
-   piedra, y aqui los retratos solo se funden, sin subir: una foto a sangre que
-   se desliza enseña el canto. */
 .ns-cine--viva .ns-capa.ns-capa--elenco { padding: 0; }
 .ns-cine--viva .ns-capa--elenco > .ns-envoltura {
   flex: 1 1 auto;
@@ -417,9 +248,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 .ns-cine--viva .ns-elenco__retratos { height: 100%; }
 .ns-cine--viva .ns-elenco__retrato { transform: none; }
-/* La foto llena y el marco recorta. El hueco es casi el de la foto, asi que lo
-   que se va son unos dedos de cintura o de consultorio; el 20% reparte ese
-   sobrante dejando la cabeza donde estaba. */
 .ns-cine--viva .ns-elenco__foto img {
   width: 100%;
   max-width: none;
@@ -427,7 +255,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   object-fit: cover;
   object-position: center 20%;
 }
-/* Las flechas se apoyan sobre la foto, que ya no tiene canto libre. */
 .ns-cine--viva .ns-elenco__flecha--previa { left: clamp(.6rem, 1.5vw, 1.5rem); }
 .ns-cine--viva .ns-elenco__flecha--siguiente { right: clamp(.6rem, 1.5vw, 1.5rem); }
 
@@ -443,15 +270,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   }
 }
 
-/* En el telefono: tres cuartos de foto y un cuarto de texto.
-
-   En el cuarto no cabe todo lo que va en escritorio -el titular de dos
-   lineas, el nombre de la especialidad, el parrafo y los tres puntos piden
-   el doble-, asi que se queda lo que dice algo que no este ya a la vista: el
-   rotulo de la seccion, el parrafo del profesional y los puntos del carrusel.
-   La especialidad ya va en la placa de la foto, y el titular y los tres
-   puntos siguen en el HTML para escritorio. La ficha pierde la caja: en un
-   cuarto de pantalla, la caja se come en bordes y rellenos una linea entera. */
 @media (max-width: 991.98px) {
   .ns-cine--viva .ns-capa--elenco .ns-elenco {
     grid-template-columns: minmax(0, 1fr);
@@ -462,15 +280,6 @@ main:has(.ns-cine--viva) { background: #050505; }
     flex-direction: column;
     justify-content: center;
     min-height: 0;
-    /* A la derecha, el hueco de los dos botones fijos -WhatsApp y subir, que
-       ocupan los 81px del canto y bajan justo por este cuarto-: sin el,
-       tapaban el final de cada linea del parrafo.
-
-       Y abajo, el del boton de las cookies, que vive en la esquina de abajo a
-       la izquierda: 50px a 26 del suelo. Se tapaba los puntos del carrusel y
-       rozaba la ultima linea. El texto sube lo justo para pasar por encima
-       (76px y un respiro), y para que quepa con la letra algo mas grande la
-       foto cede un poco de alto: 2,6 a 1 en vez de 3 a 1. */
     padding: .7rem calc(81px + .7rem) calc(76px + .45rem) clamp(1.1rem, 5vw, 2rem);
   }
   .ns-cine--viva .ns-elenco__lado .ns-titulo,
@@ -489,10 +298,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-cine--viva .ns-elenco__puntos { justify-content: flex-start; margin-top: .55rem; }
 }
 
-/* Las flechas van sobre el canto apagado del retrato, no sobre su cara: el
-   54% las deja a la altura del pecho, que es donde la mascara ya no pinta, y
-   a la vez centradas de verdad en el marco. Estuvieron en el 46%, que en un
-   marco de pantalla completa las dejaba por encima del centro. */
 .ns-elenco__flecha {
   position: absolute;
   top: 54%;
@@ -526,7 +331,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-elenco__lado > *:last-child { margin-bottom: 0; }
 .ns-elenco__retrato {
   grid-area: 1 / 1;
-  /* El bloque que sostiene a la placa, que va absoluta sobre la foto. */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -543,16 +347,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   min-height: 0;
   overflow: hidden;
 }
-/* La foto entera: ni recorte ni fundida.
-
-   Antes la figura iba escalada a 1,2, recortada por el marco y con una
-   mascara ovalada que borraba el consultorio del fondo, porque las fotos
-   de archivo no estaban encuadradas para esto. Las de la clinica si lo
-   estan: la persona ya viene centrada sobre el fondo del consultorio, y
-   la foto luce mas completa que recortada.
-
-   El marco sigue mandando el alto (lo iguala con la ficha de al lado) y
-   el ancho lo pone la propia foto, que queda centrada en la columna. */
 .ns-elenco__foto img {
   display: block;
   width: auto;
@@ -562,25 +356,7 @@ main:has(.ns-cine--viva) { background: #050505; }
   object-fit: contain;
 }
 
-/* La placa de la especialidad.
-
-   Es nueva y hace falta desde que el retrato vive sobre marmol: el nombre iba
-   en blanco porque debajo tenia madera, y sobre piedra clara habria
-   desaparecido. En vez de girarlo a negro —que lo dejaria flotando sobre la
-   fundida de la foto, sin nada que lo sostenga— se le pone su propia piedra
-   negra debajo. Desde que las fotos son las de la clinica y se ven enteras,
-   en la placa va solo la especialidad.
-
-   Tres grosores de oro en tres centimetros, y cada uno dice algo: el filo de
-   arriba a 2px porque es el que corta la fundida de la foto y cierra la
-   figura, el contorno a 1px porque solo dibuja la caja, y el subrayado de la
-   especialidad a 1px pero al 40% porque es el detalle mas pequeno de los
-   tres. */
 .ns-elenco__placa {
-  /* Va encima del pecho y no debajo del marco: asi el retrato se lleva el alto
-     entero de la columna en vez de repartirlo, que es lo que le devuelve el
-     tamano a la figura despues de bajar el marco. Y es como se presenta un
-     retrato: el rotulo sobre la persona, no colgando de ella. */
   position: absolute;
   left: 50%;
   bottom: clamp(.5rem, 1.4vw, 1.1rem);
@@ -596,9 +372,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   box-shadow: 0 18px 40px rgba(20, 16, 8, .28);
   text-align: center;
 }
-/* El filo de 2px va en un pseudo y no en `border-top`: `border-image` con el
-   degradado de marca pinta los cuatro cantos a la vez, asi que no se pueden
-   tener dos grosores distintos en la misma caja por esa via. */
 .ns-elenco__placa::before {
   content: '';
   position: absolute;
@@ -606,9 +379,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   height: 2px;
   background: var(--oro-marca-degradado);
 }
-/* Va sola en la placa, asi que no lleva raya ni aire por arriba (eran el
-   corte con el nombre) y crece un punto: era el pie de un rotulo y ahora
-   es el rotulo. */
 .ns-elenco__area {
   display: block;
   font-family: var(--fuente-menu);
@@ -628,8 +398,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   width: 9px;
   height: 9px;
   padding: 0;
-  /* El oro hondo es el de la piedra clara, y estos puntos viven ya sobre la
-     madera: ahi el que se ve es el vivo. */
   border: 1px solid var(--gm-borde-vivo);
   border-radius: 50%;
   background: transparent;
@@ -641,27 +409,11 @@ main:has(.ns-cine--viva) { background: #050505; }
   transform: scale(1.3);
 }
 
-/* La ficha del 21 en una sola columna: aqui va al lado del retrato, no
-   debajo de una fila de retratos, y el nombre ya esta bajo la foto. */
 .ns-elenco .ns-ficha {
   grid-template-columns: minmax(0, 1fr);
   margin-top: clamp(.9rem, 1.8vw, 1.5rem);
 }
 
-
-/* ---------------------------------------------------------------------------
-   La infraestructura: texto a la izquierda, sobre la parte pesada del velo,
-   y las cuatro fotos a la derecha, donde la imagen de fondo respira.
-   --------------------------------------------------------------------------- */
-/* Ya no lleva rejilla de fotos: el texto de infraestructura es el mismo
-   bloque del hero, arrimado a la izquierda sobre la parte pesada del velo. */
-
-
-/* ---------------------------------------------------------------------------
-   Las dos hojas negras. `--h-abre` va de 1 (fuera de la pantalla, abiertas) a
-   0 (juntas en el centro, cerradas). En la primera escena se cierran al
-   final; en la del cierre arrancan cerradas y se abren.
-   --------------------------------------------------------------------------- */
 .ns-hojas {
   display: none;
   position: absolute;
@@ -693,28 +445,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-hoja--izq::after { right: 0; }
 .ns-hoja--der::after { left: 0; }
 
-
-/* ---------------------------------------------------------------------------
-   La escena viva.
-   --------------------------------------------------------------------------- */
-/* Las variables del barrido, registradas y SIN herencia.
-
-   Esto era lo que frenaba la entrada al equipo. Una propiedad personalizada
-   normal se hereda, y el guion las escribia todas en la escena: cada cambio
-   invalidaba el estilo de sus 200 elementos —las cuatro capas, los cuatro
-   retratos con sus mascaras, las fichas—, y mientras el panel de
-   fundamentos entra o se retira cambian dos o tres en cada fotograma. Se
-   midio en un telefono simulado: 16ms de recalculo por fotograma, de los
-   16,7 que hay, y el panel cruzaba a 26-31 imagenes por segundo. Ahora
-   `nosotros-cine.js` escribe cada una en la pieza que la usa y, como no se
-   hereda, cambiarla solo toca a esa pieza.
-
-   Registradas, el valor de partida lo pone `initial-value` y no el respaldo
-   del `var()` —una propiedad registrada siempre tiene valor—, asi que los dos
-   dicen lo mismo. Las del raton van sin tipo (`*`): es la unica forma de que
-   puedan valer `none`, y sin valor inicial el respaldo sigue mandando. Las
-   de los filos y las hojas no se registran: van en piezas sin hijos, o con
-   dos, y las hojas las necesitan heredadas para su `::after`. */
 @property --c-uno { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --c-dos { syntax: '<number>'; inherits: false; initial-value: 0; }
 @property --c-ev-uno { syntax: '*'; inherits: false; }
@@ -729,19 +459,12 @@ main:has(.ns-cine--viva) { background: #050505; }
 @property --i-filtro { syntax: '*'; inherits: false; }
 @property --i-y { syntax: '<length>'; inherits: false; initial-value: 42px; }
 
-/* 548vh. Eran 660 y bajo a 590 quitando el hueco muerto del final (tres
-   cuartos de pantalla entre el texto de infraestructura y el cierre de las
-   hojas, y el pin no suelta hasta el ultimo pixel). Los 42 de ahora salen
-   del paso de Fundamentos al Equipo, que se hacia largo: la pausa con
-   Fundamentos entero baja de 73 a 50vh y el telon que se retira, de 69 a
-   50. Los demas tramos conservan la distancia de scroll que tenian; solo
-   cambia la fraccion que les toca. */
 .ns-cine--viva { height: 548vh; }
 .ns-cine--viva .ns-cine__pin {
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
+  height: 100lvh;
   overflow: hidden;
   isolation: isolate;
 }
@@ -749,18 +472,11 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine--viva .ns-capa {
   position: absolute;
   inset: 0;
-  /* Lo que se ve de verdad, que el pin mide la pantalla grande. Ver
-     `--sobra-barra` en el 01. */
   bottom: var(--sobra-barra);
   min-height: 0;
   padding-block: clamp(1rem, 2.2vw, 2.2rem);
   padding-top: calc(var(--alto-navbar) + clamp(.6rem, 1.6vw, 1.6rem));
 }
-/* El mismo interruptor que la portada, y por el mismo motivo: las dos capas
-   comparten el hueco, la que espera esta a opacidad 0 y el elenco va despues
-   en el documento, asi que tapaba a la historia y le robaba el raton. Ahi
-   vivia el «Inicio» de la ruta del hero, que por eso no llevaba a ninguna
-   parte. Una capa transparente sigue siendo una capa. */
 .ns-cine--viva .ns-capa--historia {
   z-index: 0;
   opacity: var(--c-uno, 1);
@@ -770,27 +486,10 @@ main:has(.ns-cine--viva) { background: #050505; }
   z-index: 1;
   opacity: var(--c-dos, 0);
   pointer-events: var(--c-ev-dos, none);
-  /* Mientras Fundamentos se retira, el equipo llega desde un poco mas alla
-     (ver abajo). */
   transform: translate3d(var(--e-x), 0, 0);
   will-change: transform;
 }
 
-/* Los dos paneles —Fundamentos, que entra por la izquierda y se retira por
-   donde vino, e Infraestructura, que sube desde abajo— se deslizan enteros,
-   con lo que llevan dentro, y el filo de oro va en su canto.
-
-   Eran cortinas: la capa se quedaba quieta y lo que se movia era su
-   `clip-path`. Cambiar el recorte en cada fotograma obliga a repintar la
-   capa entera y a volver a rasterizarla, y en el paso de Fundamentos al
-   Equipo eran 256 repintados en 142 fotogramas, con la piedra, las seis
-   tarjetas y sus sombras. Tampoco sirve deslizar la capa y devolver su
-   contenido en sentido contrario para que parezca quieto: el recorte se
-   mueve respecto de lo de dentro, y el navegador lo vuelve a pintar entero
-   cada pocos pixeles (312 teselas rasterizadas en el mismo tramo, y
-   fotogramas perdidos en el telefono). Deslizando el panel entero nada
-   cambia dentro de el: el compositor mueve una capa ya pintada. Los valores
-   van en pixeles y los escribe el JS, que sabe cuanto mide la capa. */
 .ns-cine--viva .ns-capa--fundamentos {
   z-index: 3;
   transform: translate3d(var(--f-corre), 0, 0);
@@ -802,14 +501,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   will-change: transform;
 }
 
-/* El desplazamiento de entrada iba en `vw` y crecia sin tope: a 1440 son 58px
-   y a 2560 pasan de 100, y con ellos la columna de la derecha se salia por el
-   canto mientras el panel entraba. El JS escribe ahora solo el factor de 1 a
-   0 y la distancia la pone aqui, acotada.
-
-   El desenfoque lo escribe entero el JS (`--f-filtro`), y en cuanto el texto
-   ha entrado lo deja en `none`: un `blur(0px)` sigue siendo un filtro, y la
-   capa se seguia componiendo aparte en cada fotograma mientras se leia. */
 .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura {
   opacity: var(--f-op, 0);
   filter: var(--f-filtro, blur(12px));
@@ -821,9 +512,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   transform: translate3d(0, var(--i-y, 42px), 0);
 }
 
-/* Los filos que viajan con el canto van fuera de las capas: dentro se los
-   comeria su propio recorte. Tambien van por `transform`; con `left` y `top`
-   eran una maquetacion y un repintado por fotograma. */
 .ns-filo { display: none; }
 .ns-cine--viva .ns-filo {
   display: block;
@@ -853,10 +541,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   will-change: transform;
 }
 
-/* Dentro del pin no hay revelado por scroll: las capas que esperan a su turno
-   estan a opacidad 0, y el observador no las da nunca por visibles —es el
-   mismo tropiezo que se midio en la portada—, asi que al descubrirlas
-   apareceria la piedra en blanco. Aqui quien las presenta es el barrido. */
 .pagina-nosotros .ns-cine--viva .revelar {
   opacity: 1;
   transform: none;
@@ -864,24 +548,10 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 .pagina-nosotros .ns-cine--viva .revelar--velo > * { clip-path: none; }
 
-
-/* ---------------------------------------------------------------------------
-   El cierre: la pregunta sobre la mamposteria de la portada.
-   --------------------------------------------------------------------------- */
-/* Montado sobre la ultima pantalla del cine: el margen negativo es el alto
-   del pin, asi que este pin se clava en el mismo pixel en el que el del cine
-   deja de estarlo. Sin el, entre los dos quedaba una pantalla entera de
-   scroll con las hojas cerradas —negro quieto— antes de que empezaran a
-   abrirse.
-
-   Mientras sube por encima de esa ultima pantalla no se tiene que ver, ni
-   robar el dedo: el envoltorio va sin fondo y sin raton, y el pin escondido
-   hasta que `nosotros-cine.js` lo da por clavado. Entonces aparece con las
-   hojas cerradas encima de un cine que tambien las tiene cerradas. */
 .ns-cierre--viva {
   height: 210vh;
   margin-top: -100vh;
-  margin-top: -100lvh; /* lo que mide el pin del cine */
+  margin-top: -100lvh;
   background: transparent;
   pointer-events: none;
 }
@@ -889,7 +559,7 @@ main:has(.ns-cine--viva) { background: #050505; }
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
+  height: 100lvh;
   overflow: hidden;
   isolation: isolate;
   background: #050505;
@@ -899,35 +569,23 @@ main:has(.ns-cine--viva) { background: #050505; }
   visibility: visible;
   pointer-events: auto;
 }
-/* Las hojas de aqui arrancan cerradas, que es como las deja el cine. */
 .ns-cierre--viva .ns-hojas { --h-abre: 0; }
 .ns-cierre--viva .banda-cta--cine {
   position: absolute;
   inset: 0;
-  bottom: var(--sobra-barra); /* lo que se ve: ver `--sobra-barra` en el 01 */
+  bottom: var(--sobra-barra);
   height: auto;
   min-height: 0;
-  /* La banda no recorta: el collage de detras llega hasta el canto de
-     verdad del pin (lo recorta el pin), como en la portada. Atado al canto
-     de la banda, cada vez que la barra del navegador aparecia o se iba el
-     collage cambiaba de alto —sus fotos se volvian a repartir y a recortar,
-     que se veia como una sacudida— y por debajo asomaba una franja negra. */
   overflow: visible;
 }
 .ns-cierre--viva .banda-cta--cine .banda-cta-masonry,
 .ns-cierre--viva .banda-cta--cine .banda-cta-overlay { bottom: calc(var(--sobra-barra) * -1); }
-/* Cada columna de la mamposteria son tres fotos a 3/4, y tres fotos a 3/4
-   miden lo que miden: en un telefono de 844 se quedaban en 771 y por debajo
-   asomaba una franja negra. Clavada a pantalla entera, las fotos se reparten
-   el alto de la columna en vez de traer el suyo. */
 .ns-cierre--viva .banda-cta-masonry__col img {
   flex: 1 1 0;
   min-height: 0;
   aspect-ratio: auto;
 }
 
-/* Tres clases porque el 15 le apaga la mamposteria a toda `.banda-cta` de
-   pagina clara —pesa (0,2,0)— y aqui la banda es una pieza oscura. */
 .pagina-clara .banda-cta--cine {
   min-height: 72svh;
   padding: clamp(2.4rem, 5vw, 4.4rem) 0;
@@ -955,10 +613,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   background: linear-gradient(180deg, rgba(6, 6, 6, .86) 0%, rgba(6, 6, 6, .76) 100%);
 }
 
-/* Las cifras van en oro. Es el recorte del 22, repetido aqui porque alli
-   quien lo lleva es `.ns-cifras-sec`, la seccion clara de la version vieja de
-   la pagina. El hijo necesita el degradado aparte: `-webkit-text-fill-color`
-   se hereda pero el fondo no, y sin el el numero se queda invisible. */
 .banda-cta--cine .ns-cifra__num,
 .banda-cta--cine .ns-cifra__num i {
   background-image: var(--gradiente-oro);
@@ -973,39 +627,12 @@ main:has(.ns-cine--viva) { background: #050505; }
           background-clip: text;
 }
 .banda-cta--cine .ns-cta { margin-top: clamp(1.6rem, 3vw, 2.6rem); }
-/* Lo mismo que el boton de la banda de la portada: con la mamposteria a la
-   vista, el filo y las letras de oro caen sobre retratos a plena luz. Un
-   suelo negro translucido debajo y siguen siendo un boton de oro. */
 .banda-cta--cine .ns-boton { --btn-relleno: rgba(6, 6, 6, .88); }
 
-/* En la portada la banda es baja. Aqui la mamposteria ocupa la pantalla
-   entera, asi que el velo cierra por el centro —donde estan la pregunta y
-   las cifras— y suelta los cuatro cantos, que es por donde se ve que lo que
-   pasa por detras son fotos de la clinica y no una textura.
-
-   El radial sumado al lineal daba .93 en el centro: el collage no se veia.
-   Despues sumaron .74 ahi y .34 en las esquinas. Hoy es el 14% parejo de
-   todos los fondos, y lo que sostiene al texto es su recuadro. */
 .banda-cta--cine .banda-cta-overlay { background: rgba(6, 6, 6, .14); }
 .banda-cta--cine h2,
 .banda-cta--cine .ns-parrafo,
 .banda-cta--cine .ns-rotulo { text-shadow: 0 2px 18px rgba(4, 4, 4, .82); }
-/* Las cifras van en oro recortado contra el fondo, y `text-shadow` no pinta
-   nada debajo de un texto transparente: la sombra no puede ser de la letra.
-   Pero tampoco puede ser un `filter` del bloque, que es lo que habia aqui.
-
-   El motivo es que el numero cambia de texto en CADA fotograma mientras se
-   cuenta —`textContent` desde un `requestAnimationFrame`, en `footer.js`— y
-   un `drop-shadow` sobre un elemento que se repinta sesenta veces por
-   segundo se recalcula sesenta veces por segundo, en las cuatro cifras a la
-   vez y justo cuando las dos hojas se estan abriendo. Eso es lo que frenaba
-   el final de la escena en el movil.
-
-   Asi que el suelo se pinta una sola vez y debajo de todas: una plancha
-   oscura detras de la fila entera, que ademas hace mejor trabajo que cuatro
-   sombras sueltas —lo que hay que separar del collage es la fila, no cada
-   numero—. Va en `z-index: -1` y `.ns-cifras` no abre contexto de apilado,
-   asi que cae por detras de las cifras pero por delante del velo. */
 .banda-cta--cine .ns-cifras {
   position: relative;
   isolation: auto;
@@ -1019,22 +646,8 @@ main:has(.ns-cine--viva) { background: #050505; }
   background: radial-gradient(64% 112% at 50% 50%,
     rgba(4, 4, 4, .86) 0%, rgba(4, 4, 4, .66) 58%, rgba(4, 4, 4, .24) 100%);
 }
-/* La etiqueta si es texto normal y le basta su sombra. */
 .banda-cta--cine .ns-cifra__etq { text-shadow: 0 1px 10px rgba(4, 4, 4, .9); }
 
-/* Y la pregunta con su boton, en la misma placa que las cifras.
-
-   Antes no le hacia falta: el velo de la banda cargaba .74 en el centro y
-   ahi no habia foto que compitiera. Con el velo en el 3% el collage pasa
-   entero, y en la cinta hay una toma de macetas con flores rosas a plena luz
-   y otra de una bata blanca: medido, el 1% mas claro de la caja del titular
-   daba 0,71 de luz, y el blanco encima de eso son 1,38:1. No se leia.
-   (La placa se cargo despues un punto mas, como todos los recuadros.)
-
-   La placa es la de las cifras con un punto mas de peso, porque el titular
-   es la pieza que tiene que leerse desde el otro lado de la sala. Lo que se
-   gana es lo de siempre: pesa donde hay letra, y la foto sigue entera
-   alrededor. */
 .banda-cta--cine .ns-cta {
   position: relative;
   isolation: auto;
@@ -1049,12 +662,6 @@ main:has(.ns-cine--viva) { background: #050505; }
     rgba(4, 4, 4, .94) 0%, rgba(4, 4, 4, .82) 58%, rgba(4, 4, 4, .44) 100%);
 }
 
-/* En el telefono las cuatro cifras se parten en dos columnas, y ahi cada una
-   tiene por delante mas hueco que letra: alineadas a la izquierda el numero
-   se plantaba contra el filo del recuadro y todo el aire se juntaba a la
-   derecha. Centradas -y con el mismo relleno las dos, que la de la izquierda
-   lo tenia a cero por ser la primera de su fila- cada cifra se planta en
-   medio de su mitad y las dos mitades miden igual. */
 @media (max-width: 575.98px) {
   .banda-cta--cine .ns-cifra {
     padding-inline: .5rem;
@@ -1062,49 +669,14 @@ main:has(.ns-cine--viva) { background: #050505; }
   }
 }
 
-
-/* ---------------------------------------------------------------------------
-   El movil.
-
-   La escena es la misma —el mismo barrido, las mismas cinco pantallas—, pero
-   aqui cada una tiene que caber en el alto de la ventana con el texto a una
-   sola columna. Asi que se aprieta todo: interlineados, aires y rellenos,
-   nunca el cuerpo de letra, que es lo que hay que leer. Lo que no cabe se
-   cae, y lo que se cae es siempre lo mismo: el texto sin dato.
-
-   El pin va en `dvh` y no en `svh` a proposito, igual que el de la portada:
-   la barra del navegador se esconde al bajar y la ventana crece, y con `svh`
-   el telon se queda corto y asoma una franja por debajo.
-   --------------------------------------------------------------------------- */
 @media (max-width: 991.98px) {
 
-  /* Los dos paneles entran desenfocados y el desenfoque se va a cero con el
-     recorrido. En un ordenador eso es un `filter` mas; en un telefono es un
-     gaussiano a pantalla completa recalculado en cada fotograma de scroll, y
-     son dos —el de fundamentos a mitad de escena y el de infraestructura al
-     final—. Aqui se cae y la entrada se queda en lo que ya hacia el resto del
-     trabajo: la opacidad y el desplazamiento, que el compositor mueve solo.
-     A este tamano de letra el desenfoque no se echa de menos. */
   .ns-cine--viva .ns-capa--fundamentos > .ns-envoltura,
   .ns-cine--viva .ns-capa--infra > .ns-envoltura { filter: none; }
 
-  /* La misma proporcion que en escritorio: 520 hasta que se acorto el paso
-     de Fundamentos al Equipo. */
   .ns-cine--viva { height: 484vh; }
   .ns-cine--viva .ns-cine__pin { height: 100lvh; }
 
-  /* El cierre, clavado tambien aqui y a pantalla entera. Estuvo en flujo
-     normal una temporada —el porque esta en el guion, junto a
-     `revisarModo()`— y la banda subia detras del telon sin cierre ni
-     apertura y sin llenar la pantalla: media 608px en una de 844 y debajo
-     asomaba el pie. El pin va en `lvh`, como el del cine, y el margen que lo
-     monta sobre la ultima pantalla del cine tambien: los dos tienen que medir
-     lo mismo o el relevo se descuadra (y en `lvh` ninguno cambia cuando la
-     barra del navegador se esconde). Algo menos de recorrido que en
-     escritorio, que la banda del telefono se lee de un vistazo.
-
-     El contenido se centra por debajo de la barra fija y no en la pantalla
-     entera, y con `safe`: en un telefono bajo el rotulo quedaria tapado. */
   .ns-cierre--viva { height: 190vh; margin-top: -100lvh; }
   .ns-cierre--viva .ns-cierre__pin { height: 100lvh; }
   .ns-cierre--viva .banda-cta--cine {
@@ -1120,31 +692,22 @@ main:has(.ns-cine--viva) { background: #050505; }
 
   #nsCine .ns-titulo { font-size: clamp(1.28rem, 5.4vw, 1.75rem); line-height: 1.24; }
   #nsCine .ns-rotulo { margin-bottom: .45rem; }
-  /* La caja de oro del rotulo, mas cenida: en el panel de Fundamentos van dos
-     y en un telefono de 640 de alto sumaban 23px que ya no habia. */
   #nsCine .caja-oro { padding-block: .38em .32em; }
   #nsCine .ns-parrafo { font-size: .88rem; line-height: 1.58; }
 
-  /* --- el hero --- */
   .ns-cine__texto { max-width: none; }
   .ns-cine__texto > .breadcrumb-personalizado { margin-bottom: .7rem; }
 
-  /* El mismo 14% que en el ordenador: quien sostiene el texto es el recuadro,
-     y el recuadro mide lo mismo en las dos pantallas. */
   .ns-cine__velo { background: rgba(5, 5, 5, .14); }
 
   .ns-capa--historia { min-height: max(520px, 84svh); }
 
-  /* El segundo parrafo del hero se cae, y solo aqui: el resumen esta en el
-     primero y lo concreto en la fila de datos. Sigue en el HTML para
-     escritorio. */
   .ns-cine--viva .ns-capa--historia .ns-parrafo + .ns-parrafo { display: none; }
 
   .ns-cine__datos { gap: .7rem; margin-top: 1rem; padding-top: .8rem; }
   .ns-cine__datos b { font-size: 1.28rem; }
   .ns-cine__datos span { font-size: .55rem; letter-spacing: .16em; }
 
-  /* --- fundamentos y valores --- */
   .ns-capa--fundamentos .ns-doble__reja { gap: .9rem; }
   .ns-capa--fundamentos .ns-mvo,
   .ns-capa--fundamentos .ns-valores {
@@ -1162,20 +725,10 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-capa--fundamentos .ns-valor__icono { width: 26px; margin-bottom: .35rem; font-size: .68rem; }
   .ns-capa--fundamentos .ns-valor__nombre { font-size: .74rem; line-height: 1.32; }
 
-  /* De cada valor queda el compromiso, no su glosa: cuatro nombres se leen de
-     un vistazo, y su texto no cabe sin quitarle sitio a la mision y a la
-     vision, que son las que de verdad explican algo. */
   .ns-capa--fundamentos .ns-valor__texto { display: none; }
   .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad .ns-titulo { display: none; }
 
-  /* --- el elenco --- */
   .ns-elenco { gap: 1.2rem; }
-  /* Apilado, el retrato es la mitad de arriba de la pantalla y la ficha la de
-     abajo. Media 34svh: la foto entera dentro de un marco de ese alto son 210
-     de ancho en una pantalla de 412 -una estampilla en medio del marmol- y de
-     propina se salia por la juntura con la madera, porque el marco acababa
-     mas abajo que la piedra. Con 46 la figura llena su mitad y la juntura se
-     baja a donde acaba. */
   .ns-capa--elenco { --alto-retrato: min(46svh, 520px); }
   .ns-elenco__retratos { height: var(--alto-retrato); }
   .ns-elenco__flecha { width: 34px; }
@@ -1188,25 +741,14 @@ main:has(.ns-cine--viva) { background: #050505; }
   #nsCine .ns-ficha__puntos li { padding-left: 1.35rem; font-size: .8rem; line-height: 1.45; }
   .ns-elenco__puntos { justify-content: center; margin-top: .7rem; }
 
-  /* --- el cierre --- */
-  /* Con el relleno lateral a cero el 8.500 arrancaba pegado al filo de oro
-     del recuadro -un pixel- mientras por la derecha de cada columna sobraba
-     medio dedo. El recuadro tiene filo por los cuatro lados: lo de dentro va
-     dentro, y con las dos columnas centradas el bloque queda a plomo. */
   .banda-cta--cine .ns-cifras { padding: 1.1rem 1rem; }
   .banda-cta--cine .ns-cifra__num { font-size: 1.7rem; }
   .banda-cta--cine .ns-cifra__etq { margin-top: .4rem; font-size: .58rem; }
   .banda-cta--cine .ns-cta { margin-top: 1.2rem; }
 }
 
-/* En las pantallas cortas —un telefono de 640px de alto— se recorta otra vez.
-   Aqui ya no queda aire que quitar: lo que sale es el titular de la ficha del
-   especialista, que repite lo que dice el rotulo de encima. */
 @media (max-width: 991.98px) and (max-height: 700px) {
   .ns-cine--viva .ns-capa--elenco { --alto-retrato: 43svh; }
-  /* El texto del especialista, por encima del boton de las cookies y con la
-     letra un pelo mas grande, no cabia en un cuarto de 640: la foto cede un
-     tercio de pantalla en vez de un cuarto largo. */
   .ns-cine--viva .ns-capa--elenco .ns-elenco { grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
   .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2 / 3); }
   #nsCine .ns-ficha__texto { font-size: .88rem; line-height: 1.5; }
@@ -1221,41 +763,6 @@ main:has(.ns-cine--viva) { background: #050505; }
   .ns-cine__cinta .crsl__toma img { transition: none; }
 }
 
-/* ---------------------------------------------------------------------------
-   El indicador de pagina.
-
-   Es la MISMA pieza que en Galeria, Tratamientos y FAQ —`.breadcrumb-
-   personalizado`, con su casita y su galon— y no una version propia. Antes
-   aqui vivia un `.ns-ruta--filo` que se le parecia en la letra pero no en el
-   resto: sin iconos, con un `>` tipografico en vez del galon y con un filo de
-   oro debajo que ninguna otra pagina llevaba. Se ve una vez por pagina y en
-   las cuatro tiene que ser la misma.
-
-   Lo unico que se escribe aqui es lo que pide la piedra de debajo: en las
-   otras tres el indicador cae sobre madera quieta y aqui sobre un carrusel de
-   fotos de consulta, con batas blancas pasando cada cinco segundos. De ahi la
-   sombra: el velo solo no basta contra un fondo que cambia.
-   --------------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------------
-   Los grosores del oro.
-
-   Toda la pagina llevaba sus filos a 1px y a la misma opacidad, con lo que
-   las cuatro piezas de una pantalla pesaban igual aunque no dijeran lo mismo.
-   Aqui se les da una escala, y lo que decide el grosor es la jerarquia, no el
-   gusto:
-
-     3px  la juntura de las dos piedras del elenco. Es la unica linea de la
-          pagina que separa dos superficies, no dos cajas.
-     2px  el filo de arriba de la pieza que lleva la afirmacion principal de
-          su pantalla: las dos fichas de Fundamentos, la ficha del
-          especialista y la placa de su nombre.
-     1px  el contorno de todo lo demas.
-     1px al 32%  los remates de dentro —subrayados, separadores—, que estaban
-          al 50% y competian con el contorno que los rodea.
-
-   Los filos de 2px van en el `::before` que estas piezas ya tenian, no en el
-   `border`: asi el degradado sigue siendo el de marca y el contorno se queda
-   entero a 1px por los cuatro cantos. */
 .pagina-nosotros .ns-mvo__ficha::before,
 .pagina-nosotros .ns-ficha::before {
   content: "";
@@ -1284,5 +791,4 @@ main:has(.ns-cine--viva) { background: #050505; }
   border-bottom-color: rgba(212, 175, 55, .5);
 }
 
-/* `.banda-cta` es un flex centrado, y ahi el envoltorio no estira solo. */
 .pagina-clara .banda-cta--cine > .ns-envoltura { flex: 1 1 auto; }

@@ -4,9 +4,6 @@
   --nos-texto: #2E2E2E;
   --nos-dorado: #B8942A;
   --nos-dorado-claro: #D4AF37;
-  /* Era #9C7A1C, un tercer oro que no usaba nadie mas: lo pintaba la pregunta
-     abierta del acordeon de FAQ, y en
-     las dos el resto de la pagina ya iba en #A8801E. */
   --nos-dorado-texto: var(--oro-hondo);
   --nos-linea: rgba(212, 175, 55, .55);
   --texto: #2E2E2E;
@@ -144,35 +141,9 @@
 .pagina-clara .breadcrumb-personalizado span { color: var(--nos-negro); font-weight: 700; }
 .pagina-clara .breadcrumb-personalizado i { color: var(--nos-dorado-claro); font-size: .75em; }
 .pagina-clara .breadcrumb-personalizado i.fa-house { color: #4A4A4A; font-size: 1em; }
-/* `vertical-align: -.125em` (02-base) es la regla de Font Awesome y se cuenta
-   sobre la em del PROPIO icono, no sobre la de la letra. Con los dos iconos
-   del rastro a tamanos distintos -la casita a 1em y el chevron a .75em- eso
-   deja al pequeno 1,25px por debajo de la versal y al grande solo .16px.
-   Cada uno lleva aqui su cuenta, medida sobre la captura a cuatro aumentos:
-   los cuatro elementos del rastro quedan dentro de medio pixel. */
 .pagina-clara .breadcrumb-personalizado i .icono { vertical-align: -.036em; }
 .pagina-clara .breadcrumb-personalizado i.fa-house .icono { vertical-align: -.112em; }
 
-/* ---------------------------------------------------------------------------
-   El hero de madera de Galeria y de FAQ.
-
-   Esas dos paginas empezaban con una franja blanca: el mismo marmol en el
-   que seguian, asi que no habia entrada, solo un titulo grande y a trabajar.
-   Ahora arrancan con una pantalla de madera —la misma de Testimonios en la
-   portada y de Fundamentos en Nosotros— y el contenido no cambia: la ruta,
-   el titulo, el filo de oro y la bajada. Lo unico que cambia es la piedra
-   sobre la que se leen.
-
-   Es una pieza oscura dentro de una pagina clara, y por eso todo lo de aqui
-   le da la vuelta a lo que el bloque de arriba pinta en negro sobre blanco.
-   En el 22 entra ademas en la lista de piezas oscuras, para que el oro sea
-   el degradado vivo y no el hondo, que es el que aguanta sobre marmol claro
-   y no hace falta aqui.
-
-   No lleva `svh` a secas sino `min(...)` con tope: a pantalla completa el
-   hero escondia el principio de la galeria y no invitaba a bajar. Con el
-   tope asoma una franja de lo que viene.
-   --------------------------------------------------------------------------- */
 .pagina-clara .banner-pagina--hero {
   position: relative;
   isolation: isolate;
@@ -180,15 +151,6 @@
   align-items: center;
   overflow: hidden;
   min-height: min(58svh, 496px);
-  /* Abajo el mismo aire que arriba. Con 1,1-1,7rem el bloque quedaba casi
-     pegado al canto: la escuadra de abajo del marco (que sale 1,5rem por
-     fuera del texto) caia a 3 o 4px del filo de oro del hero, cuando la de
-     arriba tiene 30px hasta la barra.
-
-     Y la barra se cuenta con lo que mide arriba del todo, que es cuando se
-     ve este hero: con `--alto-navbar` (la barra ya encogida, 62px, cuando
-     arriba mide 75) el marco quedaba 13px mas cerca de la barra que del
-     canto de abajo. */
   padding: calc(var(--alto-navbar-arriba) + clamp(2.2rem, 4.4vw, 3.8rem)) 0 clamp(2.2rem, 4.4vw, 3.8rem);
   background: #0B0805;
   border-bottom: 1px solid rgba(212, 175, 55, .3);
@@ -200,8 +162,6 @@
   overflow: hidden;
   pointer-events: none;
 }
-/* La madera va entera: opacidad 1 y sin filtro. A media opacidad lo que se
-   veia no era madera, era el negro de debajo tenido de marron. */
 .bp-fondo img {
   width: 100%;
   height: 100%;
@@ -209,19 +169,6 @@
   opacity: 1;
   filter: none;
 }
-/* El velo se ha ido casi entero: queda un 14% parejo, que sienta la piedra
-   sin llegar a apagarla.
-
-   La madera wengue mide 35 de luz de media —es de por si mas oscura que
-   cualquier velo razonable—, asi que el blanco encima de ella se lee sin
-   ayuda: lo que hacia el velo del .78 no era dar contraste, era tapar la
-   veta, que es justo lo que hay que ver. Despues fue un par de degradados
-   que cosian el canto de arriba con la barra y el de abajo con el marmol;
-   ninguno de los dos hacia falta —la barra es opaca y abajo hay un filo de
-   oro— y por el medio no pintaban nada.
-
-   Lo que el titular pierde lo lleva pegado, en su propia sombra, que pesa
-   solo donde hay letra. Se midio despues: ver ESTRUCTURA. */
 .bp-velo {
   position: absolute;
   inset: 0;
@@ -229,40 +176,17 @@
   pointer-events: none;
   background: rgba(8, 6, 4, .14);
 }
-/* ---------------------------------------------------------------------------
-   La variante de cine del hero: en vez de una piedra quieta, el carrusel de
-   fotos de la clinica pasando por detras. Lo usa Tratamientos.
-
-   El velo hizo aqui un camino largo. Llego a .76 a la izquierda y .5 por
-   arriba, que se sumaban a .88 justo donde esta el titular y la foto de
-   debajo dejaba de existir; despues bajo a .58 y .3. Hoy es el mismo 3%
-   parejo que sobre la madera, porque el titular ya no se apoya en el velo
-   sino en el recuadro de mas abajo, y un recuadro pesa solo donde hay letra.
-   --------------------------------------------------------------------------- */
 .pagina-clara .banner-pagina--cine .bp-fondo { z-index: 0; }
 .pagina-clara .banner-pagina--cine .ns-portada__cinta.crsl { z-index: 0; }
 .pagina-clara .banner-pagina--cine .bp-velo {
-  /* Y se queda en un 14% parejo. Lo que cargaba la izquierda era para
-     sostener al titular sobre la cinta; eso lo hace el recuadro (mas abajo),
-     y mejor, porque pesa solo donde hay letra. La cinta son fotos de la
-     clinica: es lo que hay que ver. */
   background: rgba(6, 5, 4, .14);
 }
-/* Las dos clases juntas y no `--cine` a secas: el velo movil del hero de
-   madera vive mas abajo en esta misma hoja y pesa lo mismo (0,3,0), asi que
-   ganaba por ir despues y este no pintaba nada. Se midio. Hoy los dos valen
-   lo mismo, pero la regla se queda: el dia que uno cambie, que cambie el que
-   toca. */
 @media (max-width: 991.98px) {
   .pagina-clara .banner-pagina--hero.banner-pagina--cine .bp-velo {
     background: rgba(6, 5, 4, .14);
   }
 }
 
-/* `--bp-lado` es el margen de la pagina a cada lado del texto, el mismo que
-   el de todo `.container` claro. Va en variable porque lo usan tambien el
-   marco de oro y la muela, que se cuentan desde el: si cambia aqui, cambian
-   los tres a la vez y siguen cuadrados. */
 .pagina-clara .banner-pagina--hero > .container {
   --bp-lado: clamp(1.5rem, 6vw, 6rem);
   position: relative;
@@ -270,19 +194,6 @@
   padding-inline: var(--bp-lado);
 }
 
-/* El recuadro del hero de cine. Debajo no hay una piedra quieta sino el
-   carrusel de la clinica: batas blancas, ventanas y pantallas encendidas que
-   cambian cada cinco segundos, y sobre eso la bajada -blanco fino a .82- se
-   perdia en cuanto pasaba una toma clara. El velo no puede arreglarlo:
-   cargarlo hasta que la letra aguante sobre la toma mas clara deja a las
-   otras sin foto. Asi que el suelo va pegado al texto y no a la pantalla, y
-   es la misma placa que sostiene el hero de Nosotros -negro translucido con
-   filo de oro-: pesa solo donde hay letra y la foto sigue entera alrededor.
-
-   Ancho de 52rem y no el del contenedor: el recuadro tiene que acabar donde
-   acaba el texto. A lo ancho de la pagina seria una franja, y lo que hay a su
-   derecha -la mitad limpia del velo, que es por donde se ve el carrusel-
-   quedaria tapado. */
 .pagina-clara .banner-pagina--cine .bp-panel {
   position: relative;
   max-width: min(100%, 52rem);
@@ -292,17 +203,11 @@
   background: linear-gradient(180deg, rgba(8, 7, 6, .74) 0%, rgba(8, 7, 6, .64) 100%);
   box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
 }
-/* Con suelo propio, la sombra de cada letra sobra: sumada al negro de la
-   placa engordaba la letra fina y la dejaba sucia. */
 .pagina-clara .banner-pagina--cine .bp-panel :is(h1, .banner-subtitulo,
                                                  .breadcrumb-personalizado) {
   text-shadow: none;
 }
 
-/* Lo que antes daba el velo lo dan ahora estas tres sombras. La diferencia
-   es donde: el velo apagaba la piedra entera y esto solo apaga los pocos
-   pixeles que hay detras de cada letra. El radio es grande y la opacidad
-   alta a proposito —una sombra dura se veria como un relieve—. */
 .pagina-clara .banner-pagina--hero h1,
 .pagina-clara .banner-pagina--hero .banner-subtitulo,
 .pagina-clara .banner-pagina--hero .etiqueta-seccion,
@@ -319,10 +224,6 @@
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado,
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado a { color: rgba(255, 255, 255, .7); }
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado span { color: #FFFFFF; }
-/* La casita se quedaba en el gris #4A4A4A que le toca sobre marmol: ese gris
-   sobre la madera del hero no se ve. Hace falta nombrarla aparte porque la
-   linea de arriba solo alcanza al `nav` y a su enlace, y `i.fa-house` pesa
-   mas (0,2,1) que cualquiera de las dos. Se midio en las tres paginas. */
 .pagina-clara .banner-pagina--hero .breadcrumb-personalizado i.fa-house {
   color: rgba(255, 255, 255, .7);
 }
@@ -331,38 +232,6 @@
   border-bottom-color: rgba(212, 175, 55, .5);
 }
 
-/* ---------------------------------------------------------------------------
-   El marco de oro de los heros de Galeria y FAQ.
-
-   Son los dos heros de madera: no llevan recuadro debajo del texto —la veta
-   wengue ya es oscura y el titular se apoya en su sombra— y por eso el
-   bloque queda flotando sobre la plancha, sin nada que diga donde empieza y
-   donde acaba. El marco lo dice, y lo dice en oro, sin tapar un pixel de la
-   madera.
-
-   Va en dos piezas y no en un `border`: el `::before` pone el filo de arriba
-   y el de la izquierda, el `::after` el de abajo y el de la derecha. Asi son
-   dos escuadras, que es como se dibuja un encuadre —y como se abre, cada una
-   desde su esquina (26-entradas.css).
-
-   Y son escuadras de verdad, no un marco: cada una mide la mitad del ancho y
-   la mitad del alto, asi que ninguna llega a encontrarse con la otra. Lo que
-   queda son dos esquinas en diagonal —arriba a la izquierda y abajo a la
-   derecha— y dos lados abiertos. Un rectangulo cerrado encierra el texto;
-   dos escuadras lo senalan y dejan ver la madera por los otros dos costados,
-   que es lo que se queria.
-
-   Cada filo es una capa de fondo con el degradado de la marca, no un borde:
-   un borde solo admite color plano, y el oro del sitio es un degradado. La
-   sombra es para que la linea no se pierda sobre las vetas mas claras de la
-   madera; un pixel de oro sobre madera clara no se ve.
-
-   Los `inset` se cuentan desde la caja de relleno del `.container`, no de
-   su contenido, asi que a los lados hay que descontar ese relleno: es
-   `--bp-lado`, el margen de la pagina. Sin eso el marco se pegaba a los
-   cantos de la ventana y dejaba 86px de vacio entre la linea y el texto.
-   El aire es el mismo por los cuatro lados, salvo en el telefono (mas
-   abajo), donde arriba y abajo lleva mas. */
 .pagina-clara .banner-pagina--hero .bp-marco {
   --bp-marco-aire: clamp(.7rem, 2vw, 1.5rem);
   --bp-marco-aire-y: var(--bp-marco-aire);
@@ -396,82 +265,13 @@
     var(--oro-marca-degradado) right bottom / 1px 100% no-repeat;
 }
 
-/* ---------------------------------------------------------------------------
-   La muela de oro, metida en el titular. La llevan los tres heros de madera:
-   Galeria, FAQ y Privacidad.
-
-   Es un vector (`imagenes/muela-oro.svg`): el contorno va en curvas y por
-   dentro lleva el brillo del original, asi que el filo sale nitido a
-   cualquier tamano y en cualquier pantalla. La de antes era una foto de
-   480px sacada de un original borroso, y el borde se veia pixelado.
-
-   VA COLGADA DEL TITULO, a su derecha, y por detras de la letra. Estuvo
-   pegada al canto de la pagina, con el texto guardandole sitio, y entre las
-   dos cosas quedaba un desierto; estuvo despues colgada de la ultima palabra
-   y metida debajo de ella, y ahi lo que se leia mal era la letra sobre el
-   oro. Ahora la caja del titulo se encoge a lo que ocupa el texto
-   (`fit-content`) y la muela se cuelga de su canto derecho: se mueve con el
-   texto, mida lo que mida el titulo, y no hay desierto posible. `min-width`
-   le pone un suelo a esa caja para que en una pantalla muy ancha la muela no
-   se quede pegada al titulo con media pantalla vacia a su derecha: ahi es
-   donde tiene que ocupar sitio.
-
-   LA SILUETA ESTA MEDIDA, tramo a tramo, sobre el propio vector (428x438 px
-   de tinta; la proporcion alto/ancho es 1,0234, y de ahi sale
-   `--bp-muela-alto`). La muela esta dibujada abierta y lo que tiene dentro no
-   es relleno sino hueco:
-
-     - del 0% al 40% de su alto esta la corona: dos trazos, uno a cada lado
-       —el de la izquierda ocupa del 0% al 9% del ancho— y hueco en medio;
-     - del 42% al 78% **no hay tinta a la izquierda en absoluto**: el unico
-       trazo es el de la derecha, que baja del 85% al 74% del ancho;
-     - del 81% para abajo aparece el gancho de la raiz, entre el 55% y el 84%.
-
-   O sea que la franja limpia es la de 42% a 78% de su alto, y ahi dentro
-   cabe texto hasta el 74% de su ancho sin rozar una gota de oro. Todo lo que
-   viene ahora sale de esas tres cifras.
-
-   `--bp-muela-sitio` es lo que la muela asoma por encima del TECHO de la
-   primera linea del titulo, contado en muelas. Va en .44: un pelo por debajo
-   del 42% donde acaba la corona, que es lo que deja la letra en la franja
-   limpia. El `.24em` que lo acompana es lo que hay entre el techo de la caja
-   de una linea y el techo de sus mayusculas —media diferencia entre la
-   interlinea (1,18) y la altura de mayuscula (0,7)—, y es lo que hace que la
-   cuenta se haga contra la LETRA y no contra su caja.
-
-   Y se pinta POR DETRAS del titulo (`z-index: -1`; el `h1` ya abre contexto
-   de apilado por su propio `clip-path` de entrada): es el seguro de todo lo
-   demas. Si algun dia un titulo mas largo o una pantalla rara la acercan de
-   mas, lo que se cruce pasa por debajo de la letra y no por encima.
-
-   Ojo con la mascara de entrada: el titular entra con un `clip-path`
-   (26-entradas.css) y un recorte recorta tambien a los hijos absolutos, asi
-   que la muela salia cortada por arriba y por abajo. De ahi que estos tres
-   heros usen `entrada-velo-muela`, la misma mascara abriendo mas. */
 .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
-  /* Estas cifras son las de la tableta, de 768 a 991: el ordenador y el
-     telefono cambian la muela de sitio y de medida mas abajo.
-
-     El ancho mira a los dos lados de la ventana, y manda el que menos deja.
-     A lo ancho, para que la muela crezca con la pagina. Y a lo alto, porque
-     lo que de verdad la limita esta arriba: por encima del titulo hay media
-     muela y ahi esta la barra de navegacion, que es fija y opaca. En un
-     portatil de 768 de alto el bloque de texto sube, y atada solo al ancho
-     la corona acababa tocando la barra. Y el techo de 280 es lo que cabe
-     entre la barra y el techo del titulo en una pantalla ancha: por encima
-     del titulo la muela asoma casi media, y ahi arriba no hay mas sitio. */
   --bp-muela-ancho: max(150px, min(20.5vw, 31svh, 280px));
   --bp-muela-alto: calc(var(--bp-muela-ancho) * 1.0234);
   --bp-muela-sitio: .44;
-  /* Lo que el titulo guarda a su derecha, contado en muelas: la letra puede
-     llegar hasta el 57% de su ancho, que es donde empieza el gancho de la
-     raiz. Todo lo que hay a la izquierda de esa raya es hueco. */
   --bp-muela-reserva: .43;
   --bp-muela-aire: clamp(.4rem, .8vw, .9rem);
 }
-/* La palabra marcada del titulo ya no es el origen de nada —lo fue cuando la
-   muela colgaba de ella— pero la clase se queda en el HTML: es la misma
-   palabra que va en otro color. */
 .pagina-clara .banner-pagina--hero .bp-remate { position: static; }
 .pagina-clara .banner-pagina--hero .bp-muela {
   position: absolute;
@@ -483,43 +283,11 @@
   filter: drop-shadow(0 6px 18px rgba(4, 3, 2, .55));
   pointer-events: none;
 }
-/* La caja del titulo ocupa el ancho entero y la muela se cuelga de su canto
-   derecho, que es el de la pagina. Estuvo encogiendose a lo que ocupaba el
-   texto, con la muela pegada al final del titulo: la muela se movia de sitio
-   segun lo largo que fuese el titular —en Galeria caia en mitad del hero, en
-   FAQ casi en el canto— y a la derecha quedaban cuatrocientos pixeles de
-   madera vacia. Colgada del canto ocupa ese lado, que es lo que se le pedia,
-   y los tres heros se ven igual.
-
-   Y el titulo YA NO LE GUARDA EL SITIO ENTERO: guarda lo que la muela tiene
-   de tinta por ese lado —el 43% de su ancho— y se mete en el resto, que es
-   hueco. Es la misma cuenta del telefono; la unica diferencia es lo que mide
-   la muela. */
 .pagina-clara .banner-pagina--hero:has(.bp-muela) h1 {
   position: relative;
   padding-right: calc(var(--bp-muela-ancho) * var(--bp-muela-reserva) + var(--bp-muela-aire));
 }
 
-/* EN EL ORDENADOR LA MUELA VA DENTRO DEL MARCO. Asomaba casi media por
-   encima del titulo, pegada a la barra y por fuera del marco; ahora baja a
-   la esquina que el marco deja abierta —arriba a la derecha—, se aparta un
-   poco del canto y mide lo que el bloque de texto, de la ruta a la bajada,
-   centrada en su alto. Es un pelo mas grande que antes en un portatil (218
-   frente a 196 a 1280x630) y acompana al titulo a su altura.
-
-   A esa altura el titulo ya no le pasa por dentro: cae a la altura de la
-   corona, que tiene tinta en el canto izquierdo. Asi que el `h1` le guarda
-   la muela entera —su ancho, su margen y un dedo de aire— y la muela deja de
-   colgarse del titulo: el `h1` vuelve a `static` y la caja de la muela es el
-   `.container`, que es lo que la deja centrarse en el alto del bloque.
-
-   `--bp-muela-margen` es lo que se aparta del canto derecho del texto:
-   2,25rem en una pantalla ancha, y nada por debajo de 1244, donde el titulo
-   todavia crece con la pantalla y el sitio no da. El ancho sale de ahi: es
-   lo que cabe al lado del titulo mas largo de los tres, «Politica de
-   privacidad» (15,6em), con un dedo de holgura; medido de 992 a 1920. El
-   techo de 222 es lo que mide de alto el bloque de texto en una pantalla
-   ancha: mas grande, la muela se saldria del marco por abajo. */
 @media (min-width: 992px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-muela-ancho: clamp(160px, 17vw, 222px);
@@ -537,20 +305,6 @@
   }
 }
 
-/* En el telefono la muela es mas grande de lo que le tocaria por regla de
-   tres, y el titulo le pasa por dentro: con el titulo partido en dos lineas,
-   las dos caen en la franja limpia de la muela y ahi no hay tinta que
-   esquivar. Eso es lo que deja que mida 38vw —casi dos quintos de la
-   pantalla— sin taparle una letra a nadie.
-
-   Lo que guarda el titulo a su derecha ya no es la muela entera sino el 43%
-   de su ancho: la letra puede llegar hasta el 57%, que es donde empieza el
-   gancho de la raiz a la altura de la ultima linea. Es la cifra mas justa de
-   las tres franjas y por eso manda ella.
-
-   Y el titulo baja un palmo. Es de donde sale el sitio: por encima esta la
-   ruta —en FAQ, «Inicio > Preguntas frecuentes», que llega casi al canto— y
-   la muela no puede subir hasta ella; por debajo sobra madera de sobra. */
 @media (max-width: 767.98px) {
   .pagina-clara .banner-pagina--hero:has(.bp-muela) > .container {
     --bp-titulo: min(1.9rem, 9.8vw - 9.61px);
@@ -561,41 +315,11 @@
     font-size: var(--bp-titulo);
     margin-top: clamp(3.9rem, 17vw, 4.8rem);
   }
-  /* Y la bajada se aparta un poco mas. Con el titulo en una sola linea —de
-     576 a 767, o un telefono tumbado— la caja del titulo se encoge a lo que
-     ocupa, la muela se le pega al final y su gancho, que es lo que baja mas,
-     caia justo en el primer renglon de la bajada. Con el titulo en dos
-     lineas sobra sitio de sobra; el aire de mas no estorba, que por debajo
-     del hero quedan casi doscientos pixeles de madera vacia. */
   .pagina-clara .banner-pagina--hero:has(.bp-muela) .banner-subtitulo {
     margin-top: clamp(2.8rem, 6vw, 3.4rem);
   }
 }
 
-/* EN EL TELEFONO LA MUELA EMPIEZA DONDE ACABA LA PRIMERA LINEA. Colgada del
-   canto caia donde caia: en un telefono de 430 de ancho arrancaba justo
-   despues de «Preguntas», en FAQ, y era lo que se buscaba; pero en Galeria
-   la patita izquierda de la corona quedaba posada sobre la A de «Un vistazo
-   a», en Privacidad sobre la E de «Politica de», y en FAQ tambien, sobre la
-   S, en cuanto el telefono era un poco mas estrecho.
-
-   Asi que aqui se cuelga del texto y no del canto: `--bp-muela-desde` es
-   donde empieza, contado desde el arranque del titulo y en `em`, para que
-   siga a la letra en cualquier telefono. En FAQ, un dedo despues de la S
-   —exactamente donde caia a 430—; en Galeria, en la punta de la A; en
-   Privacidad, un dedo despues de la E.
-
-   A lo ancho mide lo de siempre, pero como mucho llega hasta el filo derecho
-   del marco (el canto del `h1` menos lo que este sobresale, `.1em`, mas el
-   aire del marco, 1,1rem): en un telefono chico encoge lo que haga falta
-   para no salirse.
-
-   Y en Galeria sube un pelo, del 44% al 47% de su alto: la patita queda
-   justo encima de la punta de la A, y con la cuenta de siempre le pasaba a
-   cinco pixeles. En las otras dos se aparta de lado y no hace falta.
-
-   Solo por debajo de 480, que es donde los tres titulos van en dos lineas.
-   De 480 a 767 la muela colgada del canto ya cae lejos de la ultima letra. */
 @media (max-width: 479.98px) {
   .pagina-faq .bp-muela { --bp-muela-desde: 7.34em; }
   .pagina-galeria .bp-muela { --bp-muela-desde: 7.85em; --bp-muela-sitio: .47; }
@@ -614,18 +338,9 @@
     min-height: min(68svh, 520px);
     padding: calc(var(--alto-navbar-arriba) + clamp(1.5rem, 6.5vw, 2.4rem)) 0 clamp(1.5rem, 6.5vw, 2.4rem);
   }
-  /* El mismo 14% que en el ordenador: la madera no cambia de luz porque la
-     pantalla sea mas estrecha. */
   .pagina-clara .banner-pagina--hero .bp-velo { background: rgba(8, 6, 4, .14); }
 }
 
-/* En el telefono el marco iba pegado al texto —11px de aire— y dejaba
-   vacia media plancha de madera por encima y por debajo. Ahora se abre
-   hacia ese vacio: 2,6rem de aire arriba y abajo, y a los lados el texto
-   entra un poco (`--bp-lado`) para que las lineas tampoco lo rocen, con los
-   filos donde estaban, a 12px del canto de la pantalla. El relleno del hero
-   cuenta ese aire, asi que el marco nunca se sale de la madera y queda a la
-   misma distancia de la barra que del canto de abajo. */
 @media (max-width: 767.98px) {
   .pagina-clara .banner-pagina--hero:has(.bp-marco) {
     padding: calc(var(--alto-navbar-arriba) + 3.9rem) 0 3.9rem;
@@ -680,10 +395,6 @@
 }
 .pagina-clara h2, .pagina-clara h3, .pagina-clara h4 { color: var(--nos-negro); }
 
-/* El boton de las paginas claras es el mismo que el del resto: lo viste el
-   16 entero. Aqui llevaba `border: 1px solid var(--nos-negro)`, y ese atajo
-   borraba el `border-image` dorado — de ahi que en las cuatro subpaginas el
-   filo saliera negro y el hover se llenara de negro en vez de oro. */
 .pagina-clara .btn::before { inset: 4px; border-radius: 0; }
 
 .pagina-clara .tarjeta-tratamiento-compacta,
@@ -752,8 +463,6 @@
 .pagina-clara .enlace-card:hover,
 .pagina-clara .tarjeta-tratamiento-compacta .enlace-card:hover { color: var(--nos-negro); }
 
-
-
 .pagina-clara .banda-cta {
   min-height: 0;
   border-bottom: 0;
@@ -782,8 +491,6 @@
 
 .pagina-clara .footer { border-top: 1px solid rgba(10, 10, 10, .1); }
 
-/* Las piezas oscuras que viven dentro de una pagina clara vuelven a la
-   paleta de fondo negro: la barra, el menu y el pie. */
 .pagina-clara .footer,
 .pagina-clara .navbar-collapse {
   --gradiente-oro: linear-gradient(100deg, var(--gold-700) 0%, var(--gold-100) 32%, var(--gold-500) 64%, var(--gold-200) 100%);
@@ -815,9 +522,6 @@
 .pagina-clara .footer h3,
 .pagina-clara .footer h4,
 
-/* El boton de la banda ya no se pinta aqui: hay uno solo en todo el sitio y
-   vive en 16-oro.css. */
-
 .pagina-tratamientos .bloque-tratamiento {
   border-bottom: 0;
 }
@@ -828,8 +532,6 @@
 @media (min-width: 992px) {
   .pagina-tratamientos .seccion .row.justify-content-center { justify-content: flex-start !important; }
   .pagina-tratamientos .seccion .col-lg-8 { width: 58%; }
-  /* La deriva de contenedores que habia aqui —un ancho y un margen por cada
-     especialidad— la sustituye la pantalla completa del 25. */
   .pagina-tratamientos .bloque-tratamiento > .container::before {
     content: '';
     display: block;
@@ -978,8 +680,6 @@
       rgba(255, 255, 255, .34) 100%);
 }
 
-/* Las secciones claras no pintan fondo: lo que se ve por debajo es el
-   marmol. Si aqui se le devuelve un color, se tapa la piedra. */
 .pagina-faq,
 .pagina-galeria { background: #F2F1EF; }
 
@@ -994,9 +694,6 @@
 .pagina-galeria .banda-cta,
 .pagina-tratamientos .banda-cta { background: transparent; }
 
-/* El contenido de FAQ va mas ancho, pero la barra y el pie no: escrito para
-   todo `.container` de la pagina los ensanchaba a ellos tambien, y en FAQ el
-   logo de la barra salia 60px mas a la izquierda que en las otras cuatro. */
 .pagina-faq :is(.banner-pagina, .seccion, .banda-cta) > .container { max-width: 1480px; }
 
 @media (min-width: 992px) {
@@ -1007,10 +704,6 @@
     margin-left: clamp(2rem, 7vw, 8rem);
   }
 }
-/* Cada bloque de preguntas se abre con la misma franja de piedra que los
-   filtros de la galeria: es la misma pieza haciendo el mismo trabajo, marcar
-   donde empieza un apartado. Antes era un rotulo dorado con una linea que se
-   iba apagando; sobre el marmol blanco se leia poco y no separaba nada. */
 .pagina-faq .faq-categoria-titulo {
   position: relative;
   isolation: isolate;
@@ -1037,40 +730,12 @@
   text-transform: uppercase;
 }
 
-/* Las preguntas van sueltas sobre el marmol, y la abierta en su tarjeta.
-
-   Fueron tarjetas negras, una por pregunta, debajo de las franjas de piedra
-   negra de cada apartado: doce recuadros oscuros seguidos, y la franja, que
-   es la que dice donde empieza un apartado, se confundia con lo que
-   encabeza.
-
-   Cerrada, la pregunta va sobre el marmol, en tinta y no en oro, que es
-   texto de leer, y la separa de la siguiente una raya fina de oro hondo
-   metida al margen del texto. Abierta, se vuelve una tarjeta que flota, con
-   filo de oro y una sombra larga y blanda, calida y no gris: arriba la
-   pregunta, que se pinta de negro con la letra en blanco, y debajo el cajon
-   blanco de la respuesta, separados por un hilo de oro que se dibuja de
-   izquierda a derecha. La respuesta se lee siempre sobre blanco: sobre la
-   veta gris del marmol se leia a trozos, que es por lo que en su dia las
-   preguntas se metieron en recuadro.
-
-   El texto no se mueve de lado al abrirse: el margen de dentro (--faq-x) es
-   el mismo cerrada y abierta, y es la tarjeta la que aparece alrededor. Lo
-   que crece es el aire de arriba y de abajo, y el margen de fuera, para que
-   la tarjeta no toque las preguntas de al lado. La raya de encima de la
-   abierta, la de la pregunta de antes, se apaga con ella: quedaba suelta a
-   un dedo del filo de oro.
-
-   Cantos vivos, como toda pieza del sitio: el 12 le pone a la tarjeta el
-   radio de --radio-sm con !important, y la unica forma de ganarle sin otro
-   !important es dejar esa variable a cero aqui. */
 .pagina-clara .acordeon-faq {
   --faq-x: clamp(1.15rem, 2.6vw, 2.2rem);
   --faq-mas: 22px;
   --faq-negro: #0C0B09;
   --faq-curva: cubic-bezier(.22, 1, .36, 1);
   --faq-tiempo: .5s;
-  /* La de la cortina de oro: la misma de las fotos de Especialidades. */
   --faq-cortina: cubic-bezier(.77, 0, .18, 1);
 }
 .pagina-clara .acordeon-faq .accordion-item {
@@ -1087,7 +752,6 @@
     background-color var(--faq-tiempo) var(--faq-curva),
     box-shadow var(--faq-tiempo) var(--faq-curva);
 }
-/* La raya entre una pregunta y la siguiente. */
 .pagina-clara .acordeon-faq .accordion-item::after {
   content: '';
   position: absolute;
@@ -1099,10 +763,6 @@
   transition: opacity .3s ease;
   pointer-events: none;
 }
-/* El filo de oro de la tarjeta. Va en pseudo y no en el borde de la pieza
-   porque un border-image no se funde, aparece de golpe; asi entra a la vez
-   que el blanco y la sombra. Va por encima de todo lo de dentro, la
-   cortina incluida. */
 .pagina-clara .acordeon-faq .accordion-item::before {
   content: '';
   position: absolute;
@@ -1122,19 +782,11 @@
     0 34px 70px -30px rgba(58, 42, 12, .34),
     0 12px 28px -16px rgba(58, 42, 12, .18);
 }
-/* La primera ya tiene encima el aire de la franja. */
 .pagina-clara .acordeon-faq .accordion-item:first-child:has(.accordion-button:not(.collapsed)) { margin-top: 0; }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::before { opacity: 1; }
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed))::after,
 .pagina-clara .acordeon-faq .accordion-item:has(+ .accordion-item .accordion-button:not(.collapsed))::after { opacity: 0; }
 
-/* Pregunta y respuesta van de un punto largo por encima del rem: eran las
-   dos unicas piezas de texto de leer del sitio que bajaban de el (.95), y en
-   una pagina que es solo texto eso se nota.
-
-   El hilo de oro del pie de la pregunta es una capa de fondo que esta
-   siempre y mide cero de ancho: al abrir crece hasta el otro lado con la
-   curva de la cortina, y al cerrar se recoge. */
 .pagina-clara .acordeon-faq .accordion-button,
 .pagina-clara .acordeon-faq .accordion-button:not(.collapsed) {
   --faq-y: clamp(1.1rem, 1.8vw, 1.45rem);
@@ -1168,20 +820,6 @@
 }
 .pagina-clara .acordeon-faq .accordion-button:not(.collapsed):focus-visible { outline-color: var(--oro-marca); }
 
-/* El mas que abre y el menos que cierra. Fue una flecha dentro de un aro, y
-   no gusto. Va en el mismo oro que todos los detalles de oro del sitio: el
-   degradado, recortado a la forma del signo como se recortan contra la
-   letra los rotulos. El degradado es el fondo de la pieza entera y los dos
-   trazos son la mascara, asi que el brillo corre de punta a punta del signo
-   y no de cada trazo por separado. Hondo sobre el marmol, y vivo sobre el
-   negro de la abierta, que es la regla del oro en todo el sitio.
-
-   Al abrir, la pieza da media vuelta y el trazo de pie se encoge hasta
-   desaparecer, y queda el menos. Va en la fila y no suelta: asi queda a la
-   altura del centro del texto, y en el telefono, con la pregunta en dos
-   renglones, entre los dos. Medidas en pixeles enteros, y trazo de 2px: con
-   medios pixeles el trazo sale borroso en una pantalla normal. El 12 pone
-   en el ::before un punto en la abierta: aqui no va. */
 .pagina-clara .acordeon-faq .accordion-button::before { display: none; }
 .pagina-clara .acordeon-faq .accordion-button::after {
   content: '';
@@ -1211,22 +849,6 @@
   transform: rotate(180deg);
 }
 
-/* Al pasar por una pregunta cerrada, se encuadra en oro. Son las dos
-   escuadras del marco de los heros de Galeria y FAQ (el .bp-marco, mas
-   arriba en esta hoja): arriba a la izquierda y abajo a la derecha, cada
-   una con su tramo tendido y su tramo de pie, y dos lados abiertos. Se
-   dibujan desde su esquina con la curva en ese de aquel marco, que se lee
-   como un trazo, y al salir se recogen hacia ella. Van en el degradado de
-   oro de la piedra clara (--oro-vivo-degradado, que en una pagina clara es
-   el hondo), y cada tramo es una capa de fondo con el degradado, como
-   alli: un borde solo admite color plano.
-
-   A la vez, el mas da un cuarto de vuelta (al abrir sigue girando hasta
-   quedarse en menos), y las dos rayas que tocan la pregunta, la suya y la
-   de la de encima, se apagan: con ellas el encuadre quedaba cruzado por un
-   hilo.
-
-   Lo mismo con el teclado, al llegar a la pregunta con el tabulador. */
 .pagina-clara .acordeon-faq .accordion-header { position: relative; }
 .pagina-clara .acordeon-faq .accordion-header::before,
 .pagina-clara .acordeon-faq .accordion-header::after {
@@ -1266,7 +888,6 @@
   .pagina-clara .acordeon-faq .accordion-item:has(+ .accordion-item > .accordion-header .accordion-button.collapsed:hover)::after { opacity: 0; }
 }
 
-/* El cajon de la respuesta. */
 .pagina-clara .acordeon-faq .accordion-collapse {
   position: relative;
   z-index: 0;
@@ -1286,9 +907,6 @@
 .pagina-clara .acordeon-faq .accordion-item:has(.accordion-button:not(.collapsed)) .accordion-body {
   opacity: 1;
 }
-/* El telefono de la respuesta de citas es un enlace: con los detectores de
-   Safari apagados, sin el no se podria tocar para llamar. En tinta con el
-   subrayado en oro, que es un enlace y no texto de leer. */
 .pagina-clara .acordeon-faq .accordion-body a {
   color: #111111;
   font-weight: 400;
@@ -1296,33 +914,8 @@
   text-decoration-color: var(--oro-hondo);
   text-underline-offset: .22em;
 }
-/* Los numeros, enteros: con guiones el navegador los partia por ellos al
-   final del renglon (099-811- / 3383). */
 .pagina-clara .acordeon-faq .accordion-body a[href^="tel:"] { white-space: nowrap; }
 
-/* ---------------------------------------------------------------------------
-   LA RESPUESTA ENTRA DETRAS DE UNA CORTINA DE ORO, la misma de las fotos
-   de Especialidades (tz-cortina en el 30): mientras el cajon se despliega,
-   una lamina de oro de marca entra desde la izquierda y lo tapa entero, se
-   queda un instante y sale por la derecha, y detras queda la respuesta, que
-   se asienta. Misma curva y mismo tiempo que alli.
-
-   La respuesta va recortada hasta que la cortina la tapa: sin eso se veia
-   el texto antes de que llegara el oro. Todo son animaciones y no
-   transiciones a proposito: el cajon cerrado esta en display: none, y un
-   elemento que sale de ahi no tiene estado de antes, asi que una transicion
-   no corre y aparecia de golpe. Rellenan solo hacia atras (backwards), como
-   las de Especialidades: al acabar se sueltan y lo que queda lo pone la
-   hoja.
-
-   Va atada a que el bloque este a la vista (.visible, de revelados.js),
-   como las fotos: la primera pregunta viene abierta, y su cortina se veria
-   gastada al cargar la pagina en vez de al llegar a ella. Y como alli,
-   vuelve a correr cada vez que el bloque vuelve a entrar en pantalla.
-
-   Al cerrar no hay cortina: la respuesta se apaga en un momento, antes de
-   que el cajon se recoja.
-   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   .pagina-clara .acordeon-faq .accordion-collapse::before {
     content: '';
@@ -1369,8 +962,6 @@
   to   { opacity: 0; transform: translateY(-.35rem); }
 }
 
-/* El despliegue es el de Bootstrap, con la curva y el tiempo de la tarjeta:
-   su guion lee la duracion de aqui para saber cuando ha terminado. */
 .pagina-clara .acordeon-faq .collapsing {
   transition: height var(--faq-tiempo) var(--faq-curva);
 }
@@ -1393,16 +984,6 @@
 
 .pagina-galeria .seccion > .container { max-width: 1480px; }
 
-/* La galeria va en cuatro columnas. Esto era una mamposteria de `columns`
-   con las fotos de siete alturas distintas, y con trece fotos el repartidor
-   de Chrome las dejaba 4/4/4/1: un hueco del tamano de una columna a la
-   derecha. Una rejilla de verdad llena las filas siempre, y para que las
-   filas cuadren todas las fotos van al mismo cuadrado —que ademas es el
-   formato nativo de los archivos (600x600), asi que no se recorta nada—.
-
-   Ojo con las clases de Bootstrap del HTML (`col-6 col-md-4 col-lg-3`): en
-   una rejilla su `width` mide sobre la celda, no sobre la fila, y encogeria
-   cada foto a un cuarto de su hueco. Por eso se anulan aqui. */
 @media (min-width: 768px) {
   .pagina-galeria .row.g-3 {
     display: grid;
@@ -1430,8 +1011,6 @@
   box-shadow: none;
   overflow: hidden;
 }
-/* Las fotos van siempre a color. Lo que dice que se abren son sus esquinas de
-   oro (abajo), y al pasar el raton el puntero «Ver» del visor. */
 .pagina-clara .galeria-item img {
   width: 100%;
   object-fit: cover;
@@ -1439,18 +1018,6 @@
   transition: transform 1.1s cubic-bezier(.22, 1, .36, 1);
 }
 
-/* LAS ESQUINAS DE ORO. Cada foto va enmarcada por sus cuatro esquinas, en
-   escuadras de 2px del oro de la marca, un poco hacia dentro del canto. Es
-   lo que dice que la foto se abre, sin tapar nada de ella: antes lo decia un
-   velo blanco con una lupa en medio que solo salia al pasar el raton, y en
-   el telefono, donde no hay raton, no lo decia nada.
-
-   Al pasar el raton las esquinas se cierran un poco hacia el centro y crecen,
-   la foto se acerca y el puntero se vuelve el «Ver» del visor (el 33).
-
-   Las ocho rayas son ocho capas de fondo de una sola pieza, el `span` que
-   antes era el velo; y la sombra, muy corta, es para que el oro no se pierda
-   cuando la esquina cae sobre una pared clara. */
 .pagina-clara .galeria-overlay {
   inset: clamp(8px, 1vw, 12px);
   display: block;
@@ -1491,19 +1058,6 @@
   .pagina-clara .galeria-overlay { transition: none; }
 }
 
-/* ---------------------------------------------------------------------------
-   La franja de piedra.
-
-   Un rectangulo de marmol negro con el filo de oro, para las tiras de
-   navegacion que viven sobre el marmol blanco: los filtros de la galeria y
-   los rotulos de cada bloque de preguntas. La piedra va en un `<img>` y no en
-   un `url()` de CSS a proposito: es como el sitio carga todas sus piedras, y
-   es lo unico que el sellador de cache sabe estampar.
-
-   El filo va en pseudo y no en `border` del propio elemento: un borde real
-   entraria en la caja y movria el contenido de sitio cada vez que se
-   recalcula, y ademas se lo comeria el `overflow` de la piedra.
-   --------------------------------------------------------------------------- */
 .franja-piedra {
   position: absolute;
   inset: 0;
@@ -1545,33 +1099,6 @@
   border: 0;
 }
 
-/* La misma piedra que los filtros de la Galeria, pero esto no es una tira de
-   navegacion: es el indice de la seccion. Diez casillas, y en cada una el
-   nombre de la especialidad, grande y en el centro, con su numero —el mismo
-   01..10 que preside su bloque mas abajo— pequeno en la esquina. Asi la
-   franja dice de una lo que es: aqui van diez, esta es la tercera, y
-   tocandola se llega a ella.
-
-   Manda el nombre, que es lo que se busca. Va en la Bodoni de los titulares
-   y como se escribe, no en versales: en versales espaciadas y a .68rem
-   «Odontopediatria» apenas cabia en media pantalla, y asi se lee de lejos.
-   El numero es un sello en la esquina, en el oro de marca, a media luz.
-
-   Fue una tabla de lineas con el numero delante del nombre, y al pasar por
-   encima la casilla se llenaba de un velo de oro. En el telefono ese velo se
-   quedaba puesto en la que se habia tocado —en una pantalla tactil el
-   `:hover` dura hasta el siguiente toque— y al volver al indice se veia una
-   mancha parda. Despues llevo el numero grande y con un halo detras, y
-   tampoco: la clinica lo quiere asi (25-9-2026), el numero delicado y en la
-   esquina, que al pasar por encima solo se encienda por dentro.
-
-   El numero sale de un contador de CSS y no del HTML: la numeracion de los
-   bloques ya la lleva el documento, y duplicarla a mano seria pedir que las
-   dos listas se despeguen.
-
-   Columnas fijas que dividen a diez —cinco de dos, y dos filas de cinco en
-   pantalla ancha— y por eso se sabe cual abre fila, que es lo unico que
-   hace falta para que ninguna juntura quede colgando. */
 .pagina-clara .franja-nav {
   --marco-aire: clamp(.35rem, .8vw, .55rem);
   display: grid;
@@ -1582,10 +1109,6 @@
   margin-top: clamp(1.6rem, 3.2vw, 2.8rem);
   margin-bottom: clamp(.5rem, 1vw, .9rem);
 }
-/* El marco es de dos filos, como los de cuadro: el de fuera es el del
-   degradado (el `::after` de arriba, con los filtros y las preguntas) y este
-   de dentro, mas tenue, corre justo por donde acaban las casillas, asi que
-   las junturas mueren en el en vez de quedarse cortas. */
 .pagina-clara .franja-nav::before {
   content: '';
   position: absolute;
@@ -1594,16 +1117,6 @@
   pointer-events: none;
   border: 1px solid rgba(212, 175, 55, .42);
 }
-/* Cada casilla lleva dibujado su propio marco, recogido: cuatro filos de un
-   pixel pintados como fondo —el degradado de marca en cada uno— que miden
-   cero en reposo. Al pasar por encima, o al tocarla, crecen hasta cerrarse:
-   el de arriba desde la izquierda, el de abajo desde la derecha, los lados
-   en sentido contrario, como un trazo que da la vuelta. Van de fondo y no en
-   pseudo porque el `::before` es el numero, y desde el borde de la caja
-   (`border-box`) para que caigan encima de las junturas y no al lado.
-
-   El relleno de arriba es mas alto que el de abajo: arriba vive el numero,
-   y el nombre se centra en lo que queda. */
 .pagina-clara .franja-nav a {
   position: relative;
   z-index: 1;
@@ -1629,10 +1142,6 @@
   -webkit-tap-highlight-color: transparent;
   transition: color .35s ease, background-size .5s cubic-bezier(.22, 1, .36, 1);
 }
-/* El numero, en la esquina de arriba a la izquierda: pequeno, en la letra de
-   los titulares y en el oro de marca recortado contra la cifra, a media luz.
-   Al pasar por encima se enciende, y solo por dentro: sube a entero y sin
-   sombra ni halo alrededor. */
 .pagina-clara .franja-nav a::before {
   counter-increment: esp;
   content: counter(esp, decimal-leading-zero);
@@ -1659,14 +1168,10 @@
 }
 .pagina-clara .franja-nav a:hover::before,
 .pagina-clara .franja-nav a:focus-visible::before { opacity: 1; }
-/* Sin movimiento, el marco aparece entero en vez de dibujarse. */
 @media (prefers-reduced-motion: reduce) {
   .pagina-clara .franja-nav a { transition: color .35s ease; }
 }
 
-/* Las junturas: de dos en dos, la vertical en los pares y la horizontal de
-   la segunda fila para abajo; de cinco en cinco, la vertical en todas menos
-   la que abre fila y la horizontal en la segunda. */
 @media (max-width: 991.98px) {
   .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 1px solid rgba(212, 175, 55, .34); }
   .pagina-clara .franja-nav a:nth-of-type(n + 3) { border-top: 1px solid rgba(212, 175, 55, .3); }
@@ -1676,9 +1181,6 @@
   .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .34); }
   .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .3); }
 }
-/* Por debajo de 360 a las dos columnas les quedan menos de 120px por casilla,
-   y «Odontopediatria», que es una sola palabra, no entraba: un punto menos
-   de letra y menos relleno. */
 @media (max-width: 359.98px) {
   .pagina-clara .franja-nav a {
     padding-inline: .4rem;
@@ -1722,24 +1224,6 @@
 .pagina-clara .item-galeria-grande { transform: none; }
 .pagina-clara .item-galeria-grande.mostrar.aparecer { transform: none; }
 
-/* ---------------------------------------------------------------------------
-   El umbral: la palabra de la seccion en plata sobre negro, cruzada por
-   franjas de oro, y el negro que se abre en lamas hacia la derecha.
-
-   Lo llevan las cuatro paginas interiores —Nosotros, Tratamientos, Galeria y
-   FAQ—, cada una con su palabra. La portada no: alli ese trabajo ya lo hace
-   el video de bienvenida.
-
-   La animacion va en CSS puro y no en JS a proposito. Si dependiera de un
-   script y el script fallara, la pagina se quedaria tapada de negro para
-   siempre; asi lo peor que puede pasar es que no se vea el umbral.
-
-   Quien decide si sale es un guion de tres lineas en el `<head>` de cada
-   pagina, y solo puede APAGARLO —nunca encenderlo—, que es lo que mantiene
-   en pie esa garantia: si el guion no corre, el umbral sale y se va solo.
-   Sale cuando se pincha la seccion entera en el menu; si se pincha un
-   apartado suelto —que llega con ancla— se lo salta, porque ahi no vienes a
-   entrar en la seccion, vienes a un sitio concreto de ella. */
 .ns-umbral {
   position: fixed;
   inset: 0;
@@ -1749,38 +1233,10 @@
   justify-items: center;
   gap: clamp(.9rem, 2vw, 1.5rem);
   overflow: hidden;
-  /* El reloj del umbral, y esta es la cuenta entera:
-       0 a 1,3s   seis franjas de oro cruzan la pantalla de izquierda a
-                  derecha, escalonadas, y la ancha es la que trae la palabra:
-                  la palabra sale a su paso (.36s) y el filo detras (.5s).
-       1,02s      un brillo pasa por la plata de la palabra, de izquierda a
-                  derecha, en .8s: ya sin franjas, sobre negro limpio.
-       1,85s      la palabra y el filo se van hacia la derecha, en .34s.
-       1,9 a 2,8s el negro, que son cinco lamas, se desliza hacia la derecha
-                  de arriba abajo, cada lama con su canto de oro; la pagina
-                  se descubre en escalera, y la primera lama ya ha dejado ver
-                  la barra y el titular cuando la ultima arranca.
-     La palabra se queda puesta un segundo y cuarto largo. Se iba a los .96s,
-     y con lo que tarda en entrar eso era medio segundo de palabra quieta: la
-     clinica, en su telefono, no llegaba a leer a que seccion entraba. Todo
-     es `transform` y `opacity` de piezas con capa propia, asi que el
-     compositor lo mueve aunque la pagina siga cargando por debajo. */
   animation: ns-umbral-fin 0s linear 2.8s both;
 }
 @keyframes ns-umbral-fin { to { visibility: hidden; } }
 
-/* Las lamas: el negro del umbral son cinco franjas horizontales que se van
-   deslizando hacia la derecha, de arriba abajo, cada una con un canto de oro
-   que brilla mientras corre. Asi la pagina se descubre en escalera y el oro
-   barre la pantalla de izquierda a derecha, que es el sentido en que se lee.
-   Cada lama es una capa propia (su animacion ya se la da, puesta desde el
-   principio) y solo se mueve con `transform`. Solapan 2px entre ellas: con
-   la pantalla partida en quintos alguna cae a medio pixel y, al moverlas,
-   asomaba una raya de pagina entre dos. Salen hasta 40px mas alla del canto
-   derecho, que es lo que mide el brillo de su filo. Salen solas, por reloj.
-
-   La portada no las lleva: alli la bienvenida es el video del logo, que se
-   va como siempre, desvaneciendose. */
 .lamas-oro {
   position: absolute;
   inset: 0;
@@ -1792,9 +1248,6 @@
   width: 100%;
   top: calc(var(--n) * 20% - 1px);
   height: calc(20% + 2px);
-  /* Negro puro, y no #050505: el brillo de la palabra va en `overlay`, que
-     deja el negro puro como esta pero a un negro con algo de luz lo aclara,
-     y cruzaba la pantalla como una mancha gris. */
   background: #000;
 }
 .lamas-oro > i:nth-child(1) { --n: 0; }
@@ -1829,15 +1282,6 @@
   animation: lama-canto .68s linear calc(1.9s + var(--n) * .055s) both;
 }
 
-/* Las franjas: seis bandas de oro inclinadas que cruzan de canto a canto,
-   de distinto grueso y distinta luz —cuatro hilos, una media y la ancha,
-   que es la que lleva el brillo del degradado de marca—, cada una con su
-   espera y su velocidad, para que pasen como un solo gesto y no en fila.
-   Van por delante del negro y por detras de la palabra: cuando la ancha
-   pasa por el centro, el oro de la palabra se enciende sobre el suyo. La
-   inclinacion va hacia delante, como lo que corre. Salen y acaban fuera de
-   la pantalla: 22vh de margen cubren lo que la inclinacion saca por arriba
-   y por abajo (12% de sobra a cada lado, por 0,25 de pendiente). */
 .ns-umbral__franjas {
   position: absolute;
   inset: 0;
@@ -1870,19 +1314,6 @@
   from { transform: translate3d(calc(-100% - 22vh), 0, 0) skewX(-14deg); }
   to   { transform: translate3d(calc(100vw + 22vh), 0, 0) skewX(-14deg); }
 }
-/* El fondo va negro y nada mas. Llevaba un halo de oro encima —un radial al
-   12% saliendo del centro— y sobre negro puro eso no se lee como luz, se lee
-   como una mancha.
-
-   La palabra va en PLATA, y en negrita (700). Iba en oro, fina, y con las
-   franjas y los cantos de las lamas tambien en oro era oro sobre oro: la
-   palabra, que es lo unico que hay que leer, se perdia entre lo que la
-   adorna. En plata se separa de las franjas en vez de fundirse con ellas.
-   El degradado es de metal cepillado —bandas claras y oscuras alternas, en
-   diagonal como las franjas— y no el de plata de las cabeceras del pie, que
-   en una palabra de este tamano se ve como un gris liso con un lado claro.
-   Los tonos medios van algo bajos a proposito: son los que el brillo lleva a
-   blanco, y con una plata ya casi blanca el brillo pasaba sin verse. */
 .ns-umbral__palabra {
   margin: 0;
   font-family: var(--fuente-titulo);
@@ -1893,11 +1324,6 @@
   line-height: 1.14;
   letter-spacing: .14em;
   text-transform: uppercase;
-  /* Centrada y equilibrada. «Preguntas frecuentes» es la unica de las cuatro
-     que no cabe en una linea, y sin esto la segunda quedaba pegada a la
-     izquierda debajo de la primera: la caja iba centrada por la rejilla, pero
-     el texto de dentro no. El `balance` reparte las dos lineas en vez de
-     llenar la primera hasta el borde. */
   text-align: center;
   text-wrap: balance;
   color: #D8DADD;
@@ -1909,31 +1335,15 @@
   -webkit-text-fill-color: transparent;
   position: relative;
   z-index: 2;
-  /* Ya no entra abriendo el interletrado: eso es maquetar la palabra en
-     cada fotograma, justo mientras la pagina se esta cargando debajo, y ahi
-     el hilo principal no da abasto. Llega deslizandose desde la izquierda,
-     con las franjas, y se va hacia la derecha, con las lamas. */
   animation: ns-umbral-entra .8s cubic-bezier(.16, 1, .3, 1) .36s both,
              ns-umbral-va .34s cubic-bezier(.5, 0, .75, 0) 1.85s forwards;
 }
-/* Dos palabras largas piden un cuerpo menor que una sola: a 8,5vw
-   «FRECUENTES» sola ya medía casi el ancho de la ventana, y con el
-   interletrado de .14em se salia. */
 .pagina-faq .ns-umbral__palabra { font-size: clamp(1.6rem, 6.2vw, 4.4rem); }
-/* «Especialidades» es la palabra mas larga de las cuatro y va sola en su
-   linea: a 8,5vw se salia de la ventana en cualquier telefono —a 390 la
-   ultima letra quedaba cortada en el canto— y en escritorio desbordaba su
-   caja y salia corrida a la derecha. Va a menos cuerpo y sin el tope de 20ch
-   ni el relleno: para una sola palabra el tope solo sirve para que la caja
-   se quede corta y el texto se salga por un lado. Sin el, la caja crece con
-   la palabra por los dos lados igual, tambien mientras entra con las letras
-   abiertas, que es cuando mas mide. */
 .pagina-tratamientos .ns-umbral__palabra {
   max-width: 96vw;
   padding-inline: 0;
   font-size: clamp(1.4rem, 6.6vw, 4.8rem);
 }
-/* El filo, en plata con la palabra: se apaga hacia las puntas. */
 .ns-umbral__filo {
   position: relative;
   z-index: 2;
@@ -1945,15 +1355,6 @@
   animation: ns-umbral-filo .7s cubic-bezier(.65, 0, .35, 1) .5s both,
              ns-umbral-va .34s cubic-bezier(.5, 0, .75, 0) 1.85s forwards;
 }
-/* El brillo de la plata: una banda de luz inclinada, como las franjas, que
-   cruza la pantalla una vez con la palabra ya quieta. Va en `overlay`, y
-   con eso solo se ve donde hay metal: sobre el negro de las lamas el
-   `overlay` deja el negro como estaba (lo multiplica), y sobre la plata la
-   lleva a blanco. Asi no hace falta recortarla a la forma de las letras,
-   que es lo que obligaria a repintar la palabra en cada fotograma: la banda
-   solo se mueve con `transform`. Va por encima de todo lo del umbral (el
-   `z-index` 3), y el umbral, que es un contexto de apilamiento, no deja que
-   la mezcla llegue a la pagina de debajo. */
 .ns-umbral::after {
   content: "";
   position: absolute;
@@ -1968,8 +1369,6 @@
               rgba(255, 255, 255, .9) 55%, rgba(255, 255, 255, 0) 100%);
   mix-blend-mode: overlay;
   transform: translate3d(calc(-100% - 22vh), 0, 0) skewX(-14deg);
-  /* A velocidad pareja: con una curva de entrada y salida iba despacio por
-     los cantos, donde no hay nada, y cruzaba la palabra en un suspiro. */
   animation: franja-cruza .8s linear 1.02s both;
 }
 @keyframes ns-umbral-entra {

@@ -18,35 +18,20 @@
   background: var(--gradiente-oro);
 }
 
-/* `grid-auto-rows: 1fr` y no la altura automatica de la rejilla: en tres
-   columnas las tres tarjetas ya salian iguales porque comparten fila, pero
-   apiladas en el telefono cada una media lo que media su parrafo —348, 321 y
-   321— y se veian como tres tarjetas de tres tamanos. Con las filas iguales
-   las tres miden lo que la mas alta en cualquier reparto. */
 .pz-triptico {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: 1fr;
   gap: clamp(.9rem, 1.6vw, 1.5rem);
 }
-/* El triptico ya no se sube sobre la portada: se separa de ella. */
 .pagina-tratamientos .pz-triptico { margin-top: clamp(1.8rem, 3.6vw, 3.4rem); }
 
-/* Las tres tarjetas iban sueltas, sin nada que dijera que son un grupo ni
-   por que estan ahi. La cabeza va centrada y no arrimada a la izquierda como
-   el resto de los rotulos de la pagina: encabeza tres columnas, no una. */
-/* Y con aire por arriba: la seccion no trae relleno propio —el triptico se
-   separaba de la portada con su margen— y cuando llego la cabeza se quedo
-   pegada al canto de la portada, con el recuadro del rotulo tocando la foto,
-   que parecia cortada por ahi. */
 .pz-triptico__cabeza {
   max-width: 46ch;
   margin-inline: auto;
   padding-top: clamp(2.4rem, 5vw, 4.4rem);
   text-align: center;
 }
-/* El rotulo lleva una linea que sale hacia la derecha y crece: centrado
-   quedaria colgando de un lado. Aqui se cae y manda el centrado. */
 .pz-triptico__cabeza .nos-rotulo { justify-content: center; }
 .pz-triptico__cabeza .nos-rotulo::after { content: none; }
 .pz-triptico__cabeza .nos-lead { margin-bottom: 0; }
@@ -60,15 +45,6 @@
   box-shadow: 0 24px 64px rgba(10, 10, 10, .12);
 }
 
-/* La foto pasa de 16/7 a 3/2. No es solo que se vea mas: las tres fotos que
-   entran aqui son 1200x800, 1000x750 y 800x552 —o sea 1.50, 1.33 y 1.45—, y
-   un marco de 1.50 las recorta casi nada, asi que las tres se ven completas,
-   al mismo tamano y por el centro. A 16/7 (2.29) se les cortaba mas de la
-   mitad del alto, y cada una por un sitio distinto.
-
-   En numeros: en una tarjeta de 399 de ancho la foto pasa de 174 a 266 de
-   alto, y la tarjeta entera de 393 a 485. Es la parte de "hacerlas medio
-   grandesitas" que se puede hacer sin tocar el cuerpo de letra. */
 .pz-tarjeta__foto {
   display: block;
   position: relative;
@@ -139,9 +115,6 @@
 
 @media (max-width: 991.98px) {
   .pz-triptico { grid-template-columns: 1fr; }
-  /* Apilada la tarjeta cruza todo el ancho, y a 3/2 la foto se comeria media
-     pantalla de alto ella sola. 16/9 es el mismo encuadre por el centro con
-     menos alto. */
   .pz-tarjeta__foto { aspect-ratio: 16 / 9; }
 }
 
@@ -200,12 +173,8 @@
   width: clamp(62px, 5.8vw, 84px);
   aspect-ratio: 1;
   margin-bottom: clamp(.9rem, 1.6vw, 1.25rem);
-  /* Dos grosores: el aro de fuera a 2px porque es lo que se ve de lejos —una
-     fila de cinco circulos— y el de dentro a 1px, que solo lo dobla. */
   border: 2px solid var(--nos-linea);
   border-radius: 50%;
-  /* El icono en el oro que le toque a la piedra de debajo: sobre el marmol de
-     Tratamientos el vivo se lavaba y el paso del proceso se quedaba sin oro. */
   color: var(--oro-plano, var(--nos-dorado));
   font-size: clamp(1.4rem, 2vw, 1.85rem);
 }
@@ -227,12 +196,6 @@
   text-transform: uppercase;
   color: var(--nos-negro);
 }
-/* El parrafo de cada paso cae sobre la foto de la recepcion, y ahi lo que se
-   pierde no es el contraste -esta medido, y sobra- sino el trazo: la 300 de
-   esta letra es un hilo, y un hilo sobre una textura con luces, cantos y
-   sombras se lee peor que un trazo normal sobre lo mismo. Va en la 400 y en
-   la tinta negra de los titulares, no en la gris del cuerpo. El resto de
-   medallones del sitio, sobre piedra lisa, se quedan como estaban. */
 .pz-medallon__texto {
   display: block;
   max-width: 26ch;
@@ -253,22 +216,6 @@
 .pagina-tratamientos .pz-intro .nos-ruta { margin-bottom: clamp(1.6rem, 3vw, 2.6rem); }
 .pagina-tratamientos .pz-intro .nos-lead { max-width: 22ch; }
 
-/* La bajada de Especialidades, en su placa.
-
-   Es el parrafo que explica de que va la pagina entera y estaba suelto sobre
-   el marmol, en gris fino, justo debajo de un titular de tres centimetros:
-   se leia como un pie de foto del titular y no como lo que es. La placa lo
-   separa y le da su sitio.
-
-   El cristal va claro y no negro como el del hero: aqui debajo no hay foto,
-   hay marmol, y el texto es de leer —gris sobre claro—. Un recuadro negro
-   obligaria a darle la vuelta al color de la letra y a encender un bloque
-   oscuro en mitad de la pagina clara. Asi que blanco, del 92% arriba al 80%
-   abajo, que aun deja asomar la veta, con el filo de oro de la casa y una
-   sombra muy baja.
-
-   `isolation` para que el `::before` de la placa —que va en z-index -1— se
-   quede detras del texto sin irse detras del marmol de la seccion. */
 .pagina-tratamientos .pz-intro .nos-parrafo {
   position: relative;
   isolation: isolate;
@@ -310,12 +257,6 @@
   .pz-seccion--cita .pz-cita { grid-template-columns: 1fr; align-items: start; }
 }
 
-/* El marco de oro desplazado, el mismo que llevan detras las fotos de cada
-   especialidad (el 30): del mismo tamano que la tarjeta, corrido arriba y a
-   la izquierda, asoma por esos dos lados. Solo se pinta lo que queda fuera
-   de la tarjeta —los dos lados enteros y los dos cabos que sobresalen de los
-   otros dos—, porque la tarjeta es negra al 90% y el resto del marco se
-   transparentaria por detras. */
 .pz-seccion--cita .pz-cita { --desfase: clamp(12px, 1.8vw, 22px); }
 .pz-seccion--cita .pz-cita::before {
   content: "";
@@ -333,7 +274,6 @@
   background-size: 100% 1px, 1px 100%, 1px var(--desfase), var(--desfase) 1px;
   opacity: .8;
 }
-/* Y se dibuja al entrar, tramo a tramo, como el del collage. */
 @media (prefers-reduced-motion: no-preference) {
   .pz-seccion--cita .pz-cita.revelar::before {
     background-size: 0 1px, 1px 0, 1px 0, 0 1px;
@@ -346,15 +286,6 @@
 
 .pagina-tratamientos .proceso .pz-medallones { margin-top: 0; }
 
-/* El recuadro que sostiene la seccion entera sobre la foto de la recepcion:
-   el rotulo, el titular y los cinco pasos. La cabecera se quedaba fuera, y
-   era justo la que competia con la foto.
-   Marmol negro translucido con filo de oro, la misma pieza que las tarjetas
-   de Nosotros y el panel de cada especialidad: dentro de el, el oro pequeno
-   se lee solo y el texto vuelve a la tinta clara. Por eso los nombres ya no
-   llevan cada uno su caja -eran cinco recuadros dentro de un recuadro- y por
-   eso el velo claro de la seccion pudo soltar esta banda: la foto se ve
-   entera alrededor del panel. */
 .pagina-tratamientos .proceso .pz-proceso__panel {
   --oro-vivo-degradado: var(--oro-marca-degradado);
   --oro-plano: var(--oro-marca);
@@ -366,7 +297,6 @@
   background: linear-gradient(180deg, rgba(8, 7, 6, .94) 0%, rgba(8, 7, 6, .88) 100%);
   box-shadow: 0 28px 64px rgba(4, 4, 4, .34);
 }
-/* El filo de oro de arriba, el de todas las piezas oscuras del sitio. */
 .pagina-tratamientos .proceso .pz-proceso__panel::before {
   content: "";
   position: absolute;
@@ -376,11 +306,6 @@
   opacity: .5;
   pointer-events: none;
 }
-/* La cabecera, ya dentro. El rotulo suelta su caja -el panel ya es una caja,
-   y una dentro de otra es lo que se veia saturado- y se sostiene solo: el oro
-   que le toca aqui es el vivo de la marca, que el panel declara arriba, y
-   detras solo hay marmol negro. Su filo se vuelve dorado por lo mismo: el que
-   traia era para piedra clara y aqui no se veria. */
 .pagina-tratamientos .proceso .pz-proceso__panel .nos-rotulo::after {
   background: linear-gradient(90deg, rgba(212, 175, 55, .42), transparent);
 }
@@ -392,23 +317,12 @@
   font-weight: 300;
   color: rgba(255, 255, 255, .76);
 }
-/* El aro del icono, sobre negro: filo de oro vivo y fondo de la propia piedra. */
 .pagina-tratamientos .proceso .pz-medallon__aro {
   border-color: rgba(212, 175, 55, .42);
   background: rgba(212, 175, 55, .08);
   box-shadow: none;
 }
 
-/* LAS RAYAS DE ORO DEL TELEFONO. Ahi los cinco pasos no caben en fila y se
-   apilan en dos columnas (una en los telefonos mas estrechos), y sin nada
-   entre fila y fila el panel se leia como un bloque de texto seguido. Una
-   raya bajo el titular y otra entre cada fila, que se dibujan desde el
-   centro al entrar y luego las recorre un brillo, despacio.
-
-   Cuantas columnas hay lo decide `auto-fit` (148px como minimo), asi que la
-   raya se pone con una consulta al ancho de la lista y no a la pantalla: con
-   dos columnas va delante del 3.º y del 5.º paso, cruzando las dos; con una,
-   delante de cada paso. 315.2px son dos columnas de 148 y su separacion. */
 @media (max-width: 767.98px) {
   .pagina-tratamientos .proceso .pz-medallones {
     position: relative;
@@ -432,7 +346,6 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
   }
-  /* Bajo el titular, a media distancia entre el y la primera fila. */
   .pagina-tratamientos .proceso .pz-medallones::before {
     top: -.75rem;
     width: 100%;

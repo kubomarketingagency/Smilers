@@ -38,8 +38,3 @@
   .btn::after, .btn::before { display: none; }
 }
 
-/* Aqui vivian .btn-naranja, .btn-turquesa, .btn-blanco, .btn-contorno,
-   .btn-fantasma, .btn-traslucido y .btn-sm-nav: siete botones distintos.
-   Ya no existen. Hay un solo boton en todo el sitio y lo pinta 16-oro.css;
-   dejarlos aqui solo servia para que un `border:` o un `:hover` con mas peso
-   se colara y volviera a partir el conjunto. */

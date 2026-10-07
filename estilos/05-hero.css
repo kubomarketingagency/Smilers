@@ -32,8 +32,6 @@
   object-fit: cover;
   object-position: center 30%;
   transform: scale(1);
-  /* Sin `brightness`: la foto entra como es. Lo que queda es el mismo
-     retoque suave que llevan los demas carruseles del sitio. */
   filter: contrast(1.02) saturate(1.06);
   animation: kenburns 6s ease-out forwards;
 }
@@ -63,25 +61,6 @@
   .carousel-item.active .hero-slide-img { animation: none; transform: none; }
 }
 
-/* El hero va practicamente a foto limpia: el duotono fuera y el velo en un
-   7%, que es un apoyo y no una tapa.
-
-   Encima de la cinta no hay texto que sostener —solo el logo, que trae su
-   dibujo hecho y su propia sombra—, asi que las dos capas que habia aqui
-   (.68 a .46 de velo, mas un lavado de plata en `overlay`) apagaban las
-   tomas de la clinica, que es lo que se vino a ver, y el duotono ademas
-   tenia el color cambiado sobre unas fotos que ya son de madera y oro.
-
-   Y el velo se queda en un 5%, casi nada: la cinta se ve tal cual. Llego a
-   estar en un 21% para sentar la foto y darle fondo al logo, pero el fondo
-   del logo lo pone ahora su recuadro (mas abajo), que pesa solo donde esta
-   la marca y deja la toma de la clinica entera alrededor.
-
-   Lo que el velo grande daba al logo se lo da ahora su sombra, tambien en el
-   telefono: `drop-shadow` sigue el contorno de la letra y del diente, asi
-   que apaga los pocos pixeles que hay detras y deja la foto entera
-   alrededor. Antes se caia en pantallas tactiles porque el velo ya cargaba
-   por ella; con un 7%, hace falta. */
 .hero-duotone { display: none; }
 
 .hero-overlay {
@@ -93,17 +72,6 @@
 
 .hero-contenido { position: relative; z-index: 1; padding: 140px 0 100px; }
 
-/* La marca es el logo de la clinica, dentro de un recuadro de negro
-   translucido con filo de oro. Con la cinta a foto limpia el logo quedaba
-   sobre lo que pasara por detras —lamparas encendidas, cristal, mampara
-   blanca— y el oro se confundia con el oro de la clinica. El recuadro le da
-   un suelo propio: negro al 50%, que asienta el logo y deja adivinar la
-   toma por detras.
-
-   El logo mide lo mismo que antes —58% de la ventana con tope de 820px, 84%
-   en el telefono— y el recuadro se suma por fuera: el ancho es el del logo
-   mas el aire de los dos lados. La sombra del logo se queda: sigue el
-   contorno del diente y de la letra, y lo despega del negro del recuadro. */
 .hero-titulo {
   --hl-logo: min(58vw, 820px);
   --hl-aire-x: clamp(1.1rem, 3.4vw, 3rem);
@@ -129,38 +97,6 @@
   .hero-titulo { --hl-logo: 84vw; --hl-aire-x: 4vw; --hl-aire-y: 5vw; }
 }
 
-/* EL MARCO DE ORO de la portada: las dos escuadras de los heros de Galeria y
-   FAQ (el .bp-marco del 15), aqui a pantalla entera. Arriba a la izquierda
-   y abajo a la derecha, cada una con su tramo tendido y su tramo de pie, y
-   dos lados abiertos; cada tramo es una capa de fondo con el degradado de
-   la marca.
-
-   Los tramos miden 2px (--hm-grosor), y 3px desde 1600 de ancho. Con uno el
-   marco se perdia en la foto: el tramo claro del degradado desaparecia
-   sobre el techo blanco, y en una pantalla grande las tiras de luz del techo
-   pesaban mas que el. Lo despegan de la foto dos sombras: un filo oscuro de
-   1px pegado al oro, que es lo que lo dibuja sobre lo claro (techo, lamparas,
-   el suelo de la recepcion), y la sombra suave de siempre, que lo asienta
-   sobre lo oscuro.
-
-   Va casi al canto de la pantalla (--hm-aire) para que la esquina de abajo
-   abrace el boton de WhatsApp en vez de cruzarlo: la raya de abajo pasa
-   11px por debajo del boton, que esta a 25px del suelo (22 en el telefono),
-   y la de la derecha por su costado. Arriba empieza donde acaba la barra,
-   y es la barra de arriba del todo (--alto-navbar-arriba, 75px): con la
-   encogida (62) el tramo de arriba se montaba en su filo de oro.
-
-   En el telefono el recuadro del logo ocupa casi el ancho (4vw a cada lado)
-   y los tramos de pie, a media pantalla, corrian a 4px de sus cantos, como
-   una raya doble. Alli miden el 22% del alto: acaban antes del recuadro
-   hasta en una pantalla de 548 de alto (un iPhone SE con la barra).
-
-   Se dibuja como aquel: cada escuadra desde su esquina, primero el tramo
-   tendido y luego el de pie. Espera a que se vaya el video de bienvenida
-   (hero.js pone .splash-fuera en el html); si ya se vio, arranca solo. Sin
-   animaciones esta puesto desde el principio, pero eso solo pasa si la
-   construccion vuelve a respetar el "reducir movimiento" del sistema (ver
-   RESPETAR_MENOS_MOVIMIENTO en herramientas/construir.js). */
 .hero-marco {
   --hm-aire: 14px;
   --hm-grosor: 2px;
@@ -222,12 +158,6 @@
   position: relative;
   height: 460vh;
 }
-/* Los pines de las escenas miden la pantalla grande (`lvh`: la que queda
-   con la barra del navegador escondida). En el telefono la barra aparece y
-   se esconde con el scroll: con `svh` el pin se quedaba corto y asomaba una
-   franja por debajo, y con `dvh` crecia y encogia a mitad del gesto y la
-   escena se deformaba. En `lvh` llena siempre la pantalla y no cambia; los
-   guiones miden lo mismo con `SmilersScroll.alto()` (planificador.js). */
 .hero-cine-pin {
   position: sticky;
   top: 0;
@@ -240,14 +170,9 @@
 .hero {
   position: absolute;
   inset: 0;
-  /* Y el pin mide la pantalla grande, asi que lo de dentro se queda en lo que
-     se ve con la barra del navegador fuera. Ver `--sobra-barra` en el 01. */
   bottom: var(--sobra-barra);
 }
 
-/* La fila entra por debajo de la barra fija. La barra es opaca y la fila le
-   pasaba por detras: los 62px que tapaba se comian la frente de los retratos,
-   que es donde la foto de estudio deja su aire. */
 .hero-etapa2 {
   position: absolute;
   inset: 0;
@@ -266,14 +191,6 @@
   overflow: hidden;
 }
 .hero-etapa2-col > img { display: block; }
-/* Las cuatro van a plena luz. Son de estudio, sobre el mismo marmol y con la
-   misma luz: puestas en fila se leen como una sola foto de grupo, y eso es lo
-   que apagaba el velo plano que llevaban encima -un negro al 35% sobre la
-   columna entera, mas un brillo al 78%-, puesto cuando las fotos eran de
-   archivo y cada una traia su fondo.
-
-   Al lema lo sostiene ahora una fundida que solo pesa abajo, donde estan las
-   batas negras: la cara y el marmol se quedan como en la foto. */
 .hero-etapa2-col img {
   width: 100%;
   height: 100%;
@@ -282,28 +199,7 @@
   filter: contrast(1.02) saturate(1.03);
   height: 100%;
 }
-/* La segunda del equipo lleva su encuadre corrido a la izquierda, y solo
-   ella. En su archivo los brazos cruzados llegan casi de canto a canto -su
-   silueta va de 6 a 433 de los 440-, asi que el hueco, que ensena 278 de
-   esos 440, le cortaba los dos hombros a la vez. El de la derecha cae
-   contra el canto de su columna y ahi el corte se lee como el marco; el de
-   la izquierda cae en la juntura con el companero de al lado, y ahi los dos
-   hombros negros se juntan en una sola mancha y parece que a ella le han
-   serrado el brazo.
-
-   Con el encuadre en 36% el hueco se corre 23px hacia su izquierda: en la
-   juntura vuelve a asomar el marmol y el hombro se cierra en su curva. La
-   cara se va un poco a la derecha del centro del hueco, que es lo que cuesta
-   y lo que le sienta bien: mira hacia ese lado, y el aire le queda delante.
-   Las otras tres no lo necesitan, y por eso no lo llevan. */
 .hero-etapa2-col:nth-child(2) img { --encuadre: 36%; }
-/* La fila cuadra porque lo hacen los archivos: las cuatro fotos estan
-   recortadas para que su linea de hombros caiga a la misma altura -400 px de
-   647 en todas- y con el mismo aspecto. Antes el cuadre se intentaba desde
-   aqui, moviendo cada retrato dentro de su hueco y corriendo su encuadre
-   lateral, y eso no podia salir bien en todas las pantallas: lo que
-   object-fit recorta depende del alto del hueco, asi que lo que cuadraba en
-   una ventana se descuadraba en otra mas baja. */
 .hero-etapa2-col::after {
   content: '';
   position: absolute;
@@ -315,9 +211,6 @@
               rgba(10, 8, 6, .55) 76%,
               rgba(10, 8, 6, .92) 100%);
 }
-/* El lema baja al pie de la fila. En el centro caia sobre las caras, que es
-   lo que hay que ver; abajo cae sobre las batas y sobre la parte pesada de la
-   fundida, que es donde se lee sin pedirle nada a la foto. */
 .hero-etapa2-tagline {
   position: absolute;
   inset: 0;
@@ -348,10 +241,6 @@
   .hero-cine { height: 380vh; }
 }
 
-/* Las dos filas llegan hasta la tableta de pie y no solo al telefono. En
-   vertical, cuatro columnas son tiras de 205px en las que cabe la cara y nada
-   mas -y a los de los cantos se les corta media cabeza-; en dos filas de dos
-   cada retrato recupera su ancho. */
 @media (max-width: 991.98px) {
   .hero-etapa2 {
     display: grid;
@@ -359,18 +248,7 @@
     grid-template-rows: 1fr 1fr;
   }
   .hero-etapa2-col { min-width: 0; min-height: 0; }
-  /* En dos filas de dos cada retrato llena su hueco, igual que en la fila de
-     cuatro: la linea de hombros ya viene cuadrada del archivo. */
   .hero-etapa2-col img { height: 100%; }
-  /* Con cuatro retratos en dos filas, al pie no hay sitio: abajo estan los
-     botones flotantes -el de subir acaba a 135px del suelo- y subiendo el
-     lema para esquivarlos cae sobre las caras de la fila de abajo. Va en la
-     juntura de las dos filas, que es el unico tramo sin ninguna cara: el
-     pecho de los de arriba y el aire de los de abajo.
-
-     Y ahi se lleva su propia banda. La fundida de cada columna pesa abajo,
-     donde estan las batas; en la mitad de la pantalla la piedra esta a plena
-     luz y la linea de oro se perderia sobre ella. */
   .hero-etapa2-tagline {
     align-items: center;
     padding-bottom: 0;

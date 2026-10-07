@@ -1,37 +1,3 @@
-/* ===========================================================================
-   El mosaico de cada especialidad (Tratamientos).
-
-   La mitad de la foto de cada especialidad lleva un collage de sus fotos,
-   cada una con su filo de oro, y la que se pulsa se abre en grande en el
-   visor (visor.js y el 33), con flechas para pasar a las otras de la misma
-   especialidad. Es el mismo visor que el de la Galeria.
-
-   LA CAJA TIENE SU PROPORCION Y NO SE ESTIRA. El primer collage se estiraba
-   a la columna, que en un portatil de 1440x900 es mas alta que ancha: la
-   foto de la clinica, que es apaisada, salia recortada en vertical y las
-   piezas se pisaban de mas. Ahora cada modelo dice su proporcion
-   (`--prop`, ancho entre alto) y la caja cabe entera en la columna: tan
-   ancha como la columna o tan alta como ella, lo que llegue antes. Asi cada
-   foto conserva casi la forma con la que se hizo, a cualquier tamano.
-
-   Los modelos, por numero y forma de las fotos:
-
-     - `--retrato`  el retrato del especialista, grande, en el lado de
-                    fuera, y la foto de la clinica delante, abajo, en el
-                    lado del texto, montada con paspartu. Lo que tapa es la
-                    franja de fuera del retrato, donde no hay nadie: cada
-                    foto corre su encuadre (`--fx`, `--fy`) para eso. Si
-                    lleva un segundo retrato, va pequeno en el hueco de
-                    arriba, sobre la foto de la clinica.
-     - `--escalera` dos apaisadas que bajan en escalera, la segunda
-                    montada sobre el pie de la primera (Odontologia General).
-     - `--triptico` el retrato alto a un lado y dos fotos apiladas al otro,
-                    en reja y sin pisarse (Cirugia Oral y Endodoncia).
-     - `--una`      una sola foto (Ortodoncia).
-
-   Detras de la foto principal va un marco de oro desplazado, que asoma por
-   dos de sus lados: es lo que ata el collage al oro del panel de al lado.
-   =========================================================================== */
 
 .tz-mosaico {
   --prop: 1.1;
@@ -43,8 +9,6 @@
   margin: 0 auto;
   aspect-ratio: var(--prop);
 }
-/* El paspartu es del color de lo que hay detras: crema sobre el marmol,
-   casi negro sobre la pizarra. */
 .bloque-tratamiento--piedra .tz-mosaico { --fondo-aro: #0E0C0A; }
 
 .tz-mosaico--retrato  { --prop: 1.1; }
@@ -67,14 +31,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* --- Las posiciones, en tanto por ciento de la caja ---------------------
-   `--m*` es el marco desplazado de detras. */
 .tz-mosaico--retrato                 { --mx: 32%; --my: 0%; --mw: 64%; --mh: 97%; }
 .tz-mosaico--retrato > :nth-child(1) { --x: 36%; --y: 3%;  --w: 64%; --h: 97%; }
 .tz-mosaico--retrato > :nth-child(2) { --x: 0%;  --y: 57%; --w: 50%; --h: 39%; }
-/* Con un segundo retrato (Armonizacion Orofacial) este ocupa el hueco de
-   arriba, en el lado del texto, y el marco pasa detras de el: detras del
-   principal, su canto izquierdo caia justo entre los dos retratos. */
 .tz-mosaico--retrato:has(> :nth-child(3)) { --mx: 0%; --my: 0%; --mw: 28%; --mh: 48%; }
 .tz-mosaico--retrato > :nth-child(3) { --x: 4%;  --y: 3%;  --w: 28%; --h: 48%; }
 
@@ -90,8 +49,6 @@
 .tz-mosaico--una                      { --mx: 0%;  --my: 0%;  --mw: 95%; --mh: 96%; }
 .tz-mosaico--una > :nth-child(1)      { --x: 5%;  --y: 4%;  --w: 95%; --h: 96%; }
 
-/* La que va montada encima lleva el paspartu —un aro del color del fondo,
-   que la despega de la de debajo sin sombra sobre sombra— y pesa mas. */
 .tz-mosaico--retrato > :nth-child(2),
 .tz-mosaico--escalera > :nth-child(2) {
   z-index: 2;
@@ -109,11 +66,6 @@
               filter .6s ease;
 }
 
-/* EL ORO. `::after` es el filo de 1px de cada foto; `.tz-mosaico::before`,
-   el marco desplazado de detras. Los dos con cuatro capas de fondo y no con
-   un `border`, para poder dibujarlos tramo a tramo al entrar. Van en oro
-   vivo aunque la seccion sea de marmol claro: el filo se apoya en la foto,
-   que es oscura, y el marco asoma poco. */
 .tz-mosaico::before,
 .tz-mosaico__pieza::after {
   content: '';
@@ -140,11 +92,6 @@
   opacity: .9;
 }
 
-/* Ampliar. Con raton no hace falta nada encima de la foto: al pasar por
-   ella el puntero se vuelve el visor «Ver» del 33 (visor.js). En una
-   pantalla tactil, donde no hay puntero, cada foto lleva en la esquina un
-   aviso callado: cuatro esquinas en blanco, sin oro, en una placa oscura de
-   cantos apenas redondeados (sin circulo, como el resto del visor). */
 .tz-mosaico__ampliar {
   position: absolute;
   right: 10px;
@@ -181,32 +128,10 @@
   .tz-mosaico__ampliar { right: 8px; bottom: 8px; width: 28px; height: 28px; font-size: 14px; }
 }
 
-/* Telefono tumbado: la caja no puede ser mas alta que la pantalla. Se
-   estrecha hasta que su alto cabe, y el collage conserva su forma. */
 @media (max-height: 480px) and (orientation: landscape) {
   .tz-mosaico { width: min(100%, (100vh - 4rem) * var(--prop)); }
 }
 
-/* ---------------------------------------------------------------------------
-   LA ENTRADA, solo con animaciones.
-
-   Cada foto la descubre una cortina de oro: entra desde un lado, tapa la
-   pieza y sale por el otro, y detras queda la foto, que se asienta desde un
-   poco mas cerca. Una detras de otra. Despues se dibuja su filo, tramo a
-   tramo desde las esquinas, y al final el marco de detras.
-
-   La pieza entera va recortada hasta que llega la cortina, con el aro y la
-   sombra: sin eso se veia la caja vacia esperando. El recorte acaba en
-   negativo y no en `inset(0)`, que a ras se comeria el aro y la sombra.
-
-   Sin animaciones no se esconde nada: `clip-path` no solo tapa, tambien
-   quita la pieza del mapa de clics.
-
-   Tres propiedades distintas para tres movimientos que se cruzan: la
-   entrada mueve `transform`, la deriva del scroll `translate` y el zoom del
-   raton `scale`. Si compartieran una, la entrada, al acabar quieta, dejaria
-   sin zoom al raton.
-   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   .tz-mosaico__pieza {
     --espera: .05s;
@@ -215,7 +140,6 @@
   .tz-mosaico__pieza:nth-child(2) { --espera: .45s; }
   .tz-mosaico__pieza:nth-child(3) { --espera: .8s; }
 
-  /* La cortina. */
   .tz-mosaico__pieza::before {
     content: '';
     position: absolute;
@@ -226,13 +150,6 @@
     pointer-events: none;
   }
 
-  /* Las dos entradas rellenan solo hacia atras (`backwards`) y el sitio en
-     que acaban lo pone la propia hoja: la pieza revelada ya lleva el recorte
-     final, y la cortina ya esta a cero. Asi, al acabar, cada animacion se
-     suelta. Con `both` se quedaban puestas para siempre, y el navegador
-     mantenia una capa aparte por cada cortina y cada pieza de las diez
-     especialidades: al llegar al final de la pagina eran casi cien capas,
-     y recomponerlas costaba mas en cada fotograma. */
   .revelar.visible .tz-mosaico__pieza {
     clip-path: inset(-90px -90px -110px -90px);
     animation: tz-caja 1.15s cubic-bezier(.77, 0, .18, 1) var(--espera) backwards;
@@ -273,21 +190,6 @@
   100% { opacity: 1; transform: none; }
 }
 
-/* LA DERIVA. Con el scroll, la foto que va montada encima sube un poco mas
-   deprisa que la de debajo, y dentro de cada marco la foto se mueve un pelo
-   al reves: da fondo al collage sin mover nada de sitio. La lleva el propio
-   navegador, atada al scroll (`animation-timeline: view()`): donde no se
-   sabe hacer, el collage se queda quieto y no pasa nada.
-
-   Solo existe cerca de la pantalla: el collage lleva `data-cerca` mientras
-   esta a menos de media pantalla de verse (lo pone reposo.js). Atada al
-   scroll, cada foto que ya habia entrado seguia con su animacion y su capa
-   aparte aunque estuviera diez pantallas mas arriba; al final de la pagina
-   eran 29 fotos derivando y el doble de capas encima de ellas. Fuera de ese
-   margen la foto se queda donde la deja la hoja, que no se ve; al volver,
-   la deriva arranca en el punto que le toca por el scroll, antes de que la
-   foto asome. La entrada (`tz-asoma`, `tz-caja`) va primera en la lista y
-   no se reinicia al quitar o poner la segunda. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .tz-mosaico__pieza img { --zoom: 1.1; }
@@ -304,14 +206,6 @@
       animation-timeline: auto, view();
     }
 
-    /* Hasta 991px las dos columnas se apilan, y el collage de Odontologia
-       General queda al pie del panel de su especialidad, que recorta lo que
-       sobresale (overflow: hidden, para poder abrirse y cerrarse). La foto
-       de abajo acaba en el filo de la caja, y con la deriva baja hasta 34px
-       mas: el panel se la comia por el pie, justo por la cara de la nina.
-       Se le deja ese sitio debajo, mas el paspartu, y la foto sigue donde
-       estaba. En escritorio el collage va al lado del texto y le sobra
-       sitio. */
     @media (max-width: 991.98px) {
       .tz-mosaico--escalera { margin-bottom: calc(34px + var(--aro)); }
     }
@@ -326,5 +220,3 @@
   to   { translate: 0 3.5%; }
 }
 
-/* El puntero «Ver» y el visor en que se abren estas fotos viven en el 33,
-   que comparten Tratamientos y la Galeria. */

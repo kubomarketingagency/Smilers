@@ -17,17 +17,10 @@
   background: linear-gradient(90deg, var(--hairline-oro), transparent);
 }
 
-/* En escritorio la seccion no pone relleno propio: cada bloque de dentro mide
-   una pantalla entera y se reparte el aire el mismo. Por debajo de 992px
-   vuelve el relleno de siempre, porque ahi los bloques se apilan y ya no hay
-   pantallas que cuadrar. */
 .seccion-nosotros { padding: clamp(30px, 3.2vw, 54px) 0 clamp(26px, 2.8vw, 46px); }
 @media (min-width: 992px) {
   .seccion-nosotros { padding: 0; }
 }
-/* Y en cuanto la escena esta viva —tambien en el movil— la seccion no pone
-   relleno ninguno: el pin mide la ventana entera, y cualquier relleno le deja
-   una franja de marmol asomando por arriba. */
 .seccion-nosotros:has(.pn-escena--viva) { padding: 0; }
 
 .nosotros-split {
@@ -48,12 +41,6 @@
   }
 }
 
-/* El collage va sin separacion entre fotos, pero con filo de oro en todas las
-   juntas. La linea no la pone cada figura: la pone la rejilla. El fondo del
-   contenedor es el oro de marca y el `gap` de 1px lo deja asomar por las
-   juntas; el `padding` del mismo grosor cierra el marco por fuera. Asi todas
-   las lineas —las de dentro y las del borde— son la misma pieza, miden lo
-   mismo y no se doblan donde dos fotos se tocan. */
 .nosotros-media {
   position: relative;
   display: grid;
@@ -68,11 +55,6 @@
 
 @media (min-width: 768px) {
 
-  /* Media pagina de ancho —la mitad de la rejilla del split— y la pagina
-     entera de alto. El desvanecido del centro va aqui: el collage no acaba en
-     un canto, se apaga hacia el medio de la pagina y deja pasar el marmol. La
-     mascara se come tambien el filo de oro de ese lado, que es justo lo que
-     funde la foto con la piedra en vez de dejarlas tocandose. */
   .nosotros-media {
     height: 100svh;
     grid-template-rows: .78fr 1.12fr 1fr .78fr;
@@ -109,9 +91,6 @@
   background: var(--neutral-100);
   box-shadow: none;
 }
-/* Cuando la figura sirve una toma distinta en el telefono, el <img> va
-   envuelto en un <picture>; sin esto el envoltorio no tiene alto contra el
-   que medir el 100% de la foto y la figura se desmonta. */
 .nm-figura picture {
   display: block;
   width: 100%;
@@ -128,17 +107,7 @@
 .nm-figura.visible img { transform: scale(1); }
 .nm-figura.visible:hover img { transform: scale(1.06); }
 
-/* La figura no se desvanece: entra solo la foto, con el barrido de
-   `revelar--velo`. Es obligatorio ahora que el oro esta en el fondo de la
-   rejilla — con la figura a opacidad 0 lo que se veia por debajo no era el
-   marmol sino el oro, y media pagina se encendia entera antes de aparecer las
-   fotos. Opaca, el oro solo asoma por el milimetro de las juntas, que es de
-   lo que se trataba. */
 #nosotros .nm-figura.revelar { opacity: 1; }
-
-/* Cada figura llevaba encima su propia barra de oro de 3px. Ya no hace falta:
-   el filo sale de las juntas de la rejilla, y sumadas las dos cosas la linea
-   de arriba salia el triple de gruesa que las demas. */
 
 @media (max-width: 767.98px) {
   .nm-figura--principal { grid-row: 1 / 3; }
@@ -191,26 +160,10 @@
   color: var(--silver-300);
 }
 
-/* Va aqui, despues de `.nm-sello`, y no arriba con el resto del collage: las
-   dos reglas pesan (0,1,0) y gana la ultima escrita. Puesta antes no hacia
-   nada.
-
-   El sello se despega del canto de abajo. No es compostura: el observador de
-   `revelados.js` recorta su marco un 8% por abajo, y con el collage midiendo
-   la pantalla entera el sello caia justo en esa franja muerta —asomaba un 11%,
-   por debajo del 0,15 que pide para encenderse—, asi que no aparecia nunca.
-   Subido, entra de sobra. */
 @media (min-width: 768px) {
   .nm-sello { bottom: clamp(2rem, 8vh, 5.5rem); }
 }
 
-/* En el movil el collage no comparte fila con el texto: va arriba, el texto
-   debajo. Asi que ocupa la pantalla de borde a borde —el relleno lateral se
-   lo queda solo la columna de texto— y se lleva algo mas de un tercio del
-   alto. El desvanecido, que en escritorio apaga el canto que da al centro,
-   aqui apaga el de abajo: la foto no acaba en una linea recta contra el
-   marmol, se funde con el. Y como la mascara se come tambien el filo dorado
-   de ese lado, el sello sube para no caer en la parte que se apaga. */
 @media (max-width: 767.98px) {
   .nosotros-split { padding-inline: 0; }
   .nosotros-cuerpo { padding-inline: clamp(1.1rem, 5vw, 2rem); }
@@ -252,10 +205,6 @@
   }
 }
 
-/* Este sello no se arrima al filo derecho como el otro al izquierdo: ahi
-   abajo esta el boton fijo de WhatsApp, con su anillo, ocupando los primeros
-   cien pixeles de la esquina. Asi que se corre hacia dentro lo justo para
-   dejarlo pasar por fuera. */
 .nm-sello--der {
   left: auto;
   right: clamp(6.6rem, 9vw, 8.5rem);
@@ -263,18 +212,6 @@
 
 .nm-sello__num--liso::before { content: none; }
 
-/* La medida de lectura son los 640px de TEXTO, no de caja.
-
-   Con `border-box` el `max-width` incluye el relleno, y el relleno de esta
-   columna crece con el ancho de la ventana — asi que cuanto mas grande era la
-   pantalla, mas estrecha salia la columna: 524px de texto a 1366, 518 a 1440,
-   499 a 1707. Y en ese ultimo los dos botones ya no cabian en una fila, se
-   apilaban, el bloque crecia 69px de golpe y el segundo boton se iba por
-   debajo del filo del pin. Justo al reves de lo que tiene que pasar.
-
-   Sumando el relleno al tope, la columna mide lo mismo en toda pantalla. Y a
-   partir de 1800px la medida crece un poco: ahi la mitad de la pagina es
-   marmol vacio y 640px de texto se quedan perdidos en medio. */
 .nosotros-cuerpo {
   --ns-medida: 640px;
   perspective: 1200px;
@@ -293,11 +230,6 @@
   .nosotros-cuerpo { --ns-medida: 700px; }
 }
 
-/* El texto de esta columna comparte pantalla con el collage, asi que tiene que
-   caber de una vez y leerse a la primera. Dos cosas: la tinta baja a #1A1A1A
-   —el gris de `--texto` se lavaba sobre el marmol— y el interlineado se cierra
-   de 1,95 a 1,78, que es lo que devuelve el alto que hacia falta. El cuerpo
-   sube un punto, no baja: legible no es pequeno. */
 .nosotros-cuerpo .parrafo {
   max-width: 58ch;
   margin-bottom: 1.05rem;
@@ -318,10 +250,6 @@
   margin-bottom: clamp(.9rem, 1.5vw, 1.25rem);
 }
 
-/* Va con `.nosotros-cuerpo` delante a proposito. A secas, `.parrafo-lead`
-   pesa (0,1,0) y `.nosotros-cuerpo .parrafo` (0,2,0), asi que la entradilla
-   nunca llego a ser mas grande que el parrafo de al lado: heredaba el cuerpo
-   y el interlineado del otro y la regla entera no pintaba nada. */
 .nosotros-cuerpo .parrafo-lead {
   font-size: clamp(1.06rem, .25vw + .99rem, 1.16rem);
   line-height: 1.7;
@@ -361,10 +289,6 @@
 .nc-icono .icono { display: none; }
 
 .nosotros-acciones { display: flex; flex-wrap: wrap; gap: 1rem; }
-/* El boton de aqui es el de todo el sitio: lo pinta 16-oro.css. Antes esta
-   regla le ponia `border: 1px solid var(--neutral-900)`, y ese atajo borra el
-   `border-image` del filo dorado; el `:hover` (0,3,0) tambien le ganaba a
-   `.btn:hover` y lo rellenaba de negro. Solo queda el aro de dentro. */
 .nosotros-acciones .btn::before { inset: 4px; border-radius: 0; }
 
 .nosotros-sedes {
@@ -403,12 +327,6 @@
   vertical-align: middle;
   transform: translateY(-1px);
 }
-/* `.ns-valor` es un nombre compartido: en Nosotros son las fichas de valores,
-   que las viste el 20; aqui es la lista de sedes de la portada, que comparte
-   pantalla con el collage y necesita la misma tinta que el resto de la
-   columna. Por eso va con el apellido puesto y no suelto: suelto alcanzaba a
-   las fichas de la otra pagina y obligaba a esta hoja —44 KB de portada— a
-   viajar tambien alli para nada. */
 .nosotros-sedes .ns-valor {
   display: block;
   flex: none;
@@ -420,10 +338,6 @@
   color: #1A1A1A;
 }
 
-/* Pantallas bajas. Ahora que cada bloque mide una pantalla, en un portatil de
-   720px de alto la columna llegaba al milimetro y el ultimo boton se salia.
-   El alto se saca del interlineado y de los aires de las listas, nunca del
-   cuerpo de letra: lo que hay que leer no encoge. */
 @media (min-width: 992px) and (max-height: 820px) {
   #nosotros .etiqueta-editorial { margin-bottom: .85rem; }
   #nosotros .titulo-seccion { line-height: 1.3; margin-bottom: .75rem; }
@@ -497,9 +411,6 @@
 }
 .pilar:hover::before { width: 100%; height: 1px; }
 
-/* El numero de cada pilar va grande y en la Bodoni de los titulares, no en
-   la letra de los rotulos: a .7rem se leia como una nota al margen, y es lo
-   primero que ordena la fila. */
 .pilar__num {
   display: block;
   font-family: var(--fuente-elegante);
@@ -522,14 +433,6 @@
   color: var(--gold-500);
 }
 
-/* El titulo de cada pilar, en una placa de oro: el degradado de marca de
-   fondo y la letra en negro, que es lo que hace el sitio siempre que rellena
-   algo de oro —el boton al pasar por encima, la pestana del mapa—. En blanco
-   no se leia: el tramo claro del degradado es casi crema, y ahi el blanco da
-   1,3:1. Va a `fit-content` y no en `inline-block` para que la placa se cina
-   a la palabra sin abrir una linea de texto alrededor, que le sumaria un
-   hueco por debajo. El relleno de la derecha descuenta el espaciado de la
-   ultima letra; sin eso la placa sale mas holgada de un lado que del otro. */
 .pilar h3 {
   width: fit-content;
   max-width: 100%;
@@ -560,11 +463,6 @@
   .pilar h3 { font-size: .72rem; letter-spacing: .18em; }
   .pilar p { font-size: .82rem; line-height: 1.75; }
 }
-
-/* Aqui vivia la «escena de salida»: los bloques de esta seccion se apagaban
-   segun se salia de ella. Se ha ido con el pin — ahora los dos collages estan
-   dentro de la escena y quien decide lo que se ve es el telon, asi que no
-   quedaba nada que apagar. */
 
 @media (max-width: 767.98px) {
   .seccion-nosotros { padding: 24px 0 22px; }
@@ -604,18 +502,9 @@
   bottom: 8%; right: -190px;
   background: radial-gradient(circle, rgba(212, 175, 55, .32) 0%, rgba(212, 175, 55, .12) 45%, transparent 72%);
 }
-/* Y en el telefono el de oro se va. Son dos halos sueltos en el apartado
-   entero, no en una pantalla suya, y ahi dentro vive la escena clavada: en
-   una pantalla ancha el de oro cae fuera del texto —520px de circulo
-   colgando 190 por el canto derecho— pero en uno de 390 eso es casi la
-   pantalla entera, y como las pantallas de la escena no pintan fondo, sale
-   por detras del apartado de Instalaciones como una mancha dorada en mitad
-   del marmol. El de plata se queda: cae arriba a la izquierda y sobre marmol
-   blanco no se ve. */
 @media (max-width: 991.98px) {
   .nosotros-halo--oro { display: none; }
 }
-
 
 @media (min-width: 992px) {
   .franja-stats .col-lg-3 { position: relative; }
@@ -724,31 +613,17 @@
 }
 .contador-lujo.visible .cl-linea { width: 68px; }
 
-
-/* Sin esto el pin no se pega a nada. `.seccion-decorada` (en el 11) le pone
-   `overflow: hidden` a la seccion, y eso la convierte en contenedor de scroll:
-   dentro de una caja que no se desplaza, un `position: sticky` no tiene contra
-   que pegarse y baja con la pagina. `clip` recorta igual —que es lo que hacia
-   falta, para que los halos no desborden— pero no crea contenedor de scroll,
-   asi que el pin vuelve a mirar a la ventana.
-
-   Las dos clases juntas a proposito: pesa (0,2,0) y la del 11 pesa (0,1,0),
-   que si no gana ella por cargarse despues. */
 .seccion-decorada.seccion-nosotros { overflow: clip; }
 
 .pn-escena {
   --gold-500: #D4AF37;
   --gold-700: #B08D22;
-  /* El oro de marca, escrito una sola vez en el 01: aqui habia una copia
-     literal de la misma formula. */
   --gradiente-oro: var(--oro-marca-degradado);
   --gradiente-oro-menudo: var(--gradiente-oro);
   --oro-vivo-degradado: var(--oro-marca-degradado);
   position: relative;
   z-index: 1;
 }
-
-/* --- Modo estatico: el de serie, el que se ve si el JS no entra --- */
 
 .pn-telon {
   --pn-pad-y: clamp(1.6rem, 3.4vw, 3.4rem);
@@ -762,8 +637,6 @@
     radial-gradient(ellipse 75% 130% at 14% 0%, rgba(212, 175, 55, .16) 0%, transparent 62%),
     linear-gradient(135deg, #000000 0%, #0D0D0D 48%, #000000 100%);
 }
-/* El filo de oro de la pantalla, por dentro y en pseudo: un `border` en el
-   propio telon se sumaria al recorte y se veria aparecer a trozos. */
 .pn-telon::before {
   content: '';
   position: absolute;
@@ -787,31 +660,8 @@
 .pn-filo { display: none; }
 
 .pn-grupo > .etiqueta-editorial { margin-bottom: clamp(.8rem, 1.6vw, 1.3rem); }
-/* Los pilares y las cifras son UN bloque, y va centrado en la pantalla.
-
-   Las cifras iban en una franja de madera pegada al canto de abajo, de lado a
-   lado, y los pilares centrados en el negro que quedaba encima: con eso habia
-   media pantalla de negro vacio alrededor de los pilares, las cifras se
-   quedaban al fondo como un pie de pagina y en el telefono les caian encima
-   los dos botones fijos, el de subir y el de WhatsApp. Ahora las cifras van
-   justo debajo de los pilares, en su propia placa, y el conjunto se centra
-   entero; el aire que sobra se reparte arriba y abajo por igual.
-
-   `safe` porque en una ventana baja el bloque puede no caber: centrado a
-   secas se saldria por los dos cantos y el rotulo quedaria debajo de la
-   barra; con `safe` se arrima arriba y lo que sobre sale por abajo. */
 .pn-telon { justify-content: safe center; }
 
-/* La placa de las cifras: la madera de Testimonios, entera y sin halo, con
-   filo de oro alrededor y la raya de 2px arriba, que es lo que el sitio da a
-   la linea que abre una pieza. Mide lo mismo que la fila de pilares, asi que
-   cada cifra cae debajo de un pilar.
-
-   Va FUERA del `.pn-contenido` de los pilares a proposito. Ese bloque se
-   desenfoca y se desvanece mientras entra, y un filtro sobre una madera se
-   recalcula en cada fotograma del barrido. Asi la madera llega con el telon,
-   igual que su negro, y lo unico que entra desenfocado son las cifras, que
-   llevan su propio `.pn-contenido`. */
 .pn-madera {
   position: relative;
   isolation: isolate;
@@ -841,8 +691,6 @@
   height: 100%;
   object-fit: cover;
 }
-/* Solo un poco de negro arriba, que es donde va el rotulo, y en los cantos:
-   lo que cose la placa con el negro del telon. */
 .pn-madera__fondo::after {
   content: '';
   position: absolute;
@@ -862,57 +710,27 @@
 .pn-telon .pilares-editorial::before,
 .pn-telon .contador-lujo::before { content: none; }
 
-/* Sin el relleno del recuadro que tenian, el primer pilar arranca a ras del
-   filo izquierdo; los demas siguen separandose de su linea. */
 @media (min-width: 992px) {
   .pn-telon .pilar { padding-inline: 0 clamp(.9rem, 1.8vw, 1.5rem); }
   .pn-telon .pilar + .pilar { padding-inline: clamp(.9rem, 1.8vw, 1.5rem); }
 }
 
-/* El contador entra con el bloque entero, no por su cuenta: quien decide
-   cuando se ve es el telon. */
 .pn-telon .cl-item { opacity: 1; transform: none; transition: none; }
 .pn-telon .cl-linea { width: 68px; transition: none; }
 
-
-/* Dentro del pin la ventana es la medida exacta: lo que sobre por arriba o
-   por abajo se lo come el `overflow: hidden` del pin, sin avisar. Fuera de la
-   escena `.nosotros-split` pide `min-height: 100svh` y la columna crece a su
-   antojo; aqui se le fija la altura del pin y se le descuenta la barra fija,
-   que es la que estaba tapando el titulo de la segunda pantalla. El
-   `align-items: center` de siempre reparte lo que sobra. */
 @media (min-width: 768px) {
   .pn-escena--viva .pn-fondo .nosotros-split {
     min-height: 0;
     height: 100%;
     padding-top: var(--alto-navbar);
   }
-  /* Ese margen sirve fuera de la escena, donde la pantalla se lee entera;
-     dentro del pin se suma al alto y saca el sello de la segunda pantalla
-     tres pixeles por debajo del filo. */
   .pn-escena--viva .pn-fondo .nosotros-split--invertido { margin-top: 0; }
-  /* Y el collage al alto que de verdad le queda, no al de la ventana entera:
-     `100svh` no descuenta la barra fija, asi que se salia 62px por los dos
-     cantos —a cualquier tamano de pantalla, no solo en las grandes— y con el
-     se iba el sello de abajo.
-
-     Va la resta explicita y no `height: 100%`: esto es una celda de rejilla
-     de fila automatica, y ahi el 100% no tiene contra que medirse, asi que
-     cae al alto del contenido y el collage se disparaba a 1600px. */
   .pn-escena--viva .pn-fondo .nosotros-media {
     height: calc(100svh - var(--alto-navbar));
     min-height: 0;
   }
 }
 
-/* Ventanas de escritorio bajas: un portatil pequeno, una ventana que no ocupa
-   toda la pantalla, o un monitor grande con el escalado de Windows subido.
-   Ahi la escena tiene el ancho de siempre pero menos alto del que necesita —a
-   1024x600 al cuerpo le faltaban 69px y el segundo boton se iba por debajo
-   del filo del pin, que lo recorta sin avisar—.
-
-   Se aprieta en el mismo orden que en el movil: primero los aires, despues el
-   interlineado. El cuerpo de letra no se toca, que es lo que hay que leer. */
 @media (min-width: 992px) and (max-height: 720px) {
   .pn-escena--viva .nosotros-cuerpo .etiqueta-editorial { margin-bottom: .55rem; }
   .pn-escena--viva .nosotros-cuerpo .caja-oro { padding-block: .38em .32em; }
@@ -935,21 +753,10 @@
   .pn-escena--viva .nosotros-acciones .btn { padding-block: .85rem; }
 }
 
-
-/* Por debajo de 640px de alto apretar ya no basta: la primera pantalla pide
-   624px para caber. Asi que ahi se cae el parrafo de acompanamiento, igual
-   que en el movil y por la misma razon: es el unico texto sin dato de esa
-   pantalla, el resumen esta en la entradilla y lo concreto en la lista de al
-   lado. Sigue en el HTML para las ventanas con alto de sobra, que son casi
-   todas: un portatil de 1366x768 deja 657 y no llega a entrar aqui. */
 @media (min-width: 992px) and (max-height: 640px) {
   .pn-escena--viva .nosotros-cuerpo .parrafo:not(.parrafo-lead) { display: none; }
 }
 
-/* Entre 992 y 1200 la columna de texto es estrecha y los dos botones no caben
-   en una fila: se apilan, y apilados cuestan 69px de alto que en una ventana
-   baja no hay. Sale mas barato quitarles aire a los lados que a todo lo
-   demas, asi que ahi se aprieta el relleno lateral y se quedan en su fila. */
 @media (min-width: 992px) and (max-width: 1200px) {
   .pn-escena--viva .nosotros-acciones { gap: .6rem; }
   .pn-escena--viva .nosotros-acciones .btn { padding-inline: 1.35rem; }
@@ -961,7 +768,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
+  height: 100lvh;
   overflow: hidden;
   isolation: isolate;
 }
@@ -969,22 +776,9 @@
 .pn-escena--viva .pn-fondo {
   position: absolute;
   inset: 0;
-  /* Lo que se ve de verdad, que el pin mide la pantalla grande. Ver
-     `--sobra-barra` en el 01. */
   bottom: var(--sobra-barra);
   z-index: 0;
 }
-/* El cambiazo. Es un corte seco, sin transicion a proposito: se da con el
-   telon tapando la pantalla entera, asi que no hay nada que suavizar y una
-   fundida solo podria asomar por un borde.
-
-   El `pointer-events` no es adorno: las dos pantallas ocupan el mismo hueco y
-   la que espera turno esta a opacidad 0, pero una capa transparente sigue
-   recibiendo el raton. La segunda va despues en el documento, asi que estaba
-   por encima de la primera y se comia el hover y el clic de sus dos botones
-   —«Conoce la clinica» y «Ver tratamientos» no se encendian ni llevaban a
-   ningun sitio—. No se puede resolver con `opacity` sola: hace falta el
-   interruptor aparte, y lo escribe el mismo JS que ya escribe la opacidad. */
 .pn-escena--viva .pn-fondo--uno {
   opacity: var(--pn-uno, 1);
   pointer-events: var(--pn-ev-uno, auto);
@@ -994,18 +788,6 @@
   pointer-events: var(--pn-ev-dos, none);
 }
 
-/* Dentro de la escena los dos collages van dibujados desde el principio: se
-   les quita el revelado por scroll.
-
-   No es un capricho. La segunda pantalla espera su turno a opacidad 0, y ahi
-   el observador no la da por visible —se midio: 13 de 26 `.revelar` se
-   quedaban sin encender, justo las 13 de dentro—, asi que al retirarse el
-   telon lo que aparecia era la piedra en blanco. Y de paso arregla la vuelta:
-   al subir el scroll el primer collage tampoco tenia que volver a revelarse.
-
-   Aqui no se pierde nada, porque quien presenta las dos pantallas es el
-   barrido del telon, no la entrada de cada pieza. El peso lo pide
-   `#nosotros .revelar:not(.revelar--velo)`, que vale (1,2,0). */
 #nosotros .pn-escena--viva .pn-fondo .revelar {
   opacity: 1;
   transform: none;
@@ -1017,20 +799,6 @@
   #nosotros .pn-escena--viva .pn-fondo .nm-figura:hover img { transform: scale(1.06); }
 }
 
-/* Las variables del barrido, registradas y SIN herencia.
-
-   Una propiedad personalizada normal se hereda, asi que escribirla en la
-   escena invalidaba el estilo de todo lo que cuelga de ella —los dos
-   collages, los pilares, las cifras: 160 elementos— en cada fotograma del
-   barrido. Se midio en un telefono simulado: el recalculo se comia 16ms de
-   los 16,7 que tiene un fotograma y el telon cruzaba a 30 imagenes por
-   segundo. Ahora `revelados.js` escribe cada una en la pieza que la usa, y
-   como no se hereda, cambiarla solo toca a esa pieza.
-
-   Sin herencia, el valor de partida lo pone `initial-value` y no el respaldo
-   del `var()`: una propiedad registrada siempre tiene valor, asi que ese
-   respaldo ya no se usa nunca. Por eso los dos dicen lo mismo. Las de raton
-   van sin tipo (`*`), que es la unica forma de que puedan valer `none`. */
 @property --pn-der { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
 @property --pn-izq { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
 @property --pn-op { syntax: '<number>'; inherits: false; initial-value: 0; }
@@ -1041,15 +809,6 @@
 @property --pn-ev-uno { syntax: '*'; inherits: false; }
 @property --pn-ev-dos { syntax: '*'; inherits: false; }
 
-/* Clavado, el telon ocupa la pantalla entera y la barra fija le tapa el
-   techo, asi que el negro de los pilares se cuenta desde donde acaba la
-   barra: centrados en la pantalla entera, el rotulo se metia debajo de ella.
-
-   Y por los lados deja sitio a los dos botones fijos de la esquina de abajo
-   —WhatsApp y subir, que ocupan los 81px del canto derecho—: con el
-   relleno de siempre la placa de las cifras llegaba hasta ellos y, en una
-   ventana baja, la ultima cifra quedaba debajo del boton. El relleno va igual
-   a los dos lados para que el bloque siga centrado. */
 .pn-escena--viva .pn-telon {
   position: absolute;
   inset: 0;
@@ -1081,23 +840,6 @@
   pointer-events: none;
 }
 
-
-/* ---------------------------------------------------------------------------
-   La escena en el movil.
-
-   Es la misma —el telon cruza igual de izquierda a derecha—, pero aqui cada
-   pantalla tiene que caber entera en el alto de la ventana, y en el movil el
-   collage va arriba y el texto debajo en vez de al lado. Asi que se aprieta
-   todo: el collage se lleva un tercio de la pantalla, el texto ocupa el
-   resto, y lo que falta sale del interlineado y de los aires — nunca del
-   cuerpo de letra, que es lo que hay que leer.
-
-   El pin va en `lvh`, la pantalla grande: en el movil la barra del
-   navegador se esconde al bajar y la ventana crece. Con `svh` el telon se
-   quedaba corto y asomaba una franja de marmol por debajo, y con `dvh`, que
-   fue lo siguiente, crecia y encogia con la barra a mitad del gesto y la
-   escena se deformaba. `lvh` es ya lo mas que da la pantalla y no cambia.
-   --------------------------------------------------------------------------- */
 @media (max-width: 767.98px) {
 
   .pn-escena--viva { height: 300vh; }
@@ -1115,10 +857,6 @@
 
   .pn-escena--viva .nosotros-cuerpo { max-width: none; }
 
-  /* El parrafo de acompanamiento se cae, y solo en el movil: es el unico
-     texto de la columna que no trae dato —el resumen esta en la entradilla y
-     lo concreto en la lista de debajo—, asi que es lo primero que sobra
-     cuando hay que elegir. Sigue en el HTML para escritorio. */
   .pn-escena--viva .nosotros-cuerpo .parrafo:not(.parrafo-lead) { display: none; }
 
   #nosotros .pn-escena--viva .etiqueta-editorial {
@@ -1126,8 +864,6 @@
     letter-spacing: .2em;
     margin-bottom: .5rem;
   }
-  /* La caja de oro de los rotulos, cenida: con el aire de escritorio cada una
-     sumaba 6px, y en esta escena cada pantalla va medida al pixel. */
   #nosotros .pn-escena--viva .caja-oro { padding-block: .36em .3em; }
   #nosotros .pn-escena--viva .titulo-seccion {
     font-size: clamp(1.22rem, 5.4vw, 1.6rem);
@@ -1156,11 +892,6 @@
   .pn-escena--viva .ns-clave { font-size: .66rem; margin-bottom: .18rem; }
   .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .83rem; line-height: 1.42; }
 
-  /* Los dos botones, uno debajo del otro. En el telefono el texto de esta
-     pantalla acaba antes de llegar al filo del pin y debajo quedaba una
-     franja vacia, con los dos botones apretados en media fila cada uno y el
-     rotulo cortado a .61rem para que cupieran. Apilados ocupan ese hueco, se
-     leen a un cuerpo normal y cada uno recibe el dedo entero. */
   .pn-escena--viva .nosotros-acciones {
     flex-direction: column;
     align-items: stretch;
@@ -1173,48 +904,16 @@
     font-size: .68rem;
   }
 
-  /* La pantalla negra: los cuatro pilares en dos columnas y la placa de las
-     cifras debajo, cabiendo de una vez.
-
-     Por abajo el telon deja libre la esquina de los dos botones fijos. En el
-     telefono no hay canto lateral que darles —cada pixel de ancho es de los
-     pilares—, asi que se les da el pie: WhatsApp y subir ocupan los 134px de
-     abajo, y el bloque se centra en lo que queda por encima. Antes la franja
-     de las cifras caia justo ahi y los dos botones tapaban la segunda
-     columna. */
   .pn-telon {
     --pn-pad-y: clamp(1rem, 4vw, 1.8rem);
     --pn-pad-x: clamp(.9rem, 4vw, 1.6rem);
-    /* Lo que ocupan WhatsApp y subir. Una sola medida para el hueco que se
-       les deja y para el zocalo que lo viste: si cambia uno, cambia el
-       otro. */
     --pn-zocalo: 140px;
   }
   .pn-escena--viva .pn-telon { padding-bottom: var(--pn-zocalo); }
 
-  /* Las cifras bajan hasta el zocalo. Centrado el bloque entero, el aire
-     que sobraba se partia arriba y abajo, y por abajo quedaba una franja de
-     negro vacio entre la placa y el marmol. Ahora el aire se parte entre
-     encima de los pilares y entre pilares y cifras: los pilares se quedan
-     casi donde estaban y la placa apoya a un palmo del zocalo, que es el
-     hueco reservado a WhatsApp y subir, asi que los botones siguen sin
-     tocarla. En una pantalla corta no sobra aire y nada se mueve. */
   .pn-escena--viva .pn-telon > .pn-contenido { margin-block: auto; }
   .pn-escena--viva .pn-telon > .pn-madera { margin-bottom: .9rem; }
 
-  /* Y ese pie reservado se ve: es marmol blanco, el mismo de la seccion que
-     abre la pagina y el mismo que viene despues de esta escena.
-
-     Eran 140px de negro sobre negro al final de la pantalla, con los dos
-     botones fijos flotando en el vacio. Ahora la pantalla negra apoya en un
-     zocalo claro: el bloque de pilares y cifras se queda donde estaba —el
-     centro se calcula sobre lo que hay por encima del zocalo, igual que
-     antes— y lo que era hueco pasa a ser el suelo de la pieza, con su raya
-     de oro arriba, la misma que abre la placa de las cifras.
-
-     Solo en el telefono y solo con la escena viva: sin JS el telon mide lo
-     que mide su contenido y no hay pie que reservar, asi que tampoco hay
-     nada que vestir. */
   .pn-escena--viva .pn-telon::after {
     content: '';
     position: absolute;
@@ -1223,10 +922,6 @@
     bottom: 0;
     z-index: 0;
     height: var(--pn-zocalo);
-    /* La raya de oro va como capa de fondo y no como `border-image`: el
-       degradado es de 100 grados y, recortado a la tira de un pixel que pide
-       un borde, se queda en un solo tono. Es lo mismo que hace la placa de
-       las cifras con su raya de arriba. */
     background:
       var(--oro-marca-degradado) top / 100% 2px no-repeat,
       #EFEAE1 url(../imagenes/fondos/marmol-blanco.webp) center / cover no-repeat;
@@ -1261,27 +956,15 @@
   }
   .pn-telon .cl-linea { bottom: .05rem; }
 }
-/* Con ancho de tableta las cuatro cifras caben en una fila, igual que los
-   cuatro pilares no: ahi cada cifra es un numero y dos palabras. */
 @media (min-width: 576px) and (max-width: 991.98px) {
   .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
 }
-/* En un telefono alto sobra sitio: entre los cuatro pilares y la placa de las
-   cifras quedaba un palmo de negro vacio, y la letra estaba puesta para el
-   telefono corto, que es donde no cabe. Aqui sube un punto, que es lo que hace
-   falta para leerla de un vistazo. Va desde 840 de alto, y no desde 780 como
-   iba: a 412x780 —un Android corriente con su barra— los pilares a este
-   cuerpo empujaban la placa de las cifras 59px dentro del zocalo, y la
-   segunda fila de cifras quedaba debajo del marmol. */
 @media (max-width: 575.98px) and (min-height: 840px) {
   .pn-telon .pilar { padding: .7rem .55rem .6rem; }
   .pn-telon .pilar__num { font-size: 1.55rem; }
   .pn-telon .pilar__icono { margin: .34rem 0 .3rem; font-size: 1rem; }
   .pn-telon .pilar h3 {
     padding: .42em .52em .38em .62em;
-    /* Un pelo por encima del tramo corto y no mas: a .74 los rotulos de tres
-       palabras se parten en dos lineas y las cuatro casillas dejan de tener
-       la misma pinta. */
     font-size: .66rem;
     letter-spacing: .105em;
     margin-bottom: .42rem;
@@ -1293,9 +976,6 @@
   .pn-telon .cl-etiqueta { margin-top: .35rem; font-size: .64rem; letter-spacing: .14em; }
 }
 
-/* Y en una tableta en vertical la letra del telefono dejaba el bloque en
-   380px en mitad de una pantalla de 1024: sobra alto, asi que la letra sube
-   hacia la de escritorio y el bloque ocupa lo que le toca. */
 @media (min-width: 576px) and (max-width: 991.98px) and (min-height: 760px) {
   .pn-telon .pilar { padding: 1rem .9rem .9rem; }
   .pn-telon .pilar__num { font-size: 2rem; }
@@ -1308,16 +988,9 @@
   .pn-telon .cl-etiqueta { margin-top: .5rem; font-size: .62rem; letter-spacing: .18em; }
 }
 
-/* Y en las pantallas cortas —un telefono de 640px de alto— el collage a algo
-   mas de un tercio deja al texto sin sitio: el segundo boton se salia por
-   abajo. Se recupera el hueco apretando otra vez interlineados y aires, y
-   bajando el collage al tercio justo. El cuerpo de letra no se toca. */
 @media (max-width: 767.98px) and (max-height: 700px) {
   .pn-escena--viva .pn-fondo .nosotros-media { height: 33vh; height: 33svh; }
 
-  /* En el telon, el numero y el icono de cada pilar comparten fila. Con el
-     numero a su tamano nuevo, apilados costaban 44px que en un telefono
-     corto no hay: a 588 de alto el rotulo se metia 18px debajo de la barra. */
   .pn-escena--viva .pn-telon .pilar {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -1330,8 +1003,6 @@
   .pn-escena--viva .pn-telon .pilar__icono { margin: 0; }
   .pn-escena--viva .pn-madera { margin-top: .75rem; padding-block: .55rem .6rem; }
 
-  /* Y las cuatro cifras en una sola fila: en dos filas la placa se llevaba
-     60px, y era lo unico que quedaba por apretar sin tocar la letra. */
   .pn-escena--viva .pn-telon .contador-lujo { grid-template-columns: repeat(4, 1fr); }
   .pn-escena--viva .pn-telon .cl-item { padding-inline: .15rem; }
   .pn-escena--viva .pn-telon .cl-num { font-size: 1.3rem; }
@@ -1355,17 +1026,9 @@
   .pn-escena--viva .nosotros-sedes { margin: .55rem 0 .6rem; }
   .pn-escena--viva .nosotros-sedes li { padding: .32rem 0; }
 
-  /* Los botones siguen apilados: lo que se aprieta aqui es su relleno, no su
-     disposicion. Se midio cuanto sobra por debajo de ellos dentro del pin —el
-     filo del pin recorta sin avisar— y a 588px de ventana quedan 64px
-     libres con los dos uno encima del otro. */
   .pn-escena--viva .nosotros-acciones .btn { padding: .62rem .8rem; font-size: .6rem; }
 }
 
-/* Por debajo de 640 de alto —un iPhone SE con las barras del navegador— la
-   placa de las cifras llegaba 22px dentro del hueco de los botones fijos y
-   el de subir tapaba la ultima cifra. Se recuperan los aires de dentro de los
-   pilares y de la placa; la letra no se toca. */
 @media (max-width: 991.98px) and (max-height: 640px) {
   .pn-escena--viva .pn-telon .pilar { padding-block: .35rem .3rem; }
   .pn-escena--viva .pn-telon .pilar p { line-height: 1.4; }
@@ -1374,10 +1037,6 @@
   .pn-escena--viva .pn-telon .cl-etiqueta { margin-top: .2rem; }
 }
 
-/* Y solo por debajo de 560px de ventana los dos vuelven a su fila: ahi
-   apilados cuestan 51px que ya no hay y el segundo se iria por debajo del
-   filo. Entre 560 y 700 caben apilados de sobra, que es donde vive casi todo
-   telefono en vertical. */
 @media (max-width: 991.98px) and (max-height: 560px) {
   .pn-escena--viva .nosotros-acciones { flex-direction: row; gap: .5rem; }
   .pn-escena--viva .nosotros-acciones .btn {
@@ -1388,30 +1047,6 @@
   }
 }
 
-/* ===========================================================================
-   LA LETRA DE LA ESCENA, EN EL TELEFONO
-
-   La columna de texto de las dos pantallas claras (la entradilla, la lista
-   de tres y las sedes) iba en Lato fina, la 300, y la de los pilares tambien.
-   Sobre el marmol, en un iPhone, la fina a 14px se lee gris aunque la tinta
-   sea casi negra: los trazos son tan delgados que el fondo se come la mitad
-   del color. Va a la 400 en todos los altos y con la tinta un punto mas
-   honda. Ojo, que la 400 de Lato es algo mas ancha que la 300 y parte algun
-   renglon mas: por eso el collage baja un poco en cada tramo, para que el
-   texto tenga donde crecer. El collage es lo que adorna; lo que hay que leer
-   es la columna.
-
-   Y el cuerpo sube donde cabe, que es casi siempre. El tramo que pone la
-   letra pequena (hasta 700 de alto, mas abajo) se penso para un telefono de
-   588, pero en el que cae de verdad es en cualquier iPhone de 6,1 pulgadas:
-   Safari, con sus barras, le deja 664 de alto. Ahi debajo de los botones
-   sobraban 105px, y en cuanto se baja y las barras se recogen, 190. Asi que
-   ese tramo se parte en dos: de 620 a 700 la letra sube, y solo por debajo
-   de 620 —el SE, los telefonos pequenos— se queda como estaba.
-
-   Las cuentas, medidas en cada tramo con lo que sobra por debajo del ultimo
-   boton de cada pantalla, van en cada bloque.
-   =========================================================================== */
 @media (max-width: 767.98px) {
   .pn-escena--viva .nosotros-cuerpo .parrafo-lead {
     font-weight: 400;
@@ -1422,14 +1057,12 @@
     font-weight: 400;
     color: #111111;
   }
-  /* Los pilares, sobre negro: blanco al 90 en vez de al 74. */
   .pn-telon .pilar p {
     font-weight: 400;
     color: rgba(255, 255, 255, .9);
   }
 }
 
-/* De 701 de alto en adelante (el tramo de los telefonos grandes). */
 @media (max-width: 767.98px) and (min-height: 700.02px) {
   .pn-escena--viva .pn-fondo .nosotros-media { height: 31vh; height: 31svh; }
   .pn-escena--viva .nosotros-cuerpo .parrafo-lead { font-size: .98rem; line-height: 1.55; }
@@ -1437,7 +1070,6 @@
   .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .88rem; line-height: 1.44; }
 }
 
-/* De 620 a 700: el iPhone de 6,1 pulgadas con las barras puestas. */
 @media (max-width: 767.98px) and (min-height: 620px) and (max-height: 700px) {
   .pn-escena--viva .pn-fondo .nosotros-media { height: 28vh; height: 28svh; }
   .pn-escena--viva .nosotros-cuerpo .parrafo-lead { font-size: .95rem; line-height: 1.5; }
@@ -1445,14 +1077,6 @@
   .pn-escena--viva .nosotros-sedes .ns-valor { font-size: .86rem; line-height: 1.4; }
 }
 
-/* Por debajo de 620 la letra se queda en su cuerpo, y aun asi la pantalla de
-   las sedes y la negra de los pilares no cabian —ya antes de este cambio—:
-   en un SE (375x548) el boton de «Ver la galeria» quedaba 59px por debajo
-   del filo y la placa de las cifras 64px dentro del zocalo, con la mitad
-   tapada por el marmol. El collage baja a algo mas de un quinto, y los
-   pilares se quedan con su numero, su icono y su nombre: la explicacion de
-   cada uno es lo que sobra cuando lo que hay que elegir es entre eso o que
-   las cifras se vean. */
 @media (max-width: 767.98px) and (max-height: 619.98px) {
   .pn-escena--viva .pn-fondo .nosotros-media { height: 22vh; height: 22svh; }
   .pn-escena--viva .nosotros-sedes li { padding: .24rem 0; }

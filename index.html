@@ -275,10 +275,6 @@
 
       v.muted = true;
       v.playbackRate = 1.3;
-      /* El video del telefono es mas corto que el del ordenador (3,97 s
-         contra 4,80): se ajusta su velocidad para que el splash dure lo
-         mismo en los dos, data-duracion (lo que dura el del ordenador a
-         1,3x). Las imagenes animadas del plan B ya van a esa duracion. */
       v.addEventListener('loadedmetadata', function () {
         var dura = parseFloat(v.dataset.duracion) || 3.69;
         if (isFinite(v.duration) && v.duration > 0) v.playbackRate = v.duration / dura;
@@ -347,8 +343,6 @@
              sizes="114px" width="240" height="93" alt="Smilers Dental Clinique" decoding="async" fetchpriority="high">
       </a>
 
-      <!-- El aval tambien lleva a la portada: es un logo en la barra, y en una
-           barra los logos se pulsan. -->
       <a class="marca-oad" href="/">
         <img src="imagenes/logo-oad-440.webp?v=e04503f687"
              srcset="imagenes/logo-oad-440.webp?v=e04503f687 440w, imagenes/logo-oad-880.webp?v=ce6fc69da7 880w"
@@ -917,19 +911,6 @@
         <span class="tc-hoja tc-hoja--der"></span>
       </div>
 
-      <!-- La escena, y dentro de ella el rotulo.
-
-           El rotulo va DENTRO y no colgado del techo: en el ordenador se
-           pone encima de la cita, en la columna de la izquierda, y en el
-           telefono encima del circulo. Colgado del techo obligaba a la
-           escena entera a bajar para no pasar por debajo de el, y aun asi en
-           un telefono el circulo le llegaba a tocar el canto.
-
-           Y la caja no se apaga cuando la escena no se enciende —sin WebGL o
-           con menos movimiento—: lo que se apagan son sus dos piezas, y el
-           rotulo se queda encabezando la lista de tarjetas, que es lo unico
-           que hay entonces. Por eso el `aria-hidden` cuelga de las piezas y
-           no de la caja: el rotulo es el titulo de la seccion. -->
       <div class="testimonios-escena">
 
         <div class="testimonios-etiqueta">
@@ -959,27 +940,6 @@
         <div class="testimonios-esfera" aria-hidden="true">
           <canvas class="testimonios-lienzo" data-lienzo-testimonios></canvas>
 
-          <!-- El video del testimonio de delante. Va por fuera del lienzo
-               porque un iframe no se puede pintar dentro de WebGL: es un
-               circulo del tamano exacto del disco que tiene debajo
-               (`--tst-lado`, que mide y escribe testimonios-esfera.js) y se
-               enciende solo cuando la esfera se para. El reproductor lo monta
-               video-testimonio.js.
-
-               El video va DENTRO del circulo y mas ancho que el: asi se ve la
-               cara de quien habla y no una tira de suelo y techo, y de paso
-               lo que YouTube dibuja en los cantos —el sello de Shorts, los
-               botones, el titulo— se queda fuera del recorte.
-
-               El escudo es lo que impide que YouTube vea el raton: sin el
-               vuelve a sacar su titulo al pasar por encima y pausa al hacer
-               clic, y pausado se le ve la interfaz entera. Y es ademas donde
-               se pausa y se sigue: el toque se queda en el escudo y lo recoge
-               video-testimonio.js.
-
-               Nada de esto se puede tabular: la escena entera es
-               `aria-hidden`, y quien navegue con teclado o lector tiene la
-               lista de abajo, que es su version accesible. -->
           <div class="tst-video" data-video-esfera>
             <div class="tst-video__marco">
               <div class="tst-video__medio" data-video-hueco>
@@ -1007,46 +967,6 @@
 
       </div>
 
-      <!-- La version accesible de la escena, y lo que se ve cuando no hay
-           WebGL o se ha pedido menos movimiento. Cada ficha es un testimonio
-           en video: `data-video` lleva el archivo del video y `data-foto` el
-           fotograma que se ve antes de darle al play, que es tambien el que
-           pinta la esfera en su tarjeta.
-
-           AQUI VAN LOS VIDEOS. Viven en `video-testimonios/`, en MP4 (H.264
-           a 720 de ancho como mucho, el sonido igualado entre todos y con el
-           indice al principio: ver ESTRUCTURA.md, «Los videos de los
-           testimonios»). Para cambiar el de un testimonio, el archivo nuevo
-           va en esa carpeta y su ruta en `data-video`; su fotograma, en
-           `data-foto`. El enlace de la tarjeta (`tst-play`) sigue llevando
-           al video en el canal de YouTube de la clinica: es lo que se abre
-           en esta version en lista.
-
-           Y CADA UNO TRAE SU ENCUADRE: `data-zoom` es cuanto se acerca el
-           circulo (1 seria el video al ancho justo del circulo; menos de
-           1,04 no, que el video dejaria de cubrirlo), `data-foco` la altura
-           del centro del circulo en el fotograma y `data-eje` su vertical,
-           los dos en tanto por uno. Con ellos recortan su cuadrado el disco
-           de la esfera y el video que se le pone encima.
-
-           La regla es la misma para los ocho: la persona entera de la cabeza
-           a las rodillas, centrada, con un 7% del circulo de aire por encima
-           de la cabeza. Iban de la cabeza al pecho y el resto del circulo era
-           pared. El aire se cuenta con la cabeza mas alta de todo el video
-           (se miraron sus fotogramas al 25, 50 y 75%), que hay quien se
-           acerca a la camara a mitad de frase. Por eso el zoom cambia de una
-           a otra: quien esta lejos de la camara se acerca mas, y asi salen
-           todos del mismo tamano. Ivis camina y la camara le sigue, asi que va lo mas abierto que se
-           puede.
-
-           Dos van mas cerca, a peticion de la clinica: Pilar, de la cabeza a
-           las canillas, justo por encima de donde asoma la piel de la pierna
-           cruzada (sentada y con las piernas cruzadas, las piernas se llevaban
-           medio circulo), y Maria Jose, de la cabeza a la cintura. Esas dos
-           solo existen a 480 de ancho y con tanto acercamiento se veian
-           borrosas, asi que sus videos van escalados con IA a 960 (ver
-           ESTRUCTURA.md) y su zoom es el menor que deja ese encuadre: mas
-           abierto, el circulo se llena de pared por encima de la cabeza. -->
       <ol class="testimonios-lista">
 
         <li>
@@ -1266,18 +1186,10 @@
 
   <footer class="footer">
     <div class="container">
-      <!-- Las tres columnas no van a tercios: la de la ficha se lleva mas
-           ancho que las otras dos (ver `.pie-rejilla` en el 10). -->
       <div class="row gx-4 gy-5 pie-rejilla">
 
         <div class="col-lg-4">
-          <!-- Los datos de la clinica van dentro de un recuadro de oro: los
-               dos logos, la presentacion, las direcciones y los botones de
-               redes son UNA ficha, y las otras dos columnas son dos
-               herramientas. -->
           <div class="pie-ficha">
-            <!-- La marca de la casa y el aval, como en la barra: el mismo filo
-                 de oro en medio y los dos del mismo alto. -->
             <div class="marca-pie mb-3">
               <a href="/" class="marca marca-footer">
                 <img class="marca-logo" src="imagenes/logo-smilers-oro-440.webp?v=3c8ac94670" width="440" height="170"
@@ -1352,9 +1264,6 @@
         </div>
 
         <div class="col-lg-4" id="contacto">
-          <!-- La cabecera y su linea, y al lado el QR de WhatsApp Business: en
-               escritorio es para escanearlo con el telefono; en el telefono,
-               tocandolo se abre el mismo chat. -->
           <div class="pie-escribenos">
             <div class="pie-escribenos__texto">
               <h3 class="footer-titulo">Escríbenos</h3>
@@ -1411,8 +1320,6 @@
   </a>
 
 
-  <!-- El boton de cookies vive a la izquierda, lejos del de WhatsApp, y nace
-       escondido: lo enciende consentimiento.js al arrancar. -->
   <button type="button" class="btn-cookies" data-preferencias-cookies hidden
           aria-label="Preferencias de cookies">
     <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-cookie"></use></svg>

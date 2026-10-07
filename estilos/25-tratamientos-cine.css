@@ -1,38 +1,4 @@
-/* ===========================================================================
-   Tratamientos, una especialidad por pantalla.
 
-   Hasta aqui los bloques se apilaban con una deriva editorial: cada
-   uno con su ancho y su margen, unos escorados a la izquierda y otros a la
-   derecha. Se leia bien de corrido, pero no era lo que hacia falta cuando el
-   lector llega desde la franja de especialidades: llega a UNA, y esa una
-   tiene que ocupar la pantalla.
-
-   Asi que aqui cada bloque mide una pantalla —descontada la barra, que va
-   fija y tapa— y se centra dentro. La foto manda: se lleva siete columnas de
-   doce y toda la altura que sobra despues del texto de debajo del
-   foto. El panel de informacion se queda con cinco.
-
-   Tres avisos para quien toque esto:
-
-   - `min-height`, nunca `height`. Si en una ventana muy baja el panel no cabe,
-     el bloque crece y se sale de la pantalla; lo que no hace nunca es cortar
-     el contenido. Cortar es el unico fallo que no se puede recuperar
-     haciendo scroll.
-   - La altura se escribe en la COLUMNA, y el collage cabe dentro con su
-     proporcion: lo que decide cuanto mide es la pantalla, pero no lo
-     deforma. Estirado a la columna, en un 1440x900 salia mas alto que ancho
-     y las fotos apaisadas se recortaban en vertical.
-   - Las fotos del mosaico entran con `clip-path`, que ademas de tapar quita
-     el elemento del mapa de clics. Por eso el 30 solo las esconde cuando hay
-     animaciones: sin eso, quien navegue sin ellas se quedaria con las fotos
-     invisibles y sin poder pulsarlas.
-
-   Va la ultima de las hojas de esta pagina, y solo la carga esta pagina.
-   =========================================================================== */
-
-/* Con la barra fija en 62px, el ancla que trae la franja de especialidades
-   deja el bloque justo debajo de ella y no a 90px como el resto del sitio.
-   Asi la pantalla que se abre es entera. */
 html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
 
 @media (min-width: 992px) {
@@ -46,10 +12,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     padding: clamp(1.4rem, 2.8vw, 2.8rem) 0;
   }
 
-  /* Un solo ancho para los diez. La deriva de contenedores que habia antes
-     —un `max-width` y un margen distintos por cada id— vivia en el 15 y ya
-     no esta: con la pantalla completa, escorar el contenido solo dejaba un
-     hueco muerto a un lado. */
   .pagina-tratamientos .bloque-tratamiento > .container {
     position: relative;
     z-index: 1;
@@ -58,15 +20,8 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     margin-inline: auto;
   }
 
-  /* Sobraba: entre bloque y bloque ya hay un filo de oro que se dibuja solo
-     al entrar, y este segundo lo repetia media pantalla mas abajo. */
   .pagina-tratamientos .bloque-tratamiento > .container::before { content: none; }
 
-  /* --- La reja: siete columnas para la foto, cinco para el texto ---------
-     Bootstrap reparte mitad y mitad. Aqui no: la foto es lo que se mira y se
-     lleva la parte grande. Se colocan por orden de fuente, asi que la clase
-     `order-lg-*` que ya alterna el lado sigue mandando y no hay que tocar el
-     HTML: el primero que caiga ocupa su tramo y el otro el resto. */
   .pagina-tratamientos .bloque-tratamiento .row {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -90,34 +45,18 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     grid-column: span 7;
   }
 
-  /* --- La foto, tan grande como quepa -----------------------------------
-     El tope de 820px es para pantallas muy altas: pasado ese punto la foto
-     deja de crecer y lo que crece es el aire, que es lo que hace que la
-     pieza siga pareciendo una lamina y no un poster. */
   .pagina-tratamientos .bloque-tratamiento .row > [class*="col-"]:not(:has(.pz-panel)) {
     --tz-alto: min(calc(100svh - var(--alto-navbar) - clamp(3rem, 6vw, 6rem)), 820px);
     display: flex;
     align-items: center;
     height: var(--tz-alto);
   }
-  /* El collage no se estira a la columna: lleva su proporcion (el 30) y
-     cabe entero en ella, tan ancho como la columna o tan alto como ella. */
   .pagina-tratamientos .bloque-tratamiento .tz-mosaico {
     width: min(100%, var(--tz-alto) * var(--prop));
     max-width: none;
     margin: 0 auto;
   }
 
-  /* --- La entrada --------------------------------------------------------
-     El bloque llena la pantalla, asi que la entrada se ve entera y puede
-     permitirse ser lenta. Las fotos del mosaico se descubren una a una (el
-     30); el panel llega un pelo despues, para que la vista vaya primero a la
-     imagen y luego al texto. */
-  /* Sin desenfoque. Lo llevaba —`blur(6px)` al entrar—, y un desenfoque
-     sobre una columna de media pantalla se recalcula en cada fotograma de la
-     transicion: en un portatil con grafica integrada eso eran 20 o 30
-     fotogramas perdidos por bloque, y lo que se veia no era una entrada
-     sino una pagina que tardaba en pintar. Subir y aparecer basta. */
   .pagina-tratamientos .bloque-tratamiento .revelar {
     transform: translateY(42px) scale(.99);
     filter: none;
@@ -131,10 +70,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     --retraso: .16s;
   }
 
-  /* --- Ventanas bajas ----------------------------------------------------
-     De 1024x600 para abajo el panel es lo que no cabe. Se aprieta el
-     interlineado y el aire de la lista antes que quitar nada: la lista de lo
-     que incluye cada tratamiento es justo lo que se viene a leer. */
   @media (max-height: 760px) {
     .pagina-tratamientos .bloque-tratamiento { padding: clamp(1rem, 2vw, 1.8rem) 0; }
     .pagina-tratamientos .pz-panel { padding: clamp(1rem, 1.7vw, 1.4rem); }
@@ -147,36 +82,8 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   }
 }
 
-/* Sin iman de scroll. Hubo uno —`scroll-snap-type: y proximity`, un
-   empujon para que cada especialidad quedara encajada en la pantalla— y se
-   quito: con diez bloques de pantalla completa, "cerca" es casi siempre, y
-   con la rueda del raton el navegador acababa corrigiendo cada gesto. La
-   pagina daba tirones, y en un equipo con poca grafica cada tiron coincidia
-   con la entrada del bloque siguiente. El ancla de la franja de
-   especialidades ya deja cada bloque encajado bajo la barra, que es donde
-   hacia falta. */
-
-/* ---------------------------------------------------------------------------
-   Fondos intercalados: piedra en las especialidades pares.
-
-   La piedra entra como `<img>` en el HTML y no como `url()` de CSS, porque
-   el sellador de version solo sabe firmar `src`, `srcset` y `href`. Una
-   imagen escondida en una hoja de estilo se quedaria cacheada para siempre.
-
-   La marca de que un bloque va sobre piedra la pone el HTML con
-   `--piedra`, no un `nth-of-type`: los `section` de esta pagina no son
-   todos especialidades, y contar por posicion habria pintado las
-   equivocadas.
-   --------------------------------------------------------------------------- */
-
-/* El tinte crema que alternaba antes se retira: ahora quien alterna es la
-   piedra, y los dos juntos daban tres fondos distintos en vez de dos. */
 .pagina-tratamientos section.bloque-tratamiento:nth-of-type(even) { background: transparent; }
 
-/* El contenido sube por encima de la piedra. Sin esto no se ve: una capa
-   posicionada con z-index 0 se pinta DESPUES del contenido en flujo, aunque
-   en el HTML vaya antes. Y va fuera de cualquier media query, que en movil
-   el bloque es un acordeon pero la piedra sigue estando. */
 .pagina-tratamientos .bloque-tratamiento--piedra > .container {
   position: relative;
   z-index: 1;
@@ -194,19 +101,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   height: 100%;
   object-fit: cover;
 }
-/* El velo. La piedra es pizarra en bruto: roca gris oscura, 70 de gris de
-   media, con crestas que se encienden hasta 227. Sin nada encima esas
-   crestas pelean con la foto y con el oro, asi que el velo va en negro —aqui
-   si, que la piedra ya es oscura y el negro no la ensucia, la hunde— y no
-   parejo: mas cerrado arriba y abajo, donde se junta con el marmol claro, y
-   mas abierto en medio, que es donde tiene que verse la veta. Solo negro:
-   llevaba arriba un punto de luz de oro (un radial al 8%), y sobre la roca
-   gris se leia como un difuminado dorado ensuciando la piedra; a la clinica
-   no le gustaba y se quito (25-9-2026). El oro de estas bandas es el de sus
-   dos costuras y el del panel.
-
-   Las crestas quedan en 150 como mucho: dentro del panel la letra va sobre
-   su marmol negro, y sobre la piedra no se lee nada directamente. */
 .trat-piedra::after {
   content: '';
   position: absolute;
@@ -215,30 +109,16 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     rgba(8, 8, 8, .52) 0%, rgba(8, 8, 8, .34) 45%, rgba(8, 8, 8, .58) 100%);
 }
 
-/* Las dos costuras. La pizarra y el marmol claro se tocan con un escalon
-   enorme de luz, y ahi un filo de oro es lo que convierte ese corte en una
-   junta —con dos grosores, no uno: el de arriba a 2px porque es el que
-   anuncia el cambio de superficie, el de abajo a 1px porque solo lo cierra. */
 .pagina-tratamientos .bloque-tratamiento--piedra {
   border-top: 2px solid rgba(212, 175, 55, .6);
   border-bottom: 1px solid rgba(212, 175, 55, .36);
 }
 
-/* El panel se queda con su marmol negro: es liso y mas oscuro que la
-   pizarra, y con el filo de oro se despega de la roca sin tener que volverse
-   translucido. */
-
 @media (max-width: 767.98px) {
-  /* En el movil el bloque es un acordeon cerrado y la piedra solo viste el
-     titulo, asi que el velo va mas parejo y mas cerrado: el nombre de la
-     especialidad va en letra pequena directamente sobre la roca. */
   .trat-piedra::after {
     background: linear-gradient(180deg, rgba(8, 8, 8, .6) 0%, rgba(8, 8, 8, .5) 100%);
   }
 
-  /* El nombre del acordeon, que en la pagina clara va en negro, sobre la
-     pizarra pasa a blanco; la flecha, al oro vivo; y la raya de arriba del
-     boton, que es tinta sobre claro, se retira: la costura de oro ya esta. */
   .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-nombre {
     color: #FFFFFF;
     text-shadow: 0 1px 8px rgba(0, 0, 0, .7);
@@ -247,19 +127,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   .pagina-tratamientos .bloque-tratamiento--piedra .acordeon-tratamiento-boton { border-top-color: transparent; }
 }
 
-/* ---------------------------------------------------------------------------
-   Mas oro en la pagina, con la misma escala de grosores que Nosotros.
-
-   La escala no es decorativa: dice de que es cada linea. 2px la que abre una
-   pieza que sostiene una afirmacion —las tres tarjetas del triptico son eso,
-   las tres cosas que aqui no se negocian—; 1px el contorno y las divisiones
-   de dentro; y nada por debajo de 1px, que a media opacidad una linea de oro
-   deja de ser una linea y se vuelve una mancha.
-
-   Todo sale de `--oro-vivo-degradado` y `--oro-plano`, que el 22 ya deja
-   apuntando al oro vivo dentro de estas piezas: son negras, aunque vivan en
-   una pagina clara.
-   --------------------------------------------------------------------------- */
 .pagina-tratamientos .pz-tarjeta::before {
   content: '';
   position: absolute;
@@ -270,9 +137,6 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
   opacity: .82;
   pointer-events: none;
 }
-/* La juntura entre la foto y el texto. Es el unico corte que la tarjeta tiene
-   dentro, y sin nada que lo marque la foto se derramaba sobre el marmol negro
-   del cuerpo, que es casi igual de oscuro que sus sombras. */
 .pagina-tratamientos .pz-tarjeta__foto::after {
   content: '';
   position: absolute;
@@ -282,34 +146,16 @@ html:has(.pagina-tratamientos) { scroll-padding-top: var(--alto-navbar); }
     transparent, rgba(212, 175, 55, .55) 18%, rgba(212, 175, 55, .55) 82%, transparent);
   pointer-events: none;
 }
-/* El aro del sello y las dos esquinas de la foto iban en `--gold-200`
-   (#E6C95F), que es un tono de dentro del degradado y no uno de los dos
-   planos del sitio. Sobre negro la diferencia se ve: el #E6C95F sale
-   amarillo al lado del #D4AF37 de su propio filo. */
 .pagina-tratamientos .pz-tarjeta__sello {
   border-color: rgba(212, 175, 55, .62);
   color: var(--oro-plano);
 }
 
-/* El panel de cada especialidad sube de 1px a 2px por la misma razon que el
-   filo de las tarjetas: es la pieza que sostiene la afirmacion de su
-   pantalla —el nombre de la especialidad y lo que incluye—, y en la escala
-   de grosores eso son 2px. El 21 se lo da a el, a la ficha de mision y a las
-   tarjetas de valores a la vez; aqui solo cambia el suyo.
-
-   Y hasta aqui el oro de esta pagina. Se probo tambien una regla debajo del
-   numero de cada bloque y se quito: el numero ya lleva una a la izquierda
-   desde el 17, y dos rayas de oro alrededor de dos digitos no es un detalle,
-   es un adorno. */
 .pagina-tratamientos .pz-panel::before {
   height: 2px;
   opacity: .82;
 }
 
-/* ---------------------------------------------------------------------------
-   Sin animaciones. Las fotos del mosaico ya no se esconden (el 30 solo lo
-   hace con animaciones); aqui queda el bloque, que tampoco se mueve.
-   --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .pagina-tratamientos .bloque-tratamiento .revelar {
     transform: none;

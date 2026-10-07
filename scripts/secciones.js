@@ -67,18 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
       pintarFicha(panel);
     }
 
-    /* La X del panel abierto, solo apilado (en el telefono). Abierto, un
-       panel mide lo que su foto, hasta el 86% de la pantalla, y para ver las
-       demas especialidades habia que pasar por encima de ella entera o abrir
-       otra. Con la X se pliega y la lista vuelve a ser una lista de nombres;
-       tocar el panel abierto sigue llevando a su especialidad.
-
-       La X no es un boton: el panel es un enlace, y un boton dentro de un
-       enlace es un mando dentro de otro, que el lector de pantalla no sabe
-       como anunciar. Es un dibujo (`aria-hidden`) y quien la atiende es el
-       propio panel, mirando donde cayo el toque. Al lector no le hace falta:
-       para el cada panel ya es un enlace suelto, abierto o no. La pone el
-       guion y no el HTML porque sin guion no hay acordeon que plegar. */
     function cerrar() {
       paneles.forEach(function (p) {
         p.classList.remove('ag-panel--activo');
@@ -93,20 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
       panel.appendChild(x);
     });
 
-    /* Apilado -en el telefono- abrir un panel es cerrar el que estaba
-       abierto, y desde que el abierto mide lo que su foto eso son hasta 470px
-       que desaparecen. Si el que se cierra queda por encima, todo lo de debajo
-       sube eso mismo, y el panel que se acaba de tocar se iba por arriba de la
-       pantalla: se tocaba a media altura y se abria con la cabeza debajo de
-       la barra.
-
-       Aqui se sostiene. Mientras dura la transicion, en cada fotograma se
-       corrige el scroll para que el panel tocado vaya a su sitio sin saltos:
-       donde estaba, salvo que ahi su foto no quepa entera -entonces sube lo
-       justo- o que quede debajo de la barra. El alto que va a tener es el
-       mismo que le pone la hoja: su --alto-foto por el ancho, con tope en el
-       86% de la pantalla. Si el dedo vuelve a la pantalla se suelta, que manda
-       quien toca. */
     function apilado() {
       return getComputedStyle(galeria).flexDirection === 'column';
     }
@@ -245,16 +219,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    /* La cinta no se arma al abrir la pagina: son dos docenas de columnas y
-       armarlas al principio obligaba a leer el ancho de la ventana antes de
-       que la pagina estuviera maquetada. Se arma en el primer rato libre
-       despues de la carga, o antes si la banda llega a tres pantallas.
-
-       Se armaba solo a tres pantallas, y en Nosotros eso caia en pleno paso
-       de Fundamentos al Equipo: 22 columnas y 66 fotos entrando en el
-       documento en mitad del telon. En un rato libre no se nota. Las fotos
-       son diferidas (`loading="lazy"`), asi que armar antes no baja ninguna
-       antes de tiempo. */
     if ('IntersectionObserver' in window) {
       cinta.style.animationPlayState = 'paused';
       var caja = cinta.parentNode || cinta;

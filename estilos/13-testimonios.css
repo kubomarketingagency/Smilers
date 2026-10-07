@@ -26,8 +26,6 @@
   overflow: hidden;
   pointer-events: none;
 }
-/* El jardin se ve mas: sube la foto y se afloja el velo de encima. Lo negro
-   se queda solo en los bordes, para coser la seccion con las vecinas. */
 .testimonios-fondo img {
   width: 100%;
   height: 100%;
@@ -48,24 +46,10 @@
       var(--onix) 100%);
 }
 
-/* ---------------------------------------------------------------------------
-   La madera.
-
-   El jardin era una foto que mirar, y por eso iba tenue —.62 sobre el onix— y
-   aclarada. La madera no: es una superficie, la veta es todo lo que tiene, y
-   con aquellos ajustes se apagaba hasta quedar en negro. Va entera y sin
-   aclarar; lo unico que se le pone encima es el halo de oro y el negro de los
-   cantos, que la cose con las secciones vecinas.
-   --------------------------------------------------------------------------- */
 .testimonios-fondo--madera img {
   opacity: 1;
   filter: saturate(1.04) brightness(.92);
 }
-/* Sin halo de oro. Lo llevaba encima al 13% y lo que hacia sobre una madera
-   wengue no era encenderla: le lavaba la veta del centro justo donde mas se
-   ve, y dejaba la superficie con aspecto de foto vieja. La madera se pinta
-   sola. Lo unico que queda encima es el negro de los cantos, que la cose con
-   las secciones vecinas. */
 .testimonios-fondo--madera::after {
   background:
     linear-gradient(180deg,
@@ -87,10 +71,6 @@
   letter-spacing: .04em;
 }
 
-/* La caja de la escena no se apaga: cuando la escena no se enciende —sin
-   WebGL o con menos movimiento pedido— se queda de bloque suelto y lo unico
-   que lleva dentro es el rotulo, que asi sigue encabezando la lista de
-   tarjetas. Lo que se apaga son sus dos piezas. */
 .testimonios-escena { display: block; }
 .testimonios-texto,
 .testimonios-esfera { display: none; }
@@ -115,12 +95,6 @@
   overflow: hidden;
 }
 .esfera-activa .testimonios-cierre { display: block; }
-/* El cierre es el mismo telon que el de Nosotros antes de las cifras (ver
-   `.ns-hoja` en 24-nosotros-cine.css): dos hojas que entran desde los
-   lados y se juntan en el centro, con el filo de oro de la marca en el
-   canto mientras se mueven. En onix y no en el negro de Nosotros, que lo
-   que viene detras es el cierre de la portada, que arranca en onix
-   (`.cierre-cine-negro`), y el relevo no se ve. */
 .tc-hoja {
   position: absolute;
   top: 0;
@@ -179,7 +153,6 @@
   line-height: 1.65;
   color: var(--texto);
 }
-/* Las mismas comillas de oro que el panel: es la misma cita. */
 .tst-tarjeta blockquote::before,
 .tst-tarjeta blockquote::after {
   color: var(--oro-marca);
@@ -211,10 +184,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100lvh; /* pantalla grande, como todos los pines: ver 05-hero.css */
-  /* El pin mide la pantalla grande y no cambia, pero lo que lleva dentro se
-     centra en lo que se ve con la barra del navegador fuera: si no, la esfera
-     se va hacia abajo y el rotulo se sube. Ver `--sobra-barra` en el 01. */
+  height: 100lvh;
   padding: 0 0 var(--sobra-barra);
   display: flex;
   flex-direction: column;
@@ -222,27 +192,10 @@
   overflow: hidden;
 }
 
-/* Lo unico que el pin guarda por arriba es la barra de navegacion, que es
-   fija y opaca; lo demas se centra en lo que queda. Guardo una temporada
-   ademas el alto del rotulo, que iba colgado del techo en una banda fija: la
-   escena tenia que caber por debajo de el, y en una pantalla baja —un
-   portatil de 1366x768, un monitor de 1280x720— el circulo subia igualmente
-   hasta metersele por debajo a la palabra «Testimonios». Ahora el rotulo va
-   dentro de la escena y baja con ella, asi que no hay nada que esquivar: el
-   circulo se centra de verdad en la pantalla y de paso cabe mas grande. */
 @media (min-width: 992px) {
   .esfera-activa .testimonios-pin { padding-top: var(--alto-navbar); }
 }
 
-/* Con la escena encendida el rotulo es la entradilla de la cita: va en la
-   columna de la izquierda, justo encima de ella, y centrado en esa columna.
-   Fue una banda fija pegada al techo, centrada a lo ancho de la pantalla, y
-   ahi no encabezaba nada: la cita estaba a un lado y el circulo al otro, y
-   el rotulo flotaba en medio del techo por encima de los dos. Estuvo despues
-   a ras del margen de la cita, y cargaba el bloque a la izquierda: la caja
-   acababa en el primer tercio de la columna y encima de las dos lineas largas
-   de la cita quedaba un hueco. Centrado en la columna hace de cabecera de
-   todo el bloque, que es lo que es. */
 .esfera-activa .testimonios-etiqueta {
   padding: 0 0 1.1rem;
   text-align: center;
@@ -261,18 +214,6 @@
   border: 0;
 }
 
-/* Dos columnas: a la izquierda el rotulo y la cita, uno encima de la otra, y
-   a la derecha el circulo, alto de las dos.
-
-   Va en rejilla y no en fila porque el rotulo y la cita tienen que quedar
-   pegados el uno a la otra —son un bloque— mientras el circulo, que mide el
-   doble que los dos juntos, se centra al lado. Las dos filas de `1fr` de los
-   extremos son las que se comen lo que el circulo saca de mas: sin ellas,
-   una fila `auto` que el circulo atraviesa crece con el, y el rotulo se
-   separaria de la cita medio palmo.
-
-   `minmax(0, 46ch)` es el ancho de la cita, y se encoge si no cabe: es lo
-   mismo que hacia `flex: 0 1 46ch`. */
 .esfera-activa .testimonios-escena {
   display: grid;
   grid-template-columns: minmax(0, 46ch) auto;
@@ -285,15 +226,6 @@
 .esfera-activa .testimonios-etiqueta { grid-area: 2 / 1; }
 .esfera-activa .testimonios-texto { grid-area: 3 / 1; display: block; }
 
-/* EL ROTULO NO SE MUEVE. Iba pegado encima de la cita y el par se centraba
-   junto al lado del circulo, asi que cada testimonio lo dejaba a otra altura:
-   una cita de dos lineas lo bajaba y una de cuatro lo subia. Ahora vive en la
-   parte de arriba de la columna, a la altura del canto de arriba del circulo
-   —el disco de delante mide el 80% de la caja de la esfera, asi que ese canto
-   cae a un 10% del lado de la caja—, centrado en la columna, y la cita se
-   centra sola con el circulo por debajo de el. El margen de la cita, igual
-   arriba y abajo, es lo que ocupa el rotulo: la mantiene centrada sin que
-   pueda subirle nunca por encima. */
 @media (min-width: 992px) {
   .esfera-activa .testimonios-escena { grid-template-rows: minmax(0, 1fr); }
   .esfera-activa .testimonios-etiqueta {
@@ -325,16 +257,6 @@
   line-height: 1.45;
   color: var(--marmol);
 }
-/* Y va entre comillas de oro, que es lo que dice que esas palabras son de
-   quien firma y no de la casa. Son las dos, abre y cierra, y van en la linea
-   —no de adorno colgando encima—: con una comilla suelta arriba el texto no
-   quedaba entrecomillado, y en el telefono, donde el adorno no cabia, no
-   quedaba nada.
-
-   El oro es el vivo: el panel cae sobre la madera oscura de la escena. Y va
-   plano y no en degradado porque son dos glifos de nada; un degradado de
-   cuatro tonos en un signo de puntuacion no se ve, y si se viera seria un
-   gradiente en mitad de una palabra. */
 .tst-cita::before,
 .tst-cita::after {
   color: var(--oro-marca);
@@ -413,28 +335,12 @@
   box-shadow: 0 0 0 2px rgba(212, 175, 55, .45);
 }
 
-/* Lo que mide el lienzo, que es cuadrado; el disco de delante son cuatro
-   quintos de eso (0,798 medido, y 0,88 en el telefono, que ahi la camara va
-   mas cerca).
-
-   Manda el que menos deja de los tres: el ancho, para que el circulo crezca
-   con la pagina sin comerse la columna de la cita; el alto, que es lo que de
-   verdad lo limita —la cuenta descuenta la barra de navegacion y deja un
-   dedo de aire por arriba y por abajo, y lo que queda se divide por lo que
-   el disco ocupa del lienzo—; y un techo en pixeles, que en un monitor muy
-   grande un circulo de mil pixeles deja de ser un retrato y pasa a ser una
-   pared. */
-/* El lado de la caja de la esfera, en una variable: lo usa tambien el
-   rotulo de Testimonios para ponerse a la altura del circulo. */
 .testimonios-escena { --tst-caja: min(63vw, calc((100svh - var(--alto-navbar) - 3.5rem) / .8), 1060px); }
 .testimonios-esfera {
   position: relative;
   flex: 0 0 auto;
   width: var(--tst-caja);
   aspect-ratio: 1;
-  /* Lo que mide el disco de delante en pixeles. Lo calcula la esfera y lo
-     reescribe aqui en cuanto existe (`fijarDisco`); esta cifra es solo el
-     punto de partida. */
   --tst-lado: 300px;
 }
 .testimonios-lienzo {
@@ -442,67 +348,20 @@
   width: 100%;
   height: 100%;
   outline: none;
-  /* La mascara apaga el lienzo hacia fuera para que los discos no acaben en
-     un canto. Sus topes van con el tamano del disco de delante: el de ahora
-     mide tres cuartos del alto del lienzo, o sea 37% de radio, y los topes de
-     un gradiente redondo se miden contra la media diagonal (70,7%), asi que
-     el negro macizo tiene que llegar al 53% largo. Va al 58%, con un dedo de
-     aire. */
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, rgba(0, 0, 0, .8) 72%, rgba(0, 0, 0, .3) 86%, transparent 98%);
   mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, rgba(0, 0, 0, .8) 72%, rgba(0, 0, 0, .3) 86%, transparent 98%);
 }
 
-
-/* ===========================================================================
-   Los testimonios en video.
-
-   Los ocho son videos verticales, servidos desde el propio sitio
-   (`video-testimonios/`, ver video-testimonio.js). El video va por fuera
-   del lienzo de WebGL, en un circulo puesto justo encima del disco que esta
-   de frente. Su tamano no
-   esta escrito aqui: lo mide la propia esfera y lo deja en `--tst-lado`,
-   para que no haya dos cifras que mantener el dia que cambie el encuadre.
-
-   EL VIDEO VA MAS ANCHO QUE EL CIRCULO. Un video vertical metido entero en
-   un circulo se queda en una tira: se ve el suelo, se ve el techo y la
-   persona sale diminuta. Aqui va al reves —el video es mas ancho que el
-   circulo y el circulo recorta—, y ademas se mueve hasta que la persona
-   queda centrada, de la cabeza a las rodillas. Recorta por arriba y por
-   abajo, que es justo lo que sobra.
-
-   Cuando los videos eran de YouTube estuvo acercado a 1,5, para esconder
-   los botones de Shorts del canto derecho, y asi solo cabia la persona de
-   la cabeza al pecho. Hoy el circulo se abre hasta casi el ancho del video:
-   a 1,04 no asoma nada por los cantos.
-
-   Hubo en medio una version con tarjetas de 9:16 en vez de discos, que era lo
-   que pedia un video vertical entero. El circulo es lo que quiso la clinica y
-   con el video recortado dentro ya no hace falta la tarjeta.
-
-   La misma pieza aparece dos veces: aqui y en la tarjeta de la lista, que es
-   lo que se ve cuando la escena no se enciende (sin WebGL o con menos
-   movimiento pedido). Alli no se reproduce nada solo: hay un enlace con el
-   fotograma detras.
-   =========================================================================== */
 .tst-video {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 3;
-  /* Un pelo mas que el disco de debajo: asi nunca asoma un filo de la foto
-     por el borde. */
   width: calc(var(--tst-lado) + 2px);
   height: calc(var(--tst-lado) + 2px);
   transform: translate(-50%, -50%);
   opacity: 0;
   pointer-events: none;
-  /* Se va deprisa y vuelve despacio. Mientras la esfera gira no puede quedar
-     un circulo flotando por delante —eso es lo que se veia feo—, y cuando la
-     esfera se para hay tiempo de sobra para que entre con calma.
-
-     Se esconde con la opacidad y no con `visibility`, que es lo que deja
-     que la vuelta tambien sea una transicion. Escondido no suena: la esfera
-     lo pausa al ponerse a girar (video-testimonio.js, `apagar`). */
   transition: opacity .16s ease;
 }
 .tst-con-video .tst-video {
@@ -518,29 +377,10 @@
   overflow: hidden;
   border-radius: 50%;
   background: #000000;
-  /* El aro de oro del circulo: 2px del oro de la marca y un halo muy bajo. */
   box-shadow: 0 0 0 2px rgba(212, 175, 55, .92), 0 0 34px rgba(212, 175, 55, .16),
               0 14px 40px rgba(0, 0, 0, .5);
 }
 
-/* EN PAUSA, EL ARO RESPIRA Y SUELTA UNA ONDA. Cada video empieza en pausa
-   (video-testimonio.js), asi que esto es lo que se ve cada vez que la esfera
-   se para en un testimonio: el aro se aviva y se apaga despacio, y de el
-   sale una onda fina que se abre y se desvanece. Es lo que dice que ahi hay
-   algo esperando a que le den al play.
-
-   Tranquilo a proposito. Antes el aro latia cada 1,2 s y soltaba dos ondas
-   de 2px cada 2,4 s; para un aviso que sale de vez en cuando valia, pero
-   estando ahi siempre se veia nervioso. Ahora es una respiracion de 4 s y
-   una sola onda de 1px, que se abre menos (1,12).
-
-   Son dos capas que solo cambian de opacidad y de escala, que el navegador
-   mueve sin repintar: el brillo (`::before`, por encima del aro del marco;
-   es solo sombra por fuera, asi que no tapa la cara) y la onda (`::after`,
-   por detras del circulo, asi que solo se ve por fuera). El latido de antes
-   animaba la sombra del marco y lo repintaba en cada fotograma.
-   `video-parado` lo pone video-testimonio.js en la pieza de dentro; el
-   `:has()` lo sube hasta aqui. */
 .tst-video::before,
 .tst-video::after {
   content: '';
@@ -571,27 +411,6 @@
   100% { transform: scale(1.12); opacity: 0; }
 }
 
-/* El video dentro del circulo: un poco mas ancho que el (`--tst-zoom`) y
-   subido hasta que el punto que se quiere ver queda en el centro
-   (`--tst-foco`, su altura en el fotograma, contada de arriba abajo). Cada
-   testimonio encuadra a su persona de la cabeza a las rodillas (ver el
-   comentario de la lista en index.html).
-
-   Las tres cifras son las mismas que usa el atlas de la esfera para recortar
-   la foto del disco (`ZOOM_VIDEO`, `FOCO_VIDEO` y `EJE_VIDEO` en
-   testimonios-esfera.js): si se cambia una hay que cambiarla en los dos
-   sitios, o el disco y el video ensenaran trozos distintos del fotograma y el
-   relevo entre ellos se vera. Los valores de aqui son los de reserva; los de
-   cada testimonio los escribe el guion en este mismo elemento, sacados de su
-   `data-foco` y su `data-eje`.
-
-   Las dos cuentas son la misma: el alto del video es `lado * zoom * 16/9` y
-   su ancho `lado * zoom`; el punto que se quiere ver cae a `foco` de ese alto
-   y a `eje` de ese ancho, y tiene que quedar a medio circulo del borde.
-
-   El `clamp` es para que el eje no se salga de lo que el zoom permite: mas
-   alla de `1 - 1/(2*zoom)` el video dejaria de cubrir el circulo por un
-   lado. */
 .tst-video__medio {
   --tst-zoom: 1.1;
   --tst-foco: .55;
@@ -606,10 +425,6 @@
   width: calc(var(--tst-lado) * var(--tst-zoom));
   aspect-ratio: 9 / 16;
 }
-/* El fotograma, por encima del video hasta que rueda: antes del primer
-   fotograma un <video> es un recuadro negro. Se va en cuanto el video da
-   (`video-listo`) y vuelve de golpe al pausar, que es el mismo fotograma que
-   pinta el disco de la esfera. */
 .tst-video__poster {
   position: absolute;
   inset: 0;
@@ -621,8 +436,6 @@
 }
 .video-listo .tst-video__poster { opacity: 0; }
 .tst-video__medio:not(.video-listo) .tst-video__poster { transition: none; }
-/* El video de la casa (video-testimonio.js), del tamano de la caja y
-   recortado igual que el fotograma, para que el relevo no se note. */
 .tst-video__clip {
   position: absolute;
   inset: 0;
@@ -632,8 +445,6 @@
   display: block;
   background: #000;
 }
-/* El escudo: una capa transparente por delante del video, que es donde se
-   toca. El toque lo recoge video-testimonio.js y pausa o suelta el video. */
 .tst-video__escudo {
   position: absolute;
   inset: 0;
@@ -642,15 +453,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* El boton de play, en oro y en el centro del circulo.
-
-   Ningun video arranca solo: el testimonio se ve cuando alguien lo pide, y
-   el toque es tambien lo que deja que suene.
-
-   Sale mientras el video esta en pausa, que es como empieza cada uno
-   (`video-parado`, que pone video-testimonio.js), y se queda mientras se
-   pide (`video-pidiendo`), con un filo de oro dandole la vuelta hasta que
-   llega el primer fotograma. */
 .tst-video__play {
   position: absolute;
   left: 50%;
@@ -699,7 +501,7 @@
 .tst-video__play svg {
   width: 1.7rem;
   height: 1.7rem;
-  margin-left: .18rem; /* el triangulo pesa a la izquierda */
+  margin-left: .18rem;
   fill: currentColor;
 }
 .tst-video__play:hover,
@@ -708,11 +510,6 @@
   color: var(--onix);
 }
 
-/* El boton del sonido, colgando por debajo del circulo. Dentro se lo comeria
-   el recorte: un circulo no tiene esquinas donde meter un boton sin que pise
-   la cara. Empieza CON sonido: el video arranca dentro del toque del play, y
-   ahi todos los navegadores lo dejan sonar. El boton es para quien lo quiera
-   callado, y la eleccion vale para los demas testimonios. */
 .tst-video__son {
   position: absolute;
   left: 50%;
@@ -752,15 +549,8 @@
   transform: translateX(-50%) scale(1.06);
 }
 
-/* La cita va en cursiva. Y va entrecomillada, que ahora SI es una cita: son
-   las palabras que cada uno dice en su video, no un renglon de la casa
-   presentandolo. */
 .tst-cita { font-style: italic; }
 
-/* ---- La misma pieza en la tarjeta de la lista ----
-   Aqui no se reproduce nada solo. Es un enlace con el fotograma detras que
-   lleva al video en el canal de YouTube de la clinica: esta version es la
-   de sin WebGL o con menos movimiento, y video-testimonio.js no la toca. */
 .tst-tarjeta__fotos {
   position: relative;
   display: flex;
@@ -803,7 +593,6 @@
   background: rgba(10, 8, 6, .52);
   transition: background .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
 }
-/* El triangulo, recortado y no dibujado con bordes: asi crece con el aro. */
 .tst-play__aro::after {
   content: '';
   position: absolute;
@@ -842,13 +631,6 @@
   .tst-play__aro { transition: none; }
 }
 
-/* En el telefono los tres se apilan: rotulo, circulo y cita. El orden no es
-   el del documento —ahi el rotulo y la cita van juntos, que es como se leen
-   en el ordenador— y lo pone `order`.
-
-   El rotulo lleva su propio aire por debajo: pegado al techo como iba antes,
-   en un telefono real —donde la pantalla util es la pequena, con la barra
-   del navegador fuera— el canto del circulo le llegaba a tocar la caja. */
 @media (max-width: 991.98px) {
   .testimonios-cine.esfera-activa { height: var(--alto-cine, 570vh); }
   .testimonios-etiqueta { font-size: clamp(1.45rem, 6.2vw, 2.1rem); }
@@ -864,19 +646,6 @@
     gap: clamp(.5rem, 1.6vh, 1.1rem);
     padding: calc(var(--alto-navbar) + 10px) clamp(1.2rem, 6vw, 2.5rem) 34px;
   }
-  /* Y el circulo mide lo que quede: la pantalla pequena menos lo que se
-     llevan la barra de navegacion (72), el rotulo con su aire (61), los dos
-     respiros (24), la cita con su firma y sus pasos (170) y el suelo (34).
-     Son 361, contados uno a uno y medidos despues en pantalla.
-
-     Va escrito asi y no en tanto por ciento de pantalla, que es lo que hacia
-     que en una pantalla corta el circulo se comiera al rotulo. Y la pantalla
-     es la PEQUENA (`svh`), que es lo que se ve con la barra del navegador
-     fuera; el pin mide la grande, pero lo que lleva dentro se centra en la
-     pequena.
-
-     El techo de 620 es para la tableta, que ahi el alto sobra y el circulo
-     se iba a seiscientos y pico. */
   .esfera-activa .testimonios-esfera {
     order: -1;
     width: min(132vw, calc(100svh - 362px), 620px);
@@ -885,10 +654,6 @@
     order: 0;
     max-width: min(40ch, 100%);
     text-align: center;
-    /* Con su sitio guardado: la pila rotulo-circulo-cita va centrada en la
-       pantalla, y con la cita midiendo lo que midiera cada testimonio la pila
-       entera subia o bajaba, y el rotulo con ella. 11rem es la cita mas
-       larga con su firma y sus pasos, medida de 360 a 820 de ancho. */
     min-height: 11rem;
   }
   .tst-cita { margin: .6rem 0 1rem; font-size: clamp(1rem, 3.6vw, 1.3rem); }
@@ -899,9 +664,6 @@
 @media (max-width: 991.98px) and (max-height: 700px) {
   .esfera-activa .testimonios-escena { padding: calc(var(--alto-navbar) + 6px) 1.2rem 24px; }
   .esfera-activa .testimonios-etiqueta { margin-bottom: .7rem; }
-  /* Aqui el reparto es mas corto —menos relleno arriba y abajo, menos aire
-     bajo el rotulo, la cita en un cuerpo mas chico—, asi que al circulo le
-     toca mas de lo que queda. */
   .esfera-activa .testimonios-esfera { width: min(132vw, calc(100svh - 344px), 620px); }
   .tst-cita { font-size: 1rem; }
   .tst-pasos { margin-top: .2rem; }
@@ -925,8 +687,6 @@
 @media (prefers-reduced-motion: reduce) {
   .testimonios-cine.esfera-activa { height: auto; }
   .esfera-activa .testimonios-pin { position: static; height: auto; }
-  /* La caja se queda con el rotulo dentro, que es el titulo de la seccion;
-     lo que se va es la escena. */
   .esfera-activa .testimonios-escena { display: block; padding: 0; }
   .esfera-activa .testimonios-etiqueta {
     padding: 0 2rem 1.4rem;

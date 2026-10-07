@@ -8,9 +8,6 @@
   <script data-movimiento>(function(){var m=window.matchMedia;if(!m)return;window.matchMedia=function(q){var c=String(q).replace(/\s+/g,"").toLowerCase();return m.call(window,c==="(prefers-reduced-motion:no-preference)"?"all":c==="(prefers-reduced-motion:reduce)"||c==="(prefers-reduced-motion)"?"not all":q)}})();</script>
 
   <script>
-    /* Solo puede apagar el umbral, nunca encenderlo: si esto falla, el umbral
-       sale igual y se retira solo. Con ancla no sale — se viene a un apartado
-       concreto, no a entrar en la seccion. */
     try { if (location.hash) document.documentElement.classList.add('sin-umbral'); } catch (e) {}
   </script>
 
@@ -181,8 +178,6 @@
              sizes="114px" width="240" height="93" alt="Smilers Dental Clinique" decoding="async" fetchpriority="high">
       </a>
 
-      <!-- El aval tambien lleva a la portada: es un logo en la barra, y en una
-           barra los logos se pulsan. -->
       <a class="marca-oad" href="/">
         <img src="imagenes/logo-oad-440.webp?v=e04503f687"
              srcset="imagenes/logo-oad-440.webp?v=e04503f687 440w, imagenes/logo-oad-880.webp?v=ce6fc69da7 880w"
@@ -694,14 +689,7 @@
 
           <div class="ns-carta__hoja">
             <div class="ns-carta__panel">
-              <!-- La carta entera cuelga de aqui, y es esta pieza la que se
-                   funde con `--k-texto`: una sola capa que componer por
-                   fotograma en lugar de una por parrafo. -->
               <div class="cb-tinta">
-                <!-- La franja del logo. El de la barra, el de fondo oscuro:
-                     oro con la muela de plata y "Dental Clinique" en blanco.
-                     Sobre el marmol es el que vive; el otro lleva ese renglon
-                     en gris oscuro y aqui se apagaba. -->
                 <span class="cb-franja cb-logo">
                   <span class="tarjeta-piedra" aria-hidden="true"><img src="imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
                   <img src="imagenes/logo-smilers-oro-440.webp?v=3c8ac94670"
@@ -725,9 +713,6 @@
                   <span class="cb-rub__filo" aria-hidden="true"></span>
                 </div>
 
-                <!-- La franja del nombre, y solo el nombre: la firma es un
-                     trazo de tinta y el cargo un renglon de oro fino, y los
-                     dos se leen mejor sobre el papel. -->
                 <span class="cb-franja cb-nombre">
                   <span class="tarjeta-piedra" aria-hidden="true"><img src="imagenes/fondos/marmol-negro.webp?v=50f2d536a8" width="1920" height="800" alt="" loading="lazy" decoding="async"></span>
                   <b>Dr. Fernando Espín, MSc. Esp.</b>
@@ -803,18 +788,10 @@
 
   <footer class="footer">
     <div class="container">
-      <!-- Las tres columnas no van a tercios: la de la ficha se lleva mas
-           ancho que las otras dos (ver `.pie-rejilla` en el 10). -->
       <div class="row gx-4 gy-5 pie-rejilla">
 
         <div class="col-lg-4">
-          <!-- Los datos de la clinica van dentro de un recuadro de oro: los
-               dos logos, la presentacion, las direcciones y los botones de
-               redes son UNA ficha, y las otras dos columnas son dos
-               herramientas. -->
           <div class="pie-ficha">
-            <!-- La marca de la casa y el aval, como en la barra: el mismo filo
-                 de oro en medio y los dos del mismo alto. -->
             <div class="marca-pie mb-3">
               <a href="/" class="marca marca-footer">
                 <img class="marca-logo" src="imagenes/logo-smilers-oro-440.webp?v=3c8ac94670" width="440" height="170"
@@ -889,9 +866,6 @@
         </div>
 
         <div class="col-lg-4" id="contacto">
-          <!-- La cabecera y su linea, y al lado el QR de WhatsApp Business: en
-               escritorio es para escanearlo con el telefono; en el telefono,
-               tocandolo se abre el mismo chat. -->
           <div class="pie-escribenos">
             <div class="pie-escribenos__texto">
               <h3 class="footer-titulo">Escríbenos</h3>
@@ -946,8 +920,6 @@
     <i class="fa-brands fa-whatsapp"><svg class="icono" aria-hidden="true" focusable="false"><use href="#brands-whatsapp"></use></svg></i>
   </a>
 
-  <!-- El boton de cookies vive a la izquierda, lejos del de WhatsApp, y nace
-       escondido: lo enciende consentimiento.js al arrancar. -->
   <button type="button" class="btn-cookies" data-preferencias-cookies hidden
           aria-label="Preferencias de cookies">
     <svg class="icono" aria-hidden="true" focusable="false"><use href="#solid-cookie"></use></svg>

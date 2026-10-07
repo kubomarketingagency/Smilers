@@ -1,39 +1,4 @@
 #!/usr/bin/env node
-/*
- * Prepara el sitio para publicar. Una sola orden, siempre, antes de commitear
- * cualquier cambio en estilos/, scripts/, imagenes/, fuentes/ o video-hero/:
- *
- *     node herramientas/construir.js
- *
- * Y para comprobar sin escribir nada (sale con 1 si algo esta desactualizado):
- *
- *     node herramientas/construir.js --verificar
- *
- * Lo que hace en cada pagina:
- *
- *  1. Estilos. Junta en orden las hojas que lista `<style data-hojas="…">`, las
- *     minifica y las escribe dentro de esa misma etiqueta. La pagina no pide ni
- *     una hoja aparte, asi que ninguna peticion bloquea el primer pintado. El
- *     orden de la lista es el orden de la cascada, igual que antes lo era el de
- *     las <link>.
- *  2. Tipografias. Rellena `<script data-fuentes>`: en Windows y Linux cambia la
- *     serie de fuentes/ por la de fuentes/hinting/, que es la que Google Fonts
- *     manda a esas plataformas. Ver estilos/00-fuentes.css.
- *  3. Guiones. Junta en orden los que lista `data-guiones`, los minifica y
- *     escribe el paquete que esa etiqueta pide con `defer` (paquetes/*.js).
- *  4. Sello. Pone `?v=<hash del contenido>` a cada recurso local que pide la
- *     pagina: `href`, `src`, `srcset`, `data-*` y las `url()` de los estilos.
- *     Es lo que permite cachear todo un ano sin congelar nada (ver CACHE.md).
- *  5. Movimiento. Quita de los estilos lo que se apaga con el ajuste de
- *     "reducir movimiento" del sistema y rellena `<script data-movimiento>`
- *     para que los guiones hagan lo mismo: la pagina se mueve igual en todos
- *     los dispositivos. Ver RESPETAR_MENOS_MOVIMIENTO.
- *
- * La minificacion es a proposito conservadora: quita comentarios y espacios
- * que no significan nada y no toca un solo nombre, numero ni color. En los
- * guiones, ademas, comprueba que la secuencia de piezas que ve el interprete
- * es identica antes y despues, y que ningun salto de linea desaparece.
- */
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -47,39 +12,8 @@ const SOLO_VERIFICAR = process.argv.includes('--verificar');
 const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html', 'privacidad.html'];
 const PAQUETES = 'paquetes';
 
-/* EL MOVIMIENTO, EN TODOS LOS DISPOSITIVOS (desde el 2026-10-01).
-
-   Las hojas y los guiones preguntan por `prefers-reduced-motion`, que es el
-   ajuste de "reducir movimiento" del sistema, y con el puesto la pagina se
-   quedaba quieta entera: sin el video de bienvenida, sin las escenas
-   clavadas, sin las entradas de las secciones, con el carrusel parado y el
-   marco de oro puesto de golpe. Plana.
-
-   Ese ajuste no lo pone solo quien lo necesita. Windows lo da por puesto en
-   cuanto estan apagados los "efectos de animacion", que es lo normal en los
-   ordenadores de una universidad o de una oficina, en una sesion de
-   Escritorio remoto o con "Ajustar para obtener el mejor rendimiento"; en el
-   iPhone es "Reducir movimiento" y en Android "Quitar animaciones", que mucha
-   gente enciende para ahorrar bateria. En esos equipos la web salia plana
-   desde la primera visita, y parecia un fallo de los dispositivos nuevos.
-
-   El cliente quiere la pagina igual en todos. Con esto en false, la
-   construccion quita de las hojas los bloques `@media
-   (prefers-reduced-motion: reduce)` y deja los de `no-preference` en
-   `@media all`, y rellena el `<script data-movimiento>` de cada pagina, el
-   primero del <head>, para que a los guiones `matchMedia` les conteste lo
-   mismo: sin preferencia. Las dos cosas van juntas y no se pueden separar:
-   una escena clavada por las hojas pero sin el guion que la mueve se queda
-   a medias.
-
-   Lo escrito para menos movimiento sigue en las hojas y en los guiones tal
-   cual. Poner esto en true y construir lo devuelve todo como estaba. */
 const RESPETAR_MENOS_MOVIMIENTO = false;
 
-/* El guion que va en `<script data-movimiento>`. Solo cambia las preguntas
-   por `prefers-reduced-motion` a solas, que son las que hace el sitio; las
-   demas consultas pasan tal cual. `all` y `not all` son las consultas que
-   siempre y nunca se cumplen. */
 const GUION_MOVIMIENTO =
   '(function(){var m=window.matchMedia;if(!m)return;window.matchMedia=function(q){' +
   'var c=String(q).replace(/\\s+/g,"").toLowerCase();' +
@@ -89,8 +23,6 @@ const GUION_MOVIMIENTO =
 const SELLABLES = /\.(css|js|mjs|webp|avif|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i;
 const TEXTO = /\.(css|js|mjs|svg)$/i;
 
-/* Lo que .vercelignore deja fuera del despliegue. Una pagina no puede pedir
-   nada de aqui: en local se veria y publicado daria 404. */
 const NO_PUBLICADO = /^(estilos|scripts|herramientas|vendor)\//;
 
 const pendientes = new Map();
@@ -99,8 +31,6 @@ const faltantes = [];
 const prohibidos = [];
 const desactualizados = [];
 const informe = [];
-
-/* ---- archivos y sellos --------------------------------------------------- */
 
 function leerTexto(rel) {
   return fs.readFileSync(path.join(RAIZ, rel), 'utf8').replace(/^\ufeff/, '').split('\r\n').join('\n');
@@ -135,13 +65,6 @@ function sellarUrl(url, quien) {
   return ruta + '?v=' + sello(rel);
 }
 
-/* `data-perezoso-*` son los archivos que una pagina pide tarde, desde un
-   guion (el aviso de cookies: terceros/cookieconsent/). Van en una <meta>
-   para que el sello les llegue igual que a un `src`. Y `data-video` es el
-   video de cada testimonio (video-testimonios/), que lo pone el guion en su
-   <video> cuando la esfera se para en el, y `data-foto` su fotograma, que
-   pinta la esfera y se ve hasta que el video rueda: sin sello, al cambiar
-   un fotograma quien ya habia entrado seguia viendo el viejo un ano. */
 const ATRIBUTO_SIMPLE = /\b(href|src|data-src-escritorio|data-src-movil|data-anim-escritorio|data-anim-movil|data-antes|data-despues|data-perezoso-js|data-perezoso-css|data-video|data-foto)="([^"]*)"/g;
 const ATRIBUTO_LISTA = /\b(srcset|imagesrcset|data-fotos)="([^"]*)"/g;
 
@@ -166,8 +89,6 @@ function sellarHtml(html, pagina) {
   }).join('');
 }
 
-/* Las url() de una hoja son relativas a la hoja; dentro del HTML pasan a ser
-   relativas a la pagina, que esta en la raiz. */
 function reescribirUrls(css, relHoja, pagina) {
   const carpeta = path.posix.dirname(relHoja);
   return css.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g, function (todo, comilla, url) {
@@ -179,15 +100,6 @@ function reescribirUrls(css, relHoja, pagina) {
   });
 }
 
-/* ---- minificar CSS ------------------------------------------------------- */
-
-/* Quita comentarios y espacios. Un espacio se va solo si toca `{ } ; ,`, si
-   va detras de `(` o de `:`, o delante de `)` o de `!`: en ninguno de esos
-   sitios significa nada. Nunca se toca el espacio alrededor de `+ - > ~`
-   (en calc() es obligatorio), ni el de delante de `:` (en un selector es el
-   combinador de descendiente) o de `(` (`and (` en una media query). Las
-   cadenas y las url() pasan tal cual. Los comentarios `/*!` (licencias) se
-   quedan. */
 function minificarCSS(css) {
   let salida = '';
   let espacio = false;
@@ -258,13 +170,10 @@ function minificarCSS(css) {
   return salida.trim();
 }
 
-/* ---- minificar JS -------------------------------------------------------- */
-
 const PUNTUACION = ['>>>=', '...', '===', '!==', '**=', '<<=', '>>=', '>>>', '&&=', '||=', '??=',
   '=>', '==', '!=', '<=', '>=', '&&', '||', '??', '?.', '++', '--', '+=', '-=', '*=', '/=', '%=',
   '&=', '|=', '^=', '<<', '>>', '**'];
 
-/* Detras de estas palabras una barra abre una expresion regular, no divide. */
 const ANTES_DE_REGEX = new Set(['return', 'typeof', 'case', 'do', 'else', 'in', 'instanceof',
   'new', 'delete', 'void', 'throw', 'yield', 'await', 'of']);
 
@@ -409,9 +318,6 @@ function trocearJS(s) {
   return piezas;
 }
 
-/* Un espacio entre dos piezas solo se quita si una de las dos es uno de estos
-   signos: pegados a otra pieza no forman nunca un signo distinto. Los saltos
-   de linea no se quitan jamas, que de ellos depende donde acaba cada frase. */
 const PEGA_JS = '{}()[],;:=?*%^~&|';
 
 function minificarJS(fuente, nombre) {
@@ -438,8 +344,6 @@ function minificarJS(fuente, nombre) {
     separador = '';
   }
 
-  /* La comprobacion: las mismas piezas, en el mismo orden, y un salto de
-     linea delante de las mismas. */
   function huella(codigo) {
     const lista = [];
     let salto = false;
@@ -466,8 +370,6 @@ function minificarJS(fuente, nombre) {
   return salida;
 }
 
-/* ---- las paginas --------------------------------------------------------- */
-
 function listaDe(valor) {
   return valor.split(/\s+/).filter(Boolean);
 }
@@ -475,22 +377,6 @@ function listaDe(valor) {
 function kb(bytes) { return (bytes / 1024).toFixed(1).padStart(6) + ' KB'; }
 function br(texto) { return zlib.brotliCompressSync(Buffer.from(texto, 'utf8')).length; }
 
-/* Las unidades de pantalla nuevas —`svh`, `lvh`, `dvh`— las entienden los
-   navegadores desde 2022 (Chrome 108, Safari 15.4, Firefox 101). Uno anterior
-   —un Mac que ya no actualiza, un Windows con el navegador congelado— tira la
-   declaracion entera por no reconocer la unidad, y con ella la altura de los
-   pines de las escenas: la pagina se queda sin alto y se desmonta. Por eso
-   cada declaracion que las use sale dos veces, primero con `vh` y luego tal
-   cual. El navegador que entiende las dos se queda con la segunda, que es
-   la de siempre; el que no, con la primera, que es casi lo mismo.
-
-   Se hace aqui y no a mano en las hojas porque son cuarenta sitios y el
-   siguiente que escriba un `svh` no se va a acordar. Las variables
-   (`--algo: 46svh`) no: un navegador viejo acepta cualquier valor en una
-   variable, se quedaria con la segunda igual y el respaldo no serviria de
-   nada. Va despues de
-   minificar: ya no hay comentarios ni saltos, y cada declaracion va entre
-   un `{` o un `;` y el siguiente `;` o `}`. */
 function conRespaldoVh(css) {
   return css.replace(/([{;])([a-z][a-z-]*):([^;{}]*\d(?:s|l|d)vh\b[^;{}]*)(?=[;}])/g,
     function (_t, antes, prop, valor) {
@@ -498,10 +384,6 @@ function conRespaldoVh(css) {
     });
 }
 
-/* Donde se cierra el bloque cuya llave abre en `abre`, en una hoja ya
-   minificada. Cuenta llaves saltandose las cadenas, los comentarios que
-   sobreviven (los `/*!`) y las url() sin comillas, que pueden llevar
-   cualquier cosa dentro. */
 function finDeBloque(css, abre) {
   let profundidad = 0;
   for (let k = abre; k < css.length; k++) {
@@ -533,12 +415,6 @@ function finDeBloque(css, abre) {
   throw new Error('llave sin cerrar');
 }
 
-/* Ver RESPETAR_MENOS_MOVIMIENTO. Los bloques de `reduce` se van enteros, con
-   todo lo de dentro, y los de `no-preference` se quedan en `@media all`, que
-   no les cambia el sitio en la cascada. Solo conoce esas dos formas a solas,
-   que son las que hay; si una hoja trae otra (con `and`, con `not`, la corta
-   sin valor), para la construccion en vez de dejarla a medias. Va despues de
-   minificar: cada bloque llega escrito siempre igual. */
 function conMovimiento(css, hoja) {
   if (RESPETAR_MENOS_MOVIMIENTO) return css;
   const REDUCIR = '@media (prefers-reduced-motion:reduce){';
@@ -566,12 +442,6 @@ function construirEstilos(hojas, pagina) {
   return { css: css, fuente: fuente };
 }
 
-/* El guion de las tipografias. Hace dos cosas, las dos segun la plataforma:
-   precarga los archivos que la pagina pide en `data-precargar` (para que
-   lleguen antes de pintar y el texto no salte al cambiar de letra) y, en
-   Windows y Linux, cambia la serie por la de fuentes/hinting/. Tiene que ir
-   por guion porque ni una <link rel="preload"> ni una @font-face saben en que
-   sistema estan. */
 function guionFuentes(hojas, pagina, precargar) {
   if (!hojas.includes('estilos/00-fuentes.css')) return '';
   const serie = leerTexto('estilos/00-fuentes.css').replace(/\.\.\/fuentes\//g, '../fuentes/hinting/');
@@ -612,9 +482,6 @@ function procesarPagina(pagina) {
   const original = fs.readFileSync(ruta, 'utf8');
   let html = original;
   const fila = { pagina: pagina };
-  /* Lo que se escribe dentro de la pagina lleva sus mismos saltos de linea
-     (en el disco los HTML van en CRLF): el comentario de licencia de
-     Bootstrap tiene varias lineas. */
   const NL = original.includes('\r\n') ? '\r\n' : '\n';
   const conSaltos = function (texto) { return NL === '\n' ? texto : texto.replace(/\r?\n/g, NL); };
 
@@ -635,8 +502,6 @@ function procesarPagina(pagina) {
     return apertura + guionFuentes(hojas, pagina, lista ? listaDe(lista[1]) : []) + cierre;
   });
 
-  /* El guion del movimiento tiene que correr antes que cualquier otro que
-     pregunte por el: va el primero de la pagina. Ver RESPETAR_MENOS_MOVIMIENTO. */
   const reMovimiento = /(<script\b[^>]*\bdata-movimiento\b[^>]*>)[\s\S]*?(<\/script>)/g;
   const movimientos = html.match(reMovimiento) || [];
   if (movimientos.length !== 1 || html.indexOf('<script') !== html.indexOf(movimientos[0])) {
@@ -661,10 +526,6 @@ function procesarPagina(pagina) {
     fila.jsBr = br(r.js);
   }
 
-  /* Los paquetes perezosos: los que la pagina no pide al cargar sino mas
-     tarde, desde un guion, y solo si le hacen falta (el aviso de cookies).
-     Se declaran en una <meta> con su lista y su destino; se construyen igual
-     que el paquete principal y el sello les llega por `data-perezoso-js`. */
   const rePerezosos = /<meta\b[^>]*\bdata-guiones-perezosos="([^"]*)"[^>]*>/g;
   (html.match(rePerezosos) || []).forEach(function (etiqueta) {
     const src = (etiqueta.match(/\bdata-perezoso-js="([^"?]+)/) || [])[1];
@@ -683,8 +544,6 @@ function procesarPagina(pagina) {
     if (!SOLO_VERIFICAR) fs.writeFileSync(ruta, html, 'utf8');
   }
 }
-
-/* ---- adelante ------------------------------------------------------------ */
 
 PAGINAS.forEach(procesarPagina);
 

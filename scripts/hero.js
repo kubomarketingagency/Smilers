@@ -200,10 +200,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var SALE  = 2;
     var revelado = false;
 
-    /* Detras de los testimonios el cierre va montado sobre su ultima
-       pantalla (ver 09-cierre-cta.css) y sube escondido; se ve desde que se
-       clava, que es justo cuando los testimonios acaban con las hojas
-       cerradas. El pixel de holgura es por el redondeo del `lvh`. */
     var clavado = null;
 
     function actualizarCierre() {
@@ -224,14 +220,8 @@ document.addEventListener('DOMContentLoaded', function () {
       envoltorio.classList.toggle('cc-velado', !revelado);
     }
 
-    /* `cc-montado` es lo que monta el cierre sobre los testimonios: sin este
-       guion no se monta, y la pregunta nunca se queda escondida. */
     envoltorio.classList.add('cc-velado', 'cc-montado');
 
-    /* El punto de Contacto del riel lateral (riel.js). Montado, el cierre no
-       se ve hasta que se clava y ha corrido ENTRA pixeles: antes esta
-       escondido detras de la ultima pantalla de los testimonios, y llevar a
-       su arranque era llevar a una pantalla negra. */
     envoltorio.smilersRiel = {
       destino: function () { return envoltorio.getBoundingClientRect().top + window.scrollY + 40; },
       desde: function () { return envoltorio.getBoundingClientRect().top + window.scrollY + ENTRA; }
@@ -243,8 +233,6 @@ document.addEventListener('DOMContentLoaded', function () {
       guarda: envoltorio,
       alCambiarVisibilidad: function (dentro) {
 
-        /* Fuera de pantalla se para la cinta del collage y se sueltan las
-           capas: ver 09-cierre-cta.css. */
         envoltorio.classList.toggle('cc-en-juego', dentro);
         var valor = dentro ? 'opacity' : '';
         negro.style.willChange = valor;
@@ -266,16 +254,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function esperar(ms, fn) { temporizadores.push(setTimeout(fn, ms)); }
 
-    /* Al acabar de irse avisa: el aviso de cookies espera a que el video de
-       bienvenida haya terminado y desaparecido para no taparlo ni competir
-       con el (ver consentimiento.js). La marca en `window` es para quien
-       llegue a escuchar tarde. */
     function retirarSplash() {
       if (retirado) return;
       retirado = true;
       temporizadores.forEach(clearTimeout);
       splash.classList.add('oculto');
-      // El marco de oro del hero espera a esto para dibujarse (05-hero.css).
       document.documentElement.classList.add('splash-fuera');
       setTimeout(function () {
         splash.remove();
@@ -284,11 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 700);
     }
 
-    /* Plan B: la misma animacion como imagen animada (WebP, ya a la
-       duracion del splash). El iPhone no deja arrancar un video solo con el
-       ahorro de bateria puesto, ni dentro del navegador de algunas apps, y a
-       veces tarda mas de la cuenta en arrancarlo; una imagen animada se ve en
-       todos esos casos. Solo se pide cuando hace falta. */
     var imagen = null;
     function planB() {
       if (retirado || imagen) return;
@@ -343,9 +321,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     video.addEventListener('timeupdate', marcarArranque);
 
-    /* Tres segundos desde que el guion del splash pidio el video, no desde
-       que se abrio la pagina: en el iPhone el video pasa por su propio
-       reproductor, que tarda mas en arrancar. Si no ha arrancado, plan B. */
     var desde = parseFloat(video.dataset.desde) || 0;
     esperar(Math.max(500, desde + 3000 - desdeLaApertura()), function () {
       if (!arranco) planB();

@@ -1080,3 +1080,17 @@ radio que tiene. Se quitaron todos. Siguen en el historial de git:
 git show 15b5856:estilos/estilos.css
 git show 15b5856:scripts/script.js
 ```
+
+Entre septiembre y octubre volvieron a entrar comentarios con los cambios
+nuevos, y el 6 de octubre de 2026 se quitaron otra vez: de las hojas, de los
+guiones, de los HTML y de las herramientas. Se comprobó archivo por archivo
+que lo minificado salía idéntico, así que la web publicada no cambió. La
+última versión comentada de cada archivo es la del commit `a86fea2`:
+
+```bash
+git show a86fea2:estilos/05-hero.css
+git show a86fea2:herramientas/construir.js
+```
+
+**No se vuelven a escribir comentarios en el código.** Lo que haga falta
+explicar va en este archivo o en `CACHE.md`.

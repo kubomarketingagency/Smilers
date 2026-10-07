@@ -39,24 +39,11 @@
 .hamburguesa-icono span,
 .pagina-clara .hamburguesa-icono span { background: var(--oro-marca-degradado); }
 
-/* Un solo boton en todo el sitio: filo de oro, letras de oro y, al pasar
-   por encima, el degradado de oro entero de fondo. Las variantes viejas
-   (.btn-naranja, .btn-turquesa, .btn-blanco, .btn-contorno, .btn-fantasma,
-   .btn-traslucido, .btn-sm-nav) ya no existen: se borraron de 03-botones.css
-   y del HTML. El oro de aqui es `--oro-marca`, que no lo redefine ningun
-   contexto, para que el boton sea el mismo sobre piedra negra y sobre
-   piedra clara. */
 .btn {
   padding: 1.05rem 2.1rem;
   border: 1px solid transparent;
   border-image: var(--oro-marca-degradado) 1;
   border-radius: 0;
-  /* Sobre piedra negra el boton es solo filo y letras; sobre marmol blanco
-     se rellena de negro. Quien decide es `--btn-relleno`, que ponen los
-     contextos al final del 22 —igual que `--oro-vivo-degradado`— y no una
-     regla suelta por cada sitio donde aparece un boton. El motivo: en blanco
-     el oro no puede ser filo, letra y contraste a la vez; relleno el negro,
-     el oro se queda solo con lo suyo. */
   background: var(--btn-relleno, transparent);
   box-shadow: none;
   font-family: var(--fuente-menu);
@@ -66,8 +53,6 @@
   text-transform: uppercase;
   color: var(--oro-marca);
 }
-/* `.btn-lg` tampoco existe ya: el boton de la banda de cierre era un poco
-   mas grande que los demas y eso bastaba para que no parecieran el mismo. */
 
 .btn:hover, .btn:focus, .btn:focus-visible {
   background: var(--oro-marca-degradado);
@@ -77,12 +62,6 @@
   transform: none;
 }
 
-/* El mismo oro en todos, sobre cualquier piedra. Antes esto se partia en
-   dos grupos —tinta sobre piedra clara, oro dentro de las piezas oscuras—
-   mas un hover repetido para deshacer el empate de especificidad, y el
-   resultado era que no habia dos botones iguales en el sitio. Los selectores
-   de contexto siguen aqui porque el suyo (0,2,0) le gana a `.btn` (0,1,0):
-   sin nombrarlos, cualquier regla vieja de esas volveria a mandar. */
 .btn,
 .pagina-clara .btn,
 .nosotros-acciones .btn,
@@ -91,9 +70,6 @@
 .footer .btn,
 .banda-cta .btn { color: var(--oro-marca); }
 
-/* Y al pasar por encima, todas en negro sobre el oro. Cada grupo de arriba
-   necesita su hover: `.footer .btn` y `.btn:hover` pesan lo mismo (0,2,0) y
-   el de reposo va antes, asi que solo gana el hover si se repite aqui. */
 .pagina-clara .btn:hover, .pagina-clara .btn:focus, .pagina-clara .btn:focus-visible,
 .footer .btn:hover, .footer .btn:focus, .footer .btn:focus-visible,
 .banda-cta .btn:hover, .banda-cta .btn:focus, .banda-cta .btn:focus-visible,

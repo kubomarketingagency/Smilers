@@ -1,44 +1,12 @@
 (function () {
   'use strict';
 
-  /* =========================================================================
-     El riel de puntos: la navegacion lateral por secciones, en la portada y
-     en Tratamientos. Nosotros tiene el suyo en nosotros-cine.js, porque alli
-     todas las secciones viven dentro de una misma escena clavada; los tres
-     se visten igual (31-riel.css).
-
-     Cada parada es un elemento con `data-pantalla="Nombre"`, en el orden del
-     documento. Con `data-pantalla-menor` el punto va mas pequeno: son las
-     diez especialidades de Tratamientos, que cuelgan de «Especialidades».
-
-     A donde lleva cada punto: a donde su seccion se ve entera. Por lo
-     general es su arranque justo debajo de la barra. Una seccion de una
-     pantalla justa (100lvh, como las especialidades de la portada) ya
-     cuenta con la barra encima —su rotulo empieza por debajo de ella—, y
-     ahi el punto la deja con el techo arriba del todo: debajo de la barra
-     le faltaba el ultimo trozo, justo donde van el nombre y la descripcion
-     del panel abierto. Y si la seccion vive dentro de una escena clavada
-     —ahi el arranque no es donde se ve—, el guion de esa escena le cuelga
-     `smilersRiel = { destino, desde }` al elemento: `destino()` es el pixel
-     al que hay que ir y `desde()` a partir de donde cuenta como la que se
-     esta viendo. Si devuelven otra cosa que un numero (la escena apagada,
-     sin animaciones), vale lo de antes.
-
-     El riel no se ve hasta que se llega a la primera parada: en la portada
-     la primera es Nosotros, y el hero va sin riel.
-
-     Se lee en cada fotograma del planificador, y solo mientras el riel se
-     ve: en el telefono no se monta nada que mirar.
-     ========================================================================= */
-
   var secciones = Array.prototype.slice.call(document.querySelectorAll('[data-pantalla]'));
   if (secciones.length < 2 || typeof SmilersScroll === 'undefined') return;
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
   var cabe = window.matchMedia('(min-width: 768px) and (min-height: 520px)');
 
-  /* El alto de la barra se lee una vez y se guarda: el riel lo usa en cada
-     fotograma del scroll y no cambia hasta que cambia la ventana. */
   var barraGuardada = 0;
   function alturaBarra() {
     if (!barraGuardada) {
@@ -106,8 +74,6 @@
       if (desde === null) desde = destinoDe(secciones[i], barra) - ctx.alto * 0.45;
       if (ctx.y >= desde) mejor = i;
     }
-    /* Al fondo del todo cuenta la ultima, aunque sea corta y no llegue a
-       subir hasta donde contaria. */
     if (ctx.y + window.innerHeight >= document.documentElement.scrollHeight - 2) mejor = secciones.length - 1;
     activo = mejor;
   }
@@ -127,8 +93,6 @@
   SmilersScroll.registrar(leer, escribir, function () { pintado = -2; barraGuardada = 0; });
   SmilersScroll.pedir();
 
-  /* Al pasar de telefono a tableta (girarla) el riel aparece sin que haya
-     habido scroll: se pide un fotograma para pintarlo ya en su sitio. */
   var alCambiar = function () { pintado = -2; barraGuardada = 0; SmilersScroll.pedir(); };
   if (cabe.addEventListener) cabe.addEventListener('change', alCambiar);
   else if (cabe.addListener) cabe.addListener(alCambiar);

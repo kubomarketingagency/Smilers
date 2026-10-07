@@ -5,8 +5,6 @@
   --gm-superficie: #FFFFFF;
   --gm-negro:      #0A0A0A;
   --gm-negro-2:    #111111;
-  /* Los mismos dos tonos del 01, no una copia: escritos aqui a mano se
-     desincronizaban con los de la portada y los de la Galeria. */
   --gm-oro:        var(--oro-marca);
   --gm-oro-vivo:   var(--oro-marca);
   --gm-oro-hondo:  var(--oro-hondo);

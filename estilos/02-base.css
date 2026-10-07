@@ -1,44 +1,9 @@
 * { box-sizing: border-box; }
 
-/* El scroll es siempre el del navegador, en todas las paginas: ningun
-   guion frena la rueda ni el dedo, y no hay imanes de ningun tipo.
-
-   La pausa en cada seccion la dan las escenas clavadas (`position:
-   sticky` dentro de un envoltorio alto): cada capa se queda a pantalla
-   completa durante un tramo del recorrido mientras se sigue bajando, y
-   el guion solo convierte la posicion en progreso. El scroll no se para
-   nunca; lo que se para es la escena.
-
-   Imanes hubo tres y se quitaron los tres. `scroll-snap-type` (aunque
-   sea `proximity`) con la rueda del raton: cada golpe que acababa cerca
-   de una seccion volvia a ella, y la de Especialidades en la portada no
-   dejaba salir girando la rueda —medido: seis golpes, cero pixeles—. Los
-   imanes con guion (Especialidades, los testimonios) movian la pagina un
-   cuarto de segundo despues de que se parara, que se sentia como un
-   scroll pausado que luego arrancaba solo. Y los topes de Nosotros cogian
-   la rueda y el dedo para ir de parada en parada: frenaban cada gesto
-   para mirarlo y cortaban la inercia. Ver tambien 25-tratamientos-cine.css.
-
-   Mientras dura un deslizamiento de un clic (riel, menu) se apaga el
-   `smooth`, que animaria cada paso del deslizamiento por su cuenta. */
 html { scroll-behavior: smooth; scroll-padding-top: 90px; overflow-x: clip; }
 
 html.smilers-deslizando { scroll-behavior: auto; }
 
-/* Con el menu, el visor o el panel de cookies abiertos (`show--preferences`
-   lo pone la libreria de cookies) la pagina no se mueve por detras, y se para
-   el documento y solo el. Con `overflow: hidden` en `body`, body pasaba a ser
-   un contenedor de scroll quieto, y lo clavado (`position: sticky`) y lo
-   atado al scroll (`view()`) dejaban de contar con la ventana: las escenas
-   clavadas de la portada y de Nosotros se descolgaban a su sitio en el
-   documento, y detras del menu se veia otra cosa (gris, o negro); en
-   Especialidades saltaban las derivas de los collages. Parando `html`, la
-   ventana sigue siendo la que se desplaza, donde estaba, y lo de detras se
-   queda exactamente como estaba.
-
-   El hueco de la barra de scroll se queda reservado (`scrollbar-gutter`), asi
-   que nada salta de lado al quitarse la barra; y se pinta del oscuro del
-   velo, que en ese hueco se ve el fondo del documento. */
 html.menu-desplegado,
 html.visor-abierto,
 html.show--preferences {
@@ -91,14 +56,6 @@ body::before {
   transition: opacity .6s cubic-bezier(.4, 0, .2, 1);
 }
 
-/* El video ocupa desde el principio la caja que tendria con sus datos
-   (1280x720 en escritorio y 720x1280 en el telefono, dentro de los mismos
-   topes): sin medida propia un <video> mide 300x150 hasta que carga y luego
-   salta, y ese salto cuenta como cambio de diseno. Esconderlo mientras tanto
-   no sirve: los telefonos no arrancan un video que no se ve, y si a los 3 s
-   no ha arrancado hero.js pasa al plan B (la imagen animada, en esta misma
-   caja). Si se cambia el video por otro de otras proporciones, cambiar aqui
-   los numeros. */
 .splash-inicio video,
 .splash-inicio img {
   display: block;

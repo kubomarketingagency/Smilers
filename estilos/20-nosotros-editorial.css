@@ -6,7 +6,6 @@
 
 main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 
-
 .ns-rotulo {
   display: flex;
   align-items: center;
@@ -78,8 +77,6 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 .ns-parrafo:last-child { margin-bottom: 0; }
 .ns-parrafo strong { font-weight: 700; }
 
-/* El mismo boton que el `.btn` del 16: filo de oro y relleno de oro al
-   pasar por encima. Si se cambia alli, se cambia aqui. */
 .ns-boton {
   display: inline-flex;
   align-items: center;
@@ -113,7 +110,6 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 }
 
 .ns-portada > .ns-envoltura { position: relative; z-index: 1; }
-
 
 .ns-mvo {
   display: grid;
@@ -189,10 +185,6 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
   padding: 0;
   list-style: none;
 }
-/* Las siete primeras lineas venian de rebote del `.ns-valor` suelto del 07,
-   que es la hoja de la portada: la ficha se pintaba aqui con la letra de una
-   lista de sedes que esta en otra pagina. Ahora las declara su propia hoja y
-   Nosotros deja de cargar 44 KB de portada para heredar un peso de letra. */
 .ns-valor {
   display: block;
   flex: none;
@@ -262,7 +254,6 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
     color: var(--gm-negro);
   }
 }
-
 
 .ns-sede li .icono {
   position: absolute;
