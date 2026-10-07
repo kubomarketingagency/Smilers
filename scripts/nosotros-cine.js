@@ -2,24 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  function encender(nodo) {
-    if (!nodo) return;
-    var piezas = nodo.querySelectorAll('img[data-src], img[data-srcset], source[data-srcset]');
-    for (var i = 0; i < piezas.length; i++) {
-      var p = piezas[i];
-      if (p.dataset.srcset) { p.setAttribute('srcset', p.dataset.srcset); delete p.dataset.srcset; }
-      if (p.dataset.src) { p.setAttribute('src', p.dataset.src); delete p.dataset.src; }
-    }
-  }
-
-  function enReposo(fn) {
-    var luego = function () {
-      if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: 4000 });
-      else setTimeout(fn, 1500);
-    };
-    if (document.readyState === 'complete') luego();
-    else window.addEventListener('load', luego, { once: true });
-  }
+  var encender = window.SmilersDiferidas.encender;
+  var enReposo = window.SmilersDiferidas.enReposo;
 
   var elenco = (function () {
     var caja = document.querySelector('[data-elenco]');

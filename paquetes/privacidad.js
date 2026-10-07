@@ -513,6 +513,23 @@ contadores.forEach(function(c){obsContadores.observe(c);});
 window.SmilersContadores={animar:animarContador};
 const mapaTabs=document.querySelectorAll('.mapa-tab');
 const mapaIframes=document.querySelectorAll('.mapa-iframe');
+const mapaContenedor=document.querySelector('.mapa-contenedor');
+function cargarMapa(frame){
+if(frame&&!frame.getAttribute('src')&&frame.dataset.src)frame.setAttribute('src',frame.dataset.src);
+}
+if(mapaContenedor){
+const acercarse=function(){cargarMapa(mapaContenedor.querySelector('.mapa-iframe.activo'));};
+if('IntersectionObserver' in window){
+const obsMapa=new IntersectionObserver(function(entradas){
+if(!entradas.some(function(e){return e.isIntersecting;}))return;
+obsMapa.disconnect();
+acercarse();
+},{rootMargin:'1250px 0px'});
+obsMapa.observe(mapaContenedor);
+}else{
+acercarse();
+}
+}
 mapaTabs.forEach(function(tab){
 tab.addEventListener('click',function(){
 const sede=tab.dataset.mapa;
@@ -521,7 +538,9 @@ t.classList.toggle('activo',t===tab);
 t.setAttribute('aria-selected',String(t===tab));
 });
 mapaIframes.forEach(function(frame){
-frame.classList.toggle('activo',frame.dataset.mapa===sede);
+const activo=frame.dataset.mapa===sede;
+frame.classList.toggle('activo',activo);
+if(activo)cargarMapa(frame);
 });
 });
 });
