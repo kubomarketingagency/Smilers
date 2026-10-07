@@ -8,6 +8,7 @@ estilos/
 scripts/
 herramientas/
 vendor/
+parciales/
 
 # Las fotos tal cual llegaron; los recortes que se publican van en imagenes/clinica/
 imagenes/originales/

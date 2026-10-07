@@ -18,6 +18,7 @@ búsqueda de una clase. Lo que se edita está en `estilos/`.
 | `scripts/` | Los guiones del sitio, **fuente**. Se editan aquí. | no |
 | `herramientas/` | `construir.js` (la construcción y el sello: ver `CACHE.md`), `servidor.js` (para verlo en el navegador), `podar-bootstrap.js` y `convert-to-webp.js`. | no |
 | `paquetes/` | **Generado** por `construir.js`: un guion por página, ya junto y minificado. No se edita a mano. | sí |
+| `parciales/` | Lo que se repetía igual en las seis páginas, escrito una sola vez: la barra (`barra.html`), el menú (`menu.html`), el pie (`pie.html`) y los iconos (`iconos.svg`). La construcción lo copia en cada página. Ver «Lo que comparten las seis páginas». | no |
 | `fuentes/` | Las tipografías (Bodoni Moda y Lato), servidas desde el propio sitio. `fuentes/hinting/` es la serie para Windows y Linux. | sí |
 | `imagenes/`, `video-hero/`, `video-testimonios/` | Fotos, fondos, logo, el vídeo de bienvenida y los ocho vídeos de los testimonios (ver «Los vídeos de los testimonios»). `imagenes/carta/` es la firma del director, recortada del original de la carta y escalada con alfa, que es lo único que se publica de ahí: el retrato de la carta de bienvenida **es el mismo archivo** que el primer retrato del elenco (`imagenes/equipo/rehabilitacion-estetica.webp`), misma URL a propósito, porque las dos piezas están en la misma página y con dos nombres se descargaría dos veces. | sí |
 | `vendor/` | Bootstrap: el original y el recorte. El recorte viaja dentro de los estilos de cada página y su JS dentro de los paquetes. Y CookieConsent (`vendor/cookieconsent/`), que viaja dentro del paquete perezoso `paquetes/aviso-cookies.js`. | no |
@@ -903,6 +904,28 @@ menos probable —el wifi por delante de las tarjetas de máquinas virtuales y d
 las VPN, que son la mayoría de las que tiene una máquina de trabajo— pero se
 enseñan varias, que la única manera de saber cuál es la buena es probar. Si no
 carga ninguna, es el cortafuegos de Windows.
+
+---
+
+## Lo que comparten las seis páginas
+
+La barra, el menú, el pie y los iconos se editan **solo en `parciales/`**. En
+cada página esos bloques llevan `data-parcial="barra|menu|pie|iconos"` en su
+etiqueta raíz, y `construir.js` los sustituye por el original al construir:
+
+- **El menú** se escribe con todos los enlaces absolutos (`/nosotros#equipo`)
+  y sin ninguna sección marcada. En cada página la construcción le pone
+  `activo` al título de su sección y convierte sus enlaces en anclas de la
+  propia página (`#equipo`), que es lo que había escrito a mano en cada una.
+- **Los iconos**: `parciales/iconos.svg` tiene todos los `<symbol>` que usa
+  alguna página, y cada página recibe solo los que nombra con
+  `<use href="#…">`. Para un icono nuevo, se añade su `<symbol>` ahí; si una
+  página pide uno que no está, la construcción se para y lo dice.
+- Las rutas de las imágenes van **sin sello** en los parciales: la
+  construcción sella la página entera al final.
+
+Editar uno de esos bloques directamente en un HTML no sirve: la siguiente
+construcción lo devuelve al original de `parciales/`.
 
 ---
 

@@ -10,7 +10,7 @@ const PUERTO = Number(process.argv[2]) || 8099;
 
 const PAGINAS = ['nosotros', 'tratamientos', 'galeria', 'faq'];
 
-const SIN_PUBLICAR = ['estilos/', 'scripts/', 'herramientas/', 'vendor/', 'imagenes/originales/'];
+const SIN_PUBLICAR = ['estilos/', 'scripts/', 'herramientas/', 'vendor/', 'parciales/', 'imagenes/originales/'];
 
 const TIPOS = {
   '.html': 'text/html; charset=utf-8',

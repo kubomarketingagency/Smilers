@@ -23,7 +23,8 @@ const GUION_MOVIMIENTO =
 const SELLABLES = /\.(css|js|mjs|webp|avif|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i;
 const TEXTO = /\.(css|js|mjs|svg)$/i;
 
-const NO_PUBLICADO = /^(estilos|scripts|herramientas|vendor)\//;
+const NO_PUBLICADO = /^(estilos|scripts|herramientas|vendor|parciales)\//;
+const PARCIALES = 'parciales';
 
 const pendientes = new Map();
 const cacheSellos = new Map();
@@ -477,13 +478,70 @@ function construirGuiones(lista, pagina) {
   return { js: paquete, fuente: fuente };
 }
 
+function finDeElemento(html, desde) {
+  const tag = /^<([a-z][a-z0-9-]*)/i.exec(html.slice(desde, desde + 40))[1];
+  const re = new RegExp('<(/?)' + tag + '(?=[\\s>/])[^>]*>', 'gi');
+  re.lastIndex = desde;
+  let profundidad = 0;
+  let m;
+  while ((m = re.exec(html))) {
+    if (m[1]) { if (--profundidad === 0) return m.index + m[0].length; }
+    else if (!m[0].endsWith('/>')) profundidad++;
+  }
+  throw new Error('<' + tag + '> sin cerrar');
+}
+
+function rutaDe(pagina) {
+  return pagina === 'index.html' ? '/' : '/' + pagina.replace(/\.html$/, '');
+}
+
+function leerParcial(nombre) {
+  return leerTexto(PARCIALES + '/' + nombre).replace(/\n+$/, '');
+}
+
+function menuPara(texto, ruta) {
+  return texto
+    .replace('class="menu-col__titulo" href="' + ruta + '"', 'class="menu-col__titulo activo" href="' + ruta + '"')
+    .split('href="' + ruta + '#').join('href="#');
+}
+
+function iconosPara(resto, pagina) {
+  const maestro = leerParcial('iconos.svg');
+  const simbolos = [...maestro.matchAll(/<symbol\b[^>]*\bid="([^"]+)"[\s\S]*?<\/symbol>/g)];
+  const disponibles = new Set(simbolos.map(function (m) { return m[1]; }));
+  const usados = new Set([...resto.matchAll(/<use\b[^>]*\bhref="#([\w-]+)"/g)].map(function (m) { return m[1]; }));
+  usados.forEach(function (id) {
+    if (!disponibles.has(id) && !resto.includes('id="' + id + '"')) throw new Error(pagina + ': falta el icono #' + id + ' en ' + PARCIALES + '/iconos.svg');
+  });
+  const apertura = /^<svg\b[^>]*>/.exec(maestro)[0];
+  return apertura + '\n' + simbolos.filter(function (m) { return usados.has(m[1]); })
+    .map(function (m) { return '    ' + m[0]; }).join('\n') + '\n  </svg>';
+}
+
+function conParciales(html, pagina, conSaltos) {
+  ['barra', 'menu', 'pie'].forEach(function (nombre) {
+    const m = new RegExp('<[a-z]+\\b[^>]*\\bdata-parcial="' + nombre + '"').exec(html);
+    if (!m) return;
+    let texto = leerParcial(nombre + '.html');
+    if (nombre === 'menu') texto = menuPara(texto, rutaDe(pagina));
+    html = html.slice(0, m.index) + conSaltos(texto) + html.slice(finDeElemento(html, m.index));
+  });
+  const m = /<svg\b[^>]*\bdata-parcial="iconos"/.exec(html);
+  if (m) {
+    const fin = finDeElemento(html, m.index);
+    const sprite = iconosPara(html.slice(0, m.index) + html.slice(fin), pagina);
+    html = html.slice(0, m.index) + conSaltos(sprite) + html.slice(fin);
+  }
+  return html;
+}
+
 function procesarPagina(pagina) {
   const ruta = path.join(RAIZ, pagina);
   const original = fs.readFileSync(ruta, 'utf8');
-  let html = original;
   const fila = { pagina: pagina };
   const NL = original.includes('\r\n') ? '\r\n' : '\n';
   const conSaltos = function (texto) { return NL === '\n' ? texto : texto.replace(/\r?\n/g, NL); };
+  let html = conParciales(original, pagina, conSaltos);
 
   const reEstilos = /(<style\b[^>]*\bdata-hojas="([^"]*)"[^>]*>)[\s\S]*?(<\/style>)/g;
   if ((html.match(reEstilos) || []).length !== 1) throw new Error(pagina + ': tiene que haber una y solo una <style data-hojas>');
