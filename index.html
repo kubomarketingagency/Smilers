@@ -43,6 +43,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="imagenes/favicon-smilers-48.png?v=d6b093106f">
   <link rel="icon" type="image/png" sizes="16x16" href="imagenes/favicon-smilers-16.png?v=aad6f667fa">
   <link rel="icon" type="image/png" sizes="32x32" href="imagenes/favicon-smilers-32.png?v=87e35e7576">
+  <link rel="apple-touch-icon" sizes="180x180" href="imagenes/apple-touch-icon.png?v=4b263546d9">
 
   <style data-hojas="
       vendor/bootstrap/bootstrap.recorte.css
@@ -90,7 +91,13 @@
         "@id": "https://smilersdental.vercel.app/#clinica",
         "name": "Smilers Dental Clinique",
         "url": "https://smilersdental.vercel.app/",
-        "image": "https://smilersdental.vercel.app/imagenes/og-smilers-oro.png",
+        "image": [
+          "https://smilersdental.vercel.app/imagenes/og-smilers-oro.png",
+          "https://smilersdental.vercel.app/imagenes/clinica/lamparas-1920.webp",
+          "https://smilersdental.vercel.app/imagenes/clinica/vestibulo-1920.webp",
+          "https://smilersdental.vercel.app/imagenes/clinica/consultorios-1920.webp",
+          "https://smilersdental.vercel.app/imagenes/clinica/fachada.webp"
+        ],
         "logo": "https://smilersdental.vercel.app/imagenes/logo-smilers-oro.webp",
         "description": "Clínica dental de alta especialidad en Quito: odontología general, estética dental, ortodoncia, implantología, cirugía oral, rehabilitación oral, endodoncia, periodoncia, odontopediatría y armonización orofacial.",
         "telephone": "+593997556002",
@@ -242,6 +249,26 @@
         "inLanguage": "es-EC",
         "publisher": {
           "@id": "https://smilersdental.vercel.app/#clinica"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://smilersdental.vercel.app/#portada",
+        "url": "https://smilersdental.vercel.app/",
+        "name": "Smilers Dental Clinique | Clínica dental prémium en Quito",
+        "description": "Clínica dental de primer nivel en Quito: estética dental, ortodoncia, implantes y cirugía oral con diagnóstico digital e instalaciones de lujo.",
+        "inLanguage": "es-EC",
+        "isPartOf": {
+          "@id": "https://smilersdental.vercel.app/#sitio"
+        },
+        "about": {
+          "@id": "https://smilersdental.vercel.app/#clinica"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://smilersdental.vercel.app/imagenes/clinica/lamparas-1920.webp",
+          "width": 1920,
+          "height": 1280
         }
       }
     ]
@@ -457,7 +484,7 @@
       <div class="row justify-content-center text-center">
         <div class="col-12">
 
-          <h1 class="hero-titulo"><img class="hero-logo" src="imagenes/logo-smilers-oro.webp?v=1fd02e6f17" width="1110" height="428" alt="Smilers Dental Clinique" fetchpriority="high" decoding="async"></h1>
+          <h1 class="hero-titulo"><img class="hero-logo" src="imagenes/logo-smilers-oro.webp?v=1fd02e6f17" width="1110" height="428" alt="Smilers Dental Clinique, clínica dental en Quito" fetchpriority="high" decoding="async"></h1>
         </div>
       </div>
     </div>

@@ -1175,6 +1175,7 @@
 @media (max-width: 991.98px) {
   .pagina-clara .franja-nav a:nth-of-type(2n) { border-left: 1px solid rgba(212, 175, 55, .34); }
   .pagina-clara .franja-nav a:nth-of-type(n + 3) { border-top: 1px solid rgba(212, 175, 55, .3); }
+  .pagina-clara .franja-nav--impar a:last-of-type { grid-column: 1 / -1; }
 }
 @media (min-width: 992px) {
   .pagina-clara .franja-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }

@@ -5,11 +5,12 @@ const path = require('path');
 const crypto = require('crypto');
 const zlib = require('zlib');
 const vm = require('vm');
+const { execSync } = require('child_process');
 
 const RAIZ = path.resolve(__dirname, '..');
 const SOLO_VERIFICAR = process.argv.includes('--verificar');
 
-const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html', 'privacidad.html'];
+const PAGINAS = ['index.html', 'nosotros.html', 'tratamientos.html', 'galeria.html', 'faq.html', 'privacidad.html', '404.html'];
 const PAQUETES = 'paquetes';
 
 const RESPETAR_MENOS_MOVIMIENTO = false;
@@ -32,6 +33,8 @@ const faltantes = [];
 const prohibidos = [];
 const desactualizados = [];
 const informe = [];
+const finales = new Map();
+const DOMINIO = 'https://smilersdental.vercel.app';
 
 function leerTexto(rel) {
   return fs.readFileSync(path.join(RAIZ, rel), 'utf8').replace(/^\ufeff/, '').split('\r\n').join('\n');
@@ -593,6 +596,7 @@ function procesarPagina(pagina) {
   });
 
   html = sellarHtml(html, pagina);
+  finales.set(pagina, html);
   fila.html = Buffer.byteLength(html);
   fila.htmlBr = br(html);
   informe.push(fila);
@@ -621,6 +625,65 @@ if (fs.existsSync(carpetaPaquetes)) {
     desactualizados.push(rel + ' (sobra)');
     if (!SOLO_VERIFICAR) fs.unlinkSync(path.join(RAIZ, rel));
   });
+}
+
+function fechaLocal(fecha) {
+  const dos = function (n) { return String(n).padStart(2, '0'); };
+  return fecha.getFullYear() + '-' + dos(fecha.getMonth() + 1) + '-' + dos(fecha.getDate());
+}
+
+function git(orden) {
+  try {
+    return execSync('git ' + orden, { cwd: RAIZ, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch (e) {
+    return null;
+  }
+}
+
+function ultimoCambio(pagina) {
+  const pendiente = desactualizados.includes(pagina) || git('status --porcelain -- "' + pagina + '"');
+  if (pendiente) return fechaLocal(new Date());
+  return git('log -1 --format=%cs -- "' + pagina + '"') || fechaLocal(new Date());
+}
+
+function escaparXml(texto) {
+  return texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function imagenesDe(html) {
+  let m;
+  while ((m = /<[a-z]+\b[^>]*\bdata-parcial="[a-z]+"/.exec(html))) html = html.slice(0, m.index) + html.slice(finDeElemento(html, m.index));
+  const vistas = new Set();
+  for (const m of html.matchAll(/<img\b[^>]*>/g)) {
+    const alt = /\salt="([^"]*)"/.exec(m[0]);
+    if (!alt || !alt[1].trim()) continue;
+    const url = (/\ssrc="([^"]+)"/.exec(m[0]) || /\sdata-src="([^"]+)"/.exec(m[0]) || [])[1];
+    if (!url || /^(data:|https?:|\/\/)/i.test(url)) continue;
+    vistas.add(DOMINIO + '/' + url.replace(/^\//, ''));
+  }
+  return Array.from(vistas);
+}
+
+function generarSitemap() {
+  const urls = PAGINAS.filter(function (pagina) {
+    return !/<meta name="robots" content="[^"]*noindex/i.test(finales.get(pagina) || '');
+  }).map(function (pagina) {
+    const imagenes = imagenesDe(finales.get(pagina)).map(function (url) {
+      return '    <image:image>\n      <image:loc>' + escaparXml(url) + '</image:loc>\n    </image:image>\n';
+    }).join('');
+    return '  <url>\n    <loc>' + DOMINIO + rutaDe(pagina) + '</loc>\n    <lastmod>' + ultimoCambio(pagina) + '</lastmod>\n' + imagenes + '  </url>\n';
+  });
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
+    urls.join('') + '</urlset>\n';
+}
+
+const sitemap = generarSitemap();
+const rutaSitemap = path.join(RAIZ, 'sitemap.xml');
+const sitemapActual = fs.existsSync(rutaSitemap) ? fs.readFileSync(rutaSitemap, 'utf8').replace(/\r\n/g, '\n') : null;
+if (sitemapActual !== sitemap) {
+  desactualizados.push('sitemap.xml');
+  if (!SOLO_VERIFICAR) fs.writeFileSync(rutaSitemap, sitemap, 'utf8');
 }
 
 console.log('\n  pagina              estilos (fuente -> min, brotli)          guiones (fuente -> min, brotli)        html final (brotli)');

@@ -13,7 +13,7 @@ búsqueda de una clase. Lo que se edita está en `estilos/`.
 
 | Carpeta | Qué hay | ¿Se publica? |
 |---|---|---|
-| raíz | Las seis páginas: `index.html`, `nosotros.html`, `tratamientos.html`, `galeria.html`, `faq.html` y `privacidad.html` (la Política de privacidad, ver «Cookies y píxeles de publicidad»). Hasta septiembre de 2026 las cuatro interiores vivían en `subpaginas/`; ahora están en la raíz y sus direcciones son `/nosotros`, `/tratamientos`, `/galeria` y `/faq`. Las de antes (`/subpaginas/…`, con o sin `.html`) redirigen a las nuevas con un 308 permanente (`vercel.json`). | sí |
+| raíz | Las seis páginas: `index.html`, `nosotros.html`, `tratamientos.html`, `galeria.html`, `faq.html` y `privacidad.html` (la Política de privacidad, ver «Cookies y píxeles de publicidad»). Además `404.html`, la que se ve en cualquier dirección que no existe (ver «SEO»). Hasta septiembre de 2026 las cuatro interiores vivían en `subpaginas/`; ahora están en la raíz y sus direcciones son `/nosotros`, `/tratamientos`, `/galeria` y `/faq`. Las de antes (`/subpaginas/…`, con o sin `.html`) redirigen a las nuevas con un 308 permanente (`vercel.json`). | sí |
 | `estilos/` | Las hojas de estilo, **fuente**. Se editan aquí. | no |
 | `scripts/` | Los guiones del sitio, **fuente**. Se editan aquí. | no |
 | `herramientas/` | `construir.js` (la construcción y el sello: ver `CACHE.md`), `servidor.js` (para verlo en el navegador), `podar-bootstrap.js` y `convert-to-webp.js`. | no |
@@ -248,18 +248,44 @@ Cada página lleva, detrás de su descripción:
   por su cuenta los navegadores viejos, los lectores de noticias y algunos rastreadores, que
   hasta ahora recibían un 404. La plata es clara, así que en una pestaña blanca el diente se ve
   suave. Antes el icono era una S dibujada en SVG dentro del propio HTML.
+- `apple-touch-icon` de 180×180 (`imagenes/apple-touch-icon.png`, octubre de 2026): el
+  mismo diente, sacado en alta del logo grande (la pieza plateada más grande, sin el oro
+  ni el texto) sobre el negro de `theme-color`. Es el icono de «Añadir a pantalla de
+  inicio» del iPhone y el que usan algunas vistas previas de enlaces.
+- **El título lleva la ciudad** en las páginas que compiten por búsquedas locales
+  (octubre de 2026): «Especialidades dentales en Quito», «Nosotros | …, clínica dental en
+  Quito»… El `h1` de la portada es el logo, así que su `alt` dice «Smilers Dental
+  Clinique, clínica dental en Quito»: es el texto que el buscador lee como titular.
 
 Y datos estructurados en `application/ld+json`, uno por página:
 
 | Página | Qué declara |
 |---|---|
-| portada | `Dentist` (matriz) + `Dentist` (sucursal, con `parentOrganization`) + `WebSite`. Dirección, teléfono, correo, horario, redes y las diez especialidades como `MedicalProcedure`. Las coordenadas son las de verdad: salen de los dos mapas incrustados del pie. |
+| portada | `Dentist` (matriz) + `Dentist` (sucursal, con `parentOrganization`) + `WebSite` + `WebPage`. La `image` de la matriz son cinco fotos de verdad (la tarjeta social, la recepción, el vestíbulo, los consultorios y la fachada), que es lo que pide el buscador para la ficha de un negocio local. Dirección, teléfono, correo, horario, redes y las diez especialidades como `MedicalProcedure`. Las coordenadas son las de verdad: salen de los dos mapas incrustados del pie. |
 | Nosotros | `BreadcrumbList` + `AboutPage` apuntando a la clínica. |
 | Especialidades | `BreadcrumbList` + `ItemList` con las diez, cada una a su ancla. |
 | Galería | `BreadcrumbList` + `ImageGallery`. |
+| Privacidad | `BreadcrumbList` + `WebPage`. |
 | FAQ | `BreadcrumbList` + `FAQPage` con las **12 preguntas y respuestas leídas del propio acordeón**. Si se cambia una pregunta del acordeón, se cambia también aquí: el buscador compara lo que se ve con lo que se declara. |
 
-`robots.txt` y `sitemap.xml` están en la raíz. **`robots.txt` no cierra las
+**`sitemap.xml` lo escribe `construir.js`** (octubre de 2026): no se edita a mano. Lleva
+cada página indexable (las que tienen `noindex` se quedan fuera), su `lastmod` —la fecha
+del último commit que la tocó, o la de hoy si tiene cambios sin commitear— y sus fotos con
+`alt` como `<image:image>`, con la dirección sellada tal como la pide la página; las de la
+barra, el menú y el pie no, que son las mismas en todas. Antes era una lista escrita a mano
+con las fechas de septiembre.
+
+**`404.html`** es la página que Vercel sirve, con estado 404, a cualquier dirección que no
+existe: el hero de las interiores, la franja de enlaces a las cinco secciones
+(`franja-nav--impar`, que en el teléfono deja la quinta a todo el ancho) y la banda de
+WhatsApp. Lleva `noindex` y no declara `canonical`. Antes era el texto plano de Vercel.
+
+**Search Console** necesita que la clínica verifique el sitio: propiedad de tipo «prefijo de
+URL» (`https://smilersdental.vercel.app/`, en un `vercel.app` no se puede por DNS), método
+«etiqueta HTML»; su `<meta name="google-site-verification">` va en el `<head>` de la
+portada. Después se envía `sitemap.xml` desde el apartado Sitemaps.
+
+`robots.txt` está en la raíz. **`robots.txt` no cierra las
 direcciones con `.html` a propósito**: un buscador solo puede recoger el 301 si
 le dejas entrar a verlo, y cerrarlas dejaría las viejas colgadas en el índice
 para siempre.
