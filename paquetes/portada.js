@@ -916,6 +916,11 @@ instancia.cycle();
 }
 aplicarPreferenciaMovimiento();
 menosMovimiento.addEventListener('change',aplicarPreferenciaMovimiento);
+var tomas=heroCarrusel.querySelectorAll('.carousel-item');
+heroCarrusel.addEventListener('slide.bs.carousel',function(e){
+if(!window.SmilersDiferidas)return;
+for(var k=e.to;k <=e.to + 1;k++)window.SmilersDiferidas.encender(tomas[k%tomas.length].querySelector('picture'));
+});
 }
 (function(){
 var envoltorio=document.getElementById('heroCine');

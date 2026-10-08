@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://smilersdental.vercel.app/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/lamparas-1920.webp?v=474ebf7950</image:loc>
     </image:image>
@@ -10,7 +10,19 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-1920.webp?v=d97a96d86c</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorio-luces-1920.webp?v=0a888e7400</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sala-ventanal-1920.webp?v=6104f14b96</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorios-1920.webp?v=f60d2b1198</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-lamparas-1920.webp?v=59a3fa7297</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/area-consultorios-1920.webp?v=5ba44a54da</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorio-1920.webp?v=fa3ceb432d</image:loc>
