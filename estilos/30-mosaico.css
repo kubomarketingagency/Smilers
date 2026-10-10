@@ -54,6 +54,11 @@
   z-index: 2;
   box-shadow: 0 0 0 var(--aro) var(--fondo-aro), 0 34px 60px -22px rgba(12, 9, 5, .72);
 }
+.bloque-tratamiento:not(.bloque-tratamiento--piedra) :is(.tz-mosaico--retrato, .tz-mosaico--escalera) > :nth-child(2) {
+  border: 0 solid transparent;
+  border-image: url(../imagenes/fondos/marmol-negro.webp) 60 / var(--aro) / var(--aro) round;
+  box-shadow: 0 34px 60px -22px rgba(12, 9, 5, .72);
+}
 
 .tz-mosaico__pieza img {
   display: block;

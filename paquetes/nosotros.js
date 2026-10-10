@@ -622,10 +622,15 @@ var anchoNecesario=window.innerWidth*1.6;
 var set=[];
 var anchoSet=0;
 var indice=0;
-while(anchoSet < anchoNecesario){
+while(anchoSet < anchoNecesario||indice < grupos.length){
 set.push(grupos[indice%grupos.length]);
 anchoSet +=anchoColumna;
 indice++;
+}
+var anchoMinimo=Math.ceil(anchoNecesario / anchoColumna)*anchoColumna;
+if(anchoSet > anchoMinimo){
+var duracion=parseFloat(getComputedStyle(cinta).animationDuration)||50;
+cinta.style.animationDuration=(duracion*anchoSet / anchoMinimo)+ 's';
 }
 set.concat(set).forEach(function(grupo){
 cinta.appendChild(crearColumna(grupo));

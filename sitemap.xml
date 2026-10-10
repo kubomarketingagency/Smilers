@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://smilersdental.vercel.app/</loc>
-    <lastmod>2026-10-08</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <image:image>
-      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/lamparas-1920.webp?v=474ebf7950</image:loc>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/lamparas-portada-1920.webp?v=64dc2198fa</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-1920.webp?v=d97a96d86c</image:loc>
@@ -19,7 +19,7 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorios-1920.webp?v=f60d2b1198</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-lamparas-1920.webp?v=59a3fa7297</image:loc>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-lamparas-1920.webp?v=e71ec0d632</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/area-consultorios-1920.webp?v=5ba44a54da</image:loc>
@@ -69,7 +69,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/nosotros</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/equipo/rehabilitacion-estetica.webp?v=afe137afc8</image:loc>
     </image:image>
@@ -109,7 +109,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/tratamientos</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sillon.webp?v=e5590c112e</image:loc>
     </image:image>
@@ -191,7 +191,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/galeria</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/fachada-cuadro.webp?v=933dcb07e5</image:loc>
     </image:image>
@@ -199,16 +199,37 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/recepcion-cuadro.webp?v=843aad5d6f</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-cuadro.webp?v=8c88aa41bb</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/jardin-cuadro.webp?v=f8875935e7</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sala-ventanal-cuadro.webp?v=660be99e83</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/vestibulo-lamparas-cuadro.webp?v=d86953f2c8</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sala-espera-cuadro.webp?v=a4177b5dd7</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/lamparas-cuadro.webp?v=bf63ffa397</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorio-luces-cuadro.webp?v=49f6075047</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sillon-cuadro.webp?v=17a02d7477</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorios-cuadro.webp?v=e55f44bf8a</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/area-consultorios-cuadro.webp?v=35d4b289d4</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/consultorio-cuadro.webp?v=cd42545ece</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/equipo/estudio-3-cuadro.webp?v=4362e84e09</image:loc>
@@ -253,10 +274,22 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/equipo/odontologia-general-cuadro.webp?v=4b9191eac6</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/ortodoncia-consulta.webp?v=7675e2210a</image:loc>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/rehabilitacion-oral-cuadro.webp?v=d3be7b2916</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/estetica-dental-cuadro.webp?v=1103574767</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/diseno-sonrisa-cuadro.webp?v=0475a3bb8d</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/ortodoncia-consulta.webp?v=7675e2210a</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/cefalometria-cuadro.webp?v=6eb0c058bf</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/implantologia-cuadro.webp?v=b096475885</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/tomografia-cuadro.webp?v=cc72045063</image:loc>
@@ -265,10 +298,28 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/radiografia-implantes-cuadro.webp?v=1af3f0c2e1</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/cefalometria-cuadro.webp?v=6eb0c058bf</image:loc>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/endodoncia-cuadro.webp?v=3d5fa0de50</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/radiografia-conductos-cuadro.webp?v=818ec0ede1</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/periodoncia-cuadro.webp?v=2e6a9d8d51</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/cirugia-maxilofacial-cuadro.webp?v=038db2d7c1</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/cirugia-cuadro.webp?v=270081b940</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/odontopediatria-cuadro.webp?v=f6db644f28</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/clinica/revision-cuadro.webp?v=6c2164e2c6</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/especialidades/armonizacion-orofacial-cuadro.webp?v=ea78b680bd</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/galeria/paciente-01-cuadro.webp?v=3fad258cc7</image:loc>
@@ -375,7 +426,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/faq</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/pagos/diferido-tarjetas.webp?v=f6f6479948</image:loc>
     </image:image>
@@ -394,6 +445,6 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/privacidad</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-09</lastmod>
   </url>
 </urlset>
