@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://smilersdental.vercel.app/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/lamparas-portada-1920.webp?v=64dc2198fa</image:loc>
     </image:image>
@@ -69,7 +69,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/nosotros</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/equipo/rehabilitacion-estetica.webp?v=afe137afc8</image:loc>
     </image:image>
@@ -109,7 +109,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/tratamientos</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/sillon.webp?v=e5590c112e</image:loc>
     </image:image>
@@ -191,7 +191,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/galeria</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/clinica/fachada-cuadro.webp?v=933dcb07e5</image:loc>
     </image:image>
@@ -426,7 +426,7 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/faq</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/pagos/diferido-tarjetas.webp?v=f6f6479948</image:loc>
     </image:image>
@@ -445,6 +445,6 @@
   </url>
   <url>
     <loc>https://smilersdental.vercel.app/privacidad</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-11-08</lastmod>
   </url>
 </urlset>
