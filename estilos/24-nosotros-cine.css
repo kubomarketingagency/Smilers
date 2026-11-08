@@ -196,7 +196,7 @@ main:has(.ns-cine--viva) { background: #050505; }
     left: 0;
     top: 56%;
   }
-  .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2.6 / 3.6); }
+  .ns-cine--viva .ns-fondo--elenco { top: var(--elenco-juntura, calc(100% * 2.6 / 3.6)); }
   .ns-fondo--elenco::after {
     border-left: 0;
     border-top: 3px solid transparent;
@@ -273,7 +273,7 @@ main:has(.ns-cine--viva) { background: #050505; }
 @media (max-width: 991.98px) {
   .ns-cine--viva .ns-capa--elenco .ns-elenco {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 2.6fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(calc(100% / 3.6), auto);
   }
   .ns-cine--viva .ns-elenco__lado {
     display: flex;
@@ -295,6 +295,7 @@ main:has(.ns-cine--viva) { background: #050505; }
   }
   .ns-cine--viva .ns-elenco .ns-ficha::before,
   .ns-cine--viva .ns-elenco .ns-ficha > .tarjeta-piedra { display: none; }
+  .ns-cine--viva .ns-elenco .ns-ficha__texto { min-height: var(--elenco-texto, 0px); }
   .ns-cine--viva .ns-elenco__puntos { justify-content: flex-start; margin-top: .55rem; }
 }
 
@@ -749,12 +750,36 @@ main:has(.ns-cine--viva) { background: #050505; }
 
 @media (max-width: 991.98px) and (max-height: 700px) {
   .ns-cine--viva .ns-capa--elenco { --alto-retrato: 43svh; }
-  .ns-cine--viva .ns-capa--elenco .ns-elenco { grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
-  .ns-cine--viva .ns-fondo--elenco { top: calc(100% * 2 / 3); }
+  .ns-cine--viva .ns-capa--elenco .ns-elenco { grid-template-rows: minmax(0, 1fr) minmax(calc(100% / 3), auto); }
+  .ns-cine--viva .ns-fondo--elenco { top: var(--elenco-juntura, calc(100% * 2 / 3)); }
   #nsCine .ns-ficha__texto { font-size: .88rem; line-height: 1.5; }
   .ns-cine--viva .ns-elenco__lado .ns-titulo { display: none; }
   .ns-cine--viva .ns-capa--fundamentos .ns-mvo__texto { font-size: .72rem; line-height: 1.44; }
   #nsCine .ns-parrafo { font-size: .85rem; line-height: 1.5; }
+}
+
+@media (max-width: 767.98px) and (max-height: 640px) {
+  .ns-cine--viva .ns-capa--fundamentos .ns-doble__reja { gap: .6rem; }
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo,
+  .ns-cine--viva .ns-capa--fundamentos .ns-valores { margin-top: .5rem; }
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__ficha {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    align-content: start;
+    column-gap: .45rem;
+    padding-block: .6rem;
+  }
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__icono,
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__num,
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__nombre { margin: 0; }
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__texto { grid-column: 1 / -1; margin-top: .4rem; }
+  .ns-cine--viva .ns-capa--fundamentos .ns-valor { padding-block: .5rem; }
+  .ns-cine--viva .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad .ns-rotulo { display: none; }
+}
+
+@media (max-width: 767.98px) and (max-height: 560px) {
+  .ns-cine--viva .ns-capa--fundamentos .ns-mvo__texto { font-size: .7rem; line-height: 1.4; }
 }
 
 @media (prefers-reduced-motion: reduce) {

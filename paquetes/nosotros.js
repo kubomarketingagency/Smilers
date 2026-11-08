@@ -812,6 +812,8 @@ var retratos=Array.prototype.slice.call(caja.querySelectorAll('.ns-elenco__retra
 if(retratos.length < 2)return null;
 var ficha=caja.querySelector('[data-elenco-ficha]');
 var puntera=caja.querySelector('[data-elenco-puntos]');
+var capaElenco=caja.closest('.ns-capa');
+var fotoElenco=caja.querySelector('.ns-elenco__escena');
 var INTERVALO=3000;
 var actual=0;
 var reloj=null;
@@ -844,6 +846,28 @@ ficha.classList.remove('ns-ficha--entra');
 void ficha.offsetWidth;
 }
 ficha.classList.add('ns-ficha--entra');
+}
+function medirFicha(){
+if(!ficha||!capaElenco)return;
+var texto=ficha.querySelector('[data-ficha-texto]');
+var ancho=texto.getBoundingClientRect().width;
+if(!ancho)return;
+var sonda=document.createElement('p');
+sonda.className=texto.className;
+sonda.setAttribute('aria-hidden','true');
+sonda.style.cssText='position:absolute;top:0;left:0;margin:0;visibility:hidden;pointer-events:none;width:' + ancho + 'px';
+ficha.parentNode.appendChild(sonda);
+var mayor=0;
+retratos.forEach(function(retrato){
+sonda.textContent=retrato.dataset.espTexto||'';
+mayor=Math.max(mayor,sonda.getBoundingClientRect().height);
+});
+sonda.parentNode.removeChild(sonda);
+capaElenco.style.setProperty('--elenco-texto',Math.ceil(mayor)+ 'px');
+if(fotoElenco){
+var juntura=fotoElenco.getBoundingClientRect().bottom - capaElenco.getBoundingClientRect().top;
+capaElenco.style.setProperty('--elenco-juntura',juntura.toFixed(2)+ 'px');
+}
 }
 function pintar(){
 encender(retratos[actual]);
@@ -892,6 +916,7 @@ if(quietud.matches)parar();else arrancar();
 pintar();
 return{
 caja:caja,
+medir:medirFicha,
 dormir:function(){
 if(dormido)return;
 dormido=true;
@@ -1195,8 +1220,13 @@ boton.classList.toggle('ns-riel__boton--activo',i===rielMejor);
 }
 }
 revisarModo();
+if(elenco){
+elenco.medir();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(elenco.medir);
+}
 SmilersScroll.registrar(leer,escribir,function(){
 revisarModo();
+if(elenco)elenco.medir();
 ultimoCine=-1;
 ultimoCierre=-1;
 ultimoCarta=-1;
