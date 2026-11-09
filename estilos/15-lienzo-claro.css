@@ -1181,6 +1181,7 @@
   .pagina-clara .franja-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .pagina-clara .franja-nav a:not(:nth-of-type(5n + 1)) { border-left: 1px solid rgba(212, 175, 55, .34); }
   .pagina-clara .franja-nav a:nth-of-type(n + 6) { border-top: 1px solid rgba(212, 175, 55, .3); }
+  .pagina-clara .franja-nav a:nth-of-type(5n + 1):last-of-type { grid-column: 1 / -1; }
 }
 @media (max-width: 359.98px) {
   .pagina-clara .franja-nav a {

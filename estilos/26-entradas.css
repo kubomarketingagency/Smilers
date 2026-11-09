@@ -85,6 +85,7 @@
   .franja-nav a:nth-of-type(8) { --paso: .37s; }
   .franja-nav a:nth-of-type(9) { --paso: .42s; }
   .franja-nav a:nth-of-type(10) { --paso: .47s; }
+  .franja-nav a:nth-of-type(11) { --paso: .52s; }
 
   .pagina-clara .banner-pagina--hero { --tras-umbral: 1.9s; }
   html.sin-umbral .pagina-clara .banner-pagina--hero { --tras-umbral: 0s; }
