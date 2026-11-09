@@ -101,6 +101,9 @@
       <image:loc>https://smilersdental.vercel.app/imagenes/equipo/odontologia-general.webp?v=8dfe1ef199</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/equipo/medicina-estetica.webp?v=8250954e8e</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/logo-smilers-oro-440.webp?v=3c8ac94670</image:loc>
     </image:image>
     <image:image>
@@ -187,6 +190,12 @@
     </image:image>
     <image:image>
       <image:loc>https://smilersdental.vercel.app/imagenes/tratamientos/armonizacion-orofacial-2.webp?v=23aa263072</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/tratamientos/medicina-estetica-1.webp?v=2d7dbfc695</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdental.vercel.app/imagenes/tratamientos/medicina-estetica-2.webp?v=2843db073a</image:loc>
     </image:image>
   </url>
   <url>
