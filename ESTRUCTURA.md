@@ -739,7 +739,7 @@ que es quien pone la veladura para que el texto de encima se siga leyendo.
 
 ## Retratos del equipo — `imagenes/equipo/`
 
-Los diez especialistas en la clínica (`rehabilitacion-estetica`,
+Los once especialistas en la clínica (`rehabilitacion-estetica`,
 `endodoncia`, … los del elenco de Nosotros, 1122×1402) y los cuatro retratos
 de estudio sobre mármol de la fila de la portada (`portada-1…4`, 440×647).
 
