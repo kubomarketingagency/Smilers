@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var capaElenco = caja.closest('.ns-capa');
     var fotoElenco = caja.querySelector('.ns-elenco__escena');
 
-    var INTERVALO = 4800;
+    var INTERVALO = 5500;
     var actual = 0;
     var reloj = null;
     var dormido = false;
