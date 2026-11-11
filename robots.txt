@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://smilersdental.vercel.app/sitemap.xml
+Sitemap: https://smilersdentalclinique.com/sitemap.xml

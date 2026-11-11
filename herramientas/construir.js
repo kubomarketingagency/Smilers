@@ -34,7 +34,7 @@ const prohibidos = [];
 const desactualizados = [];
 const informe = [];
 const finales = new Map();
-const DOMINIO = 'https://smilersdental.vercel.app';
+const DOMINIO = 'https://smilersdentalclinique.com';
 
 function leerTexto(rel) {
   return fs.readFileSync(path.join(RAIZ, rel), 'utf8').replace(/^\ufeff/, '').split('\r\n').join('\n');
