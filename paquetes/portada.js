@@ -653,6 +653,7 @@ const texto=
 'Mensaje: ' + mensaje;
 const url='https://wa.me/' + NUMERO_WHATSAPP + '?text=' + encodeURIComponent(texto);
 window.open(url,'_blank');
+document.dispatchEvent(new CustomEvent('smilers:contacto',{detail:{canal:'WhatsApp'}}));
 aviso.classList.add('exito');
 aviso.textContent='¡Listo! Abrimos WhatsApp para enviar tu mensaje.';
 formulario.reset();
@@ -2456,10 +2457,11 @@ var AJUSTES={
 metaPixel:'1849212390295499',
 googleAds:'AW-18568353884',
 googleAdsContacto:'AW-18568353884/cVZ5CIyS2rYdENywipZF',
-antesDeDecidir:'activo',
-revision:1
+googleTagManager:'GTM-MTBGCK97',
+antesDeDecidir:'inactivo',
+revision:2
 };
-var hayPixeles=!!(AJUSTES.metaPixel||AJUSTES.googleAds);
+var hayPixeles=!!(AJUSTES.metaPixel||AJUSTES.googleAds||AJUSTES.googleTagManager);
 var raiz=document.documentElement;
 var botonesPreferencias=document.querySelectorAll('[data-preferencias-cookies]');
 var quietud=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -2511,16 +2513,22 @@ window.gtag('js',new Date());
 window.gtag('config',id);
 pedirGuion('https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id));
 }
+function cargarTagManager(id){
+window.dataLayer=window.dataLayer||[];
+window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+pedirGuion('https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(id));
+}
 function activarPixeles(){
 if(pixelesActivos||!hayPixeles)return;
 pixelesActivos=true;
 if(AJUSTES.metaPixel)cargarMeta(AJUSTES.metaPixel);
 if(AJUSTES.googleAds)cargarGoogleAds(AJUSTES.googleAds);
+if(AJUSTES.googleTagManager)cargarTagManager(AJUSTES.googleTagManager);
 }
 function borrarCookiesDePublicidad(){
 var nombres=document.cookie.split(';')
 .map(function(trozo){return trozo.split('=')[0].trim();})
-.filter(function(nombre){return /^_fbp$|^_fbc$|^_gcl_/.test(nombre);});
+.filter(function(nombre){return /^_fbp$|^_fbc$|^_gcl_|^_ga/.test(nombre);});
 if(!nombres.length)return;
 var host=location.hostname;
 var dominios=[null,host,'.' + host];
@@ -2569,10 +2577,9 @@ if(!enlace)return;
 var canal=canalDe(enlace.getAttribute('href'));
 if(canal)contarContacto(canal);
 },true);
-var formulario=document.getElementById('formWhatsapp');
-if(formulario){
-formulario.addEventListener('submit',function(){contarContacto('WhatsApp');});
-}
+document.addEventListener('smilers:contacto',function(evento){
+contarContacto((evento.detail&&evento.detail.canal)||'WhatsApp');
+});
 var carga=null;
 var arrancado=false;
 function cargarLibreria(){

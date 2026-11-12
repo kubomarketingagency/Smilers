@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const url = 'https://wa.me/' + NUMERO_WHATSAPP + '?text=' + encodeURIComponent(texto);
 
       window.open(url, '_blank');
+      document.dispatchEvent(new CustomEvent('smilers:contacto', { detail: { canal: 'WhatsApp' } }));
 
       aviso.classList.add('exito');
       aviso.textContent = '¡Listo! Abrimos WhatsApp para enviar tu mensaje.';
