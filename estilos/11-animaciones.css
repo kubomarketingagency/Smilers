@@ -143,6 +143,8 @@
   filter: blur(70px);
   pointer-events: none;
   z-index: 0;
+  will-change: filter;
+  contain: paint;
 }
 .forma-turquesa { background: var(--turquesa); opacity: .16; }
 .forma-naranja  { background: var(--naranja);  opacity: .14; }
@@ -159,7 +161,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .forma-parallax { transition: transform .25s ease-out; will-change: transform; }
+  .forma-parallax { transition: transform .25s ease-out; will-change: transform, filter; }
 }
 
 .acento-puntos {
