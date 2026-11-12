@@ -2,11 +2,11 @@
   'use strict';
 
   var AJUSTES = {
-    metaPixel: '',
+    metaPixel: '1849212390295499',
 
-    googleAds: '',
+    googleAds: 'AW-18568353884',
 
-    googleAdsContacto: '',
+    googleAdsContacto: 'AW-18568353884/cVZ5CIyS2rYdENywipZF',
     antesDeDecidir: 'activo',
     revision: 1
   };

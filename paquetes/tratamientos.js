@@ -1253,9 +1253,9 @@ window.addEventListener('load',alCambiar);
 (function(){
 'use strict';
 var AJUSTES={
-metaPixel:'',
-googleAds:'',
-googleAdsContacto:'',
+metaPixel:'1849212390295499',
+googleAds:'AW-18568353884',
+googleAdsContacto:'AW-18568353884/cVZ5CIyS2rYdENywipZF',
 antesDeDecidir:'activo',
 revision:1
 };
