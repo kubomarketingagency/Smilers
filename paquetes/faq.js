@@ -712,6 +712,30 @@ window.removeEventListener('wheel',soltar);
 }
 requestAnimationFrame(paso);
 }
+(function(){
+var fotos=Array.prototype.slice.call(galeria.querySelectorAll('.ag-panel__media img'));
+if(!fotos.length||typeof IntersectionObserver !=='function')return;
+var porCalentar=0;
+function hueco(fn){
+if(window.requestIdleCallback)requestIdleCallback(fn,{timeout:500});
+else setTimeout(fn,120);
+}
+function calentar(){
+if(porCalentar >=fotos.length)return;
+var foto=fotos[porCalentar++];
+foto.loading='eager';
+var seguir=function(){hueco(calentar);};
+if(foto.decode)foto.decode().then(seguir,seguir);
+else if(foto.complete)seguir();
+else foto.addEventListener('load',seguir,{once:true});
+}
+var vigia=new IntersectionObserver(function(registros){
+if(!registros[registros.length - 1].isIntersecting)return;
+vigia.disconnect();
+hueco(calentar);
+},{rootMargin:'300% 0px'});
+vigia.observe(galeria);
+})();
 var inicial=galeria.querySelector('.ag-panel--activo')||paneles[0];
 if(inicial)pintarFicha(inicial);
 paneles.forEach(function(panel,indice){
