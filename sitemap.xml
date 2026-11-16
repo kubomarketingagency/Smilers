@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://smilersdentalclinique.com/</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/clinica/lamparas-portada-1920.webp?v=64dc2198fa</image:loc>
     </image:image>
@@ -69,7 +69,7 @@
   </url>
   <url>
     <loc>https://smilersdentalclinique.com/nosotros</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/equipo/rehabilitacion-estetica.webp?v=afe137afc8</image:loc>
     </image:image>
@@ -78,6 +78,12 @@
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/equipo/endodoncia.webp?v=630a96451e</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-3.webp?v=c29b49def7</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-4.webp?v=8bd1465b09</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-1.webp?v=1a6f382744</image:loc>
@@ -112,7 +118,7 @@
   </url>
   <url>
     <loc>https://smilersdentalclinique.com/tratamientos</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/clinica/sillon.webp?v=e5590c112e</image:loc>
     </image:image>
@@ -147,13 +153,16 @@
       <image:loc>https://smilersdentalclinique.com/imagenes/clinica/cirugia.webp?v=942bef8429</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://smilersdentalclinique.com/imagenes/tratamientos/cirugia-oral-2.webp?v=8ee00d51a6</image:loc>
+      <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/cirugia-maxilofacial-2.webp?v=7b3ccca50f</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://smilersdentalclinique.com/imagenes/clinica/revision.webp?v=5ec8a2fa43</image:loc>
+      <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/cirugia-maxilofacial-3.webp?v=4bbf516991</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/tratamientos/cirugia-oral-1.webp?v=9e3841d02d</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/tratamientos/cirugia-oral-2.webp?v=8ee00d51a6</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/tratamientos/rehabilitacion-oral-1.webp?v=cb65d8377c</image:loc>
@@ -200,7 +209,7 @@
   </url>
   <url>
     <loc>https://smilersdentalclinique.com/galeria</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/clinica/fachada-cuadro.webp?v=933dcb07e5</image:loc>
     </image:image>
@@ -262,6 +271,12 @@
       <image:loc>https://smilersdentalclinique.com/imagenes/equipo/endodoncia-cuadro.webp?v=ad28abf75d</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-3-cuadro.webp?v=0fee3acf41</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-4-cuadro.webp?v=335ce7050f</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/equipo/cirugia-maxilofacial-1-cuadro.webp?v=a4f9c82d73</image:loc>
     </image:image>
     <image:image>
@@ -314,6 +329,12 @@
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/periodoncia-cuadro.webp?v=2e6a9d8d51</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/cirugia-maxilofacial-2-cuadro.webp?v=f9adcf3e3a</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/cirugia-maxilofacial-3-cuadro.webp?v=1e944fa6ef</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://smilersdentalclinique.com/imagenes/especialidades/cirugia-maxilofacial-cuadro.webp?v=038db2d7c1</image:loc>
