@@ -15,7 +15,6 @@
 .tz-mosaico--escalera { --prop: 1; }
 .tz-mosaico--triptico { --prop: 1.1; }
 .tz-mosaico--una      { --prop: .9; }
-.tz-mosaico--cuarteto { --prop: 1; }
 
 .tz-mosaico__pieza {
   position: absolute;
@@ -46,12 +45,6 @@
 .tz-mosaico--triptico > :nth-child(1) { --x: 3%;  --y: 3%;  --w: 44%; --h: 97%; }
 .tz-mosaico--triptico > :nth-child(2) { --x: 50%; --y: 0%;  --w: 50%; --h: 47%; }
 .tz-mosaico--triptico > :nth-child(3) { --x: 50%; --y: 50%; --w: 50%; --h: 47%; }
-
-.tz-mosaico--cuarteto                 { --mx: 0%;  --my: 0%;  --mw: 47%; --mh: 44%; }
-.tz-mosaico--cuarteto > :nth-child(1) { --x: 3%;  --y: 3%;  --w: 47%; --h: 44%; }
-.tz-mosaico--cuarteto > :nth-child(2) { --x: 53%; --y: 9%;  --w: 47%; --h: 44%; }
-.tz-mosaico--cuarteto > :nth-child(3) { --x: 3%;  --y: 50%; --w: 47%; --h: 44%; }
-.tz-mosaico--cuarteto > :nth-child(4) { --x: 53%; --y: 56%; --w: 47%; --h: 44%; }
 
 .tz-mosaico--una                      { --mx: 0%;  --my: 0%;  --mw: 95%; --mh: 96%; }
 .tz-mosaico--una > :nth-child(1)      { --x: 5%;  --y: 4%;  --w: 95%; --h: 96%; }
@@ -151,7 +144,6 @@
   }
   .tz-mosaico__pieza:nth-child(2) { --espera: .45s; }
   .tz-mosaico__pieza:nth-child(3) { --espera: .8s; }
-  .tz-mosaico__pieza:nth-child(4) { --espera: 1.1s; }
 
   .tz-mosaico__pieza::before {
     content: '';
