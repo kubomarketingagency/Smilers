@@ -749,6 +749,17 @@ de estudio sobre mármol de la fila de la portada (`portada-1…4`, 440×647).
 Galería. Llevan los mismos textos que la pareja de antes: la doctora, los de
 la doctora, y el doctor, los del doctor. Sus originales de WhatsApp están en
 `imagenes/originales/` (`equipo-cirugia-maxilofacial-3-original.jpeg`, …).
+**La foto de la doctora nueva (`-3`) lleva aire añadido arriba** (16-11-2026):
+llegó con la coronilla pegada al borde, y el elenco, que recorta cada foto
+para llenar su hueco, le cortaba la cabeza. Se le añadieron 120px por arriba
+(queda en 1124×1519): la primera fila de la foto, sin sus luces, estirada
+hacia arriba y oscureciéndose hacia el techo, y las luces que tocaban el borde
+se apagan en las 22 filas de arriba de la foto para que no acaben de golpe.
+Además encuadra desde arriba: `--foco-y: 0%` en el `style` de su `img`, que
+el elenco usa en lugar del 20% de los demás. Así la coronilla cae a la altura
+de las otras: unos 75px bajo la barra a 1366×768 y unos 105 a 1920, con el
+resto entre 58 y 94. Si llega una versión de la foto con más techo, se cambia
+por esa y sobra todo esto.
 
 **Todos están también en la Galería, y son todo «Equipo»**: primero los cuatro
 de estudio, en el orden de la foto de grupo de la portada, y después los doce

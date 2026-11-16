@@ -253,7 +253,7 @@ main:has(.ns-cine--viva) { background: #050505; }
   max-width: none;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center var(--foco-y, 20%);
 }
 .ns-cine--viva .ns-elenco__flecha--previa { left: clamp(.6rem, 1.5vw, 1.5rem); }
 .ns-cine--viva .ns-elenco__flecha--siguiente { right: clamp(.6rem, 1.5vw, 1.5rem); }
