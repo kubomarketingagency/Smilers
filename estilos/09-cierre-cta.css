@@ -164,8 +164,16 @@
   --caja-aire: clamp(1.5rem, 3vw, 2.4rem);
   position: relative;
   padding: max(0px, calc(var(--caja-aire) - var(--bs-gutter-y, 0px))) 0 var(--caja-aire);
-  border: 3px solid rgba(212, 175, 55, .88);
+  border: 2px solid transparent;
   padding-inline: var(--caja-aire);
+}
+.cierre-cine .banda-cta-contenido > .row::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  pointer-events: none;
 }
 .cierre-cine .banda-cta-contenido > .row::before {
   content: '';
