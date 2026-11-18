@@ -43,8 +43,10 @@
 
 .tz-mosaico--triptico                 { --mx: 0%;  --my: 0%;  --mw: 44%; --mh: 97%; }
 .tz-mosaico--triptico > :nth-child(1) { --x: 3%;  --y: 3%;  --w: 44%; --h: 97%; }
-.tz-mosaico--triptico > :nth-child(2) { --x: 50%; --y: 0%;  --w: 50%; --h: 47%; }
-.tz-mosaico--triptico > :nth-child(3) { --x: 50%; --y: 50%; --w: 50%; --h: 47%; }
+.tz-mosaico--triptico > :nth-child(2) { --x: 50%; --y: 3%;  --w: 47%; --h: 44%; }
+.tz-mosaico--triptico > :nth-child(3) { --x: 50%; --y: 53%; --w: 47%; --h: 44%; }
+.tz-mosaico--triptico > .tz-mosaico__marco:nth-of-type(1) { --x: 53%; --y: 0%;  --w: 47%; --h: 44%; }
+.tz-mosaico--triptico > .tz-mosaico__marco:nth-of-type(2) { --x: 53%; --y: 56%; --w: 47%; --h: 44%; }
 
 .tz-mosaico--una                      { --mx: 0%;  --my: 0%;  --mw: 95%; --mh: 96%; }
 .tz-mosaico--una > :nth-child(1)      { --x: 5%;  --y: 4%;  --w: 95%; --h: 96%; }
@@ -72,7 +74,8 @@
 }
 
 .tz-mosaico::before,
-.tz-mosaico__pieza::after {
+.tz-mosaico__pieza::after,
+.tz-mosaico__marco {
   content: '';
   position: absolute;
   pointer-events: none;
@@ -88,6 +91,14 @@
   top: var(--my);
   width: var(--mw);
   height: var(--mh);
+  z-index: 0;
+  opacity: .8;
+}
+.tz-mosaico__marco {
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
   z-index: 0;
   opacity: .8;
 }
@@ -167,13 +178,17 @@
   }
 
   .tz-mosaico::before,
-  .tz-mosaico__pieza::after {
+  .tz-mosaico__pieza::after,
+  .tz-mosaico__marco {
     background-size: 0 1px, 1px 0, 0 1px, 1px 0;
     transition: background-size 1s cubic-bezier(.5, 0, .3, 1) calc(var(--espera, 0s) + 1.05s);
   }
   .tz-mosaico::before { --espera: 1.2s; }
+  .tz-mosaico__marco { --espera: 1.35s; }
+  .tz-mosaico__marco + .tz-mosaico__marco { --espera: 1.5s; }
   .revelar.visible .tz-mosaico::before,
-  .revelar.visible .tz-mosaico__pieza::after {
+  .revelar.visible .tz-mosaico__pieza::after,
+  .revelar.visible .tz-mosaico__marco {
     background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
   }
 }
