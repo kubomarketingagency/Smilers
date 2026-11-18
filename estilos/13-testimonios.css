@@ -706,3 +706,34 @@
     white-space: normal;
   }
 }
+.testimonios-marco {
+  --tm-aire: clamp(14px, 2.4vw, 30px);
+  --tm-grosor: 2px;
+  position: absolute;
+  inset: calc(var(--alto-navbar) + var(--tm-aire)) var(--tm-aire) var(--tm-aire);
+  z-index: 4;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1px rgba(4, 3, 2, .75)) drop-shadow(0 1px 5px rgba(4, 3, 2, .55));
+}
+.testimonios-marco::before,
+.testimonios-marco::after {
+  content: '';
+  position: absolute;
+  width: 46%;
+  height: 46%;
+}
+.testimonios-marco::before {
+  top: 0;
+  left: 0;
+  background: var(--oro-marca-degradado) left top / 100% var(--tm-grosor) no-repeat,
+              var(--oro-marca-degradado) left top / var(--tm-grosor) 100% no-repeat;
+}
+.testimonios-marco::after {
+  right: 0;
+  bottom: 0;
+  background: var(--oro-marca-degradado) right bottom / 100% var(--tm-grosor) no-repeat,
+              var(--oro-marca-degradado) right bottom / var(--tm-grosor) 100% no-repeat;
+}
+@media (max-width: 767.98px) {
+  .testimonios-marco { --tm-aire: 10px; --tm-grosor: 1.5px; }
+}

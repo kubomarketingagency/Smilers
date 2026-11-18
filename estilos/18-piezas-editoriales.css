@@ -488,3 +488,29 @@
 @media (prefers-reduced-motion: reduce) {
   .pz-tarjeta__foto img { transition: none; }
 }
+.pagina-tratamientos .nos-rotulo { font-size: .86rem; }
+
+.pz-cita__lado {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(1.2rem, 2.6vw, 2.2rem);
+  height: 100%;
+}
+.pz-cita__logo {
+  display: flex;
+  align-items: center;
+  gap: clamp(.7rem, 1.6vw, 1.2rem);
+}
+.pz-cita__logo img { display: block; width: auto; }
+.pz-cita__logo img:first-child { height: clamp(30px, 3.4vw, 44px); }
+.pz-cita__logo img:last-child { height: clamp(26px, 2.9vw, 38px); }
+.pz-cita__logo span {
+  width: 1px;
+  height: clamp(24px, 2.6vw, 34px);
+  background: linear-gradient(180deg, transparent, rgba(212, 175, 55, .6), transparent);
+}
+.pz-seccion--cita .pz-cita { align-items: stretch; }
+@media (max-width: 767.98px) {
+  .pz-cita__logo { justify-content: center; }
+}

@@ -334,3 +334,11 @@ main > .ns-envoltura + .ns-seccion { padding-top: clamp(2rem, 3.4vw, 3.4rem); }
 .ns-valor,
 .ns-valor__icono { transition: none; }
 }
+.ns-mvo__nombre::after {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin-top: .55rem;
+  background: var(--gradiente-oro);
+}

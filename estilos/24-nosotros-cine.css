@@ -817,3 +817,27 @@ main:has(.ns-cine--viva) { background: #050505; }
 }
 
 .pagina-clara .banda-cta--cine > .ns-envoltura { flex: 1 1 auto; }
+.ns-cine__datos li + li {
+  padding-left: clamp(.8rem, 2vw, 1.6rem);
+  border-left: 1px solid rgba(212, 175, 55, .3);
+}
+
+.banda-cta--cine .ns-cta {
+  padding: clamp(1rem, 2vw, 1.6rem) clamp(1rem, 2.2vw, 1.8rem);
+  border: 1px solid rgba(212, 175, 55, .26);
+  background: linear-gradient(180deg, rgba(6, 6, 6, .86) 0%, rgba(6, 6, 6, .76) 100%);
+}
+
+.ns-capa--fundamentos .ns-mvo { align-items: stretch; }
+.ns-capa--fundamentos .ns-mvo__ficha { height: 100%; }
+
+.ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad {
+  border-left: 1px solid rgba(212, 175, 55, .26);
+  padding-left: clamp(1.2rem, 2.6vw, 2.4rem);
+}
+@media (max-width: 991.98px) {
+  .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad {
+    border-left: 0;
+    padding-left: 0;
+  }
+}

@@ -225,3 +225,8 @@
   to   { translate: 0 3.5%; }
 }
 
+
+.pagina-tratamientos .tz-mosaico__pieza::after {
+  inset: clamp(8px, 1vw, 14px);
+  opacity: 1;
+}

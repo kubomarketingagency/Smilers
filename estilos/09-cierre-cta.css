@@ -164,7 +164,8 @@
   --caja-aire: clamp(1.5rem, 3vw, 2.4rem);
   position: relative;
   padding: max(0px, calc(var(--caja-aire) - var(--bs-gutter-y, 0px))) 0 var(--caja-aire);
-  border-block: 1px solid rgba(255, 255, 255, .16);
+  border: 1px solid rgba(212, 175, 55, .32);
+  padding-inline: var(--caja-aire);
 }
 .cierre-cine .banda-cta-contenido > .row::before {
   content: '';
