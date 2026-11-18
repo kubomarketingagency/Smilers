@@ -225,12 +225,3 @@
   to   { translate: 0 3.5%; }
 }
 
-
-.tz-mosaico__pieza:nth-child(n+2) {
-  outline: 1px solid rgba(212, 175, 55, .55);
-  outline-offset: calc(var(--aro) + 6px);
-}
-.tz-mosaico__pieza:nth-child(n+2):focus-visible {
-  outline: 2px solid var(--oro-marca);
-  outline-offset: 3px;
-}

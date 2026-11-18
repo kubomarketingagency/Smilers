@@ -849,6 +849,6 @@ main:has(.ns-cine--viva) { background: #050505; }
 .banda-cta--cine .ns-cta { border-width: 2px; border-color: rgba(212, 175, 55, .5); }
 
 .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad {
-  border-left-width: 2px;
-  border-left-color: rgba(212, 175, 55, .5);
+  border-left-width: 3px;
+  border-left-color: rgba(212, 175, 55, .88);
 }
