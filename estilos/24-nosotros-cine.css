@@ -844,9 +844,18 @@ main:has(.ns-cine--viva) { background: #050505; }
 .ns-cine__datos li + li { border-left-width: 2px; border-left-color: rgba(212, 175, 55, .5); }
 .ns-cine__datos { border-top-width: 2px; border-top-color: rgba(212, 175, 55, .5); }
 
-.banda-cta--cine .ns-cifras { border-width: 2px; border-color: rgba(212, 175, 55, .5); }
+.banda-cta--cine .ns-cifras { border: 2px solid transparent; }
 .banda-cta--cine .ns-cifra + .ns-cifra { border-left-width: 2px; border-left-color: rgba(212, 175, 55, .42); }
-.banda-cta--cine .ns-cta { border-width: 2px; border-color: rgba(212, 175, 55, .5); }
+.banda-cta--cine .ns-cta { border: 2px solid transparent; }
+.banda-cta--cine .ns-cifras::after,
+.banda-cta--cine .ns-cta::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid transparent;
+  border-image: var(--oro-marca-degradado) 1;
+  pointer-events: none;
+}
 
 .ns-capa--fundamentos .ns-doble__mitad + .ns-doble__mitad {
   border-left-width: 3px;
