@@ -226,7 +226,11 @@
 }
 
 
-.pagina-tratamientos .tz-mosaico__pieza::after {
-  inset: clamp(8px, 1vw, 14px);
-  opacity: 1;
+.tz-mosaico__pieza:nth-child(n+2) {
+  outline: 1px solid rgba(212, 175, 55, .55);
+  outline-offset: calc(var(--aro) + 6px);
+}
+.tz-mosaico__pieza:nth-child(n+2):focus-visible {
+  outline: 2px solid var(--oro-marca);
+  outline-offset: 3px;
 }

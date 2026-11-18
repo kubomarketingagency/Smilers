@@ -512,8 +512,10 @@
 
 .tst-video__son {
   position: absolute;
-  left: 50%;
-  bottom: -1.55rem;
+  left: auto;
+  right: -1.15rem;
+  top: 50%;
+  bottom: auto;
   z-index: 4;
   width: 2.3rem;
   height: 2.3rem;
@@ -708,9 +710,10 @@
 }
 .testimonios-marco {
   --tm-aire: clamp(14px, 2.4vw, 30px);
+  --tm-abajo: clamp(4px, .7vw, 9px);
   --tm-grosor: 2px;
   position: absolute;
-  inset: calc(var(--alto-navbar) + var(--tm-aire)) var(--tm-aire) var(--tm-aire);
+  inset: calc(var(--alto-navbar) * .42 + var(--tm-aire)) var(--tm-aire) var(--tm-abajo);
   z-index: 4;
   pointer-events: none;
   filter: drop-shadow(0 0 1px rgba(4, 3, 2, .75)) drop-shadow(0 1px 5px rgba(4, 3, 2, .55));
@@ -737,3 +740,6 @@
 @media (max-width: 767.98px) {
   .testimonios-marco { --tm-aire: 10px; --tm-grosor: 1.5px; }
 }
+.tst-video__son { transform: translateY(-50%); }
+.tst-video__son:hover,
+.tst-video__son:focus-visible { transform: translateY(-50%) scale(1.06); }
