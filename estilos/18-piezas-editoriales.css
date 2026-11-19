@@ -514,14 +514,15 @@
 @media (max-width: 767.98px) {
   .pz-cita__logo { justify-content: center; }
 }
-.pz-cita__lado { justify-content: flex-start; }
+.pz-cita__lado { justify-content: flex-start; container-type: inline-size; }
 .pz-cita__logo {
   justify-content: center;
   gap: clamp(1rem, 2.2vw, 1.8rem);
+  gap: max(1rem, 5cqi);
   margin: auto 0;
   padding-block: clamp(.6rem, 1.4vw, 1.2rem);
 }
-.pz-cita__logo img:first-child { height: clamp(44px, 5.4vw, 72px); }
-.pz-cita__logo img:last-child { height: clamp(38px, 4.6vw, 62px); }
-.pz-cita__logo span { height: clamp(36px, 4.2vw, 56px); }
+.pz-cita__logo img:first-child { height: clamp(44px, 5.4vw, 72px); height: max(44px, 17.5cqi); }
+.pz-cita__logo img:last-child { height: clamp(38px, 4.6vw, 62px); height: max(38px, 15cqi); }
+.pz-cita__logo span { height: clamp(36px, 4.2vw, 56px); height: max(36px, 13.5cqi); }
 .pz-seccion--cita .pz-cita__nota { margin-top: auto; }
