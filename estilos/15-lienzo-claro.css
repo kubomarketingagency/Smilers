@@ -202,6 +202,25 @@
   border-radius: var(--gm-radio, 2px);
   background: linear-gradient(180deg, rgba(8, 7, 6, .74) 0%, rgba(8, 7, 6, .64) 100%);
   box-shadow: 0 26px 62px rgba(4, 4, 4, .38);
+  --escuadra-aire: clamp(.6rem, 1.1vw, .95rem);
+  --escuadra-grosor: 2px;
+  --escuadra-tendido: 34%;
+  --escuadra-pie: 52%;
+}
+.pagina-clara .banner-pagina--cine .bp-panel::after {
+  content: '';
+  position: absolute;
+  inset: var(--escuadra-aire);
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    var(--oro-marca-degradado), var(--oro-marca-degradado),
+    var(--oro-marca-degradado), var(--oro-marca-degradado);
+  background-position: left top, left top, right bottom, right bottom;
+  background-size:
+    var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) var(--escuadra-pie),
+    var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) var(--escuadra-pie);
+  filter: drop-shadow(0 1px 4px rgba(4, 3, 2, .55));
 }
 .pagina-clara .banner-pagina--cine .bp-panel :is(h1, .banner-subtitulo,
                                                  .breadcrumb-personalizado) {

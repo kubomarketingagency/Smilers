@@ -134,6 +134,29 @@
     100% { background-size: 100% 1px, 1px 100%; }
   }
 
+  .pagina-clara .banner-pagina--cine .bp-panel { --bp-panel-espera: 2.2s; }
+  html.sin-umbral .pagina-clara .banner-pagina--cine .bp-panel { --bp-panel-espera: .5s; }
+  .pagina-clara .banner-pagina--cine .bp-panel::after {
+    animation: bp-panel-escuadras 1.6s cubic-bezier(.5, 0, .3, 1) var(--bp-panel-espera, 2.2s) both;
+  }
+  @keyframes bp-panel-escuadras {
+    0% {
+      background-size:
+        0 var(--escuadra-grosor), var(--escuadra-grosor) 0,
+        0 var(--escuadra-grosor), var(--escuadra-grosor) 0;
+    }
+    50% {
+      background-size:
+        var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) 0,
+        var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) 0;
+    }
+    100% {
+      background-size:
+        var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) var(--escuadra-pie),
+        var(--escuadra-tendido) var(--escuadra-grosor), var(--escuadra-grosor) var(--escuadra-pie);
+    }
+  }
+
   .ns-cine--viva .revelar :is(
     .nos-rotulo, .ns-rotulo, .etiqueta-seccion,
     h1, h2, h3, .nos-lead, .titulo-seccion, .ns-titulo,
