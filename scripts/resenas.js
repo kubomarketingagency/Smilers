@@ -21,8 +21,9 @@
   var encima = false;
   var enfocado = false;
   var cargadas = false;
-  var lado = parseFloat(getComputedStyle(caja).getPropertyValue('--rs-lado'));
-  if (!isFinite(lado) || lado <= 0) lado = .86;
+  var lado = .72;
+  var hueco = 40;
+  var anchos = [];
 
   var puntos = marcos.map(function (marco, indice) {
     var boton = document.createElement('button');
@@ -43,13 +44,41 @@
     return d;
   }
 
+  function medir() {
+    var estilo = getComputedStyle(caja);
+    var valor = parseFloat(estilo.getPropertyValue('--rs-lado'));
+    lado = isFinite(valor) && valor > 0 ? valor : .72;
+    valor = parseFloat(getComputedStyle(pista).columnGap);
+    hueco = isFinite(valor) ? valor : 40;
+    anchos = marcos.map(function (marco) { return marco.offsetWidth; });
+    pintar();
+  }
+
+  function posiciones() {
+    var x = [];
+    x[actual] = 0;
+    var borde = anchos[actual] / 2;
+    for (var k = 1; k <= Math.floor(total / 2); k++) {
+      var i = (actual + k) % total;
+      x[i] = borde + hueco + lado * anchos[i] / 2;
+      borde = x[i] + lado * anchos[i] / 2;
+    }
+    borde = -anchos[actual] / 2;
+    for (k = 1; k < Math.ceil(total / 2); k++) {
+      var j = (actual - k + total) % total;
+      x[j] = borde - hueco - lado * anchos[j] / 2;
+      borde = x[j] - lado * anchos[j] / 2;
+    }
+    return x;
+  }
+
   function pintar() {
+    var x = anchos.length ? posiciones() : [];
+    if (anchos.length) caja.style.setProperty('--rs-medio', (anchos[actual] / 2).toFixed(1) + 'px');
     marcos.forEach(function (marco, indice) {
       var d = distancia(indice);
       var lejos = Math.abs(d);
-      var x = d === 0 ? 0 : (d > 0 ? 1 : -1) * ((1 + lado) / 2 + (lejos - 1) * lado);
-      marco.style.setProperty('--d', d);
-      marco.style.setProperty('--x', x.toFixed(4));
+      marco.style.setProperty('--tx', (x[indice] || 0).toFixed(1) + 'px');
       marco.classList.toggle('rs-marco--centro', d === 0);
       marco.classList.toggle('rs-marco--lejos', lejos > 2);
       marco.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
@@ -128,7 +157,9 @@
   });
   pista.addEventListener('pointercancel', function () { inicio = null; });
 
-  pintar();
+  medir();
+  if ('ResizeObserver' in window) new ResizeObserver(medir).observe(pista);
+  else window.addEventListener('resize', medir);
 
   if (!('IntersectionObserver' in window)) {
     cargar();
