@@ -939,6 +939,20 @@ cada una dentro de un marco con el degradado de oro de la marca.
   de Nosotros, en la portada, solo había esta cabecera. Y un elemento pegado
   al canto de abajo de la pantalla no llega a revelarse, así que el botón no
   lo lleva.
+- **Las estrellas de la cabecera son una sola tira** (`.rs-estrellas`): un
+  `::before` con el degradado de oro de la marca recortado por una máscara de
+  cinco estrellas (el trazo de la estrella de Font Awesome, en un `data:`), así
+  el oro corre seguido por las cinco en vez de empezar de nuevo en cada una, y
+  un destello blanco la cruza cada 4,5 s (`rs-destello`, el mismo ritmo que el
+  filo de la carta de Nosotros). La sombra va en el span y no en el `::before`,
+  porque la máscara se comería la sombra. Desde el 19-11-2026; antes eran cinco
+  iconos en oro plano.
+- **«Reseñas» está en el menú**, bajo Inicio (`parciales/menu.html`,
+  `/#resenas`; en la portada la construcción lo deja en `#resenas`). El ancla
+  aterriza con la sección justo bajo la barra gracias a
+  `scroll-margin-top: calc(var(--alto-navbar) - 90px)`: el `html` lleva
+  `scroll-padding-top: 90px` y, sin descontarlo, la sección quedaba 28px más
+  abajo y se cortaba por el pie.
 - **El enlace a Google Maps** es el largo con el `cid` de la ficha de la
   clínica (el mismo sitio que el mapa del pie), no el `goo.gl` del ejemplo.
 - **La banda de Contacto ya no va montada sobre los testimonios.** Ese solape
